@@ -1,10 +1,10 @@
 {
   "name": "@elvix.is/sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Official elvix SDK. Drop-in React components, server helpers, and an MCP server so AI coding agents integrate elvix on the first try.",
   "license": "MIT",
   "homepage": "https://elvix.is",
-  "author": "Edvard Grei <edvard@edvone.dev>",
+  "author": "edvone <hi@edvone.dev> (https://edvone.dev)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/021is/elvix-sdk.git"

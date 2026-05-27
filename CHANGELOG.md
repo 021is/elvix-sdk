@@ -13,6 +13,21 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.1.1] — 2026-05-27
+
+### Changed
+
+- `LICENSE` attribution moved to **edvone** as commercial imprint; personal name removed from all public surfaces. Trademark notice added covering the elvix name + logomark + brand chord, with nominative-use carveout.
+- `package.json` `author` field now reads `edvone <hi@edvone.dev>`.
+- Added `SECURITY.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, issue + PR templates.
+- README: CI / npm / downloads / bundle-size badges.
+
+### Repo-level (not in tarball)
+
+- Description, homepage `https://elvix.is`, 15 topic tags.
+- Discussions enabled.
+- Branch protection on `main`: linear history required, CI required, force-push blocked.
+
 ## [0.1.0] — 2026-05-27
 
 Initial public release. Replaces the `0.0.0` scope-reservation stub on npm.
@@ -31,5 +46,6 @@ Initial public release. Replaces the `0.0.0` scope-reservation stub on npm.
 - `--provenance` attestation on npm publishes.
 - MIT licence + explicit trademark notice (see `LICENSE`).
 
-[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/021is/elvix-sdk/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/021is/elvix-sdk/releases/tag/v0.1.0
