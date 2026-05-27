@@ -1,0 +1,79 @@
+{
+  "name": "@elvix.is/sdk",
+  "version": "0.1.0",
+  "description": "Official elvix SDK. Drop-in React components, server helpers, and an MCP server so AI coding agents integrate elvix on the first try.",
+  "license": "MIT",
+  "homepage": "https://elvix.is",
+  "author": "Edvard Grei <edvard@edvone.dev>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/021is/elvix-sdk.git"
+  },
+  "bugs": "https://github.com/021is/elvix-sdk/issues",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "elvix-mcp": "./dist/mcp/bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    },
+    "./mcp": {
+      "types": "./dist/mcp/index.d.ts",
+      "import": "./dist/mcp/index.js"
+    }
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsup src/index.ts src/react.ts src/server.ts src/types.ts src/mcp/index.ts src/mcp/bin.ts --format esm --dts --clean --external react --external next",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "next": ">=15"
+  },
+  "peerDependenciesMeta": {
+    "next": { "optional": true }
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "elvix",
+    "authentication",
+    "auth",
+    "passkey",
+    "otp",
+    "google-oauth",
+    "react",
+    "nextjs",
+    "mcp",
+    "model-context-protocol",
+    "ai-agents"
+  ]
+}
