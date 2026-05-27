@@ -7,8 +7,21 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  ElvixAddressBook,
+  ElvixAvatar,
+  ElvixBanner,
+  ElvixCard,
+  ElvixDeactivate,
+  ElvixExport,
+  ElvixIdentityForm,
+  ElvixLanguages,
+  ElvixLeave,
+  ElvixLegalEntities,
   ElvixProvider,
+  ElvixRegion,
+  ElvixSessions,
   ElvixSignIn,
+  ElvixUsername,
   useElvixApp,
   useElvixContext,
   type ElvixBootstrapEnvelope,
@@ -20,8 +33,27 @@ describe("@elvix.is/sdk/react surface", () => {
   it("exports the wave-1 components", () => {
     expect(typeof ElvixProvider).toBe("function");
     expect(typeof ElvixSignIn).toBe("function");
+    expect(typeof ElvixCard).toBe("function");
     expect(typeof useElvixApp).toBe("function");
     expect(typeof useElvixContext).toBe("function");
+  });
+
+  it("exports the wave-2 identity components", () => {
+    expect(typeof ElvixUsername).toBe("function");
+    expect(typeof ElvixAvatar).toBe("function");
+    expect(typeof ElvixBanner).toBe("function");
+    expect(typeof ElvixIdentityForm).toBe("function");
+    expect(typeof ElvixRegion).toBe("function");
+    expect(typeof ElvixLanguages).toBe("function");
+  });
+
+  it("exports the wave-3 account-lifecycle components", () => {
+    expect(typeof ElvixSessions).toBe("function");
+    expect(typeof ElvixExport).toBe("function");
+    expect(typeof ElvixDeactivate).toBe("function");
+    expect(typeof ElvixLeave).toBe("function");
+    expect(typeof ElvixAddressBook).toBe("function");
+    expect(typeof ElvixLegalEntities).toBe("function");
   });
 
   it("ElvixBootstrapEnvelope shape compiles", () => {

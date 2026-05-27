@@ -13,6 +13,41 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.3.0] — 2026-05-27
+
+### Added
+
+- **Wave 2 — identity components** (6 new):
+  - `<ElvixUsername>` — claim / change username (PATCH `/api/account/apps/<id>/username`).
+  - `<ElvixAvatar>` — file → base64 → PATCH `/avatar`. 4 MB cap.
+  - `<ElvixBanner>` — same as Avatar, 8 MB cap, 16:9 aspect.
+  - `<ElvixIdentityForm>` — display name + bio. Per-app profile.
+  - `<ElvixRegion>` — ISO-3166 country + IANA timezone.
+  - `<ElvixLanguages>` — BCP-47 preference list.
+- **Wave 3 — account-lifecycle components** (6 new):
+  - `<ElvixSessions>` — list + revoke active sessions.
+  - `<ElvixExport>` — GDPR Art. 15 data export request.
+  - `<ElvixDeactivate>` — two-pane OTP-gated pause flow.
+  - `<ElvixLeave>` — two-pane OTP-gated leave flow.
+  - `<ElvixAddressBook>` — list + add + remove addresses.
+  - `<ElvixLegalEntities>` — list + add + remove tax / VAT entities.
+- **`<ElvixCard>` primitive** exported for hosts composing multiple
+  components in one card frame.
+- All mutation components carry a single discriminated `onResult`
+  callback shaped as `ElvixActionResult<T>`. Hosts opt in to
+  post-success navigation without the SDK calling `router.push`
+  itself.
+
+### Notes
+
+- Same clean-room minimum approach as wave 1: each component is a
+  fresh public implementation, not a literal copy of the private
+  elvix monorepo. Full-featured monorepo versions remain private and
+  converge over time.
+- Internal helper `src/react/lib.ts` adds `appPost` / `appPatch` /
+  `appDelete` so every component uses one shared fetch path with
+  `credentials: include` and Spine ResponseDto decoding.
+
 ## [0.2.0] — 2026-05-27
 
 ### Added
@@ -68,7 +103,8 @@ Initial public release. Replaces the `0.0.0` scope-reservation stub on npm.
 - `--provenance` attestation on npm publishes.
 - MIT licence + explicit trademark notice (see `LICENSE`).
 
-[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/021is/elvix-sdk/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/021is/elvix-sdk/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/021is/elvix-sdk/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/021is/elvix-sdk/compare/v0.1.0...v0.1.1
