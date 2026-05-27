@@ -186,6 +186,10 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md). PRs welcome — we run CI on every pus
 
 ## Maintained by
 
-**[edvone](https://edvone.dev)** · Aachen, Germany · [hi@edvone.dev](mailto:hi@edvone.dev)
+**[edvone](https://edvone.dev)** · Aachen, Germany
 
 elvix is an edvone product.
+
+- General enquiries: [edvone.dev/contact](https://edvone.dev/contact)
+- Sales / integration call: [edvone.dev/book](https://edvone.dev/book)
+- Security disclosure: [security@elvix.is](mailto:security@elvix.is) (see [SECURITY.md](./SECURITY.md))
