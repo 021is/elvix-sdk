@@ -13,6 +13,19 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.2.0] — 2026-05-27
+
+### Added
+
+- **`@elvix.is/sdk/react` is now a runtime export, no longer a type-only stub.**
+- `<ElvixProvider clientId>` — root context. Fetches `GET /api/v1/bootstrap/<clientId>` on mount, exposes the envelope via `useElvixApp()` + `useElvixContext()`, installs the brand chord as CSS custom properties (`--elvix-primary`, alpha tiers). `theme` + `brand` props override the Console defaults.
+- `<ElvixSignIn>` — drop-in sign-in surface. Renders only the methods the Console enabled (passkey / username flows arrive in 0.2.x). Email-OTP and Google-redirect supported today. Single `onResult({ ok, ... })` callback for terminal outcomes; the component never navigates itself.
+- Types: `ElvixBootstrapEnvelope`, `ElvixBrand`, `ElvixSignInMethod`, `ElvixSignInResult`, `ElvixTheme`.
+
+### Notes
+
+- This is a fresh public minimum, not a literal copy of the private elvix monorepo SDK. The full feature set (passkey enrollment, recovery gates, in-frame card chrome, identity + account lifecycle components) ships in 0.3.x and 0.4.x as wave 2 + wave 3 extractions.
+
 ## [0.1.2] — 2026-05-27
 
 ### Changed
@@ -55,7 +68,8 @@ Initial public release. Replaces the `0.0.0` scope-reservation stub on npm.
 - `--provenance` attestation on npm publishes.
 - MIT licence + explicit trademark notice (see `LICENSE`).
 
-[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/021is/elvix-sdk/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/021is/elvix-sdk/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/021is/elvix-sdk/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/021is/elvix-sdk/releases/tag/v0.1.0

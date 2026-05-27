@@ -1,0 +1,200 @@
+"use client";
+
+import { type FormEvent, useState } from "react";
+import { useElvixApp, useElvixContext } from "./elvix-provider";
+import type { ElvixSignInResult } from "./types";
+
+/**
+ * `<ElvixSignIn>` — drop-in sign-in surface.
+ *
+ * Reads enabled methods from the Console-configured bootstrap envelope
+ * (`<ElvixProvider clientId>` must be in scope). Renders the methods
+ * the customer turned on; never invents UI the Console denied.
+ *
+ * MVP supports:
+ *   - Email OTP (the most common path)
+ *   - Google redirect ("Continue with Google")
+ *
+ * Passkey + username-OTP follow in 0.2.x point releases.
+ *
+ * `onResult({ ok, ... })` is the only post-success hook the SDK
+ * exposes. Hosts navigate from the callback; this component never
+ * calls `router.push` itself.
+ */
+export function ElvixSignIn({
+  onResult,
+  redirectAfterSignIn,
+  className = "",
+}: {
+  onResult?: (r: ElvixSignInResult) => void;
+  /** Default redirect target on success when the server doesn't echo one. */
+  redirectAfterSignIn?: string;
+  className?: string;
+}) {
+  const ctx = useElvixContext();
+  const app = useElvixApp();
+  const [step, setStep] = useState<"identify" | "code" | "done">("identify");
+  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
+  const [challengeId, setChallengeId] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const verb = app?.signInVerb === "login" ? "Log in" : "Sign in";
+
+  function fail(error: string, message?: string) {
+    setError(message ?? error);
+    onResult?.({ ok: false, error, message });
+  }
+
+  async function startGoogle() {
+    if (!ctx.clientId) return fail("missing_client_id", "ElvixProvider needs a clientId.");
+    window.location.assign(
+      `${ctx.baseUrl}/api/auth/google/start?intent=app&clientId=${encodeURIComponent(ctx.clientId)}`,
+    );
+  }
+
+  async function startOtp(e: FormEvent) {
+    e.preventDefault();
+    if (!email.trim()) return fail("invalid_input", "Enter an email.");
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch(`${ctx.baseUrl}/api/auth/otp/start`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          email: email.trim(),
+          intent: "app",
+          clientId: ctx.clientId,
+        }),
+      });
+      const body = (await res.json()) as {
+        success?: boolean;
+        data?: { challengeId: string };
+        errorMessage?: string;
+      };
+      if (!res.ok || !body.success || !body.data?.challengeId) {
+        return fail(body.errorMessage ?? "otp_start_failed");
+      }
+      setChallengeId(body.data.challengeId);
+      setStep("code");
+    } catch (e: unknown) {
+      fail("network", e instanceof Error ? e.message : undefined);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function verifyOtp(e: FormEvent) {
+    e.preventDefault();
+    if (!challengeId) return;
+    if (code.trim().length !== 6) return fail("invalid_input", "Enter the 6-digit code.");
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch(`${ctx.baseUrl}/api/auth/otp/verify`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ challengeId, code: code.trim() }),
+      });
+      const body = (await res.json()) as {
+        success?: boolean;
+        data?: { redirect?: string };
+        errorMessage?: string;
+      };
+      if (!res.ok || !body.success) {
+        return fail(body.errorMessage ?? "otp_verify_failed");
+      }
+      setStep("done");
+      onResult?.({
+        ok: true,
+        method: "email_otp",
+        redirect: body.data?.redirect ?? redirectAfterSignIn,
+      });
+    } catch (e: unknown) {
+      fail("network", e instanceof Error ? e.message : undefined);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const card = `elvix-card ${className}`.trim();
+
+  if (step === "done") {
+    return (
+      <div className={card} data-elvix-pane="done">
+        <p>Signed in.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className={card} data-elvix-pane={step}>
+      <h2 className="elvix-h">{app?.appName ? `${verb} to ${app.appName}` : verb}</h2>
+
+      {step === "identify" && (
+        <>
+          {app?.methods.google && (
+            <button
+              type="button"
+              onClick={startGoogle}
+              disabled={busy}
+              className="elvix-btn elvix-btn-google"
+              data-elvix-method="google"
+            >
+              Continue with Google
+            </button>
+          )}
+          {app?.methods.emailOtp && (
+            <form onSubmit={startOtp} data-elvix-method="email_otp" className="elvix-otp-form">
+              <input
+                type="email"
+                value={email}
+                onChange={(ev) => setEmail(ev.target.value)}
+                placeholder="you@example.com"
+                required
+                disabled={busy}
+                className="elvix-input"
+              />
+              <button type="submit" disabled={busy} className="elvix-btn elvix-btn-primary">
+                {busy ? "Sending…" : "Send code"}
+              </button>
+            </form>
+          )}
+        </>
+      )}
+
+      {step === "code" && (
+        <form onSubmit={verifyOtp} className="elvix-otp-form">
+          <p className="elvix-muted">
+            We sent a 6-digit code to <strong>{email}</strong>.
+          </p>
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={6}
+            value={code}
+            onChange={(ev) => setCode(ev.target.value.replace(/\D/g, ""))}
+            placeholder="123456"
+            required
+            disabled={busy}
+            className="elvix-input"
+          />
+          <button type="submit" disabled={busy} className="elvix-btn elvix-btn-primary">
+            {busy ? "Verifying…" : verb}
+          </button>
+        </form>
+      )}
+
+      {error && (
+        <p role="alert" className="elvix-error">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}

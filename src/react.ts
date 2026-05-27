@@ -1,11 +1,8 @@
 /**
- * React entry point. Until the SDK component extraction lands (see
- * AGENTS.md "Source of truth"), this entry is a type-only re-export
- * so customers can already import the contract from the public
- * package and the runtime swap is a single `bun add` bump away.
+ * React entry — drop-in components, hooks, and types.
  *
- * Wave 1: extract ElvixProvider + ElvixSignIn from the elvix monorepo.
- * Wave 2: identity components (Avatar, Banner, Username, ...).
- * Wave 3: account lifecycle (Sessions, Export, Deactivate, Leave).
+ *   import { ElvixProvider, ElvixSignIn } from "@elvix.is/sdk/react";
+ *
+ * Implementation lives under ./react/ to keep the entry file flat.
  */
-export type * from "./types/index";
+export * from "./react/index";
