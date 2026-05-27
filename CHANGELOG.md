@@ -13,6 +13,14 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.3.1] — 2026-05-27
+
+### Changed
+
+- **`@modelcontextprotocol/sdk` exact-pinned to `1.29.0`** (was `^1.0.4`). MCP SDK has 6 npm maintainers across `@anthropic.com` and personal `@gmail.com` accounts — Socket flags this as "unstable ownership". Exact pin closes the door on a hijacked semver-range upgrade; manual bumps land via PR with a CHANGELOG entry.
+- `socket.yml` ships in the repo, documenting the acknowledged alert and the rationale.
+- `SECURITY.md` adds a "Supply chain" section covering `--provenance` attestation, exact pins, lockfile-frozen CI installs, and the planned MCP-subpackage split so React-only consumers never pull the MCP-SDK transitive.
+
 ## [0.3.0] — 2026-05-27
 
 ### Added
@@ -103,7 +111,8 @@ Initial public release. Replaces the `0.0.0` scope-reservation stub on npm.
 - `--provenance` attestation on npm publishes.
 - MIT licence + explicit trademark notice (see `LICENSE`).
 
-[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/021is/elvix-sdk/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/021is/elvix-sdk/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/021is/elvix-sdk/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/021is/elvix-sdk/compare/v0.1.1...v0.1.2

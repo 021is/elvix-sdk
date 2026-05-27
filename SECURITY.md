@@ -64,6 +64,19 @@ _None yet — be the first._
 
 If you believe the issue is being actively exploited in the wild and our coordinated-disclosure window is too slow, write to security@elvix.is with `[ACTIVE EXPLOITATION]` in the subject. We will respond within 4 hours and treat it as P0.
 
+## Supply chain
+
+Our threat model includes **transitive dependency hijacking** (a maintainer of one of our deps getting their npm account compromised and shipping a malicious patch under an existing semver range).
+
+Mitigations:
+
+- **`--provenance` attestation** on every `@elvix.is/sdk` publish. Downstream consumers can verify the published tarball was built from a tagged commit in this repo by a GitHub Actions OIDC token.
+- **Exact-version pins** on dependencies whose maintainer set Socket flags as unstable ownership. Today: `@modelcontextprotocol/sdk` is pinned to `1.29.0` (no caret). Bumps land via PR with a CHANGELOG entry.
+- **Lockfile in repo.** `bun.lock` is committed; `bun install --frozen-lockfile` is the CI install command. A hijacked transitive version cannot enter our build without showing in a lockfile diff.
+- **Socket.yml** ships in the repo so anyone re-running Socket against our package can see the acknowledged alerts + our rationale.
+
+Forthcoming: split the MCP server out of the main SDK package (`@elvix.is/sdk-mcp`) so React-only consumers never pull the MCP-SDK transitive at all. Tracked in `axon/plans/active.md`.
+
 ---
 
 Operator: **edvone** (Aachen, Germany).

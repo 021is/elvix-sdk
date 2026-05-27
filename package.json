@@ -1,6 +1,6 @@
 {
   "name": "@elvix.is/sdk",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Official elvix SDK. Drop-in React components, server helpers, and an MCP server so AI coding agents integrate elvix on the first try.",
   "license": "MIT",
   "homepage": "https://elvix.is",
@@ -61,7 +61,7 @@
     }
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.4"
+    "@modelcontextprotocol/sdk": "1.29.0"
   },
   "devDependencies": {
     "@types/node": "^22.7.5",
