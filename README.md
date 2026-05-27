@@ -10,9 +10,12 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@elvix.is/sdk"><img src="https://img.shields.io/npm/v/@elvix.is/sdk.svg" alt="npm" /></a>
+  <a href="https://www.npmjs.com/package/@elvix.is/sdk"><img src="https://img.shields.io/npm/v/@elvix.is/sdk.svg?color=5d4dff" alt="npm" /></a>
+  <a href="https://www.npmjs.com/package/@elvix.is/sdk"><img src="https://img.shields.io/npm/dm/@elvix.is/sdk.svg?color=8e7dff" alt="downloads" /></a>
+  <a href="https://github.com/021is/elvix-sdk/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/021is/elvix-sdk/ci.yml?branch=main&label=CI" alt="CI" /></a>
   <a href="https://github.com/021is/elvix-sdk/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-black.svg" alt="MIT" /></a>
   <a href="https://elvix.is/docs"><img src="https://img.shields.io/badge/docs-elvix.is-5d4dff.svg" alt="docs" /></a>
+  <a href="https://bundlephobia.com/package/@elvix.is/sdk"><img src="https://img.shields.io/bundlephobia/minzip/@elvix.is/sdk?label=min%2Bgzip&color=black" alt="bundle size" /></a>
 </p>
 
 ---
@@ -173,6 +176,16 @@ Deep purple chord: `#5d4dff` (light) and `#8e7dff` (dark). Override per-app from
 
 MIT. See [LICENSE](./LICENSE).
 
+## Security
+
+Found something? Read [SECURITY.md](./SECURITY.md). Reports go to **security@elvix.is**. Critical issues get a 4-hour response.
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md). PRs welcome — we run CI on every push and require it green before merge.
+
 ## Maintained by
 
-[edvone](https://edvone.dev) in Aachen, Germany. Operator: Edvard Grei trading as elvix.
+**[edvone](https://edvone.dev)** · Aachen, Germany · [hi@edvone.dev](mailto:hi@edvone.dev)
+
+elvix is an edvone product.

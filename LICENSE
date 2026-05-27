@@ -1,6 +1,7 @@
 MIT License
 
-Copyright (c) 2026 Edvard Grei (elvix.is)
+Copyright (c) 2026 edvone
+Aachen, Germany · edvone.dev
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +20,15 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+────────────────────────────────────────────────────────────────────────
+
+TRADEMARK NOTICE
+
+The MIT License above covers source code only. "elvix", the elvix logomark,
+and the elvix brand chord (deep purple #5d4dff and #8e7dff) are trademarks
+of edvone. Forks may not use the elvix name or logomark to identify
+themselves or their products. Reasonable nominative use ("works with elvix",
+"elvix-compatible", "integrates with elvix") is permitted.
+
+Trademark questions: edvard@edvone.dev
