@@ -1,0 +1,14 @@
+# Auto-request review on every PR.
+# See https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Branch protection on main also requires the PR be approved before
+# merge — these review requests start the timer.
+
+*                       @superman-git
+/src/mcp/               @superman-git
+/src/react/             @superman-git
+/src/server.ts          @superman-git
+/SECURITY.md            @superman-git
+/LICENSE                @superman-git
+/.github/               @superman-git
+/package.json           @superman-git
