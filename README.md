@@ -125,8 +125,8 @@ elvix ships first-class agent support. Three surfaces:
    {
      "mcpServers": {
        "elvix": {
-         "command": "bunx",
-         "args": ["@elvix.is/sdk", "elvix-mcp"],
+         "command": "npx",
+         "args": ["-y", "-p", "@elvix.is/sdk", "elvix-mcp"],
          "env": { "ELVIX_API_KEY": "eak_..." }
        }
      }
@@ -142,9 +142,10 @@ Full agent guide: <https://elvix.is/docs/agents>
 Every `<Elvix*>` component the SDK ships. Drop-in React, brand chord from `<ElvixProvider>`, no prop drilling.
 
 - Primitives: `ElvixCard`, `ElvixProvider`
-- Sign-in: `ElvixSignIn`, `ElvixSignInButton`, `ElvixRecoverGate`
+- Sign-in: `ElvixSignIn`
 - Identity: `ElvixUsername`, `ElvixIdentityForm`, `ElvixAvatar`, `ElvixBanner`, `ElvixRegion`, `ElvixLanguages`
 - Account: `ElvixAddressBook`, `ElvixLegalEntities`, `ElvixSessions`, `ElvixExport`, `ElvixDeactivate`, `ElvixLeave`
+- Hooks: `useElvixApp()`, `useElvixContext()`
 
 Full catalog with previews: <https://elvix.is/docs/components>
 
