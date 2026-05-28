@@ -23,17 +23,27 @@ export type ElvixMcpOptions = {
   readonly?: boolean;
 };
 
-type OpenApiRolesManifest = {
-  endpoints: Array<{
-    method: string;
-    path: string;
-    summary?: string;
-    role: "api" | "sdk-only";
-    adminScope?: boolean;
-  }>;
+/**
+ * Shape of `https://elvix.is/openapi.roles.json` — a top-level array.
+ * Each entry's `endpoint` is a `"METHOD /path"` string (e.g.
+ * `"POST /api/v1/verify"`), NOT split into method/path fields.
+ */
+type RoleManifestEntry = {
+  endpoint: string;
+  summary?: string;
+  role: "api" | "sdk-only";
+  adminScope?: boolean;
+  system?: boolean;
 };
 
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
+
+/** Split `"POST /api/v1/verify"` → `{ method, path }`. */
+function splitEndpoint(endpoint: string): { method: string; path: string } {
+  const idx = endpoint.indexOf(" ");
+  if (idx === -1) return { method: "GET", path: endpoint };
+  return { method: endpoint.slice(0, idx), path: endpoint.slice(idx + 1) };
+}
 
 function toolName(method: string, path: string): string {
   return `${method.toLowerCase()}_${path
@@ -56,14 +66,15 @@ export async function createElvixMcpServer(opts: ElvixMcpOptions): Promise<{
   const readonly = opts.readonly ?? true;
 
   const manifestRes = await fetch(`${baseUrl}/openapi.roles.json`);
-  const manifest = (await manifestRes.json()) as OpenApiRolesManifest;
+  const manifest = (await manifestRes.json()) as RoleManifestEntry[];
 
-  const tools = manifest.endpoints
+  const tools = manifest
     .filter((e) => e.role === "api")
-    .filter((e) => (readonly ? SAFE_METHODS.has(e.method.toUpperCase()) : true))
-    .map((e) => ({
-      name: toolName(e.method, e.path),
-      description: `${e.summary ?? `${e.method} ${e.path}`}${e.adminScope ? " (requires admin scope)" : ""}`,
+    .map((e) => ({ entry: e, ...splitEndpoint(e.endpoint) }))
+    .filter(({ method }) => (readonly ? SAFE_METHODS.has(method.toUpperCase()) : true))
+    .map(({ entry, method, path }) => ({
+      name: toolName(method, path),
+      description: `${entry.summary ?? `${method} ${path}`}${entry.adminScope ? " (requires admin scope)" : ""}`,
       inputSchema: {
         type: "object" as const,
         properties: {
@@ -73,7 +84,7 @@ export async function createElvixMcpServer(opts: ElvixMcpOptions): Promise<{
         },
         required: ["path"],
       },
-      _meta: { method: e.method, path: e.path, adminScope: e.adminScope ?? false },
+      _meta: { method, path, adminScope: entry.adminScope ?? false },
     }));
 
   const server = new Server(
