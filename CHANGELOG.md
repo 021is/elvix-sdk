@@ -13,6 +13,14 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.3.2] — 2026-05-28
+
+### Fixed
+
+- **MCP server parsed the wrong `openapi.roles.json` shape.** The published manifest is a top-level array of `{ endpoint: "METHOD /path", role, adminScope, summary }`; the server expected `{ endpoints: [{ method, path }] }` and crashed on startup against the real manifest. Now parses the array + splits the `"METHOD /path"` endpoint string. Caught by dogfooding the agent flow against live elvix.is.
+- **MCP invocation in README** corrected from `bunx @elvix.is/sdk elvix-mcp` (can't resolve a differently-named bin) to `npx -y -p @elvix.is/sdk elvix-mcp`.
+- README component list dropped two never-shipped components (`ElvixSignInButton`, `ElvixRecoverGate`); added the hooks.
+
 ## [0.3.1] — 2026-05-27
 
 ### Changed
@@ -111,7 +119,8 @@ Initial public release. Replaces the `0.0.0` scope-reservation stub on npm.
 - `--provenance` attestation on npm publishes.
 - MIT licence + explicit trademark notice (see `LICENSE`).
 
-[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/021is/elvix-sdk/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/021is/elvix-sdk/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/021is/elvix-sdk/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/021is/elvix-sdk/compare/v0.1.2...v0.2.0
