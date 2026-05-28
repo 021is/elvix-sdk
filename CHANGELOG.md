@@ -13,6 +13,20 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.4.0] — 2026-05-28
+
+### Added
+
+- **`elvix` CLI.** New primary bin with subcommands:
+  - `elvix mcp [--admin] [--base-url=…]` — launches the MCP server (what `elvix-mcp` did).
+  - `elvix doctor [--client-id=…]` — diagnoses an integration with a green/red checklist: base-URL reachability, clientId resolution via `/api/v1/bootstrap`, verify-endpoint liveness, `ELVIX_API_KEY` presence. Exit 1 only on critical (base URL / verify) failure; clientId + key are warnings.
+  - `elvix help`.
+
+### Changed
+
+- MCP config now recommends `npx -y -p @elvix.is/sdk elvix mcp`.
+- `elvix-mcp` bin retained as a back-compat alias for `elvix mcp` — existing MCP configs keep working.
+
 ## [0.3.2] — 2026-05-28
 
 ### Fixed
@@ -119,7 +133,8 @@ Initial public release. Replaces the `0.0.0` scope-reservation stub on npm.
 - `--provenance` attestation on npm publishes.
 - MIT licence + explicit trademark notice (see `LICENSE`).
 
-[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/021is/elvix-sdk/compare/v0.3.2...v0.4.0
 [0.3.2]: https://github.com/021is/elvix-sdk/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/021is/elvix-sdk/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/021is/elvix-sdk/compare/v0.2.0...v0.3.0

@@ -1,6 +1,6 @@
 {
   "name": "@elvix.is/sdk",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Official elvix SDK. Drop-in React components, server helpers, and an MCP server so AI coding agents integrate elvix on the first try.",
   "license": "MIT",
   "homepage": "https://elvix.is",
@@ -21,6 +21,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
+    "elvix": "./dist/cli/index.js",
     "elvix-mcp": "./dist/mcp/bin.js"
   },
   "exports": {
@@ -47,7 +48,7 @@
   },
   "files": ["dist", "README.md", "LICENSE"],
   "scripts": {
-    "build": "tsup src/index.ts src/react.ts src/server.ts src/types.ts src/mcp/index.ts src/mcp/bin.ts --format esm --dts --clean --external react --external next",
+    "build": "tsup src/index.ts src/react.ts src/server.ts src/types.ts src/mcp/index.ts src/mcp/bin.ts src/cli/index.ts src/cli/doctor.ts --format esm --dts --clean --external react --external next",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },

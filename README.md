@@ -126,7 +126,7 @@ elvix ships first-class agent support. Three surfaces:
      "mcpServers": {
        "elvix": {
          "command": "npx",
-         "args": ["-y", "-p", "@elvix.is/sdk", "elvix-mcp"],
+         "args": ["-y", "-p", "@elvix.is/sdk", "elvix", "mcp"],
          "env": { "ELVIX_API_KEY": "eak_..." }
        }
      }
@@ -134,6 +134,20 @@ elvix ships first-class agent support. Three surfaces:
    ```
 
    Read-only by default. `--admin` opts in to mutation tools. Never logs the bearer token.
+
+## CLI
+
+The package ships an `elvix` command:
+
+```bash
+# Diagnose an integration — base URL, clientId, verify endpoint, API key.
+ELVIX_CLIENT_ID=client_… npx -p @elvix.is/sdk elvix doctor
+
+# Launch the MCP server on stdio.
+ELVIX_API_KEY=eak_… npx -p @elvix.is/sdk elvix mcp
+```
+
+`elvix doctor` prints a green/red checklist so "why isn't elvix working" is a two-second answer. (`elvix-mcp` is kept as an alias for `elvix mcp`.)
 
 Full agent guide: <https://elvix.is/docs/agents>
 
