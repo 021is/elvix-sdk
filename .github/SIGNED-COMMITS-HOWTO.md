@@ -1,10 +1,17 @@
-# Enabling signed-commit requirement on `main`
+# Signed commits — deliberately NOT enforced (yet)
 
-Branch protection on `main` supports requiring every commit to be cryptographically signed. We don't enforce this today — turning it on without first configuring `git` would lock you out of your own push workflow. Once your local git signs, flip it on.
+Branch protection on `main` *can* require every commit to be cryptographically signed. We have decided **not** to enforce it while this is a solo-maintainer repo. This file is the playbook for when that changes.
 
-## Why
+## When to turn this on
 
-Token-hijack attacks succeed when an attacker steals your GitHub credentials and pushes commits in your name. With signed commits required, the attacker would also need access to your SSH key + your passphrase, which generally don't live in the same place. Defence in depth, not a substitute for token hygiene.
+- More than one person can push / merge.
+- The package becomes a named supply-chain target (high download count, used by other published packages).
+
+Until then it's friction without payoff: the realistic threats here (malicious PR, hijacked dependency) are already handled by branch protection + review-gated merges + dependency exact-pins + npm provenance. Signed commits address neither, and they risk locking you out the first time you commit from a machine that isn't configured.
+
+## Why it matters once you scale
+
+Token-hijack attacks succeed when an attacker steals GitHub credentials and pushes commits in a maintainer's name. With signed commits required, the attacker would also need the SSH key + passphrase, which generally don't live in the same place. Defence in depth — only worth the friction once there's more than one key holder.
 
 ## Set it up (SSH signing, simplest path)
 
