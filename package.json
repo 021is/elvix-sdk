@@ -1,6 +1,6 @@
 {
   "name": "@elvix.is/sdk",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "Official elvix SDK. Drop-in React components, server helpers, and an MCP server so AI coding agents integrate elvix on the first try.",
   "license": "MIT",
   "homepage": "https://elvix.is",
@@ -70,7 +70,8 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.29.0",
     "framer-motion": "^12.38.0",
-    "lucide-react": "^1.14.0"
+    "lucide-react": "^1.14.0",
+    "react-easy-crop": "^5.0.0"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4",
