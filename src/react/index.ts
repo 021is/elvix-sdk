@@ -31,7 +31,8 @@
 export { ElvixCard } from "./elvix-card";
 // Shared sizing surface — every <Elvix*> widget accepts these props.
 export type { ElvixSizeProps } from "./size";
-export { ElvixProvider, useElvixApp, useElvixContext } from "./elvix-provider";
+export { ElvixProvider, useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
+export type { ElvixAppContext } from "./elvix-provider";
 export { ElvixSignIn } from "./elvix-sign-in";
 export { ElvixSignInForm } from "./elvix-sign-in-form";
 export { ElvixSignInButton } from "./elvix-sign-in-button";
@@ -45,7 +46,10 @@ export type { ElvixCopy } from "./copy";
 
 // Cross-origin session token (stored by ElvixSignIn, sent as a bearer by every
 // SDK call when the app is embedded on its own origin).
-export { getElvixToken, setElvixToken } from "./session";
+// `consumeElvixReturnToken` picks up the token elvix's Google redirect-callback
+// hands back in the URL fragment; <ElvixProvider> calls it automatically, but
+// hosts that don't mount the provider at the redirect target can call it.
+export { consumeElvixReturnToken, getElvixToken, setElvixToken } from "./session";
 
 // Live gate — poll-based so it works cross-origin (EventSource can't carry the
 // bearer). Roles/scopes/memberships update within ~7s; the watcher signs the

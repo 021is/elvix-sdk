@@ -9,7 +9,40 @@ import {
   useMemo,
   useState,
 } from "react";
+import { authInit, consumeElvixReturnToken } from "./session";
 import type { ElvixBootstrapEnvelope, ElvixBrand, ElvixTheme } from "./types";
+
+/**
+ * Per-app user envelope returned by
+ * `GET /api/account/apps/<clientId>/sdk-context`. The provider fetches it on
+ * mount alongside the public bootstrap whenever a session is present (cookie
+ * same-origin, bearer cross-origin). Mirrors the monorepo `ElvixAppContext`
+ * shape exactly so the ported `<Elvix*>` identity / account components read
+ * `useElvixAppContext()` and skip the `appId` / `appName` / `current` /
+ * `membership` props a host would otherwise thread down. `null` while loading,
+ * with no `clientId`, or when there's no user session (the SDK falls back to
+ * its empty / "sign in to see this" state).
+ */
+export type ElvixAppContext = {
+  user: {
+    id: string;
+    name: string | null;
+    email: string | null;
+    avatarUrl: string | null;
+  };
+  membership: {
+    username: string | null;
+    status: string;
+    inactiveAt: string | null;
+    inactivatedBy: string | null;
+    deletedAt: string | null;
+    deletedBy: string | null;
+    avatarSizes: number[];
+    avatarUpdatedAt: string;
+    bannerSizes: number[];
+    bannerUpdatedAt: string;
+  } | null;
+};
 
 /**
  * `<ElvixProvider>` — root context for every elvix React surface.
@@ -48,6 +81,7 @@ type ElvixContextValue = {
   baseUrl: string;
   app: ElvixBootstrapEnvelope | null;
   appError: string | null;
+  appContext: ElvixAppContext | null;
   resolvedTheme: "light" | "dark";
 };
 
@@ -56,6 +90,13 @@ const ElvixContext = createContext<ElvixContextValue | null>(null);
 export function useElvixApp(): ElvixBootstrapEnvelope | null {
   const ctx = useContext(ElvixContext);
   return ctx?.app ?? null;
+}
+
+/** Per-app signed-in user envelope (session-bound). `null` while loading,
+ *  with no clientId, or when there's no user session. */
+export function useElvixAppContext(): ElvixAppContext | null {
+  const ctx = useContext(ElvixContext);
+  return ctx?.appContext ?? null;
 }
 
 export function useElvixContext(): ElvixContextValue {
@@ -85,7 +126,16 @@ export function ElvixProvider({
   const resolvedBaseUrl = baseUrl ?? DEFAULT_BASE_URL;
   const [app, setApp] = useState<ElvixBootstrapEnvelope | null>(null);
   const [appError, setAppError] = useState<string | null>(null);
+  const [appContext, setAppContext] = useState<ElvixAppContext | null>(null);
   const [systemDark, setSystemDark] = useState(false);
+
+  // Cross-origin Google redirect return: if elvix bounced the user back here
+  // with `#elvix_token=<token>` in the fragment, store it and strip it from
+  // the URL before anything else runs. Runs once on mount; no-op when there's
+  // no fragment token (the common case) or on the server.
+  useEffect(() => {
+    consumeElvixReturnToken();
+  }, []);
 
   useEffect(() => {
     if (!clientId) {
@@ -107,6 +157,32 @@ export function ElvixProvider({
       .catch((e: unknown) => {
         if ((e as { name?: string })?.name === "AbortError") return;
         setAppError(e instanceof Error ? e.message : "bootstrap_failed");
+      });
+    return () => ctrl.abort();
+  }, [clientId, resolvedBaseUrl]);
+
+  // Per-app user envelope. Carries the session cookie same-origin, the bearer
+  // cross-origin (via authInit). A non-OK response is the no-session case —
+  // silent; the ported identity / account components fall back to their empty
+  // / "not signed in" surface.
+  useEffect(() => {
+    if (!clientId) {
+      setAppContext(null);
+      return;
+    }
+    const ctrl = new AbortController();
+    fetch(`${resolvedBaseUrl}/api/account/apps/${encodeURIComponent(clientId)}/sdk-context`, {
+      ...authInit(),
+      signal: ctrl.signal,
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((body) => {
+        if (body?.success && body?.data) setAppContext(body.data as ElvixAppContext);
+        else setAppContext(null);
+      })
+      .catch((e: unknown) => {
+        if ((e as { name?: string })?.name === "AbortError") return;
+        setAppContext(null);
       });
     return () => ctrl.abort();
   }, [clientId, resolvedBaseUrl]);
@@ -147,6 +223,7 @@ export function ElvixProvider({
     baseUrl: resolvedBaseUrl,
     app,
     appError,
+    appContext,
     resolvedTheme: effectiveTheme,
   };
 

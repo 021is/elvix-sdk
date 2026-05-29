@@ -1350,11 +1350,7 @@ function AuthBody({
                   />
                 ) : (
                   <a
-                    href={
-                      isPreview
-                        ? "#"
-                        : `${baseUrl}/api/auth/google/start?intent=${intent}${clientId ? `&clientId=${clientId}` : ""}`
-                    }
+                    href={isPreview ? "#" : googleStartHref(baseUrl, intent, clientId)}
                     onClick={isPreview ? (e) => e.preventDefault() : undefined}
                     className="cursor-pointer w-full inline-flex items-center justify-center gap-2 h-10 rounded-[10px] font-medium text-[13px] border border-border-base bg-surface text-fg-1 hover:bg-surface-hover transition"
                   >
@@ -1558,6 +1554,25 @@ function formatRetry(seconds: number): string {
   if (seconds < 60) return `${seconds}s`;
   const m = Math.ceil(seconds / 60);
   return m === 1 ? "1 minute" : `${m} minutes`;
+}
+
+/**
+ * Build the `/api/auth/google/start` href for the static redirect-OAuth
+ * anchor (the fallback used when GIS isn't active). For `intent="app"` the
+ * cross-origin flow needs a `returnUrl` so elvix's callback can bounce the
+ * user back to THIS page with the session token in the fragment — we use the
+ * current page URL. elvix validates that origin against the app's
+ * `allowedOrigins` and rejects anything unlisted, so this is safe to derive
+ * from the live location. Non-app intents (account/console) are first-party
+ * and need no returnUrl.
+ */
+function googleStartHref(baseUrl: string, intent?: string, clientId?: string): string {
+  const params = new URLSearchParams({ intent: intent ?? "app" });
+  if (clientId) params.set("clientId", clientId);
+  if (intent === "app" && typeof window !== "undefined") {
+    params.set("returnUrl", window.location.href);
+  }
+  return `${baseUrl}/api/auth/google/start?${params.toString()}`;
 }
 
 function defaultRedirect(intent?: string): string {

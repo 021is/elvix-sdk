@@ -52,6 +52,50 @@ export function authInit(): { headers: Record<string, string>; credentials: Requ
 }
 
 /**
+ * Fragment key the elvix Google redirect-callback appends the session token
+ * under (`<returnUrl>#elvix_token=<token>`). The token rides the URL fragment,
+ * which browsers never send to the server, so it's only ever read here on the
+ * host page after the cross-origin Google round-trip returns.
+ */
+const RETURN_TOKEN_KEY = "elvix_token";
+
+/**
+ * On the host page, pick up a session token handed back by elvix's Google
+ * redirect-callback in the URL fragment, store it, and strip it from the URL
+ * so a refresh/back-nav doesn't replay it (and it never leaks into history,
+ * referrers, or analytics). Returns the token it consumed, or null.
+ *
+ * Idempotent and SSR-safe: a no-op (returns null) when there's no `window` or
+ * no `#elvix_token=` present. `<ElvixProvider>` calls this automatically on
+ * mount; hosts that don't mount the provider at the redirect target can call
+ * it directly (it's exported from `@elvix.is/sdk/react`).
+ */
+export function consumeElvixReturnToken(): string | null {
+  if (typeof window === "undefined") return null;
+  const { hash } = window.location;
+  if (!hash || hash.length < 2) return null;
+  // Fragment may be `#elvix_token=...` or `#a=1&elvix_token=...`.
+  const params = new URLSearchParams(hash.slice(1));
+  const token = params.get(RETURN_TOKEN_KEY);
+  if (!token) return null;
+
+  setElvixToken(token);
+
+  // Strip only our key; preserve any other fragment params the host uses.
+  params.delete(RETURN_TOKEN_KEY);
+  const rest = params.toString();
+  try {
+    const url = new URL(window.location.href);
+    url.hash = rest ? `#${rest}` : "";
+    window.history.replaceState(window.history.state, "", url.toString());
+  } catch {
+    // History API unavailable (sandboxed frame) — token is already stored,
+    // which is what matters; the stale fragment is cosmetic.
+  }
+  return token;
+}
+
+/**
  * True when `baseUrl` is empty or resolves to the current page's origin.
  *
  * The sign-in fetches can't use `authInit()` (no token exists yet), so they
