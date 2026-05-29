@@ -43,6 +43,12 @@ export type ElvixSignInResultOk = {
   redirect?: string;
   /** Sign-in factor that succeeded. */
   method: ElvixSignInMethod;
+  /**
+   * Cross-origin only: the session token. Pass it to your backend and verify
+   * it with `verifyElvixToken` from `@elvix.is/sdk/server`. Undefined for
+   * same-origin sign-in (the session rides a cookie instead).
+   */
+  token?: string;
 };
 
 export type ElvixSignInResultErr = {

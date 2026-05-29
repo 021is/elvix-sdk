@@ -3,6 +3,7 @@
  * Not exported from the public package.
  */
 
+import { authInit } from "./session";
 import type { ElvixActionResult } from "../types/index";
 
 export type FetchOpts = {
@@ -22,10 +23,11 @@ export async function appPost<T>(
   body: unknown,
 ): Promise<ElvixActionResult<T>> {
   try {
+    const auth = authInit();
     const res = await fetch(`${opts.baseUrl}/api/account/apps/${opts.applicationId}${path}`, {
       method: "POST",
-      headers: { "content-type": "application/json" },
-      credentials: "include",
+      headers: { "content-type": "application/json", ...auth.headers },
+      credentials: auth.credentials,
       body: JSON.stringify(body),
     });
     const json = (await res.json()) as {
@@ -48,10 +50,11 @@ export async function appPatch<T>(
   body: unknown,
 ): Promise<ElvixActionResult<T>> {
   try {
+    const auth = authInit();
     const res = await fetch(`${opts.baseUrl}/api/account/apps/${opts.applicationId}${path}`, {
       method: "PATCH",
-      headers: { "content-type": "application/json" },
-      credentials: "include",
+      headers: { "content-type": "application/json", ...auth.headers },
+      credentials: auth.credentials,
       body: JSON.stringify(body),
     });
     const json = (await res.json()) as {
@@ -73,9 +76,11 @@ export async function appDelete<T>(
   path: string,
 ): Promise<ElvixActionResult<T>> {
   try {
+    const auth = authInit();
     const res = await fetch(`${opts.baseUrl}/api/account/apps/${opts.applicationId}${path}`, {
       method: "DELETE",
-      credentials: "include",
+      headers: { ...auth.headers },
+      credentials: auth.credentials,
     });
     const json = (await res.json().catch(() => ({}))) as {
       success?: boolean;

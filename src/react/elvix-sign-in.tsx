@@ -2,6 +2,7 @@
 
 import { type FormEvent, useState } from "react";
 import { useElvixApp, useElvixContext } from "./elvix-provider";
+import { setElvixToken } from "./session";
 import type { ElvixSignInResult } from "./types";
 
 /**
@@ -102,17 +103,21 @@ export function ElvixSignIn({
       });
       const body = (await res.json()) as {
         success?: boolean;
-        data?: { redirect?: string };
+        data?: { redirect?: string; token?: string };
         errorMessage?: string;
       };
       if (!res.ok || !body.success) {
         return fail(body.errorMessage ?? "otp_verify_failed");
       }
+      // Cross-origin: store the session token returned in the body (no cookie
+      // is set on a third-party origin) so every later SDK call carries it.
+      if (body.data?.token) setElvixToken(body.data.token);
       setStep("done");
       onResult?.({
         ok: true,
         method: "email_otp",
         redirect: body.data?.redirect ?? redirectAfterSignIn,
+        token: body.data?.token,
       });
     } catch (e: unknown) {
       fail("network", e instanceof Error ? e.message : undefined);
