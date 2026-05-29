@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
+import { type ElvixCopy, fillCopy, resolveCopy } from "./copy";
 import { useElvixApp, useElvixContext } from "./elvix-provider";
 import { isSameOrigin, setElvixToken } from "./session";
 import type { ElvixSignInResult } from "./types";
@@ -25,15 +26,23 @@ import type { ElvixSignInResult } from "./types";
 export function ElvixSignIn({
   onResult,
   redirectAfterSignIn,
+  copy: copyProp,
   className = "",
 }: {
   onResult?: (r: ElvixSignInResult) => void;
   /** Default redirect target on success when the server doesn't echo one. */
   redirectAfterSignIn?: string;
+  /**
+   * Thin per-embed copy override. The primary way to edit copy is the elvix
+   * Console (served live in the bootstrap `strings`); this prop just lets a
+   * single embed tweak a string or two without a Console change.
+   */
+  copy?: Partial<ElvixCopy>;
   className?: string;
 }) {
   const ctx = useElvixContext();
   const app = useElvixApp();
+  const copy = resolveCopy(app?.strings, copyProp);
   const [step, setStep] = useState<"identify" | "code" | "done">("identify");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -42,6 +51,9 @@ export function ElvixSignIn({
   const [error, setError] = useState<string | null>(null);
 
   const verb = app?.signInVerb === "login" ? "Log in" : "Sign in";
+  const defaultTitle = app?.appName ? `${verb} to ${app.appName}` : verb;
+  const title = copy.title ? fillCopy(copy.title, { app: app?.appName ?? "" }) : defaultTitle;
+  const submitLabel = copy.submitButton ?? verb;
 
   function fail(error: string, message?: string) {
     setError(message ?? error);
@@ -57,7 +69,7 @@ export function ElvixSignIn({
 
   async function startOtp(e: FormEvent) {
     e.preventDefault();
-    if (!email.trim()) return fail("invalid_input", "Enter an email.");
+    if (!email.trim()) return fail("invalid_input", copy.errorEnterEmail);
     setBusy(true);
     setError(null);
     try {
@@ -91,7 +103,7 @@ export function ElvixSignIn({
   async function verifyOtp(e: FormEvent) {
     e.preventDefault();
     if (!challengeId) return;
-    if (code.trim().length !== 6) return fail("invalid_input", "Enter the 6-digit code.");
+    if (code.trim().length !== 6) return fail("invalid_input", copy.errorEnterCode);
     setBusy(true);
     setError(null);
     try {
@@ -131,14 +143,15 @@ export function ElvixSignIn({
   if (step === "done") {
     return (
       <div className={card} data-elvix-pane="done">
-        <p>Signed in.</p>
+        <p>{copy.signedInText}</p>
       </div>
     );
   }
 
   return (
     <div className={card} data-elvix-pane={step}>
-      <h2 className="elvix-h">{app?.appName ? `${verb} to ${app.appName}` : verb}</h2>
+      <h2 className="elvix-h">{title}</h2>
+      {copy.subtitle && <p className="elvix-muted elvix-subtitle">{copy.subtitle}</p>}
 
       {step === "identify" && (
         <>
@@ -150,7 +163,7 @@ export function ElvixSignIn({
               className="elvix-btn elvix-btn-google"
               data-elvix-method="google"
             >
-              Continue with Google
+              {copy.googleButton}
             </button>
           )}
           {app?.methods.emailOtp && (
@@ -159,13 +172,13 @@ export function ElvixSignIn({
                 type="email"
                 value={email}
                 onChange={(ev) => setEmail(ev.target.value)}
-                placeholder="you@example.com"
+                placeholder={copy.emailPlaceholder}
                 required
                 disabled={busy}
                 className="elvix-input"
               />
               <button type="submit" disabled={busy} className="elvix-btn elvix-btn-primary">
-                {busy ? "Sending…" : "Send code"}
+                {busy ? copy.sendingLabel : copy.sendCodeButton}
               </button>
             </form>
           )}
@@ -174,9 +187,7 @@ export function ElvixSignIn({
 
       {step === "code" && (
         <form onSubmit={verifyOtp} className="elvix-otp-form">
-          <p className="elvix-muted">
-            We sent a 6-digit code to <strong>{email}</strong>.
-          </p>
+          <p className="elvix-muted">{fillCopy(copy.codeSentSubtitle ?? "", { email })}</p>
           <input
             type="text"
             inputMode="numeric"
@@ -184,13 +195,13 @@ export function ElvixSignIn({
             maxLength={6}
             value={code}
             onChange={(ev) => setCode(ev.target.value.replace(/\D/g, ""))}
-            placeholder="123456"
+            placeholder={copy.codePlaceholder}
             required
             disabled={busy}
             className="elvix-input"
           />
           <button type="submit" disabled={busy} className="elvix-btn elvix-btn-primary">
-            {busy ? "Verifying…" : verb}
+            {busy ? copy.verifyingLabel : submitLabel}
           </button>
         </form>
       )}
