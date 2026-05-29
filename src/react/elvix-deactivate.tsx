@@ -4,6 +4,7 @@ import { type FormEvent, useState } from "react";
 import { ElvixCard } from "./elvix-card";
 import { useElvixContext } from "./elvix-provider";
 import { appPost } from "./lib";
+import type { ElvixSizeProps } from "./size";
 import type { ElvixActionResult } from "../types/index";
 
 /**
@@ -15,9 +16,16 @@ type Pane = "warn" | "otp" | "done";
 
 export function ElvixDeactivate({
   onResult,
+  width,
+  height,
+  minWidth,
+  maxWidth,
+  minHeight,
+  maxHeight,
 }: {
   onResult?: (r: ElvixActionResult) => void;
-}) {
+} & ElvixSizeProps) {
+  const sizeProps: ElvixSizeProps = { width, height, minWidth, maxWidth, minHeight, maxHeight };
   const ctx = useElvixContext();
   const [pane, setPane] = useState<Pane>("warn");
   const [challengeId, setChallengeId] = useState<string | null>(null);
@@ -65,14 +73,14 @@ export function ElvixDeactivate({
 
   if (pane === "done") {
     return (
-      <ElvixCard title="Deactivated">
+      <ElvixCard title="Deactivated" {...sizeProps}>
         <p>Your access has been paused. Sign in again to restore it.</p>
       </ElvixCard>
     );
   }
 
   return (
-    <ElvixCard title="Deactivate account">
+    <ElvixCard title="Deactivate account" {...sizeProps}>
       {pane === "warn" && (
         <>
           <p style={{ fontSize: 13, color: "rgba(0,0,0,0.6)" }}>

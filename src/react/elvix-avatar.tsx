@@ -4,6 +4,7 @@ import { type ChangeEvent, useState } from "react";
 import { ElvixCard } from "./elvix-card";
 import { useElvixContext } from "./elvix-provider";
 import { appPatch } from "./lib";
+import type { ElvixSizeProps } from "./size";
 import type { ElvixActionResult } from "../types/index";
 
 /**
@@ -12,9 +13,16 @@ import type { ElvixActionResult } from "../types/index";
  */
 export function ElvixAvatar({
   onResult,
+  width,
+  height,
+  minWidth,
+  maxWidth,
+  minHeight,
+  maxHeight,
 }: {
   onResult?: (r: ElvixActionResult<{ avatarUrl: string }>) => void;
-}) {
+} & ElvixSizeProps) {
+  const sizeProps: ElvixSizeProps = { width, height, minWidth, maxWidth, minHeight, maxHeight };
   const ctx = useElvixContext();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +52,7 @@ export function ElvixAvatar({
   }
 
   return (
-    <ElvixCard title="Avatar">
+    <ElvixCard title="Avatar" {...sizeProps}>
       {preview && (
         <img
           src={preview}

@@ -5,6 +5,7 @@ import { ElvixCard } from "./elvix-card";
 import { useElvixContext } from "./elvix-provider";
 import { appDelete, appPost } from "./lib";
 import { authInit } from "./session";
+import type { ElvixSizeProps } from "./size";
 import type { ElvixActionResult } from "../types/index";
 
 type Entity = {
@@ -21,9 +22,16 @@ type Entity = {
  */
 export function ElvixLegalEntities({
   onResult,
+  width,
+  height,
+  minWidth,
+  maxWidth,
+  minHeight,
+  maxHeight,
 }: {
   onResult?: (r: ElvixActionResult) => void;
-}) {
+} & ElvixSizeProps) {
+  const sizeProps: ElvixSizeProps = { width, height, minWidth, maxWidth, minHeight, maxHeight };
   const ctx = useElvixContext();
   const [rows, setRows] = useState<Entity[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -85,7 +93,7 @@ export function ElvixLegalEntities({
   }
 
   return (
-    <ElvixCard title="Legal entities">
+    <ElvixCard title="Legal entities" {...sizeProps}>
       {error && <p role="alert" className="elvix-error">{error}</p>}
       {!rows && !error && <p>Loading…</p>}
       {rows && rows.length === 0 && <p className="elvix-muted">No legal entities yet.</p>}

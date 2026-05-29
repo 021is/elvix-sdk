@@ -4,6 +4,7 @@ import { type FormEvent, useState } from "react";
 import { type ElvixCopy, fillCopy, resolveCopy } from "./copy";
 import { useElvixApp, useElvixContext } from "./elvix-provider";
 import { isSameOrigin, setElvixToken } from "./session";
+import { type ElvixSizeProps, sizeStyle } from "./size";
 import type { ElvixSignInResult } from "./types";
 
 /**
@@ -28,6 +29,12 @@ export function ElvixSignIn({
   redirectAfterSignIn,
   copy: copyProp,
   className = "",
+  width,
+  height,
+  minWidth,
+  maxWidth,
+  minHeight,
+  maxHeight,
 }: {
   onResult?: (r: ElvixSignInResult) => void;
   /** Default redirect target on success when the server doesn't echo one. */
@@ -39,7 +46,8 @@ export function ElvixSignIn({
    */
   copy?: Partial<ElvixCopy>;
   className?: string;
-}) {
+} & ElvixSizeProps) {
+  const sized = sizeStyle({ width, height, minWidth, maxWidth, minHeight, maxHeight });
   const ctx = useElvixContext();
   const app = useElvixApp();
   const copy = resolveCopy(app?.strings, copyProp);
@@ -142,14 +150,14 @@ export function ElvixSignIn({
 
   if (step === "done") {
     return (
-      <div className={card} data-elvix-pane="done">
+      <div className={card} style={sized} data-elvix-pane="done">
         <p>{copy.signedInText}</p>
       </div>
     );
   }
 
   return (
-    <div className={card} data-elvix-pane={step}>
+    <div className={card} style={sized} data-elvix-pane={step}>
       <h2 className="elvix-h">{title}</h2>
       {copy.subtitle && <p className="elvix-muted elvix-subtitle">{copy.subtitle}</p>}
 

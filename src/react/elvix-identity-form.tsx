@@ -4,6 +4,7 @@ import { type FormEvent, useState } from "react";
 import { ElvixCard } from "./elvix-card";
 import { useElvixContext } from "./elvix-provider";
 import { appPatch } from "./lib";
+import type { ElvixSizeProps } from "./size";
 import type { ElvixActionResult } from "../types/index";
 
 /**
@@ -14,11 +15,18 @@ export function ElvixIdentityForm({
   initialName = "",
   initialBio = "",
   onResult,
+  width,
+  height,
+  minWidth,
+  maxWidth,
+  minHeight,
+  maxHeight,
 }: {
   initialName?: string;
   initialBio?: string;
   onResult?: (r: ElvixActionResult<{ name: string; bio: string }>) => void;
-}) {
+} & ElvixSizeProps) {
+  const sizeProps: ElvixSizeProps = { width, height, minWidth, maxWidth, minHeight, maxHeight };
   const ctx = useElvixContext();
   const [name, setName] = useState(initialName);
   const [bio, setBio] = useState(initialBio);
@@ -43,7 +51,7 @@ export function ElvixIdentityForm({
   }
 
   return (
-    <ElvixCard title="Identity">
+    <ElvixCard title="Identity" {...sizeProps}>
       <form onSubmit={submit} className="elvix-form">
         <label>
           Name

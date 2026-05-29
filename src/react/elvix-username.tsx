@@ -4,6 +4,7 @@ import { type FormEvent, useState } from "react";
 import { ElvixCard } from "./elvix-card";
 import { useElvixContext } from "./elvix-provider";
 import { appPatch } from "./lib";
+import type { ElvixSizeProps } from "./size";
 import type { ElvixActionResult } from "../types/index";
 
 /**
@@ -13,9 +14,16 @@ import type { ElvixActionResult } from "../types/index";
  */
 export function ElvixUsername({
   onResult,
+  width,
+  height,
+  minWidth,
+  maxWidth,
+  minHeight,
+  maxHeight,
 }: {
   onResult?: (r: ElvixActionResult<{ username: string }>) => void;
-}) {
+} & ElvixSizeProps) {
+  const sizeProps: ElvixSizeProps = { width, height, minWidth, maxWidth, minHeight, maxHeight };
   const ctx = useElvixContext();
   const [value, setValue] = useState("");
   const [busy, setBusy] = useState(false);
@@ -43,14 +51,14 @@ export function ElvixUsername({
 
   if (done) {
     return (
-      <ElvixCard title="Username saved">
+      <ElvixCard title="Username saved" {...sizeProps}>
         <p>You are now <strong>@{done}</strong>.</p>
       </ElvixCard>
     );
   }
 
   return (
-    <ElvixCard title="Choose a username">
+    <ElvixCard title="Choose a username" {...sizeProps}>
       <form onSubmit={submit} className="elvix-form">
         <input
           type="text"
