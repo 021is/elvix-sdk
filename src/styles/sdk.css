@@ -1,0 +1,119 @@
+/**
+ * @elvix.is/sdk — compiled stylesheet.
+ *
+ * A host imports this once:
+ *
+ *     import "@elvix.is/sdk/styles.css";
+ *
+ * and every `<Elvix*>` component (notably `<ElvixSignInForm>`) renders
+ * pixel-identical to the surface served at elvix.is — because the markup
+ * + Tailwind classes were lifted verbatim from the elvix monorepo and the
+ * design tokens below are copied verbatim from elvix's `app/globals.css`.
+ *
+ * Tailwind v4 (matching elvix). `@source` points the compiler at the
+ * component sources so it only emits the utilities those files actually
+ * use; `@theme inline` re-exports elvix's CSS-variable design tokens so
+ * class names like `bg-canvas`, `text-fg-1`, `border-border-base`, and
+ * the brand vars resolve exactly as they do in the app.
+ */
+
+@import "tailwindcss";
+
+/* Scan the extracted SDK React components so every Tailwind utility they
+   reference is emitted into dist/styles.css. */
+@source "../react";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ── Design tokens — copied verbatim from elvix app/globals.css ──────────
+   Light theme (default). Variables flip in `.dark` below. The
+   ElvixSignInForm also re-asserts these inline (ELVIX_LIGHT_VARS /
+   ELVIX_DARK_VARS) so the isolated-theme preview path keeps working;
+   seeding them here means the utilities resolve even on a bare host. */
+:root {
+  --canvas: #fafafa;
+  --surface: #ffffff;
+  --surface-2: #f4f4f5;
+  --surface-hover: rgba(0, 0, 0, 0.04);
+  --surface-active: rgba(0, 0, 0, 0.06);
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.14);
+  --fg-1: #18181b;
+  --fg-2: #52525b;
+  --fg-3: #71717a;
+  --placeholder: #a1a1aa;
+  --brand: #6d5cff;
+  --brand-fg: #ffffff;
+
+  --background: var(--canvas);
+  --foreground: var(--fg-1);
+}
+
+.dark {
+  --canvas: #0a0a0b;
+  --surface: #0d0d10;
+  --surface-2: #08080a;
+  --surface-hover: rgba(255, 255, 255, 0.04);
+  --surface-active: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --fg-1: #fafafa;
+  --fg-2: #a1a1aa;
+  --fg-3: #71717a;
+  --placeholder: #52525b;
+  --brand: #a89cff;
+  --brand-fg: #0a0a0b;
+
+  --background: var(--canvas);
+  --foreground: var(--fg-1);
+}
+
+/* Token → utility bridge. Mirrors the `@theme inline` block in elvix's
+   globals.css for the names the sign-in surface consumes, so `bg-canvas`,
+   `bg-surface`, `bg-surface-2`, `bg-surface-hover`, `bg-surface-active`,
+   `border-border-base`, `border-border-strong`, `text-fg-1/2/3`,
+   `text-placeholder`, and the brand utilities all resolve identically. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-active: var(--surface-active);
+  --color-border-base: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-fg-1: var(--fg-1);
+  --color-fg-2: var(--fg-2);
+  --color-fg-3: var(--fg-3);
+  --color-placeholder: var(--placeholder);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-fg);
+}
+
+/* Every interactive control gets a pointer by default. Tailwind v4 removed
+   its preflight `cursor: pointer` on buttons, so we re-assert it here —
+   same rule elvix ships, scoped tight enough to be safe inside a host. */
+.elvix-sdk-root button:not(:disabled),
+.elvix-sdk-root a[href],
+.elvix-sdk-root [role="button"]:not([aria-disabled="true"]),
+.elvix-sdk-root label,
+.elvix-sdk-root summary,
+.elvix-sdk-root input[type="submit"]:not(:disabled) {
+  cursor: pointer;
+}
+
+.elvix-sdk-root button:disabled,
+.elvix-sdk-root input:disabled {
+  cursor: not-allowed;
+}
+
+/* `.scrollbar-hide` — scroll without the chrome. Used by the username
+   suggestion strip and any capped-height SDK card. Copied from elvix. */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
