@@ -164,8 +164,14 @@ export function ElvixProvider({
 }
 
 function appBrand(app: ElvixBootstrapEnvelope | null): ElvixBrand | null {
-  if (!app?.brand) return null;
-  return app.brand;
+  if (!app?.brandColor) return null;
+  return {
+    light: { primary: app.brandColor, on: app.onBrandColor },
+    dark: {
+      primary: app.brandColorDark ?? app.brandColor,
+      on: app.onBrandColorDark ?? app.onBrandColor,
+    },
+  };
 }
 
 function withAlpha(hex: string, a: number): string {

@@ -155,7 +155,7 @@ export function ElvixSignIn({
 
       {step === "identify" && (
         <>
-          {app?.methods.google && (
+          {app?.methodGoogle && (
             <button
               type="button"
               onClick={startGoogle}
@@ -166,7 +166,7 @@ export function ElvixSignIn({
               {copy.googleButton}
             </button>
           )}
-          {app?.methods.emailOtp && (
+          {app?.methodEmailOtp && (
             <form onSubmit={startOtp} data-elvix-method="email_otp" className="elvix-otp-form">
               <input
                 type="email"

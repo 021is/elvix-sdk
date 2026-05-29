@@ -13,6 +13,12 @@ export type ElvixBrand = {
 
 export type ElvixSignInMethod = "google" | "email_otp" | "passkey" | "username";
 
+/**
+ * The public render envelope `GET /api/v1/bootstrap/<clientId>` returns. Flat
+ * to match the wire shape exactly (the provider builds the {light,dark} brand
+ * chord from the colour fields). Any field here is already public — it's what
+ * the sign-in surface shows.
+ */
 export type ElvixBootstrapEnvelope = {
   applicationId: string;
   clientId: string;
@@ -22,21 +28,28 @@ export type ElvixBootstrapEnvelope = {
   logoUrlDark: string | null;
   iconUrl: string | null;
   iconUrlDark: string | null;
-  brand: ElvixBrand;
-  methods: {
-    google: boolean;
-    emailOtp: boolean;
-    passkey: boolean;
-    username: boolean;
-  };
-  legal: {
-    privacyPolicyUrl: string;
-    termsOfServiceUrl: string;
-    supportEmail: string;
-    supportUrl: string | null;
-  };
+  websiteUrl: string | null;
+  privacyPolicyUrl: string;
+  termsOfServiceUrl: string;
+  supportUrl: string | null;
+  brandColor: string;
+  brandColorDark: string | null;
+  onBrandColor: string;
+  onBrandColorDark: string | null;
+  brandPreset: string;
+  methodGoogle: boolean;
+  methodEmailOtp: boolean;
+  methodPasskey: boolean;
+  methodUsername: boolean;
+  layout: string;
+  socialLayout: string;
+  presentation: string;
+  theme: "light" | "dark" | "system";
+  showHeader: boolean;
+  transparentBg: boolean;
   signInVerb: "signin" | "login";
   signinGate: "public" | "private_beta" | "closed";
+  archivedAt: string | null;
   /**
    * Console-configured sign-in copy overrides. Any subset of the strings the
    * sign-in surface renders; missing keys fall back to the built-in English
