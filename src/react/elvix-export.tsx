@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ElvixCard } from "./elvix-card";
 import { useElvixContext } from "./elvix-provider";
 import { appPost } from "./lib";
+import type { ElvixSizeProps } from "./size";
 import type { ElvixActionResult } from "../types/index";
 
 /**
@@ -13,9 +14,16 @@ import type { ElvixActionResult } from "../types/index";
  */
 export function ElvixExport({
   onResult,
+  width,
+  height,
+  minWidth,
+  maxWidth,
+  minHeight,
+  maxHeight,
 }: {
   onResult?: (r: ElvixActionResult<{ requestId: string }>) => void;
-}) {
+} & ElvixSizeProps) {
+  const sizeProps: ElvixSizeProps = { width, height, minWidth, maxWidth, minHeight, maxHeight };
   const ctx = useElvixContext();
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
@@ -37,7 +45,7 @@ export function ElvixExport({
   }
 
   return (
-    <ElvixCard title="Export my data">
+    <ElvixCard title="Export my data" {...sizeProps}>
       <p style={{ fontSize: 13, color: "rgba(0,0,0,0.6)" }}>
         Request a zip of every record we hold for you in this app. Delivery by email; single-use download link valid for 24h.
       </p>

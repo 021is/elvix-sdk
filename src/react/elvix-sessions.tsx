@@ -5,6 +5,7 @@ import { ElvixCard } from "./elvix-card";
 import { useElvixContext } from "./elvix-provider";
 import { appDelete } from "./lib";
 import { authInit } from "./session";
+import type { ElvixSizeProps } from "./size";
 import type { ElvixActionResult } from "../types/index";
 
 /**
@@ -22,9 +23,16 @@ type SessionRow = {
 
 export function ElvixSessions({
   onResult,
+  width,
+  height,
+  minWidth,
+  maxWidth,
+  minHeight,
+  maxHeight,
 }: {
   onResult?: (r: ElvixActionResult<{ revoked: number }>) => void;
-}) {
+} & ElvixSizeProps) {
+  const sizeProps: ElvixSizeProps = { width, height, minWidth, maxWidth, minHeight, maxHeight };
   const ctx = useElvixContext();
   const [rows, setRows] = useState<SessionRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -56,7 +64,7 @@ export function ElvixSessions({
   }
 
   return (
-    <ElvixCard title="Active sessions">
+    <ElvixCard title="Active sessions" {...sizeProps}>
       {error && <p role="alert" className="elvix-error">{error}</p>}
       {!rows && !error && <p>Loading…</p>}
       {rows && (

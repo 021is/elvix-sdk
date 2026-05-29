@@ -29,8 +29,11 @@
  * Hooks: useElvixApp(), useElvixContext()
  */
 export { ElvixCard } from "./elvix-card";
+// Shared sizing surface — every <Elvix*> widget accepts these props.
+export type { ElvixSizeProps } from "./size";
 export { ElvixProvider, useElvixApp, useElvixContext } from "./elvix-provider";
 export { ElvixSignIn } from "./elvix-sign-in";
+export { ElvixSignInForm } from "./elvix-sign-in-form";
 export { ElvixSignInButton } from "./elvix-sign-in-button";
 export { ElvixSecuredBadge } from "./elvix-secured-badge";
 

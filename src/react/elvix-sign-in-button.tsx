@@ -3,6 +3,7 @@
 import { type CSSProperties, useState } from "react";
 import { ElvixSignIn } from "./elvix-sign-in";
 import { ElvixShield } from "./elvix-shield";
+import { type ElvixSizeProps, sizeStyle } from "./size";
 import type { ElvixSignInResult } from "./types";
 
 /**
@@ -50,7 +51,11 @@ export type ElvixSignInButtonProps = {
   onClick?: () => void;
   /** Terminal outcome of mode="embed": success (with token) or error. */
   onResult?: (result: ElvixSignInResult) => void;
-};
+} & /**
+ * Dimensional sizing (width/height/min/max), additive to the `size` preset.
+ * Merged last into the root element so an explicit width/height wins.
+ */
+  ElvixSizeProps;
 
 const PRESET_LABEL: Record<ElvixSignInPreset, string> = {
   "sign-in-with-elvix": "Sign in with elvix",
@@ -111,7 +116,14 @@ export function ElvixSignInButton({
   mode = "redirect",
   onClick,
   onResult,
+  width,
+  height,
+  minWidth,
+  maxWidth,
+  minHeight,
+  maxHeight,
 }: ElvixSignInButtonProps) {
+  const sized = sizeStyle({ width, height, minWidth, maxWidth, minHeight, maxHeight });
   const [embedOpen, setEmbedOpen] = useState(false);
   const isIcon = type === "icon";
   const resolvedLabel = label ?? PRESET_LABEL[preset];
@@ -141,6 +153,8 @@ export function ElvixSignInButton({
     ...(isIcon
       ? { height: SIZE_ICON[size], width: SIZE_ICON[size] }
       : { height: std.height, paddingLeft: std.padX, paddingRight: std.padX, gap: std.gap }),
+    // Dimensional overrides win over the size preset above.
+    ...sized,
   };
 
   const content = (
@@ -160,7 +174,7 @@ export function ElvixSignInButton({
 
   if (mode === "embed") {
     return (
-      <div data-elvix-signin-button-embed="">
+      <div data-elvix-signin-button-embed="" style={sized}>
         {!embedOpen && (
           <button
             type="button"

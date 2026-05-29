@@ -1,6 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
+import { type ElvixSizeProps, sizeStyle } from "./size";
 
 /**
  * `<ElvixCard>` — the chrome every nested `<Elvix*>` mutation surface
@@ -11,18 +12,31 @@ import type { ReactNode } from "react";
  * components render their own ElvixCard internally. Exported for
  * cases where a host wants to compose multiple components inside one
  * card (e.g. an account page row).
+ *
+ * Accepts `ElvixSizeProps` (width/height/min/max) merged into the root
+ * element so every component built on ElvixCard is sizable by default;
+ * the size props win over the card's maxWidth/width defaults.
  */
 export function ElvixCard({
   title,
   footer,
   className = "",
+  style,
   children,
+  width,
+  height,
+  minWidth,
+  maxWidth,
+  minHeight,
+  maxHeight,
 }: {
   title?: ReactNode;
   footer?: ReactNode;
   className?: string;
+  style?: CSSProperties;
   children: ReactNode;
-}) {
+} & ElvixSizeProps) {
+  const sized = sizeStyle({ width, height, minWidth, maxWidth, minHeight, maxHeight });
   return (
     <div
       className={`elvix-card ${className}`.trim()}
@@ -35,6 +49,8 @@ export function ElvixCard({
         flexDirection: "column",
         maxWidth: "440px",
         width: "100%",
+        ...style,
+        ...sized,
       }}
     >
       {title && (

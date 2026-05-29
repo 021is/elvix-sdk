@@ -4,6 +4,7 @@ import { type FormEvent, useState } from "react";
 import { ElvixCard } from "./elvix-card";
 import { useElvixContext } from "./elvix-provider";
 import { appPost } from "./lib";
+import type { ElvixSizeProps } from "./size";
 import type { ElvixActionResult } from "../types/index";
 
 /**
@@ -16,9 +17,16 @@ type Pane = "warn" | "otp" | "done";
 
 export function ElvixLeave({
   onResult,
+  width,
+  height,
+  minWidth,
+  maxWidth,
+  minHeight,
+  maxHeight,
 }: {
   onResult?: (r: ElvixActionResult) => void;
-}) {
+} & ElvixSizeProps) {
+  const sizeProps: ElvixSizeProps = { width, height, minWidth, maxWidth, minHeight, maxHeight };
   const ctx = useElvixContext();
   const [pane, setPane] = useState<Pane>("warn");
   const [challengeId, setChallengeId] = useState<string | null>(null);
@@ -66,14 +74,14 @@ export function ElvixLeave({
 
   if (pane === "done") {
     return (
-      <ElvixCard title="You've left">
+      <ElvixCard title="You've left" {...sizeProps}>
         <p>You've left this app. Your data is archived; sign in again to rejoin.</p>
       </ElvixCard>
     );
   }
 
   return (
-    <ElvixCard title="Leave this app">
+    <ElvixCard title="Leave this app" {...sizeProps}>
       {pane === "warn" && (
         <>
           <p style={{ fontSize: 13, color: "rgba(0,0,0,0.6)" }}>

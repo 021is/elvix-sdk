@@ -4,6 +4,7 @@ import { type FormEvent, useState } from "react";
 import { ElvixCard } from "./elvix-card";
 import { useElvixContext } from "./elvix-provider";
 import { appPatch } from "./lib";
+import type { ElvixSizeProps } from "./size";
 import type { ElvixActionResult } from "../types/index";
 
 /**
@@ -15,11 +16,18 @@ export function ElvixRegion({
   initialCountry = "",
   initialTimezone = "",
   onResult,
+  width,
+  height,
+  minWidth,
+  maxWidth,
+  minHeight,
+  maxHeight,
 }: {
   initialCountry?: string;
   initialTimezone?: string;
   onResult?: (r: ElvixActionResult<{ country: string; timezone: string }>) => void;
-}) {
+} & ElvixSizeProps) {
+  const sizeProps: ElvixSizeProps = { width, height, minWidth, maxWidth, minHeight, maxHeight };
   const ctx = useElvixContext();
   const [country, setCountry] = useState(initialCountry);
   const [timezone, setTimezone] = useState(initialTimezone);
@@ -44,7 +52,7 @@ export function ElvixRegion({
   }
 
   return (
-    <ElvixCard title="Region">
+    <ElvixCard title="Region" {...sizeProps}>
       <form onSubmit={submit} className="elvix-form">
         <label>
           Country (ISO-2)

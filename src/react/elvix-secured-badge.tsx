@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { ElvixShield } from "./elvix-shield";
+import { type ElvixSizeProps, sizeStyle } from "./size";
 
 /**
  * The official "Secured by elvix" badge — a pill chip with the shield mark and
@@ -28,7 +29,8 @@ export type ElvixSecuredBadgeProps = {
   /** Where the badge links. Defaults to elvix. */
   href?: string;
   className?: string;
-};
+} & /** Dimensional sizing, additive to the `size` preset; merged last so it wins. */
+  ElvixSizeProps;
 
 const SIZE: Record<ElvixSecuredBadgeSize, { height: number; padX: number; font: number; icon: number; gap: number }> = {
   sm: { height: 28, padX: 10, font: 11.5, icon: 14, gap: 6 },
@@ -60,6 +62,12 @@ export function ElvixSecuredBadge({
   accentColor = "#8e7dff",
   href = ELVIX_URL,
   className = "",
+  width,
+  height,
+  minWidth,
+  maxWidth,
+  minHeight,
+  maxHeight,
 }: ElvixSecuredBadgeProps) {
   const s = SIZE[size];
   const t = TONE[variant][theme];
@@ -79,6 +87,8 @@ export function ElvixSecuredBadge({
     textDecoration: "none",
     userSelect: "none",
     lineHeight: 1,
+    // Dimensional overrides win over the size preset above.
+    ...sizeStyle({ width, height, minWidth, maxWidth, minHeight, maxHeight }),
   };
   return (
     <a
