@@ -32,6 +32,17 @@ export { ElvixCard } from "./elvix-card";
 export { ElvixProvider, useElvixApp, useElvixContext } from "./elvix-provider";
 export { ElvixSignIn } from "./elvix-sign-in";
 
+// Cross-origin session token (stored by ElvixSignIn, sent as a bearer by every
+// SDK call when the app is embedded on its own origin).
+export { getElvixToken, setElvixToken } from "./session";
+
+// Live gate — poll-based so it works cross-origin (EventSource can't carry the
+// bearer). Roles/scopes/memberships update within ~7s; the watcher signs the
+// user out within ~7s of a ban/pause/delete.
+export { useUserRoles, useUserScopes, useUserMemberships } from "./hooks";
+export type { UseUserListResult } from "./hooks";
+export { ElvixLifecycleWatcher } from "./lifecycle-watcher";
+
 // Identity
 export { ElvixUsername } from "./elvix-username";
 export { ElvixAvatar } from "./elvix-avatar";
