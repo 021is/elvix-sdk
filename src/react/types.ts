@@ -4,6 +4,8 @@
  * private elvix internals.
  */
 
+import type { ElvixCopy } from "./copy";
+
 export type ElvixBrand = {
   light: { primary: string; on: string };
   dark: { primary: string; on: string };
@@ -35,6 +37,12 @@ export type ElvixBootstrapEnvelope = {
   };
   signInVerb: "signin" | "login";
   signinGate: "public" | "private_beta" | "closed";
+  /**
+   * Console-configured sign-in copy overrides. Any subset of the strings the
+   * sign-in surface renders; missing keys fall back to the built-in English
+   * defaults. A `copy` prop on the component overrides these in turn.
+   */
+  strings?: Partial<ElvixCopy>;
 };
 
 export type ElvixSignInResultOk = {

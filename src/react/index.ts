@@ -31,6 +31,14 @@
 export { ElvixCard } from "./elvix-card";
 export { ElvixProvider, useElvixApp, useElvixContext } from "./elvix-provider";
 export { ElvixSignIn } from "./elvix-sign-in";
+export { ElvixSignInButton } from "./elvix-sign-in-button";
+export { ElvixSecuredBadge } from "./elvix-secured-badge";
+
+// Editable sign-in copy. Primary source is the elvix Console (served live in
+// the bootstrap `strings`); the `copy` prop on ElvixSignIn is a thin per-embed
+// override. ElvixCopy types both.
+export { DEFAULT_COPY } from "./copy";
+export type { ElvixCopy } from "./copy";
 
 // Cross-origin session token (stored by ElvixSignIn, sent as a bearer by every
 // SDK call when the app is embedded on its own origin).
