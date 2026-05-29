@@ -4,6 +4,7 @@ import { type FormEvent, useEffect, useState } from "react";
 import { ElvixCard } from "./elvix-card";
 import { useElvixContext } from "./elvix-provider";
 import { appDelete, appPost } from "./lib";
+import { authInit } from "./session";
 import type { ElvixActionResult } from "../types/index";
 
 type Entity = {
@@ -37,7 +38,7 @@ export function ElvixLegalEntities({
   function reload() {
     if (!ctx.app) return;
     fetch(`${ctx.baseUrl}/api/account/apps/${ctx.app.applicationId}/legal-entities`, {
-      credentials: "include",
+      ...authInit(),
     })
       .then((r) => r.json())
       .then((j: { success?: boolean; data?: { entities: Entity[] } }) => {

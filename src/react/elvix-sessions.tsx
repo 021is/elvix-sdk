@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ElvixCard } from "./elvix-card";
 import { useElvixContext } from "./elvix-provider";
 import { appDelete } from "./lib";
+import { authInit } from "./session";
 import type { ElvixActionResult } from "../types/index";
 
 /**
@@ -32,7 +33,7 @@ export function ElvixSessions({
   useEffect(() => {
     if (!ctx.app) return;
     fetch(`${ctx.baseUrl}/api/account/apps/${ctx.app.applicationId}/sessions`, {
-      credentials: "include",
+      ...authInit(),
     })
       .then((r) => r.json())
       .then((j: { success?: boolean; data?: { sessions: SessionRow[] } }) => {
