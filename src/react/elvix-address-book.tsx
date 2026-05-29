@@ -4,6 +4,7 @@ import { type FormEvent, useEffect, useState } from "react";
 import { ElvixCard } from "./elvix-card";
 import { useElvixContext } from "./elvix-provider";
 import { appDelete, appPost } from "./lib";
+import { authInit } from "./session";
 import type { ElvixActionResult } from "../types/index";
 
 type Address = {
@@ -42,7 +43,7 @@ export function ElvixAddressBook({
   function reload() {
     if (!ctx.app) return;
     fetch(`${ctx.baseUrl}/api/account/apps/${ctx.app.applicationId}/addresses`, {
-      credentials: "include",
+      ...authInit(),
     })
       .then((r) => r.json())
       .then((j: { success?: boolean; data?: { addresses: Address[] } }) => {

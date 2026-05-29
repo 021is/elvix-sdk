@@ -2,7 +2,7 @@
 
 import { type FormEvent, useState } from "react";
 import { useElvixApp, useElvixContext } from "./elvix-provider";
-import { setElvixToken } from "./session";
+import { isSameOrigin, setElvixToken } from "./session";
 import type { ElvixSignInResult } from "./types";
 
 /**
@@ -64,7 +64,7 @@ export function ElvixSignIn({
       const res = await fetch(`${ctx.baseUrl}/api/auth/otp/start`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        credentials: "include",
+        credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit",
         body: JSON.stringify({
           email: email.trim(),
           intent: "app",
@@ -98,7 +98,7 @@ export function ElvixSignIn({
       const res = await fetch(`${ctx.baseUrl}/api/auth/otp/verify`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        credentials: "include",
+        credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit",
         body: JSON.stringify({ challengeId, code: code.trim() }),
       });
       const body = (await res.json()) as {

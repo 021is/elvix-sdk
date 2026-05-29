@@ -50,3 +50,23 @@ export function authInit(): { headers: Record<string, string>; credentials: Requ
     ? { headers: { authorization: `Bearer ${token}` }, credentials: "omit" }
     : { headers: {}, credentials: "include" };
 }
+
+/**
+ * True when `baseUrl` is empty or resolves to the current page's origin.
+ *
+ * The sign-in fetches can't use `authInit()` (no token exists yet), so they
+ * pick credentials from this directly: same-origin keeps `credentials:
+ * "include"` so the Set-Cookie lands; cross-origin uses `"omit"`, because
+ * elvix answers cross-origin with a wildcard `Access-Control-Allow-Origin: *`
+ * and the browser blocks any credentialed request against a wildcard. The
+ * session token comes back in the response body cross-origin anyway.
+ */
+export function isSameOrigin(baseUrl: string): boolean {
+  if (!baseUrl) return true;
+  if (typeof window === "undefined") return true;
+  try {
+    return new URL(baseUrl, window.location.href).origin === window.location.origin;
+  } catch {
+    return true;
+  }
+}
