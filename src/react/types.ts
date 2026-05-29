@@ -48,6 +48,23 @@ export type ElvixBootstrapEnvelope = {
   showHeader: boolean;
   transparentBg: boolean;
   signInVerb: "signin" | "login";
+  /**
+   * Per-app Google Identity Services config (One Tap / Auto-select / Popup
+   * / FedCM). Present on the wire; the SDK's `<ElvixSignInForm>` reads it
+   * into its resolved props. When any GIS flag is on AND `googleClientId`
+   * is present, the form swaps the static redirect anchor for Google's
+   * GIS-rendered personalized button.
+   */
+  googleConfig: unknown;
+  /**
+   * Public Google OAuth client id for GIS (the personalized "Continue as
+   * <name>" One Tap / renderButton path). In the elvix monorepo this is the
+   * build-time `NEXT_PUBLIC_GOOGLE_CLIENT_ID`; for the published SDK it
+   * arrives per-app on the bootstrap envelope. When absent, the Google
+   * factor degrades to the static redirect anchor (which uses elvix's
+   * server-side client id via `/api/auth/google/start`).
+   */
+  googleClientId?: string;
   signinGate: "public" | "private_beta" | "closed";
   archivedAt: string | null;
   /**

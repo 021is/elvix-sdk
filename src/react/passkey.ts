@@ -16,7 +16,7 @@
  * assertion back into the `AuthenticationResponseJSON` shape elvix verifies.
  */
 
-import { isSameOrigin, setElvixToken } from "./session";
+import { authInit, isSameOrigin, setElvixToken } from "./session";
 
 /** base64url string → ArrayBuffer. */
 function b64urlToBuf(b64url: string): ArrayBuffer {
@@ -169,6 +169,144 @@ export async function runPasskeySignIn(
     // set on a third-party origin) so every later SDK call carries it.
     if (body.data?.token) setElvixToken(body.data.token);
     return { ok: true, redirect: body.data?.redirect, token: body.data?.token };
+  } catch (e) {
+    return { ok: false, error: "network", message: e instanceof Error ? e.message : undefined };
+  }
+}
+
+/** Minimal shape of the options elvix returns from `generateRegistrationOptions`. */
+type RegOptionsJSON = {
+  challenge: string;
+  rp: { id?: string; name: string };
+  user: { id: string; name: string; displayName: string };
+  pubKeyCredParams: { type: "public-key"; alg: number }[];
+  timeout?: number;
+  attestation?: AttestationConveyancePreference;
+  authenticatorSelection?: AuthenticatorSelectionCriteria;
+  excludeCredentials?: { id: string; type: "public-key"; transports?: string[] }[];
+  extensions?: AuthenticationExtensionsClientInputs;
+};
+
+/** The `RegistrationResponseJSON` shape elvix's register `finish` expects. */
+type AttestationJSON = {
+  id: string;
+  rawId: string;
+  type: "public-key";
+  clientExtensionResults: AuthenticationExtensionsClientOutputs;
+  authenticatorAttachment?: string | null;
+  response: {
+    clientDataJSON: string;
+    attestationObject: string;
+    transports?: string[];
+  };
+};
+
+export type PasskeyRegisterResult =
+  | { ok: true }
+  | { ok: false; error: string; message?: string };
+
+/**
+ * Onboarding "add a passkey" step, cross-origin aware. Mirrors
+ * `runPasskeySignIn` but for `navigator.credentials.create` against the
+ * register start/finish routes. Hand-rolled (no `@simplewebauthn/browser`)
+ * so the SDK stays lean + MIT-clean. The user is already authenticated at
+ * this point, so requests carry the session via `authInit()` (bearer
+ * cross-origin, cookie same-origin). User-cancel resolves to
+ * `{ ok:false, error:"passkey_cancelled" }`; nothing throws past here.
+ */
+export async function runPasskeyRegister(
+  baseUrl: string,
+  surface: string,
+): Promise<PasskeyRegisterResult> {
+  if (typeof window === "undefined" || !window.PublicKeyCredential || !navigator.credentials?.create) {
+    return { ok: false, error: "passkey_unsupported", message: "This browser can't use passkeys." };
+  }
+
+  const init = authInit();
+  const reqInit = {
+    headers: { "content-type": "application/json", ...init.headers },
+    credentials: init.credentials,
+  };
+
+  // ── 1. start ──────────────────────────────────────────────────────────────
+  let options: RegOptionsJSON;
+  try {
+    const res = await fetch(`${baseUrl}/api/auth/passkey/register/start`, {
+      method: "POST",
+      ...reqInit,
+      body: JSON.stringify({ surface }),
+    });
+    const body = (await res.json()) as {
+      success?: boolean;
+      data?: { options: RegOptionsJSON };
+      errorMessage?: string;
+    };
+    if (!res.ok || !body.success || !body.data?.options) {
+      return { ok: false, error: body.errorMessage ?? "passkey_register_failed" };
+    }
+    options = body.data.options;
+  } catch (e) {
+    return { ok: false, error: "network", message: e instanceof Error ? e.message : undefined };
+  }
+
+  // ── 2. browser WebAuthn ─────────────────────────────────────────────────────
+  let attestation: AttestationJSON;
+  try {
+    const publicKey: PublicKeyCredentialCreationOptions = {
+      challenge: b64urlToBuf(options.challenge),
+      rp: options.rp,
+      user: {
+        id: b64urlToBuf(options.user.id),
+        name: options.user.name,
+        displayName: options.user.displayName,
+      },
+      pubKeyCredParams: options.pubKeyCredParams,
+      timeout: options.timeout,
+      attestation: options.attestation,
+      authenticatorSelection: options.authenticatorSelection,
+      excludeCredentials: options.excludeCredentials?.map((c) => ({
+        id: b64urlToBuf(c.id),
+        type: c.type,
+        transports: c.transports as AuthenticatorTransport[] | undefined,
+      })),
+      extensions: options.extensions,
+    };
+    const cred = (await navigator.credentials.create({ publicKey })) as PublicKeyCredential | null;
+    if (!cred) return { ok: false, error: "passkey_cancelled" };
+
+    const resp = cred.response as AuthenticatorAttestationResponse;
+    attestation = {
+      id: cred.id,
+      rawId: bufToB64url(cred.rawId),
+      type: "public-key",
+      clientExtensionResults: cred.getClientExtensionResults(),
+      authenticatorAttachment: cred.authenticatorAttachment ?? undefined,
+      response: {
+        clientDataJSON: bufToB64url(resp.clientDataJSON),
+        attestationObject: bufToB64url(resp.attestationObject),
+        transports: resp.getTransports?.() ?? undefined,
+      },
+    };
+  } catch (e) {
+    const name = (e as { name?: string })?.name;
+    if (name === "NotAllowedError" || name === "AbortError") {
+      return { ok: false, error: "passkey_cancelled" };
+    }
+    return { ok: false, error: "passkey_register_failed", message: e instanceof Error ? e.message : undefined };
+  }
+
+  // ── 3. finish ───────────────────────────────────────────────────────────────
+  try {
+    const res = await fetch(`${baseUrl}/api/auth/passkey/register/finish`, {
+      method: "POST",
+      ...reqInit,
+      body: JSON.stringify({ surface, response: attestation }),
+    });
+    const body = (await res.json()) as { success?: boolean; errorMessage?: string };
+    if (!res.ok || !body.success) {
+      return { ok: false, error: body.errorMessage ?? "passkey_register_failed" };
+    }
+    return { ok: true };
   } catch (e) {
     return { ok: false, error: "network", message: e instanceof Error ? e.message : undefined };
   }

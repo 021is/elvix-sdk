@@ -1,6 +1,6 @@
 {
   "name": "@elvix.is/sdk",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "description": "Official elvix SDK. Drop-in React components, server helpers, and an MCP server so AI coding agents integrate elvix on the first try.",
   "license": "MIT",
   "homepage": "https://elvix.is",
@@ -44,7 +44,8 @@
     "./mcp": {
       "types": "./dist/mcp/index.d.ts",
       "import": "./dist/mcp/index.js"
-    }
+    },
+    "./styles.css": "./dist/styles.css"
   },
   "files": [
     "dist",
@@ -52,7 +53,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsup src/index.ts src/react.ts src/server.ts src/types.ts src/mcp/index.ts src/mcp/bin.ts src/cli/index.ts src/cli/doctor.ts --format esm --dts --clean --external react --external react/jsx-runtime --external next && node scripts/postbuild.mjs",
+    "build": "tsup src/index.ts src/react.ts src/server.ts src/types.ts src/mcp/index.ts src/mcp/bin.ts src/cli/index.ts src/cli/doctor.ts --format esm --dts --clean --external react --external react/jsx-runtime --external next && bun run build:css && node scripts/postbuild.mjs",
+    "build:css": "tailwindcss --input src/styles/sdk.css --output dist/styles.css --minify",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
@@ -66,11 +68,15 @@
     }
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.29.0"
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^1.14.0"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4",
     "@types/node": "^22.7.5",
     "@types/react": "^19.2.15",
+    "tailwindcss": "^4",
     "tsup": "^8.3.0",
     "typescript": "^5.6.3",
     "vitest": "^2.1.2"
