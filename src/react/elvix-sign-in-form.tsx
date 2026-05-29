@@ -4,6 +4,7 @@ import { type CSSProperties, type FormEvent, useMemo, useState } from "react";
 import { type ElvixCopy, fillCopy, resolveCopy } from "./copy";
 import { ElvixSecuredBadge } from "./elvix-secured-badge";
 import { useElvixApp, useElvixContext } from "./elvix-provider";
+import { runPasskeySignIn } from "./passkey";
 import { isSameOrigin, setElvixToken } from "./session";
 import { type ElvixSizeProps, sizeStyle } from "./size";
 import type { ElvixSignInResult } from "./types";
@@ -46,6 +47,28 @@ export type ElvixSignInFormProps = {
   className?: string;
 } & /** Sizing — applied to the card root inline style (SDK components are sizable). */
   ElvixSizeProps;
+
+/** Simple passkey/fingerprint glyph, inline so the button needs no host assets. */
+function PasskeyIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      style={{ display: "block" }}
+    >
+      <circle cx="9" cy="8" r="4" />
+      <path d="M4 20c0-3 2.5-5 5-5 1 0 1.9.3 2.7.8" />
+      <path d="M17 12.5a2.5 2.5 0 1 0-2.5 2.5v5l1.2-1.2 1.3 1.2v-5a2.5 2.5 0 0 0 0-2.5Z" />
+    </svg>
+  );
+}
 
 /** Official multi-colour Google "G", inline so the button needs no host assets. */
 function GoogleG({ size = 18 }: { size?: number }) {
@@ -105,17 +128,20 @@ export function ElvixSignInForm({
   const submitLabel = copy.submitButton ?? verb;
 
   const showGoogle = Boolean(app?.methodGoogle);
+  const showPasskey = Boolean(app?.methodPasskey);
   const showEmail = Boolean(app?.methodEmailOtp);
-  const showDivider = showGoogle && showEmail;
+  // The divider sits between the "social" factors (Google + passkey) and the
+  // email form — show it whenever at least one social factor coexists with email.
+  const showDivider = (showGoogle || showPasskey) && showEmail;
 
   const logoSrc = app?.iconUrl || app?.logoUrl || null;
   const privacyUrl = app?.privacyPolicyUrl || null;
   const termsUrl = app?.termsOfServiceUrl || null;
   const hasLegal = Boolean(privacyUrl || termsUrl);
 
-  // Passkey is intentionally omitted: inline WebAuthn can't run cross-origin
-  // (the credential is bound to elvix's RP id, not the host's). A redirect-
-  // based passkey flow is future work.
+  // Cross-origin passkey works via elvix's Related Origin Requests manifest
+  // (/.well-known/webauthn): the credential stays bound to elvix's RP id while
+  // the assertion is made from the host origin. See ./passkey.ts.
 
   const cardStyle: CSSProperties = useMemo(
     () => ({
@@ -152,6 +178,32 @@ export function ElvixSignInForm({
     window.location.assign(
       `${ctx.baseUrl}/api/auth/google/start?intent=app&clientId=${encodeURIComponent(ctx.clientId)}`,
     );
+  }
+
+  async function startPasskey() {
+    setBusy(true);
+    setError(null);
+    try {
+      const result = await runPasskeySignIn(ctx.baseUrl, ctx.clientId);
+      if (!result.ok) {
+        // A user-cancelled prompt isn't an error worth shouting — report it
+        // through onResult but leave the card quiet (no red banner).
+        if (result.error === "passkey_cancelled") {
+          onResult?.({ ok: false, error: result.error });
+          return;
+        }
+        return fail(result.error, result.message);
+      }
+      setStep("done");
+      onResult?.({
+        ok: true,
+        method: "passkey",
+        redirect: result.redirect ?? redirectAfterSignIn,
+        token: result.token,
+      });
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function startOtp(e: FormEvent) {
@@ -348,6 +400,19 @@ export function ElvixSignInForm({
             >
               <GoogleG />
               <span>{copy.googleButton}</span>
+            </button>
+          )}
+
+          {showPasskey && (
+            <button
+              type="button"
+              onClick={startPasskey}
+              disabled={busy}
+              style={googleBtnStyle}
+              data-elvix-method="passkey"
+            >
+              <PasskeyIcon />
+              <span>{copy.passkeyButton}</span>
             </button>
           )}
 

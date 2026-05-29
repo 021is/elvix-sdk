@@ -3,6 +3,7 @@
 import { type FormEvent, useState } from "react";
 import { type ElvixCopy, fillCopy, resolveCopy } from "./copy";
 import { useElvixApp, useElvixContext } from "./elvix-provider";
+import { runPasskeySignIn } from "./passkey";
 import { isSameOrigin, setElvixToken } from "./session";
 import { type ElvixSizeProps, sizeStyle } from "./size";
 import type { ElvixSignInResult } from "./types";
@@ -73,6 +74,30 @@ export function ElvixSignIn({
     window.location.assign(
       `${ctx.baseUrl}/api/auth/google/start?intent=app&clientId=${encodeURIComponent(ctx.clientId)}`,
     );
+  }
+
+  async function startPasskey() {
+    setBusy(true);
+    setError(null);
+    try {
+      const result = await runPasskeySignIn(ctx.baseUrl, ctx.clientId);
+      if (!result.ok) {
+        if (result.error === "passkey_cancelled") {
+          onResult?.({ ok: false, error: result.error });
+          return;
+        }
+        return fail(result.error, result.message);
+      }
+      setStep("done");
+      onResult?.({
+        ok: true,
+        method: "passkey",
+        redirect: result.redirect ?? redirectAfterSignIn,
+        token: result.token,
+      });
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function startOtp(e: FormEvent) {
@@ -172,6 +197,17 @@ export function ElvixSignIn({
               data-elvix-method="google"
             >
               {copy.googleButton}
+            </button>
+          )}
+          {app?.methodPasskey && (
+            <button
+              type="button"
+              onClick={startPasskey}
+              disabled={busy}
+              className="elvix-btn elvix-btn-passkey"
+              data-elvix-method="passkey"
+            >
+              {copy.passkeyButton}
             </button>
           )}
           {app?.methodEmailOtp && (

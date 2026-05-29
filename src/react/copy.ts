@@ -22,6 +22,8 @@ export type ElvixCopy = {
   subtitle?: string;
   /** Google factor button. */
   googleButton?: string;
+  /** Passkey factor button. */
+  passkeyButton?: string;
   /** Email field placeholder. */
   emailPlaceholder?: string;
   /** Email submit button (identify step). */
@@ -48,6 +50,7 @@ export type ElvixCopy = {
 export const DEFAULT_COPY: ElvixCopy = {
   subtitle: "Pick how you want to continue.",
   googleButton: "Continue with Google",
+  passkeyButton: "Continue with passkey",
   emailPlaceholder: "you@example.com",
   sendCodeButton: "Send code",
   sendingLabel: "Sending…",
