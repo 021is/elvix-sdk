@@ -29,6 +29,7 @@
  */
 
 import { useEffect } from "react";
+import { useResolvedBaseUrl } from "./elvix-provider";
 import { authInit, setElvixToken } from "./session";
 
 /** Membership states the watcher reacts to. "active" = back to normal. */
@@ -45,7 +46,9 @@ type StatusValue = (typeof StatusValue)[keyof typeof StatusValue];
 type LifecycleRecord = { userId: string; status: StatusValue };
 
 export type ElvixLifecycleWatcherProps = {
-  /** elvix origin. Defaults to "" (same-origin). */
+  /** elvix origin. Defaults to "https://elvix.is" — the public elvix
+   *  identity host. Override only for self-hosted elvix instances or
+   *  dev mirrors; production consumers never need to pass this. */
   baseUrl?: string;
   /** Poll interval in ms when SSE isn't available. Default 7000. */
   pollMs?: number;
@@ -78,12 +81,13 @@ function isSameOrigin(baseUrl: string): boolean {
 }
 
 export function ElvixLifecycleWatcher({
-  baseUrl = "",
+  baseUrl,
   pollMs = 7000,
   applicationId,
   userId,
   onSignedOut,
 }: ElvixLifecycleWatcherProps): null {
+  const resolvedBaseUrl = useResolvedBaseUrl(baseUrl);
   useEffect(() => {
     let cancelled = false;
     let fired = false;
@@ -105,10 +109,10 @@ export function ElvixLifecycleWatcher({
       userId !== undefined &&
       typeof window !== "undefined" &&
       typeof EventSource !== "undefined" &&
-      isSameOrigin(baseUrl);
+      isSameOrigin(resolvedBaseUrl);
 
     if (canSse) {
-      const url = new URL(`${baseUrl}/api/presence/stream`, window.location.origin);
+      const url = new URL(`${resolvedBaseUrl}/api/presence/stream`, window.location.origin);
       url.searchParams.set("applicationId", applicationId!);
       url.searchParams.set("userId", userId!);
       const ev = new EventSource(url.toString());
@@ -149,7 +153,7 @@ export function ElvixLifecycleWatcher({
     const poll = async () => {
       try {
         const init = authInit();
-        const res = await fetch(`${baseUrl}/api/v1/session`, {
+        const res = await fetch(`${resolvedBaseUrl}/api/v1/session`, {
           method: "POST",
           headers: init.headers,
           credentials: init.credentials,
@@ -168,7 +172,7 @@ export function ElvixLifecycleWatcher({
       cancelled = true;
       clearInterval(id);
     };
-  }, [baseUrl, pollMs, applicationId, userId, onSignedOut]);
+  }, [resolvedBaseUrl, pollMs, applicationId, userId, onSignedOut]);
 
   return null;
 }
