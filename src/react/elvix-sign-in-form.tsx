@@ -239,6 +239,27 @@ export type AuthFormProps = {
    */
   onAuthenticated?: (result: { ok: true; redirect?: string; token?: string }) => void;
   /**
+   * Where to send the user after EVERY terminal success path. One prop, one
+   * destination — no per-method customisation. Applies uniformly to:
+   *
+   *   - OTP verify success (with or without an onboarding step).
+   *   - Google sign-in (both the GIS credential and the redirect-OAuth
+   *     return path that consumes `#elvix_token=...` on mount).
+   *   - Passkey sign-in.
+   *   - The onboarding "Add a passkey" success.
+   *   - The onboarding "Skip for now" button on the passkey step.
+   *   - The onboarding username step success.
+   *
+   * Resolution order at the moment of navigation:
+   *   `redirectAfterSignIn ?? <backend-provided redirect> ?? "/"`
+   *
+   * If a host wants different destinations per method, they should switch
+   * on the result inside `onResult`/`onAuthenticated` and call
+   * `router.push(...)` themselves; this prop is the single declarative
+   * fallback that ALL success paths honour.
+   */
+  redirectAfterSignIn?: string;
+  /**
    * Fires on every terminal outcome: success AND every error path
    * (invalid OTP, expired challenge, rate-limited, network blip,
    * passkey failure). Mirrors the ResponseDto shape the rest of the
@@ -320,7 +341,11 @@ export function ElvixSignInForm(props: AuthFormProps) {
     googleClientId: props.googleClientId ?? app?.googleClientId ?? undefined,
     websiteUrl: props.websiteUrl ?? app?.websiteUrl ?? null,
   };
-  const { framed = true, presentation = "card", theme = "light" } = resolved;
+  // `framed` defaults to the dashed "This is a preview" wrapper ONLY when
+  // the form is in preview mode. Customer-host renders (zp.edvone.dev,
+  // any production sign-in) default to unframed so the banner never
+  // leaks. Hosts can still opt in by passing `framed={true}`.
+  const { framed = resolved.mode === "preview", presentation = "card", theme = "light" } = resolved;
   const card = <AuthCard {...resolved} />;
   let content: React.ReactNode = card;
   if (presentation === "drawer") {
@@ -441,6 +466,7 @@ function AuthBody({
   belowMethods,
   googleConfig,
   googleClientId,
+  redirectAfterSignIn,
   onAuthenticated,
   onResult,
 }: AuthFormProps) {
@@ -512,7 +538,35 @@ function AuthBody({
   const [usernameSuggestions, setUsernameSuggestions] = useState<string[]>([]);
   const [usernameCheck, setUsernameCheck] = useState<UsernameCheckState>({ kind: "idle" });
   const [onboardingBusy, setOnboardingBusy] = useState<"claim" | "skip" | "add" | null>(null);
-  const [finalRedirect, setFinalRedirect] = useState<string>("/");
+  /**
+   * Backend-provided final destination for multi-step onboarding flows.
+   * When the OTP verify (or Google return state) lands on `next_step:
+   * "passkey"` / `"username"`, the verifier also returns `final` — the
+   * URL the user should land on once they finish (or skip) onboarding.
+   * Stored here so the username + passkey steps know where to send
+   * them. Always passed through `finalRedirect(...)` so
+   * `redirectAfterSignIn` wins when the host set it.
+   */
+  const [backendFinalRedirect, setBackendFinalRedirect] = useState<string>("/");
+
+  /**
+   * Single resolver for every terminal redirect target inside the form.
+   * Resolution order: `redirectAfterSignIn` (host prop, highest) > the
+   * backend's per-method `redirect` value (OTP/Passkey/Google /done/) >
+   * the onboarding `final` we cached when we entered the step > `"/"`.
+   *
+   * Every onResult call + every `window.location.href = ...` site MUST
+   * pass through this helper so behaviour is identical across methods.
+   */
+  const finalRedirect = useCallback(
+    (backendRedirect?: string): string => {
+      if (redirectAfterSignIn) return redirectAfterSignIn;
+      if (backendRedirect) return backendRedirect;
+      if (backendFinalRedirect) return backendFinalRedirect;
+      return "/";
+    },
+    [redirectAfterSignIn, backendFinalRedirect],
+  );
 
   useEffect(() => {
     if (resendIn <= 0) return;
@@ -563,25 +617,27 @@ function AuthBody({
       if (body.next_step === "username") {
         setUsernameSuggestions(body.suggestions ?? []);
         setUsernameValue(body.suggestions?.[0] ?? "");
-        setFinalRedirect(body.final ?? "/");
+        setBackendFinalRedirect(body.final ?? "/");
         setStep("username");
         return;
       }
       // LEGACY: spine-lint-disable-next-line spine/enum-over-string
       if (body.next_step === "passkey") {
-        setFinalRedirect(body.final ?? "/");
+        setBackendFinalRedirect(body.final ?? "/");
         setStep("passkey");
         return;
       }
       // LEGACY: spine-lint-disable-next-line spine/enum-over-string
       if (body.next_step === "recover" && body.recover) {
         setRecoverState(body.recover);
-        setFinalRedirect(body.final ?? "/");
+        setBackendFinalRedirect(body.final ?? "/");
         setStep("recover");
         return;
       }
-      // "done" or legacy { redirect } shape.
-      const redirect = body.redirect ?? defaultRedirect(intent);
+      // "done" or legacy { redirect } shape. Funnel through finalRedirect()
+      // so `redirectAfterSignIn` wins over the backend value when the host
+      // set it.
+      const redirect = finalRedirect(body.redirect ?? defaultRedirect(intent));
       onResult?.({ ok: true, redirect });
       if (onAuthenticated) {
         onAuthenticated({ ok: true, redirect, token: body.token });
@@ -589,7 +645,7 @@ function AuthBody({
       }
       window.location.href = redirect;
     },
-    [intent, onAuthenticated, onResult],
+    [intent, onAuthenticated, onResult, finalRedirect],
   );
 
   // Google OAuth lands the user back on /sign-in/<surface>?onboarding=1&next=…
@@ -822,6 +878,9 @@ function AuthBody({
         reportError(result.error, result.message ?? humanError(result.error) ?? "Passkey verification failed.");
         return;
       }
+      // Passkey sign-in succeeded — applyLanding will run through
+      // finalRedirect() so `redirectAfterSignIn` (if set) wins over
+      // result.redirect.
       applyLanding({ next_step: "done", redirect: result.redirect, token: result.token });
     } finally {
       setPasskeyBusy(false);
@@ -923,29 +982,39 @@ function AuthBody({
         );
         return;
       }
-      // Passkey added → done. Land at the final destination the verifier
-      // stashed when we entered this step.
-      onResult?.({ ok: true, redirect: finalRedirect });
+      // Passkey added → done. Resolve the destination through
+      // finalRedirect() so a host-supplied `redirectAfterSignIn` wins over
+      // the backend-stashed `final` for this onboarding leg.
+      const redirect = finalRedirect();
+      onResult?.({ ok: true, redirect });
       if (onAuthenticated) {
-        onAuthenticated({ ok: true, redirect: finalRedirect });
+        onAuthenticated({ ok: true, redirect });
         return;
       }
-      window.location.href = finalRedirect;
+      window.location.href = redirect;
     } finally {
       setOnboardingBusy(null);
     }
   }, [intent, isPreview, onboardingBusy, finalRedirect, onAuthenticated, onResult, reportError, baseUrl]);
 
-  /** Skip passkey step — just go to the final destination. */
+  /**
+   * Skip the onboarding "Add a passkey" step. The user is already
+   * authenticated (OTP/Google ceremony happened to reach this step) so
+   * this fires onResult({ok:true}) just like the explicit "Add a
+   * passkey" success path — and routes through finalRedirect() so the
+   * destination matches every other success path. Previously this just
+   * navigated, leaving the host's onResult silent on Skip.
+   */
   const onSkipPasskey = useCallback(() => {
     if (onboardingBusy) return;
     setOnboardingBusy("skip");
-    onResult?.({ ok: true, redirect: finalRedirect });
+    const redirect = finalRedirect();
+    onResult?.({ ok: true, redirect });
     if (onAuthenticated) {
-      onAuthenticated({ ok: true, redirect: finalRedirect });
+      onAuthenticated({ ok: true, redirect });
       return;
     }
-    window.location.href = finalRedirect;
+    window.location.href = redirect;
   }, [onboardingBusy, finalRedirect, onAuthenticated, onResult]);
 
   return (
@@ -1293,13 +1362,22 @@ function AuthBody({
           state={recoverState.state}
           sinceAt={recoverState.sinceAt}
           onRestore={({ redirect }) => {
+            // Restore = successful sign-in completion. Funnel through
+            // finalRedirect() so redirectAfterSignIn wins over the gate's
+            // suggested target.
+            const dest = finalRedirect(redirect);
+            onResult?.({ ok: true, redirect: dest });
             if (onAuthenticated) {
-              onAuthenticated({ ok: true, redirect });
+              onAuthenticated({ ok: true, redirect: dest });
             } else {
-              window.location.href = redirect;
+              window.location.href = dest;
             }
           }}
           onCancel={({ redirect }) => {
+            // Cancel = NOT a sign-in success; honour the gate's redirect
+            // (typically /sign-in) so the user lands somewhere safe. Do
+            // NOT consult redirectAfterSignIn here — that's the success
+            // destination and the user just chose to back out.
             window.location.href = redirect;
           }}
         />
