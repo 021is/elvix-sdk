@@ -13,6 +13,16 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.6.5] — 2026-05-30
+
+### Added
+
+- **`verifyElvixToken({ token, clientId })` object signature.** New canonical call shape — the positional `verifyElvixToken(token)` form keeps working for back-compat, but the docs and templates have moved to the object form. `clientId` is sent as `x-elvix-client-id` so elvix can scope verifies against the right application.
+
+### Changed
+
+- Docs and SDK templates now standardise on the `elvix_token` cookie name for the client-set / server-read round-trip (previously every doc invented its own name like `app_session`). No SDK behaviour change — naming convention only.
+
 ## [0.4.0] — 2026-05-28
 
 ### Added

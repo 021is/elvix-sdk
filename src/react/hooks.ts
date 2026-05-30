@@ -15,6 +15,7 @@
  */
 
 import { authInit } from "./session";
+import { useResolvedBaseUrl } from "./elvix-provider";
 import { useCallback, useEffect, useState } from "react";
 
 const POLL_MS = 7000;
@@ -29,14 +30,17 @@ export type UseUserListResult = {
 type Opts = {
   applicationId: string;
   userId: string;
-  /** elvix origin. Defaults to "" (same-origin). */
+  /** elvix origin. Defaults to "https://elvix.is" — the public elvix
+   *  identity host. Override only for self-hosted elvix instances or
+   *  dev mirrors; production consumers never need to pass this. */
   baseUrl?: string;
   /** Poll interval in ms. Default 7000. */
   pollMs?: number;
 };
 
 function useUserList(kind: "roles" | "scopes" | "memberships", opts: Opts): UseUserListResult {
-  const { applicationId, baseUrl = "", pollMs = POLL_MS } = opts;
+  const { applicationId, pollMs = POLL_MS } = opts;
+  const resolvedBaseUrl = useResolvedBaseUrl(opts.baseUrl);
   const [slugs, setSlugs] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,7 +49,7 @@ function useUserList(kind: "roles" | "scopes" | "memberships", opts: Opts): UseU
     setError(null);
     try {
       const res = await fetch(
-        `${baseUrl}/api/me/${kind}?applicationId=${encodeURIComponent(applicationId)}`,
+        `${resolvedBaseUrl}/api/me/${kind}?applicationId=${encodeURIComponent(applicationId)}`,
         authInit(),
       );
       const json = (await res.json().catch(() => ({}))) as {
@@ -63,7 +67,7 @@ function useUserList(kind: "roles" | "scopes" | "memberships", opts: Opts): UseU
     } finally {
       setLoading(false);
     }
-  }, [applicationId, baseUrl, kind]);
+  }, [applicationId, resolvedBaseUrl, kind]);
 
   useEffect(() => {
     refresh();

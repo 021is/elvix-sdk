@@ -15,9 +15,21 @@ export type VerifyOptions = {
   timeoutMs?: number;
 };
 
+export type VerifyArgs = {
+  /** End-user session token. The value the SDK handed you via `onResult({ token })`. */
+  token: string;
+  /** Your Application's client ID. Optional, but recommended — lets elvix scope
+   *  the verify against the right application when one user spans multiple. */
+  clientId?: string;
+  /** Override the elvix origin for testing / proxy setups. */
+  baseUrl?: string;
+  /** Per-request timeout in ms. Default 5000. */
+  timeoutMs?: number;
+};
+
 /**
  * Verify an end-user session token (the value the SDK handed you via
- * `onSuccess({ token })`) and get back the live user envelope — roles,
+ * `onResult({ token })`) and get back the live user envelope — roles,
  * scopes, memberships — for the token's application.
  *
  * The token is self-authenticating: POST it as a Bearer to
@@ -26,20 +38,40 @@ export type VerifyOptions = {
  * `ok:false` here within one request — call this on each protected request
  * (or cache for a few seconds) and you enforce bans server-side too.
  *
+ * Two call shapes — both supported, the object form is the canonical one
+ * since 0.6.5:
+ *
+ *   await verifyElvixToken({ token, clientId })   // canonical
+ *   await verifyElvixToken(token)                 // legacy, still works
+ *
  * Returns a discriminated union — never throws on auth failure. Throws only
  * on infra failure (network, timeout, malformed JSON).
  */
+export async function verifyElvixToken(args: VerifyArgs): Promise<ElvixVerifyResult>;
 export async function verifyElvixToken(
   token: string,
+  opts?: VerifyOptions,
+): Promise<ElvixVerifyResult>;
+export async function verifyElvixToken(
+  tokenOrArgs: string | VerifyArgs,
   opts: VerifyOptions = {},
 ): Promise<ElvixVerifyResult> {
-  const url = `${opts.baseUrl ?? DEFAULT_BASE_URL}/api/v1/session`;
+  const args: VerifyArgs =
+    typeof tokenOrArgs === "string"
+      ? { token: tokenOrArgs, baseUrl: opts.baseUrl, timeoutMs: opts.timeoutMs }
+      : tokenOrArgs;
+  const { token, clientId } = args;
+  const url = `${args.baseUrl ?? DEFAULT_BASE_URL}/api/v1/session`;
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), opts.timeoutMs ?? 5000);
+  const timer = setTimeout(() => ctrl.abort(), args.timeoutMs ?? 5000);
   try {
+    const headers: Record<string, string> = {
+      authorization: `Bearer ${token}`,
+    };
+    if (clientId) headers["x-elvix-client-id"] = clientId;
     const res = await fetch(url, {
       method: "POST",
-      headers: { authorization: `Bearer ${token}` },
+      headers,
       signal: ctrl.signal,
     });
     const body = (await res.json()) as {

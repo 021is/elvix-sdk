@@ -107,6 +107,28 @@ export function useElvixContext(): ElvixContextValue {
   return ctx;
 }
 
+/**
+ * Resolve the effective elvix origin for a hook / component:
+ *   1. explicit `propBaseUrl` (caller wins),
+ *   2. `<ElvixProvider baseUrl>` from context if present + non-empty,
+ *   3. public default `"https://elvix.is"`.
+ *
+ * SSR-safe — never touches `window`. Use this in every SDK hook /
+ * component that takes an optional `baseUrl` so a host that wires the
+ * provider once doesn't have to re-thread it through every prop.
+ */
+export function useResolvedBaseUrl(propBaseUrl?: string): string {
+  const ctx = useContext(ElvixContext);
+  // Use `typeof === "string"` so an empty string survives the resolver. `""`
+  // is a deliberate same-origin signal (elvix's own dogfood passes it via
+  // <ElvixProvider baseUrl="">). A truthy check silently collapsed it to the
+  // elvix.is default and the SDK cross-origined to prod — which the host's
+  // CSP then blocked.
+  if (typeof propBaseUrl === "string") return propBaseUrl;
+  if (ctx && typeof ctx.baseUrl === "string") return ctx.baseUrl;
+  return DEFAULT_BASE_URL;
+}
+
 export function ElvixProvider({
   clientId,
   theme,

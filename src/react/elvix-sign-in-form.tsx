@@ -45,7 +45,7 @@ import { useElvixApp, useElvixContext } from "./elvix-provider";
 import { GoogleOneTap } from "./google-one-tap";
 import { OtpInput } from "./otp-input";
 import { runPasskeyRegister, runPasskeySignIn } from "./passkey";
-import { authInit, isSameOrigin, setElvixToken } from "./session";
+import { authInit, getElvixToken, isSameOrigin, setElvixToken } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { isValidUsername } from "./username-rules";
 
@@ -60,7 +60,7 @@ const ELVIX_SITE_URL = "https://elvix.is";
  * route returns via `withErrorHandling`. Customers branch on `ok`.
  */
 export type ElvixSignInResult =
-  | { ok: true; redirect?: string }
+  | { ok: true; redirect?: string; token?: string }
   | { ok: false; error: string; message?: string; status?: number };
 
 const Mode = {
@@ -638,14 +638,18 @@ function AuthBody({
       // so `redirectAfterSignIn` wins over the backend value when the host
       // set it.
       const redirect = finalRedirect(body.redirect ?? defaultRedirect(intent));
-      onResult?.({ ok: true, redirect });
+      // body.token is fresh from the verifier; getElvixToken() falls back to
+      // whatever was stashed earlier in this ceremony so the host always
+      // receives a bearer even on intermediate "done" landings.
+      const token = body.token ?? getElvixToken() ?? undefined;
+      onResult?.({ ok: true, redirect, token });
       if (onAuthenticated) {
-        onAuthenticated({ ok: true, redirect, token: body.token });
+        onAuthenticated({ ok: true, redirect, token });
         return;
       }
       window.location.href = redirect;
     },
-    [intent, onAuthenticated, onResult, finalRedirect],
+    [intent, onAuthenticated, onResult, finalRedirect, baseUrl],
   );
 
   // Google OAuth lands the user back on /sign-in/<surface>?onboarding=1&next=…
@@ -986,9 +990,10 @@ function AuthBody({
       // finalRedirect() so a host-supplied `redirectAfterSignIn` wins over
       // the backend-stashed `final` for this onboarding leg.
       const redirect = finalRedirect();
-      onResult?.({ ok: true, redirect });
+      const token = getElvixToken() ?? undefined;
+      onResult?.({ ok: true, redirect, token });
       if (onAuthenticated) {
-        onAuthenticated({ ok: true, redirect });
+        onAuthenticated({ ok: true, redirect, token });
         return;
       }
       window.location.href = redirect;
@@ -1009,9 +1014,10 @@ function AuthBody({
     if (onboardingBusy) return;
     setOnboardingBusy("skip");
     const redirect = finalRedirect();
-    onResult?.({ ok: true, redirect });
+    const token = getElvixToken() ?? undefined;
+    onResult?.({ ok: true, redirect, token });
     if (onAuthenticated) {
-      onAuthenticated({ ok: true, redirect });
+      onAuthenticated({ ok: true, redirect, token });
       return;
     }
     window.location.href = redirect;
