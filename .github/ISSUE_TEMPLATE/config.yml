@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security vulnerability
-    url: https://github.com/021is/elvix-sdk/security/policy
-    about: "Please do NOT file a public issue. See SECURITY.md and email security@elvix.is."
+    url: https://elvix.is/contact
+    about: "Please do NOT file a public issue. Use the contact form (subject \"Security report\"). See SECURITY.md."
   - name: Question or general discussion
     url: https://github.com/021is/elvix-sdk/discussions
     about: Open a Discussion instead of an issue.
