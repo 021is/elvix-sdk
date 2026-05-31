@@ -46,6 +46,15 @@ function useUserList(kind: "roles" | "scopes" | "memberships", opts: Opts): UseU
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
+    // Host hasn't supplied applicationId yet (e.g. useElvixApp() bootstrap
+    // hasn't resolved). Stay in `loading` and skip the fetch — calling
+    // /api/me/<kind>?applicationId= would 400.
+    if (!applicationId) {
+      setSlugs([]);
+      setLoading(true);
+      setError(null);
+      return;
+    }
     setError(null);
     try {
       const res = await fetch(

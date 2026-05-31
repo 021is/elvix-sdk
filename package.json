@@ -1,6 +1,6 @@
 {
   "name": "@elvix.is/sdk",
-  "version": "0.6.5",
+  "version": "0.6.7",
   "description": "Official elvix SDK. Drop-in React components, server helpers, and an MCP server so AI coding agents integrate elvix on the first try.",
   "license": "MIT",
   "homepage": "https://elvix.is",
@@ -45,7 +45,10 @@
       "types": "./dist/mcp/index.d.ts",
       "import": "./dist/mcp/index.js"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": {
+      "types": "./dist/styles.css.d.ts",
+      "default": "./dist/styles.css"
+    }
   },
   "files": [
     "dist",

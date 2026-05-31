@@ -63,6 +63,13 @@ export type ElvixLifecycleWatcherProps = {
   userId?: string;
   /** Called once with the reason when the session ends. Defaults to a reload. */
   onSignedOut?: (reason: string) => void;
+  /**
+   * Cookie name to clear on revoke (banned / paused / deleted / signed out).
+   * When set, the watcher does `document.cookie = "<name>=; max-age=0; path=/"`
+   * before firing onSignedOut. Pair with the cookie you set in your
+   * sign-in onResult handler so a banned user's cookie can't persist.
+   */
+  cookieName?: string;
 };
 
 /**
@@ -86,6 +93,7 @@ export function ElvixLifecycleWatcher({
   applicationId,
   userId,
   onSignedOut,
+  cookieName,
 }: ElvixLifecycleWatcherProps): null {
   const resolvedBaseUrl = useResolvedBaseUrl(baseUrl);
   useEffect(() => {
@@ -95,6 +103,9 @@ export function ElvixLifecycleWatcher({
     function fire(reason: string) {
       if (cancelled || fired) return;
       fired = true;
+      if (cookieName && typeof document !== "undefined") {
+        document.cookie = `${cookieName}=; max-age=0; path=/; samesite=lax`;
+      }
       setElvixToken(null);
       if (onSignedOut) onSignedOut(reason);
       else if (typeof window !== "undefined") window.location.reload();
@@ -172,7 +183,7 @@ export function ElvixLifecycleWatcher({
       cancelled = true;
       clearInterval(id);
     };
-  }, [resolvedBaseUrl, pollMs, applicationId, userId, onSignedOut]);
+  }, [resolvedBaseUrl, pollMs, applicationId, userId, onSignedOut, cookieName]);
 
   return null;
 }

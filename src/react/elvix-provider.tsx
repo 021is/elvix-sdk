@@ -167,18 +167,34 @@ export function ElvixProvider({
     }
     const ctrl = new AbortController();
     fetch(BOOTSTRAP_URL(resolvedBaseUrl, clientId), { signal: ctrl.signal })
-      .then((r) => r.json())
-      .then((body) => {
-        if (body?.success && body?.data) {
+      .then(async (r) => {
+        // Read body once; tolerate non-JSON 403/404/5xx (CORS-blocked
+        // preflights serve no body). Without this branch the SDK silently
+        // failed with `body=null` and `<ElvixSignIn>` rendered an empty
+        // card. Cycle-2 friction.
+        let body: { success?: boolean; data?: unknown; errorMessage?: string } | null = null;
+        try {
+          body = await r.json();
+        } catch {
+          body = null;
+        }
+        if (r.ok && body?.success && body.data) {
           setApp(body.data as ElvixBootstrapEnvelope);
           setAppError(null);
+        } else if (r.status === 404) {
+          setAppError("client_id_not_found");
+        } else if (r.status === 403) {
+          setAppError(body?.errorMessage ?? "origin_not_allowed");
         } else {
-          setAppError(body?.errorMessage ?? "bootstrap_failed");
+          setAppError(body?.errorMessage ?? `bootstrap_failed_${r.status}`);
         }
       })
       .catch((e: unknown) => {
         if ((e as { name?: string })?.name === "AbortError") return;
-        setAppError(e instanceof Error ? e.message : "bootstrap_failed");
+        // Network failures (DNS, CORS preflight blocked, offline) end
+        // up here. Surface them so <ElvixSignIn> can show a visible
+        // pane instead of an empty card.
+        setAppError(e instanceof Error ? e.message : "network_error");
       });
     return () => ctrl.abort();
   }, [clientId, resolvedBaseUrl]);

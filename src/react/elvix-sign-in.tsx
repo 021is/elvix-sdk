@@ -52,6 +52,11 @@ export function ElvixSignIn({
   const ctx = useElvixContext();
   const app = useElvixApp();
   const copy = resolveCopy(app?.strings, copyProp);
+  // Bootstrap failures bubble through context as `appError`. Without an
+  // explicit error pane the form just renders empty (no buttons, no
+  // copy) because `app` is null — the worst possible DX. Surface a
+  // visible state instead. Cycle-2 friction #5.
+  const bootstrapError = !app && ctx.appError ? ctx.appError : null;
   const [step, setStep] = useState<"identify" | "code" | "done">("identify");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -177,6 +182,28 @@ export function ElvixSignIn({
     return (
       <div className={card} style={sized} data-elvix-pane="done">
         <p>{copy.signedInText}</p>
+      </div>
+    );
+  }
+
+  // Visible bootstrap-error pane. Renders BEFORE the form chrome when
+  // the SDK can't fetch its config — most commonly an invalid clientId
+  // or a host origin the Console hasn't whitelisted. Returning null /
+  // empty here silently disappears the form, which is the worst
+  // possible DX: the integrator stares at a blank page wondering if
+  // they imported the right component. Cycle-2 Playwright scar.
+  if (bootstrapError) {
+    return (
+      <div className={card} style={sized} data-elvix-pane="error" role="alert">
+        <h2 className="elvix-h">Couldn't load sign-in</h2>
+        <p className="elvix-muted elvix-subtitle">
+          Invalid <code>clientId</code> or origin not allowed for this domain. Open Console &rarr;
+          your Application &rarr; Credentials to confirm the <code>clientId</code>, then add this
+          origin to Allowed origins.
+        </p>
+        <p className="elvix-error" data-elvix-error-code={bootstrapError}>
+          {bootstrapError}
+        </p>
       </div>
     );
   }
