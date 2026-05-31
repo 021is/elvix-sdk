@@ -67,6 +67,7 @@ export { ElvixLifecycleWatcher } from "./lifecycle-watcher";
 // Identity
 export { ElvixUsername } from "./elvix-username";
 export { ElvixAvatar } from "./elvix-avatar";
+export { ElvixUserAvatar, type ElvixUserAvatarProps } from "./elvix-user-avatar";
 export { ElvixBanner } from "./elvix-banner";
 export { ElvixIdentityForm } from "./elvix-identity-form";
 export { ElvixRegion } from "./elvix-region";
