@@ -185,7 +185,7 @@ Deep purple chord: `#5d4dff` (light) and `#8e7dff` (dark). Override per-app from
 - Per-app session TTL + sliding-window renewal, owner-configurable.
 - API keys carry per-key rate limits (60/min, 10000/day default).
 - CSP, CORS, CSRF double-submit, allowedOrigins enforcement all live on `elvix.is`.
-- Disclosure: <security@elvix.is>.
+- Disclosure: [elvix.is/contact](https://elvix.is/contact) (subject "Security report").
 
 ## License
 
@@ -193,7 +193,7 @@ MIT. See [LICENSE](./LICENSE).
 
 ## Security
 
-Found something? Read [SECURITY.md](./SECURITY.md). Reports go to **security@elvix.is**. Critical issues get a 4-hour response.
+Found something? Read [SECURITY.md](./SECURITY.md). Reports go through [elvix.is/contact](https://elvix.is/contact) (mark the subject "Security report"). The form confirms receipt automatically and routes to the maintainer privately.
 
 ## Contributing
 
@@ -207,4 +207,4 @@ elvix is an edvone product.
 
 - General enquiries: [edvone.dev/contact](https://edvone.dev/contact)
 - Sales / integration call: [edvone.dev/book](https://edvone.dev/book)
-- Security disclosure: [security@elvix.is](mailto:security@elvix.is) (see [SECURITY.md](./SECURITY.md))
+- Security disclosure: [elvix.is/contact](https://elvix.is/contact) (subject "Security report"; see [SECURITY.md](./SECURITY.md))
