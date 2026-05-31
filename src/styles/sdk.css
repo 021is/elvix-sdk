@@ -117,3 +117,169 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* ── <ElvixSignIn> component classes ──────────────────────────────────────
+   These are referenced by the lightweight `<ElvixSignIn>` singleton (the
+   sibling to the rich `<ElvixSignInForm>`). Before 0.6.8 the class names
+   were emitted in the markup but never defined here, so the component
+   rendered as unstyled flat HTML on every host. The rules below mirror
+   the tokens up top so the singleton looks coherent with the rest of the
+   SDK chrome regardless of theme. */
+
+.elvix-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 440px;
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+  border-radius: 14px;
+  background: var(--surface, #ffffff);
+  padding: 22px 24px;
+  box-sizing: border-box;
+  color: var(--fg-1, #18181b);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.elvix-h {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--fg-1, #18181b);
+}
+
+.elvix-muted {
+  margin: 0;
+  color: var(--fg-2, #52525b);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.elvix-subtitle {
+  margin-bottom: 4px;
+}
+
+.elvix-method {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.elvix-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border-strong, rgba(0, 0, 0, 0.14));
+  background: var(--surface, #ffffff);
+  color: var(--fg-1, #18181b);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.elvix-btn:hover:not(:disabled) {
+  background: var(--surface-hover, rgba(0, 0, 0, 0.04));
+}
+
+.elvix-btn:active:not(:disabled) {
+  background: var(--surface-active, rgba(0, 0, 0, 0.06));
+}
+
+.elvix-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.elvix-btn-primary {
+  background: var(--elvix-primary, var(--brand, #5d4dff));
+  color: var(--elvix-on-primary, var(--brand-fg, #ffffff));
+  border-color: transparent;
+}
+
+.elvix-btn-primary:hover:not(:disabled) {
+  background: var(--elvix-primary-strong, #4a3def);
+}
+
+.elvix-btn-google {
+  background: var(--surface, #ffffff);
+  color: var(--fg-1, #18181b);
+}
+
+.elvix-btn-passkey {
+  background: var(--surface, #ffffff);
+  color: var(--fg-1, #18181b);
+}
+
+.elvix-input {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+  background: var(--surface, #ffffff);
+  color: var(--fg-1, #18181b);
+  font-size: 14px;
+  line-height: 1.4;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.elvix-input::placeholder {
+  color: var(--placeholder, #a1a1aa);
+}
+
+.elvix-input:focus {
+  outline: none;
+  border-color: var(--elvix-primary, var(--brand, #5d4dff));
+  box-shadow: 0 0 0 3px var(--elvix-primary-12, rgba(93, 77, 255, 0.12));
+}
+
+.elvix-input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.elvix-otp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.elvix-error {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.08);
+  color: #b91c1c;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.elvix-error-code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.elvix-provider {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
