@@ -69,6 +69,7 @@ export { ElvixUsername } from "./elvix-username";
 export { ElvixAvatar } from "./elvix-avatar";
 export { ElvixUserAvatar, type ElvixUserAvatarProps } from "./elvix-user-avatar";
 export { ElvixBanner } from "./elvix-banner";
+export { ElvixUserBanner, type ElvixUserBannerProps } from "./elvix-user-banner";
 export { ElvixIdentityForm } from "./elvix-identity-form";
 export { ElvixRegion } from "./elvix-region";
 export { ElvixLanguages } from "./elvix-languages";
