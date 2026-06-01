@@ -236,6 +236,19 @@ export const GoogleOneTap = memo(function GoogleOneTap({
   useEffect(() => {
     if (!clientId) return;
     if (!config.oneTap && !renderButton) return;
+    // Architectural rule: Google Identity Services (GIS) is only loaded
+    // when the SDK is HOSTED on the elvix origin itself (e.g. the elvix
+    // /sign-in/<clientId> hosted page). On a customer's origin, loading
+    // GIS would force Google to check `window.location.origin` against
+    // the OAuth client's Authorized JavaScript origins list — which
+    // would mean every new customer requires a Google Cloud Console
+    // toggle. That defeats multi-tenancy. So cross-origin embeds skip
+    // GIS entirely and the host falls back to the redirect button
+    // (which navigates through `${baseUrl}/api/auth/google/start`, an
+    // elvix-origin endpoint that Google already trusts).
+    if (typeof window !== "undefined" && window.location.origin !== baseUrl) {
+      return;
+    }
     let cancelled = false;
     (async () => {
       try {
