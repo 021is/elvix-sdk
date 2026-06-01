@@ -1,11 +1,11 @@
 "use client";
 
 import { useT } from "../locale/use-t";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { type ElvixCopy, fillCopy, resolveCopy } from "./copy";
 import { useElvixApp, useElvixContext } from "./elvix-provider";
 import { runPasskeySignIn } from "./passkey";
-import { isSameOrigin, setElvixToken } from "./session";
+import { isSameOrigin, setElvixToken, takeJustReturnedToken } from "./session";
 import { type ElvixSizeProps, sizeStyle } from "./size";
 import type { ElvixSignInResult } from "./types";
 
@@ -98,6 +98,32 @@ export function ElvixSignIn({
   // copy) because `app` is null — the worst possible DX. Surface a
   // visible state instead. Cycle-2 friction #5.
   const bootstrapError = !app && ctx.appError ? ctx.appError : null;
+  // On mount: drain the one-shot queue that consumeElvixReturnToken
+  // fills when ElvixProvider strips `#elvix_token=...` from the URL.
+  // If a token was just consumed (i.e. the page just returned from
+  // the elvix Google redirect callback), fire onResult so the host's
+  // existing redirect handler (router.push, cookie write) runs —
+  // exactly like an in-frame OTP / passkey sign-in already does.
+  useEffect(() => {
+    const token = takeJustReturnedToken();
+    if (!token) return;
+    onResult?.({ ok: true, method: "google", token, redirect: redirectAfterSignIn });
+    // Also subscribe to LATER tokens in case the consume happens after
+    // this mount (e.g. a second OAuth round-trip).
+    const listener = (e: Event) => {
+      const ce = e as CustomEvent<{ token: string }>;
+      if (!ce.detail?.token) return;
+      onResult?.({
+        ok: true,
+        method: "google",
+        token: ce.detail.token,
+        redirect: redirectAfterSignIn,
+      });
+    };
+    window.addEventListener("elvix:return-token", listener);
+    return () => window.removeEventListener("elvix:return-token", listener);
+  }, [onResult, redirectAfterSignIn]);
+
   const [step, setStep] = useState<"identify" | "code" | "done">("identify");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
