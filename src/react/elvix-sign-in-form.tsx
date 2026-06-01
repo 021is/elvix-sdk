@@ -503,7 +503,14 @@ function AuthBody({
   // INVISIBLE. Require the client id here so a missing value degrades to
   // the static redirect anchor (which uses elvix's server-side
   // GOOGLE_CLIENT_ID via /api/auth/google/start and works without it).
-  const useGisRenderedButton = gisEnabled && Boolean(googleClientId);
+  // The GIS-rendered button (Google's official "Continue as <name>"
+  // personalised pill) only works when the SDK is HOSTED on the elvix
+  // origin itself — see `google-one-tap.tsx`. On a customer origin,
+  // GIS doesn't run, the slot stays empty, and the Google button
+  // disappears. Detect cross-origin here and fall back to the static
+  // `<a>` redirect anchor so the button always renders.
+  const isSameOriginAsBase = typeof window !== "undefined" && window.location.origin === baseUrl;
+  const useGisRenderedButton = gisEnabled && Boolean(googleClientId) && isSameOriginAsBase;
   // identifier   → email / username entry (initial)
   // code         → OTP entry
   // username     → onboarding: claim a username (form, suggestions, skip)
