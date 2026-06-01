@@ -46,7 +46,13 @@ import { useElvixApp, useElvixContext } from "./elvix-provider";
 import { GoogleOneTap } from "./google-one-tap";
 import { OtpInput } from "./otp-input";
 import { runPasskeyRegister, runPasskeySignIn } from "./passkey";
-import { authInit, getElvixToken, isSameOrigin, setElvixToken } from "./session";
+import {
+  authInit,
+  getElvixToken,
+  isSameOrigin,
+  setElvixToken,
+  takeJustReturnedToken,
+} from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { isValidUsername } from "./username-rules";
 
@@ -583,6 +589,34 @@ function AuthBody({
     const t = setInterval(() => setResendIn((s) => Math.max(0, s - 1)), 1000);
     return () => clearInterval(t);
   }, [resendIn]);
+
+  // Drain the one-shot queue that consumeElvixReturnToken fills when
+  // ElvixProvider strips `#elvix_token=...` from the URL. If a token
+  // was just consumed (the page is the destination of the Google
+  // redirect-OAuth callback), fire onResult so the host's existing
+  // redirect handler (router.push, cookie write) runs — exactly like
+  // an in-frame OTP / passkey sign-in already does.
+  useEffect(() => {
+    const token = takeJustReturnedToken();
+    if (token) {
+      onResult?.({
+        ok: true,
+        token,
+        redirect: redirectAfterSignIn,
+      });
+    }
+    const listener = (e: Event) => {
+      const ce = e as CustomEvent<{ token: string }>;
+      if (!ce.detail?.token) return;
+      onResult?.({
+        ok: true,
+        token: ce.detail.token,
+        redirect: redirectAfterSignIn,
+      });
+    };
+    window.addEventListener("elvix:return-token", listener);
+    return () => window.removeEventListener("elvix:return-token", listener);
+  }, [onResult, redirectAfterSignIn]);
 
   /**
    * Set the inline error string AND fire `onResult({ ok: false })`

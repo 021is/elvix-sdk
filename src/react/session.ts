@@ -60,6 +60,24 @@ export function authInit(): { headers: Record<string, string>; credentials: Requ
 const RETURN_TOKEN_KEY = "elvix_token";
 
 /**
+ * One-shot queue for the token that `consumeElvixReturnToken` just
+ * stripped from the URL fragment. `<ElvixSignIn>` / `<ElvixSignInForm>`
+ * drain it on mount and fire `onResult` so the host's existing redirect
+ * handler runs (router.push, cookie write, etc.) — the same code path
+ * an in-frame OTP / passkey sign-in already takes.
+ *
+ * Without this queue the redirect-OAuth flow stored the token silently
+ * and the host page sat at /sign-in forever instead of advancing to
+ * /app or wherever `redirectAfterSignIn` pointed.
+ */
+let _justReturnedToken: string | null = null;
+export function takeJustReturnedToken(): string | null {
+  const t = _justReturnedToken;
+  _justReturnedToken = null;
+  return t;
+}
+
+/**
  * On the host page, pick up a session token handed back by elvix's Google
  * redirect-callback in the URL fragment, store it, and strip it from the URL
  * so a refresh/back-nav doesn't replay it (and it never leaks into history,
@@ -80,6 +98,15 @@ export function consumeElvixReturnToken(): string | null {
   if (!token) return null;
 
   setElvixToken(token);
+  _justReturnedToken = token;
+  try {
+    window.dispatchEvent(
+      new CustomEvent("elvix:return-token", { detail: { token } }),
+    );
+  } catch {
+    // CustomEvent may be unavailable in very old browsers — the queue
+    // above is the load-bearing path; the event is a nice-to-have.
+  }
 
   // Strip only our key; preserve any other fragment params the host uses.
   params.delete(RETURN_TOKEN_KEY);
