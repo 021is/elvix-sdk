@@ -26,6 +26,7 @@
 import { useElvixContext } from "./elvix-provider";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
+import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -43,6 +44,8 @@ import {
   Trash2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+
+type TFunction = (key: string, params?: Record<string, string | number>) => string;
 
 const Mode = {
   OTHERS: "others",
@@ -114,6 +117,7 @@ export function ElvixSessions({
   onResult?: (result: ElvixSessionsResult) => void;
 }) {
   const ctx = useElvixContext();
+  const t = useT();
   const [items, setItems] = useState<SessionRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -133,7 +137,7 @@ export function ElvixSessions({
       const res = await fetch(`${ctx.baseUrl}/api/account/sessions${qs}`, { ...authInit() });
       const body = unwrapEnvelope(await res.json());
       if (!res.ok || !body.ok) {
-        setError("Couldn't load sessions.");
+        setError(t("sessions.errorLoad"));
         return;
       }
       setItems(body.sessions ?? []);
@@ -154,11 +158,12 @@ export function ElvixSessions({
         ...authInit(),
       });
       if (!res.ok) {
-        setError("Couldn't revoke. Try again.");
+        const msg = t("sessions.errorRevoke");
+        setError(msg);
         onResult?.({
           ok: false,
           error: "revoke_failed",
-          message: "Couldn't revoke. Try again.",
+          message: msg,
         });
         return;
       }
@@ -184,11 +189,12 @@ export function ElvixSessions({
       });
       const body = unwrapEnvelope(await res.json()) as { ok?: boolean; ended?: number };
       if (!res.ok || !body.ok) {
-        setError("Couldn't sign out. Try again.");
+        const msg = t("sessions.errorMassRevoke");
+        setError(msg);
         onResult?.({
           ok: false,
           error: "mass_revoke_failed",
-          message: "Couldn't sign out. Try again.",
+          message: msg,
         });
         return;
       }
@@ -324,10 +330,11 @@ function ListPane({
   onRevokeOne: (id: string) => void;
   onMassRevoke: () => void;
 }) {
+  const t = useT();
   if (items.length === 0) {
     return (
       <div className="rounded-[10px] border border-dashed border-[var(--elvix-primary-12)] bg-canvas dark:bg-[#101013] px-4 py-6 text-center">
-        <p className="text-[12.5px] text-fg-3 leading-[1.55]">No live sessions here.</p>
+        <p className="text-[12.5px] text-fg-3 leading-[1.55]">{t("sessions.empty")}</p>
       </div>
     );
   }
@@ -348,7 +355,7 @@ function ListPane({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <div className="text-[13px] font-medium text-fg-1 truncate">
-                    {s.device.browser} on {s.device.os}
+                    {t("sessions.deviceLine", { browser: s.device.browser, os: s.device.os })}
                   </div>
                   {s.isCurrent && (
                     <span
@@ -358,14 +365,14 @@ function ListPane({
                         color: "var(--elvix-primary-strong)",
                       }}
                     >
-                      this device
+                      {t("sessions.thisDeviceBadge")}
                     </span>
                   )}
                 </div>
                 <div className="text-[11px] text-fg-3 mt-1 flex items-center gap-2 flex-wrap">
                   <span className="inline-flex items-center gap-1">
                     <Clock className="size-3" />
-                    {formatRelative(s.createdAt)}
+                    {formatRelative(s.createdAt, t)}
                   </span>
                   {s.ipCountry && (
                     <span className="inline-flex items-center gap-1">
@@ -375,7 +382,7 @@ function ListPane({
                   )}
                   <span className="inline-flex items-center gap-1">
                     <MethodGlyph method={s.method} />
-                    {prettyMethod(s.method)}
+                    {prettyMethod(s.method, t)}
                   </span>
                 </div>
               </div>
@@ -384,7 +391,7 @@ function ListPane({
                   type="button"
                   onClick={() => onRevokeOne(s.id)}
                   disabled={busyId === s.id}
-                  title="Revoke this session"
+                  title={t("sessions.revokeOne")}
                   className="cursor-pointer size-8 grid place-items-center rounded-md text-fg-3 hover:text-red-500 hover:bg-red-500/10 transition disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {busyId === s.id ? (
@@ -408,7 +415,9 @@ function ListPane({
           className="w-full inline-flex items-center justify-center gap-1.5 h-10 rounded-[10px] text-[12.5px] font-medium text-fg-2 hover:text-fg-1 bg-surface-hover border border-border-base transition cursor-pointer"
         >
           <LogOut className="size-3.5" />
-          {othersCount === 0 ? "Sign me out of this device" : "Sign out of devices…"}
+          {othersCount === 0
+            ? t("sessions.massRevokeCtaSelf")
+            : t("sessions.massRevokeCtaOpen")}
         </button>
       )}
     </div>
@@ -432,6 +441,7 @@ function ConfirmPane({
   onSignOutOthers: () => void;
   onSignOutAll: () => void;
 }) {
+  const t = useT();
   const busy = revokingMode !== "none";
   return (
     <div className="space-y-4">
@@ -442,7 +452,7 @@ function ConfirmPane({
         className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-fg-2 hover:text-fg-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <ArrowLeft className="size-3.5" />
-        Back
+        {t("common.back")}
       </button>
 
       <div className="flex items-start gap-3">
@@ -451,11 +461,10 @@ function ConfirmPane({
         </span>
         <div className="min-w-0">
           <div className="text-[15px] font-semibold tracking-tight text-fg-1 leading-tight">
-            Sign out of where?
+            {t("sessions.confirmChooserTitle")}
           </div>
           <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-1">
-            Pick which sessions to end. Each one is revoked the moment you tap, and every tab on
-            that device is signed out on its next request.
+            {t("sessions.confirmChooserBody")}
           </p>
         </div>
       </div>
@@ -475,9 +484,9 @@ function ConfirmPane({
         >
           <div className="flex flex-col items-start text-left">
             <span className="text-[13px] font-semibold tracking-tight">
-              Sign out of the other {othersCount} {othersCount === 1 ? "device" : "devices"}
+              {t("sessions.signOutOtherDevicesCount", { count: othersCount })}
             </span>
-            <span className="text-[11px] opacity-80">Keep this one signed in</span>
+            <span className="text-[11px] opacity-80">{t("sessions.currentBadge")}</span>
           </div>
           {revokingMode === "others" ? (
             <Loader2 className="size-4 animate-spin shrink-0" />
@@ -501,11 +510,11 @@ function ConfirmPane({
           <div className="flex flex-col items-start text-left">
             <span className="text-[13px] font-semibold tracking-tight">
               {othersCount === 0
-                ? "Sign me out of this device"
-                : "Sign out everywhere, this device too"}
+                ? t("sessions.signOutAllCtaSelf")
+                : t("sessions.signOutAllCtaIncludingThis")}
             </span>
             <span className="text-[11px] opacity-90">
-              You'll land on the sign-in page right after
+              {t("sessions.signOutAllRedirectHint")}
             </span>
           </div>
           {revokingMode === "all" ? (
@@ -519,8 +528,7 @@ function ConfirmPane({
       {error && <p className="text-[12px] text-red-500 leading-tight">{error}</p>}
 
       <p className="text-[11.5px] text-fg-3 leading-[1.55]">
-        Already-issued tokens stay rejected. There's no undo, but signing back in on any device just
-        works again.
+        {t("sessions.confirmTokensFootnote")}
       </p>
     </div>
   );
@@ -533,6 +541,7 @@ function DonePane({
   endedCount: number;
   onBack: () => void;
 }) {
+  const t = useT();
   return (
     <div className="flex flex-col items-center text-center gap-4 py-2">
       <motion.span
@@ -551,12 +560,11 @@ function DonePane({
       <div className="space-y-1 max-w-[300px]">
         <div className="text-[15px] font-semibold tracking-tight text-fg-1">
           {endedCount === 0
-            ? "Already only this one."
-            : `Signed out of ${endedCount} ${endedCount === 1 ? "device" : "devices"}.`}
+            ? t("sessions.doneAlreadyAlone")
+            : t("sessions.doneCount", { count: endedCount })}
         </div>
         <div className="text-[12.5px] text-fg-3 leading-[1.55]">
-          Your current device is still signed in. Those other tabs will be kicked out on their next
-          request.
+          {t("sessions.doneFootnote")}
         </div>
       </div>
       <button
@@ -564,7 +572,7 @@ function DonePane({
         onClick={onBack}
         className="text-[12.5px] font-medium text-fg-2 hover:text-fg-1 underline underline-offset-4 cursor-pointer"
       >
-        Back to my sessions
+        {t("sessions.backToList")}
       </button>
     </div>
   );
@@ -608,19 +616,19 @@ function MethodGlyph({ method }: { method: string | null }) {
   return <Mail className="size-3" />;
 }
 
-function prettyMethod(method: string | null): string {
-  if (!method) return "Sign-in";
-  if (method === "otp") return "Email code";
-  if (method === "passkey") return "Passkey";
+function prettyMethod(method: string | null, t: TFunction): string {
+  if (!method) return t("sessions.methodSignIn");
+  if (method === "otp") return t("sessions.methodEmailCode");
+  if (method === "passkey") return t("sessions.methodPasskey");
   return method.charAt(0).toUpperCase() + method.slice(1);
 }
 
-function formatRelative(iso: string): string {
+function formatRelative(iso: string, t: TFunction): string {
   const diff = (Date.now() - new Date(iso).getTime()) / 1000;
-  if (diff < 60) return "just now";
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  if (diff < 7 * 86400) return `${Math.floor(diff / 86400)}d ago`;
+  if (diff < 60) return t("sessions.relativeJustNow");
+  if (diff < 3600) return t("sessions.relativeMinutesAgo", { count: Math.floor(diff / 60) });
+  if (diff < 86400) return t("sessions.relativeHoursAgo", { count: Math.floor(diff / 3600) });
+  if (diff < 7 * 86400) return t("sessions.relativeDaysAgo", { count: Math.floor(diff / 86400) });
   return new Date(iso).toLocaleDateString("en-GB", {
     day: "numeric",
     month: "short",

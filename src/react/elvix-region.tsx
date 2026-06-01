@@ -47,6 +47,7 @@ import {
   supportedTimeZones,
 } from "./regions";
 import { unwrapEnvelope } from "./spine-fetch";
+import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Check, ChevronRight, Globe, Loader2, Pencil, Search } from "lucide-react";
 import { type CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
@@ -130,6 +131,7 @@ export function ElvixRegion({
   onResult,
 }: ElvixRegionProps) {
   const ctx = useElvixContext();
+  const t = useT();
   const [view, setView] = useState<View>("loading");
   const [region, setRegion] = useState<RegionRecord | null>(null);
 
@@ -173,7 +175,7 @@ export function ElvixRegion({
       onResult?.({ ok: true, country, locale: region?.uiLocale ?? "" });
     } else {
       setView("country-pick");
-      onResult?.({ ok: false, error: "save_failed", message: "Couldn't save region." });
+      onResult?.({ ok: false, error: "save_failed", message: t("region.errorSaveFailed") });
     }
   };
 
@@ -191,7 +193,7 @@ export function ElvixRegion({
       await refresh();
       onResult?.({ ok: true, country: region?.country ?? "", locale: region?.uiLocale ?? "" });
     } else {
-      onResult?.({ ok: false, error: "save_failed", message: "Couldn't save region." });
+      onResult?.({ ok: false, error: "save_failed", message: t("region.errorSaveFailed") });
     }
     setView("detail");
   };
@@ -220,7 +222,7 @@ export function ElvixRegion({
       await refresh();
       onResult?.({ ok: true, country: pendingCountry, locale: region?.uiLocale ?? "" });
     } else {
-      onResult?.({ ok: false, error: "save_failed", message: "Couldn't save region." });
+      onResult?.({ ok: false, error: "save_failed", message: t("region.errorSaveFailed") });
     }
     setPendingCountry(null);
     setView("detail");
@@ -249,7 +251,7 @@ export function ElvixRegion({
           <AnimatePresence initial={false}>
             {view === "loading" || view === ("decide" as View) ? (
               <Pane key="loading">
-                <div className="grid h-full place-items-center text-fg-3 text-sm">Loading…</div>
+                <div className="grid h-full place-items-center text-fg-3 text-sm">{t("common.loading")}</div>
               </Pane>
             ) : view === "empty" ? (
               <Pane key="empty">
@@ -307,7 +309,7 @@ export function ElvixRegion({
             ) : view === "edit-time-format" ? (
               <Pane key="edit-time-format">
                 <ChoiceEditView<TimeFormat>
-                  title="Time format"
+                  title={t("region.timeFormat")}
                   options={TIME_FORMATS}
                   meta={TIME_FORMAT_META}
                   current={region?.timeFormat as TimeFormat}
@@ -318,7 +320,7 @@ export function ElvixRegion({
             ) : view === "edit-date-format" ? (
               <Pane key="edit-date-format">
                 <ChoiceEditView<DateFormat>
-                  title="Date format"
+                  title={t("region.dateFormat")}
                   options={DATE_FORMATS}
                   meta={DATE_FORMAT_META}
                   current={region?.dateFormat as DateFormat}
@@ -329,7 +331,7 @@ export function ElvixRegion({
             ) : view === "edit-number-format" ? (
               <Pane key="edit-number-format">
                 <ChoiceEditView<NumberFormat>
-                  title="Number format"
+                  title={t("region.numberFormat")}
                   options={NUMBER_FORMATS}
                   meta={NUMBER_FORMAT_META}
                   current={region?.numberFormat as NumberFormat}
@@ -348,7 +350,7 @@ export function ElvixRegion({
             ) : view === "edit-measurement" ? (
               <Pane key="edit-measurement">
                 <ChoiceEditView<MeasurementSystem>
-                  title="Units"
+                  title={t("region.unitsLabel")}
                   options={MEASUREMENT_SYSTEMS}
                   meta={MEASUREMENT_META}
                   current={region?.measurementSystem as MeasurementSystem}
@@ -379,6 +381,7 @@ export function ElvixRegion({
 // ─── Sub-views ───────────────────────────────────────────────────────
 
 function EmptyState({ onPick }: { onPick: () => void }) {
+  const t = useT();
   return (
     <div className="flex h-full flex-col items-center justify-center text-center">
       <button
@@ -390,10 +393,8 @@ function EmptyState({ onPick }: { onPick: () => void }) {
           <Globe className="size-6" />
         </div>
         <div>
-          <div className="text-[15px] font-semibold text-fg-1">Pick your region</div>
-          <div className="mt-1 text-[12px] text-fg-3">
-            UI language, time zone, currency, and date format follow your country.
-          </div>
+          <div className="text-[15px] font-semibold text-fg-1">{t("region.title")}</div>
+          <div className="mt-1 text-[12px] text-fg-3">{t("region.emptyHint")}</div>
         </div>
       </button>
     </div>
@@ -409,14 +410,12 @@ function CountryPickView({
   onPick: (country: string) => void;
   onBack: () => void;
 }) {
+  const t = useT();
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onBack} />
-      <Heading>Where do you live?</Heading>
-      <Subtitle>
-        We'll set your UI language, time zone, currency, and date format from this. You can override
-        each one later.
-      </Subtitle>
+      <Heading>{t("region.whereDoYouLive")}</Heading>
+      <Subtitle>{t("region.cascadeHint")}</Subtitle>
       <div className="mt-4 flex-1 min-h-0">
         <ElvixCountrySelect
           value={initial}
@@ -440,33 +439,48 @@ function CascadeConfirmView({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  const t = useT();
   const currentCountry = current ? findCountry(current.country) : null;
   const nextCountry = next ? findCountry(next) : null;
   const newDefaults = next ? defaultsFor(next) : null;
+  const fallbackCountry = t("region.cascadeFallbackCountry");
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onCancel} />
-      <Heading>Reset everything to {nextCountry?.name ?? next}?</Heading>
+      <Heading>
+        {t("region.cascadeResetTitle", { country: nextCountry?.name ?? next ?? "" })}
+      </Heading>
       <Subtitle>
-        You're moving from {currentCountry?.flag} {currentCountry?.name ?? "—"} to{" "}
-        {nextCountry?.flag} {nextCountry?.name ?? "—"}. UI language, time zone, currency, date
-        format, and units will all reset to the defaults for{" "}
-        {nextCountry?.name ?? "the new country"}. Your custom edits (if any) will be overwritten.
+        {t("region.cascadeResetBody", {
+          currentFlag: currentCountry?.flag ?? "",
+          currentName: currentCountry?.name ?? "—",
+          nextFlag: nextCountry?.flag ?? "",
+          nextName: nextCountry?.name ?? fallbackCountry,
+        })}
       </Subtitle>
       {newDefaults && (
         <div className="mt-4 grid grid-cols-2 gap-2 text-[12.5px]">
           <CascadeRow
-            label="UI language"
+            label={t("region.uiLanguageLabel")}
             value={findLanguage(newDefaults.uiLocale)?.name ?? newDefaults.uiLocale}
           />
-          <CascadeRow label="Time zone" value={prettyTimeZone(newDefaults.timeZone)} />
+          <CascadeRow label={t("region.timeZone")} value={prettyTimeZone(newDefaults.timeZone)} />
           <CascadeRow
-            label="Currency"
+            label={t("region.currency")}
             value={`${findCurrency(newDefaults.currency)?.symbol ?? ""} ${newDefaults.currency}`}
           />
-          <CascadeRow label="Date" value={DATE_FORMAT_META[newDefaults.dateFormat].sample} />
-          <CascadeRow label="Time" value={TIME_FORMAT_META[newDefaults.timeFormat].sample} />
-          <CascadeRow label="Units" value={MEASUREMENT_META[newDefaults.measurementSystem].label} />
+          <CascadeRow
+            label={t("region.dateLabel")}
+            value={DATE_FORMAT_META[newDefaults.dateFormat].sample}
+          />
+          <CascadeRow
+            label={t("region.timeLabel")}
+            value={TIME_FORMAT_META[newDefaults.timeFormat].sample}
+          />
+          <CascadeRow
+            label={t("region.unitsLabel")}
+            value={MEASUREMENT_META[newDefaults.measurementSystem].label}
+          />
         </div>
       )}
       <div className="mt-auto flex items-center justify-between gap-3 pt-3">
@@ -475,13 +489,13 @@ function CascadeConfirmView({
           onClick={onCancel}
           className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
         >
-          Cancel
+          {t("common.cancel")}
         </button>
         <ElvixSaveButton
           state="idle"
           onClick={onConfirm}
-          label="Reset defaults"
-          savedLabel="Saved"
+          label={t("region.resetDefaults")}
+          savedLabel={t("region.savedLabel")}
           hint={null}
           className="!w-auto !px-5"
         />
@@ -522,6 +536,7 @@ function DetailView({
   onEditMeasurement: () => void;
   onEditFirstDay: () => void;
 }) {
+  const t = useT();
   if (!region) return null;
   const country = findCountry(region.country);
   const lang = findLanguage(region.uiLocale ?? "");
@@ -537,13 +552,13 @@ function DetailView({
             <div className="text-[15px] font-semibold text-fg-1">
               {country?.name ?? region.country}
             </div>
-            <div className="text-[12px] text-fg-3">Your region</div>
+            <div className="text-[12px] text-fg-3">{t("region.yourRegion")}</div>
           </div>
           <button
             type="button"
             onClick={onEditCountry}
             className="grid size-7 place-items-center rounded-md text-fg-3 transition hover:bg-fg-3/10 hover:text-fg-1 cursor-pointer"
-            aria-label="Change country"
+            aria-label={t("region.changeCountryAria")}
           >
             <Pencil className="size-3.5" />
           </button>
@@ -551,42 +566,42 @@ function DetailView({
       </div>
       <div className="overflow-hidden rounded-[14px] border border-fg-3/15 bg-surface">
         <DetailRow
-          label="UI language"
+          label={t("region.uiLanguageLabel")}
           value={lang ? `${lang.name} · ${lang.native}` : region.uiLocale}
           onClick={onEditUiLocale}
         />
         <DetailRow
-          label="Time zone"
+          label={t("region.timeZone")}
           value={region.timeZone ? prettyTimeZone(region.timeZone) : null}
-          placeholder="Set time zone"
+          placeholder={t("region.setTimeZonePlaceholder")}
           onClick={onEditTimeZone}
         />
         <DetailRow
-          label="Currency"
+          label={t("region.currency")}
           value={
             currency ? `${currency.symbol} ${currency.code} · ${currency.name}` : region.currency
           }
           onClick={onEditCurrency}
         />
         <DetailRow
-          label="Time format"
+          label={t("region.timeFormat")}
           value={TIME_FORMAT_META[region.timeFormat as TimeFormat]?.sample ?? region.timeFormat}
           onClick={onEditTimeFormat}
         />
         <DetailRow
-          label="Date format"
+          label={t("region.dateFormat")}
           value={DATE_FORMAT_META[region.dateFormat as DateFormat]?.sample ?? region.dateFormat}
           onClick={onEditDateFormat}
         />
         <DetailRow
-          label="Numbers"
+          label={t("region.numbersLabel")}
           value={
             NUMBER_FORMAT_META[region.numberFormat as NumberFormat]?.sample ?? region.numberFormat
           }
           onClick={onEditNumberFormat}
         />
         <DetailRow
-          label="Units"
+          label={t("region.unitsLabel")}
           value={
             MEASUREMENT_META[region.measurementSystem as MeasurementSystem]?.label ??
             region.measurementSystem
@@ -594,7 +609,7 @@ function DetailView({
           onClick={onEditMeasurement}
         />
         <DetailRow
-          label="Week starts"
+          label={t("region.weekStartsLabel")}
           value={
             DAY_OF_WEEK_META[region.firstDayOfWeek as DayOfWeek]?.label ??
             String(region.firstDayOfWeek)
@@ -659,12 +674,13 @@ function ChoiceEditView<T extends string>({
   onSave: (next: T) => void;
   onBack: () => void;
 }) {
+  const t = useT();
   const [selected, setSelected] = useState<T>(current);
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onBack} />
       <Heading>{title}</Heading>
-      <Subtitle>Pick the one that feels right.</Subtitle>
+      <Subtitle>{t("region.pickOneHint")}</Subtitle>
       <ul className="mt-4 flex flex-col gap-2">
         {options.map((opt) => {
           const m = meta[opt];
@@ -695,8 +711,8 @@ function ChoiceEditView<T extends string>({
         <ElvixSaveButton
           state="idle"
           onClick={() => onSave(selected)}
-          label="Save"
-          savedLabel="Saved"
+          label={t("common.save")}
+          savedLabel={t("region.savedLabel")}
           hint={null}
           className="!w-auto !px-5"
         />
@@ -714,6 +730,7 @@ function FirstDayEditView({
   onSave: (next: DayOfWeek) => void;
   onBack: () => void;
 }) {
+  const t = useT();
   const [selected, setSelected] = useState<DayOfWeek>(current);
   // Only show the four common starts (Mon, Sun, Sat, Fri) — the
   // others are theoretically valid but never user-picked.
@@ -721,8 +738,8 @@ function FirstDayEditView({
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onBack} />
-      <Heading>Week starts on</Heading>
-      <Subtitle>Affects calendars, week pickers, and weekly reports.</Subtitle>
+      <Heading>{t("region.weekStartsOnTitle")}</Heading>
+      <Subtitle>{t("region.weekStartsHint")}</Subtitle>
       <ul className="mt-4 flex flex-col gap-2">
         {choices.map((d) => {
           const m = DAY_OF_WEEK_META[d];
@@ -750,8 +767,8 @@ function FirstDayEditView({
         <ElvixSaveButton
           state="idle"
           onClick={() => onSave(selected)}
-          label="Save"
-          savedLabel="Saved"
+          label={t("common.save")}
+          savedLabel={t("region.savedLabel")}
           hint={null}
           className="!w-auto !px-5"
         />
@@ -769,6 +786,7 @@ function UiLocaleEditView({
   onSave: (next: string) => void;
   onBack: () => void;
 }) {
+  const t = useT();
   const [query, setQuery] = useState("");
   const q = query.trim().toLowerCase();
   const filtered = useMemo(
@@ -786,15 +804,15 @@ function UiLocaleEditView({
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onBack} />
-      <Heading>UI language</Heading>
-      <Subtitle>What language elvix-powered apps should speak to you in.</Subtitle>
+      <Heading>{t("region.uiLanguageTitle")}</Heading>
+      <Subtitle>{t("region.uiLanguageHint")}</Subtitle>
       <div className="relative mt-4">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-3" />
         <ElvixInput
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="English, Deutsch, fa…"
+          placeholder={t("region.languageSearchPlaceholder")}
           autoFocus
           autoComplete="off"
           className="pl-9"
@@ -859,18 +877,19 @@ function CurrencyEditView({
         : CURRENCIES,
     [q],
   );
+  const t = useT();
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onBack} />
-      <Heading>Currency</Heading>
-      <Subtitle>Default for prices, invoices, and payouts in elvix-powered apps.</Subtitle>
+      <Heading>{t("region.currency")}</Heading>
+      <Subtitle>{t("region.currencyHint")}</Subtitle>
       <div className="relative mt-4">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-3" />
         <ElvixInput
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="EUR, dollar, real…"
+          placeholder={t("region.currencySearchPlaceholder")}
           autoFocus
           autoComplete="off"
           className="pl-9"
@@ -941,18 +960,19 @@ function TimeZoneEditView({
       return aMatch - bMatch;
     });
   }, [zones, q, country]);
+  const t = useT();
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onBack} />
-      <Heading>Time zone</Heading>
-      <Subtitle>Used for scheduling, "9am your time", and weekly reports.</Subtitle>
+      <Heading>{t("region.timeZone")}</Heading>
+      <Subtitle>{t("region.timeZoneHint")}</Subtitle>
       <div className="relative mt-4">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-3" />
         <ElvixInput
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Berlin, Tehran, Pacific…"
+          placeholder={t("region.timeZoneSearchPlaceholder")}
           autoFocus
           autoComplete="off"
           className="pl-9"
@@ -995,13 +1015,14 @@ function TimeZoneEditView({
 }
 
 function SavingView() {
+  const t = useT();
   return (
     <div className="grid h-full place-items-center">
       <div className="flex flex-col items-center gap-3">
         <div className="grid size-12 place-items-center rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)] text-[var(--elvix-primary)]">
           <Loader2 className="size-5 animate-spin" />
         </div>
-        <div className="text-[13px] font-medium text-fg-2">Saving…</div>
+        <div className="text-[13px] font-medium text-fg-2">{t("common.saving")}</div>
       </div>
     </div>
   );
@@ -1011,11 +1032,12 @@ function SavingView() {
 
 function WizardHeader({
   onBack,
-  backLabel = "Back",
+  backLabel,
 }: {
   onBack: () => void;
   backLabel?: string;
 }) {
+  const t = useT();
   return (
     <div className="flex items-center pt-2">
       <button
@@ -1024,7 +1046,7 @@ function WizardHeader({
         className="-ml-1 inline-flex items-center gap-1 rounded-md px-1.5 py-1 text-[12.5px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
       >
         <ArrowLeft className="size-4" />
-        {backLabel}
+        {backLabel ?? t("common.back")}
       </button>
     </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { LocaleProvider, switchLocale } from "@021.is/spine-i18n/react";
 import {
   type CSSProperties,
   type ReactNode,
@@ -9,8 +10,11 @@ import {
   useMemo,
   useState,
 } from "react";
+import { bundledEnglishCatalog, buildEnglishRuntime, fetchCatalog } from "../locale/runtime";
 import { authInit, consumeElvixReturnToken } from "./session";
 import type { ElvixBootstrapEnvelope, ElvixBrand, ElvixTheme } from "./types";
+
+const DEFAULT_LOCALE = "en";
 
 /**
  * Per-app user envelope returned by
@@ -134,6 +138,8 @@ export function ElvixProvider({
   theme,
   brand,
   baseUrl,
+  locale,
+  i18nBase,
   children,
   className = "",
 }: {
@@ -142,10 +148,55 @@ export function ElvixProvider({
   brand?: ElvixBrand;
   /** Override the elvix origin (testing, proxy setups). */
   baseUrl?: string;
+  /**
+   * BCP-47 locale tag (`"en"`, `"de"`, `"pt-BR"`). Switches every nested
+   * `<Elvix*>` component's copy to the matching translation. The 14
+   * non-English catalogs are lazy-fetched from `i18nBase`; English is
+   * bundled so the SDK renders immediately while the fetch is in flight.
+   * Falls back to English if the locale is missing or the fetch fails.
+   */
+  locale?: string;
+  /**
+   * Override the translation CDN. Defaults to
+   * `https://elvix.is/api/v1/i18n/elvix` which serves the catalogs
+   * published to the shared `i18n` R2 bucket under `elvix/main/<locale>.json`.
+   */
+  i18nBase?: string;
   children: ReactNode;
   className?: string;
 }) {
   const resolvedBaseUrl = baseUrl ?? DEFAULT_BASE_URL;
+  const resolvedLocale = locale ?? DEFAULT_LOCALE;
+  // `initial` is locked at LocaleProvider mount; later locale swaps go
+  // through `switchLocale(...)` which fires a CustomEvent the provider
+  // listens for. So the `useEffect` below dispatches that event whenever
+  // `locale` changes — the next render after the dispatch sees the new
+  // runtime and every nested `useT()` returns the matched-locale string.
+  const initialRuntime = useMemo(() => buildEnglishRuntime(), []);
+
+  useEffect(() => {
+    if (resolvedLocale === DEFAULT_LOCALE) {
+      // Snap straight back to bundled English — no network.
+      switchLocale({ primary: bundledEnglishCatalog(), fallback: null });
+      return;
+    }
+    let cancelled = false;
+    void fetchCatalog(resolvedLocale, i18nBase).then((primary) => {
+      if (cancelled) return;
+      if (!primary) {
+        // Fetch failed; fall back to English silently.
+        switchLocale({ primary: bundledEnglishCatalog(), fallback: null });
+        return;
+      }
+      // Bundled `en` stays in the fallback chain so any missing key in
+      // the target catalog falls through to English instead of showing
+      // the raw key.
+      switchLocale({ primary, fallback: bundledEnglishCatalog() });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [resolvedLocale, i18nBase]);
   const [app, setApp] = useState<ElvixBootstrapEnvelope | null>(null);
   const [appError, setAppError] = useState<string | null>(null);
   const [appContext, setAppContext] = useState<ElvixAppContext | null>(null);
@@ -267,13 +318,15 @@ export function ElvixProvider({
 
   return (
     <ElvixContext.Provider value={value}>
-      <div
-        data-elvix-theme={effectiveTheme}
-        style={cssVars}
-        className={(effectiveTheme === "dark" ? "dark " : "") + "elvix-sdk-root " + className}
-      >
-        {children}
-      </div>
+      <LocaleProvider initial={initialRuntime}>
+        <div
+          data-elvix-theme={effectiveTheme}
+          style={cssVars}
+          className={(effectiveTheme === "dark" ? "dark " : "") + "elvix-sdk-root " + className}
+        >
+          {children}
+        </div>
+      </LocaleProvider>
     </ElvixContext.Provider>
   );
 }

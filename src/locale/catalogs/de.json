@@ -1,0 +1,2276 @@
+{
+  "$comment": "German translation of the @elvix.is/sdk catalog.",
+  "locale": "de",
+  "namespaces": {
+    "common": {
+      "ok": {
+        "other": "OK"
+      },
+      "cancel": {
+        "other": "Abbrechen"
+      },
+      "back": {
+        "other": "Zurück"
+      },
+      "next": {
+        "other": "Weiter"
+      },
+      "continue": {
+        "other": "Fortfahren"
+      },
+      "save": {
+        "other": "Speichern"
+      },
+      "saving": {
+        "other": "Wird gespeichert"
+      },
+      "delete": {
+        "other": "Löschen"
+      },
+      "remove": {
+        "other": "Entfernen"
+      },
+      "edit": {
+        "other": "Bearbeiten"
+      },
+      "close": {
+        "other": "Schließen"
+      },
+      "done": {
+        "other": "Fertig"
+      },
+      "retry": {
+        "other": "Erneut versuchen"
+      },
+      "loading": {
+        "other": "Wird geladen"
+      },
+      "search": {
+        "other": "Suchen"
+      },
+      "noMatches": {
+        "other": "Keine Treffer"
+      },
+      "lastStep": {
+        "other": "Letzter Schritt"
+      },
+      "skip": {
+        "other": "Überspringen"
+      },
+      "durationSeconds": {
+        "other": "{seconds}s"
+      },
+      "durationOneMinute": {
+        "other": "1 Minute"
+      },
+      "durationMinutes": {
+        "one": "{minutes} Minute",
+        "other": "{minutes} Minuten"
+      },
+      "somethingWentWrong": {
+        "other": "Etwas ist schiefgelaufen. Versuchen Sie es erneut."
+      },
+      "errorNetwork": {
+        "other": "Netzwerkproblem. Versuchen Sie es erneut."
+      },
+      "errorSaveFailed": {
+        "other": "Speichern fehlgeschlagen. Versuchen Sie es erneut."
+      },
+      "hintEnter": {
+        "other": "Eingabe"
+      },
+      "enterHint": {
+        "other": "Eingabe"
+      },
+      "sendingLabel": {
+        "other": "Wird gesendet"
+      },
+      "saved": {
+        "other": "Gespeichert"
+      },
+      "optionalSuffix": {
+        "other": " (optional)"
+      },
+      "savingDots": {
+        "other": "Wird gespeichert."
+      }
+    },
+    "signin": {
+      "title": {
+        "other": "Bei {app} anmelden"
+      },
+      "titleDefault": {
+        "other": "Anmelden"
+      },
+      "subtitle": {
+        "other": ""
+      },
+      "googleButton": {
+        "other": "Mit Google fortfahren"
+      },
+      "passkeyButton": {
+        "other": "Mit Passkey fortfahren"
+      },
+      "emailPlaceholder": {
+        "other": "E-Mail"
+      },
+      "sendCodeButton": {
+        "other": "Fortfahren"
+      },
+      "sendingLabel": {
+        "other": "Wird gesendet"
+      },
+      "codeSentSubtitle": {
+        "other": "Wir haben einen Code an {email} gesendet"
+      },
+      "codePlaceholder": {
+        "other": "Bestätigungscode"
+      },
+      "submitButton": {
+        "other": "Anmelden"
+      },
+      "verifyingLabel": {
+        "other": "Wird verifiziert"
+      },
+      "or": {
+        "other": "oder"
+      },
+      "resendCode": {
+        "other": "Code erneut senden"
+      },
+      "resentLabel": {
+        "other": "Erneut gesendet"
+      },
+      "errorGeneric": {
+        "other": "Etwas ist schiefgelaufen. Versuchen Sie es erneut."
+      },
+      "errorBadCode": {
+        "other": "Dieser Code stimmt nicht."
+      },
+      "errorRateLimited": {
+        "other": "Zu viele Versuche. Warten Sie einen Moment."
+      },
+      "securedBy": {
+        "other": "Gesichert durch "
+      },
+      "verbLogin": {
+        "other": "Einloggen"
+      },
+      "titleLogin": {
+        "other": "Bei {app} einloggen"
+      },
+      "bootstrapErrorTitle": {
+        "other": "Anmeldung konnte nicht geladen werden"
+      },
+      "bootstrapErrorBody": {
+        "other": "Ungültige {clientIdToken} oder Origin für diese Domain nicht zugelassen. Öffnen Sie die Console, Ihre Anwendung, Zugangsdaten, um die {clientIdToken} zu bestätigen, und fügen Sie diese Origin zu den zulässigen Origins hinzu."
+      },
+      "identifierPlaceholderEmailOrUsername": {
+        "other": "E-Mail oder Benutzername"
+      },
+      "identifierPlaceholderUsername": {
+        "other": "Benutzername"
+      },
+      "identifierPlaceholderEmail": {
+        "other": "Geben Sie Ihre E-Mail ein"
+      },
+      "errorNetwork": {
+        "other": "Netzwerkproblem. Versuchen Sie es erneut."
+      },
+      "errorPasskeyVerify": {
+        "other": "Passkey-Verifizierung fehlgeschlagen."
+      },
+      "errorPasskeyAdd": {
+        "other": "Passkey konnte nicht hinzugefügt werden. Versuchen Sie es erneut oder überspringen Sie es vorerst."
+      },
+      "visitAppWebsite": {
+        "other": "Website von {app} besuchen"
+      },
+      "passkeyOnboardingTitleSignin": {
+        "other": "Beim nächsten Mal schneller anmelden"
+      },
+      "passkeyOnboardingTitleLogin": {
+        "other": "Beim nächsten Mal schneller einloggen"
+      },
+      "recoverTitle": {
+        "other": "Willkommen zurück bei {app}"
+      },
+      "appNameFallback": {
+        "other": "Ihre App"
+      },
+      "legalAppFallback": {
+        "other": "die App"
+      },
+      "passkeyOnboardingSubtitle": {
+        "other": "Touch ID, Face ID oder Ihr Sicherheitsschlüssel. Keine E-Mail-Codes mehr."
+      },
+      "recoverSubtitle": {
+        "other": "Wählen Sie, ob Sie zurückkehren oder fernbleiben möchten."
+      },
+      "identifierSubtitle": {
+        "other": "Wählen Sie, wie Sie fortfahren möchten."
+      },
+      "verifyButton": {
+        "other": "Verifizieren"
+      },
+      "useDifferentEmail": {
+        "other": "Eine andere E-Mail verwenden"
+      },
+      "resendInSeconds": {
+        "other": "Erneut senden in {seconds}s"
+      },
+      "passkeyBullet1": {
+        "other": "Keine Passwörter oder E-Mail-Codes mehr"
+      },
+      "passkeyBullet2": {
+        "other": "Phishing-sicher. Funktioniert nur auf dieser Seite."
+      },
+      "passkeyBullet3": {
+        "other": "Synchronisiert sich über Ihre Geräte via iCloud, Google oder 1Password"
+      },
+      "addPasskeyCta": {
+        "other": "Passkey hinzufügen"
+      },
+      "skipForNow": {
+        "other": "Vorerst überspringen"
+      },
+      "previewEmptyMethods": {
+        "other": "Aktivieren Sie mindestens eine Methode, um die Anmeldung in der Vorschau anzuzeigen."
+      },
+      "googleButtonShort": {
+        "other": "Google"
+      },
+      "passkeyButtonShort": {
+        "other": "Passkey"
+      },
+      "legalIntro": {
+        "other": "Mit dem Fortfahren stimmen Sie den Bedingungen von {app} zu:"
+      },
+      "termsOfService": {
+        "other": "Nutzungsbedingungen"
+      },
+      "privacyPolicy": {
+        "other": "Datenschutzerklärung"
+      },
+      "framedPreviewLabel": {
+        "other": "Dies ist eine Vorschau"
+      },
+      "errorTooRecentWithSeconds": {
+        "other": "Warten Sie {seconds}s, bevor Sie einen weiteren Code anfordern."
+      },
+      "errorTooRecent": {
+        "other": "Warten Sie einen Moment, bevor Sie einen weiteren Code anfordern."
+      },
+      "errorTooManyWithRetry": {
+        "other": "Zu viele Codes an diese E-Mail gesendet. Versuchen Sie es in {retry} erneut."
+      },
+      "errorTooMany": {
+        "other": "Zu viele Codes an diese E-Mail gesendet. Versuchen Sie es später erneut."
+      },
+      "errorInvalidCode": {
+        "other": "Dieser Code hat nicht funktioniert. Versuchen Sie es erneut."
+      },
+      "errorExpired": {
+        "other": "Dieser Code ist abgelaufen. Senden Sie einen neuen."
+      },
+      "errorSendFailed": {
+        "other": "E-Mail konnte nicht gesendet werden. Überprüfen Sie die Adresse."
+      },
+      "errorUserPaused": {
+        "other": "Ihr Zugang wurde pausiert. Wenden Sie sich an den Support."
+      },
+      "errorUserBanned": {
+        "other": "Zugang verweigert."
+      },
+      "errorUsernameNotFound": {
+        "other": "Kein Konto mit diesem Benutzernamen vorhanden."
+      },
+      "errorMethodDisabled": {
+        "other": "Diese Anmeldemethode ist für diese App nicht aktiviert."
+      },
+      "errorGraceExpired": {
+        "other": "Das 90-Tage-Fenster zur Wiederherstellung ist abgelaufen."
+      },
+      "errorSessionEnded": {
+        "other": "Ihre Sitzung wurde beendet. Melden Sie sich erneut an."
+      }
+    },
+    "sessions": {
+      "title": {
+        "other": "Ihre Sitzungen"
+      },
+      "empty": {
+        "other": "Keine aktiven Sitzungen hier."
+      },
+      "currentBadge": {
+        "other": "Diese angemeldet lassen"
+      },
+      "revokeOne": {
+        "other": "Abmelden"
+      },
+      "revokeOthersCta": {
+        "other": "Andere Geräte abmelden"
+      },
+      "revokeAllCta": {
+        "other": "Überall abmelden"
+      },
+      "confirmOthersTitle": {
+        "other": "Andere Geräte abmelden?"
+      },
+      "confirmOthersBody": {
+        "other": "Wählen Sie, welche Sitzungen beendet werden sollen. Jede wird sofort beim Tippen widerrufen, und jeder Tab auf diesem Gerät fällt innerhalb von Sekunden auf abgemeldet zurück."
+      },
+      "confirmAllTitle": {
+        "other": "Überall abmelden?"
+      },
+      "confirmAllBody": {
+        "other": "Dieses Gerät eingeschlossen. Sie werden danach zur erneuten Anmeldung weitergeleitet."
+      },
+      "doneTitle": {
+        "other": "Abgemeldet"
+      },
+      "doneCount": {
+        "one": "{count} Gerät abgemeldet.",
+        "other": "{count} Geräte abgemeldet."
+      },
+      "errorLoad": {
+        "other": "Sitzungen konnten nicht geladen werden."
+      },
+      "errorRevoke": {
+        "other": "Widerruf nicht möglich. Versuchen Sie es erneut."
+      },
+      "errorMassRevoke": {
+        "other": "Abmeldung nicht möglich. Versuchen Sie es erneut."
+      },
+      "thisDeviceBadge": {
+        "other": "dieses Gerät"
+      },
+      "deviceLine": {
+        "other": "{browser} auf {os}"
+      },
+      "massRevokeCtaSelf": {
+        "other": "Mich von diesem Gerät abmelden"
+      },
+      "massRevokeCtaOpen": {
+        "other": "Von Geräten abmelden..."
+      },
+      "confirmChooserTitle": {
+        "other": "Wo abmelden?"
+      },
+      "confirmChooserBody": {
+        "other": "Wählen Sie, welche Sitzungen beendet werden sollen. Jede wird sofort beim Tippen widerrufen, und jeder Tab auf diesem Gerät wird bei der nächsten Anfrage abgemeldet."
+      },
+      "signOutOtherDevicesCount": {
+        "one": "Vom anderen {count} Gerät abmelden",
+        "other": "Von den anderen {count} Geräten abmelden"
+      },
+      "signOutAllCtaSelf": {
+        "other": "Mich von diesem Gerät abmelden"
+      },
+      "signOutAllCtaIncludingThis": {
+        "other": "Überall abmelden, dieses Gerät eingeschlossen"
+      },
+      "signOutAllRedirectHint": {
+        "other": "Sie landen direkt danach auf der Anmeldeseite"
+      },
+      "confirmTokensFootnote": {
+        "other": "Bereits ausgestellte Tokens bleiben abgelehnt. Es gibt kein Rückgängig, aber die erneute Anmeldung auf jedem Gerät funktioniert wieder problemlos."
+      },
+      "doneAlreadyAlone": {
+        "other": "Bereits nur dieses eine."
+      },
+      "doneFootnote": {
+        "other": "Ihr aktuelles Gerät ist weiterhin angemeldet. Die anderen Tabs werden bei ihrer nächsten Anfrage abgemeldet."
+      },
+      "backToList": {
+        "other": "Zurück zu meinen Sitzungen"
+      },
+      "methodSignIn": {
+        "other": "Anmeldung"
+      },
+      "methodEmailCode": {
+        "other": "E-Mail-Code"
+      },
+      "methodPasskey": {
+        "other": "Passkey"
+      },
+      "relativeJustNow": {
+        "other": "gerade eben"
+      },
+      "relativeMinutesAgo": {
+        "other": "vor {count}m"
+      },
+      "relativeHoursAgo": {
+        "other": "vor {count}h"
+      },
+      "relativeDaysAgo": {
+        "other": "vor {count}d"
+      }
+    },
+    "avatar": {
+      "replace": {
+        "other": "Ersetzen"
+      },
+      "removePhoto": {
+        "other": "Foto entfernen"
+      },
+      "removeConfirmTitle": {
+        "other": "Ihr Foto entfernen?"
+      },
+      "removeConfirmBody": {
+        "other": "Fällt auf Ihre Initialen zurück."
+      },
+      "uploading": {
+        "other": "Wird hochgeladen"
+      },
+      "cropTitle": {
+        "other": "Zuschneiden"
+      },
+      "cropApply": {
+        "other": "Übernehmen"
+      },
+      "errorTooLarge": {
+        "other": "Bild zu groß. Wählen Sie eines unter {limitMb} MB."
+      },
+      "errorBadType": {
+        "other": "Wählen Sie ein PNG-, JPG- oder WebP-Bild."
+      },
+      "uploadFailed": {
+        "other": "Foto konnte nicht hochgeladen werden. Versuchen Sie ein anderes Bild."
+      },
+      "removeFailed": {
+        "other": "Foto konnte nicht entfernt werden."
+      },
+      "editPhotoAria": {
+        "other": "Foto bearbeiten"
+      },
+      "addPhotoAria": {
+        "other": "Foto hinzufügen"
+      },
+      "confirmRemoveAria": {
+        "other": "Entfernen bestätigen"
+      },
+      "replacePhotoAria": {
+        "other": "Foto ersetzen"
+      },
+      "uploadPhotoAria": {
+        "other": "Foto hochladen"
+      },
+      "useThisCropAria": {
+        "other": "Diesen Zuschnitt verwenden"
+      }
+    },
+    "banner": {
+      "replace": {
+        "other": "Ersetzen"
+      },
+      "removeBanner": {
+        "other": "Banner entfernen"
+      },
+      "removeConfirmTitle": {
+        "other": "Ihr Banner entfernen?"
+      },
+      "removeConfirmBody": {
+        "other": "Fällt auf den Verlaufsplatzhalter zurück."
+      },
+      "uploading": {
+        "other": "Wird hochgeladen"
+      },
+      "cropTitle": {
+        "other": "Banner zuschneiden"
+      },
+      "cropApply": {
+        "other": "Übernehmen"
+      },
+      "errorUpload": {
+        "other": "Banner konnte nicht hochgeladen werden. Versuchen Sie ein anderes Bild."
+      },
+      "errorRemove": {
+        "other": "Banner konnte nicht entfernt werden."
+      },
+      "previewAlt": {
+        "other": "Banner-Vorschau"
+      },
+      "cropUse": {
+        "other": "Verwenden"
+      },
+      "cropUseAria": {
+        "other": "Diesen Zuschnitt verwenden"
+      },
+      "editAria": {
+        "other": "Banner bearbeiten"
+      },
+      "addAria": {
+        "other": "Banner hinzufügen"
+      },
+      "uploadAria": {
+        "other": "Banner hochladen"
+      },
+      "confirmRemoveAria": {
+        "other": "Entfernen bestätigen"
+      },
+      "confirmRemoveHint": {
+        "other": "Klicken Sie erneut zum Bestätigen"
+      }
+    },
+    "username": {
+      "title": {
+        "other": "Wählen Sie einen Benutzernamen"
+      },
+      "placeholder": {
+        "other": "benutzername"
+      },
+      "checking": {
+        "other": "Wird geprüft"
+      },
+      "available": {
+        "other": "Verfügbar"
+      },
+      "taken": {
+        "other": "Vergeben"
+      },
+      "tooShort": {
+        "other": "Zu kurz"
+      },
+      "tooLong": {
+        "other": "Zu lang"
+      },
+      "badChars": {
+        "other": "Nur Buchstaben, Zahlen, Bindestriche"
+      },
+      "reserved": {
+        "other": "Reserviert"
+      },
+      "subtitle": {
+        "other": "So sehen Sie andere Personen auf {app}."
+      },
+      "subtitleNoApp": {
+        "other": "So sehen Sie andere Personen."
+      },
+      "label": {
+        "other": "Benutzername"
+      },
+      "exampleHandle": {
+        "other": "ihrname"
+      },
+      "rulesHint": {
+        "other": "4 bis 30 Zeichen, a bis z, 0 bis 9, Punkt, Unterstrich. Muss mit einem Buchstaben beginnen."
+      },
+      "availableHint": {
+        "other": "Sieht gut aus. Dieser gehört Ihnen."
+      },
+      "suggestionsHeading": {
+        "other": "Vorschläge"
+      },
+      "claimCta": {
+        "other": "@{handle} beanspruchen"
+      },
+      "yournameFallback": {
+        "other": "ihrname"
+      },
+      "reasonBlank": {
+        "other": "Wählen Sie einen Benutzernamen."
+      },
+      "reasonTooShort": {
+        "other": "Mindestens 4 Zeichen."
+      },
+      "reasonTooLong": {
+        "other": "Maximal 30 Zeichen."
+      },
+      "reasonOnlyNumbers": {
+        "other": "Darf nicht nur aus Zahlen bestehen."
+      },
+      "reasonBadStart": {
+        "other": "Muss mit einem Buchstaben beginnen."
+      },
+      "reasonBadChars": {
+        "other": "Nur a bis z, 0 bis 9, Punkt, Unterstrich."
+      },
+      "reasonConsecutiveSpecial": {
+        "other": "Keine zwei Punkte oder Unterstriche hintereinander."
+      },
+      "reasonTrailingSpecial": {
+        "other": "Darf nicht mit einem Punkt oder Unterstrich enden."
+      },
+      "reasonTaken": {
+        "other": "Dieser ist bereits vergeben."
+      },
+      "reasonInvalid": {
+        "other": "Dieser Benutzername ist nicht gültig."
+      },
+      "errorJustTaken": {
+        "other": "Dieser Benutzername wurde gerade vergeben. Wählen Sie einen anderen."
+      },
+      "errorFormat": {
+        "other": "Dieser Benutzername entspricht nicht den Regeln."
+      },
+      "errorSaveFailed": {
+        "other": "Speichern fehlgeschlagen. Versuchen Sie es erneut."
+      },
+      "errorNetwork": {
+        "other": "Netzwerkproblem. Versuchen Sie es erneut."
+      },
+      "ruleLength": {
+        "other": "{min} bis {max} Zeichen"
+      },
+      "ruleChars": {
+        "other": "Kleinbuchstaben, Ziffern, Punkt, Unterstrich"
+      },
+      "ruleStartEnd": {
+        "other": "mit einem Buchstaben beginnen, mit einem Buchstaben oder einer Ziffer enden"
+      },
+      "ruleNoDoubles": {
+        "other": "keine zwei Sonderzeichen hintereinander, keine reservierten Wörter"
+      },
+      "confirmHeading": {
+        "other": "Änderung bestätigen"
+      },
+      "notSet": {
+        "other": "Nicht festgelegt"
+      },
+      "confirmBody": {
+        "other": "Jeder, der sich mit diesem Benutzernamen bei dieser App anmeldet, wird Sie sein. Sie können ihn jederzeit erneut ändern."
+      },
+      "confirmCta": {
+        "other": "Änderung bestätigen"
+      },
+      "doneTitle": {
+        "other": "Sie sind @{username} auf {appName}."
+      },
+      "doneBody": {
+        "other": "Wir haben es gespeichert. Sie können diese Oberfläche weiter nutzen oder zurückkehren, wenn Sie bereit sind."
+      },
+      "changeAgain": {
+        "other": "Erneut ändern"
+      },
+      "disabledMailSubject": {
+        "other": "Anmeldung per Benutzername auf {appName} wieder aktivieren"
+      },
+      "disabledContactSupport": {
+        "other": "Support von {appName} kontaktieren"
+      },
+      "disabledEmailSupport": {
+        "other": "{appName} per E-Mail kontaktieren"
+      },
+      "disabledTitle": {
+        "other": "Benutzernamen sind auf {appName} deaktiviert."
+      },
+      "disabledBody": {
+        "other": "Der App-Eigentümer hat die Anmeldung per Benutzername derzeit deaktiviert, daher können Sie hier keinen Benutzernamen festlegen oder ändern."
+      },
+      "disabledStillHave": {
+        "other": "Sie haben weiterhin @{current} von zuvor. Er bleibt in Ihrer Mitgliedschaft, bis der App-Eigentümer die Funktion wieder aktiviert."
+      },
+      "disabledNoSupport": {
+        "other": "Die App hat noch keinen Support-Kontakt veröffentlicht. Wenden Sie sich über den üblichen Kanal an sie."
+      },
+      "disabledHint": {
+        "other": "Bitten Sie sie, die Benutzernamen-Anmeldung in der Console unter Anmeldemethoden wieder zu aktivieren. Sobald sie das tun, können Sie hierher zurückkehren und einen Benutzernamen wählen."
+      },
+      "idleCurrent": {
+        "other": "Derzeit @{current}. Geben Sie etwas anderes ein, um ihn zu ändern."
+      },
+      "idleEmpty": {
+        "other": "Wählen Sie einen Namen, den andere Personen in dieser App verwenden können, um Sie zu finden."
+      },
+      "formatGeneric": {
+        "other": "Entspricht nicht den untenstehenden Regeln."
+      },
+      "takenLine": {
+        "other": "Jemand anderes in dieser App hat bereits @{username}."
+      },
+      "currentLine": {
+        "other": "Das ist der Benutzername, den Sie hier bereits haben."
+      },
+      "availableLine": {
+        "other": "@{username} ist verfügbar."
+      },
+      "reasonMustStartLetter": {
+        "other": "Muss mit einem Buchstaben beginnen."
+      },
+      "reasonMustEndAlnum": {
+        "other": "Muss mit einem Buchstaben oder einer Ziffer enden."
+      },
+      "reasonNoDoubleSpecial": {
+        "other": "Darf keine zwei Punkte oder Unterstriche hintereinander enthalten."
+      },
+      "reasonReserved": {
+        "other": "Dieser Benutzername ist reserviert. Wählen Sie einen anderen."
+      },
+      "appNameFallback": {
+        "other": "Ihre App"
+      }
+    },
+    "identity": {
+      "title": {
+        "other": "Ihr Profil"
+      },
+      "fullName": {
+        "other": "Vollständiger Name"
+      },
+      "birthdate": {
+        "other": "Geburtsdatum"
+      },
+      "gender": {
+        "other": "Geschlecht"
+      },
+      "pronouns": {
+        "other": "Pronomen"
+      },
+      "save": {
+        "other": "Profil speichern"
+      },
+      "saved": {
+        "other": "Gespeichert"
+      },
+      "genderMale": {
+        "other": "Männlich"
+      },
+      "genderFemale": {
+        "other": "Weiblich"
+      },
+      "genderNonBinary": {
+        "other": "Non-binär"
+      },
+      "genderPreferNotToSay": {
+        "other": "Keine Angabe"
+      },
+      "pronounSheHer": {
+        "other": "Sie / ihr"
+      },
+      "pronounHeHim": {
+        "other": "Er / ihm"
+      },
+      "pronounTheyThem": {
+        "other": "They / them"
+      },
+      "pronounOther": {
+        "other": "Andere"
+      },
+      "pronounPreferNotToSay": {
+        "other": "Keine Angabe"
+      },
+      "errorSaveFailed": {
+        "other": "Speichern nicht möglich."
+      },
+      "givenName": {
+        "other": "Vorname"
+      },
+      "givenNamePlaceholder": {
+        "other": "Jane"
+      },
+      "familyName": {
+        "other": "Nachname"
+      },
+      "familyNamePlaceholder": {
+        "other": "Doe"
+      },
+      "pronounsOptional": {
+        "other": "Pronomen (optional)"
+      }
+    },
+    "region": {
+      "title": {
+        "other": "Wählen Sie Ihre Region"
+      },
+      "yourRegion": {
+        "other": "Ihre Region"
+      },
+      "country": {
+        "other": "Land"
+      },
+      "uiLocale": {
+        "other": "Sprache"
+      },
+      "currency": {
+        "other": "Währung"
+      },
+      "firstDayOfWeek": {
+        "other": "Erster Tag der Woche"
+      },
+      "timeZone": {
+        "other": "Zeitzone"
+      },
+      "save": {
+        "other": "Region speichern"
+      },
+      "confirmTitle": {
+        "other": "Region ändern?"
+      },
+      "confirmBody": {
+        "other": "Die Änderung des Landes wirkt sich auch auf Währung und ersten Wochentag aus."
+      },
+      "errorSaveFailed": {
+        "other": "Region konnte nicht gespeichert werden."
+      },
+      "emptyHint": {
+        "other": "UI-Sprache, Zeitzone, Währung und Datumsformat richten sich nach Ihrem Land."
+      },
+      "whereDoYouLive": {
+        "other": "Wo wohnen Sie?"
+      },
+      "cascadeHint": {
+        "other": "Wir legen Ihre UI-Sprache, Zeitzone, Währung und Ihr Datumsformat daraus fest. Sie können jedes davon später überschreiben."
+      },
+      "cascadeResetTitle": {
+        "other": "Alles auf {country} zurücksetzen?"
+      },
+      "cascadeResetBody": {
+        "other": "Sie wechseln von {currentFlag} {currentName} zu {nextFlag} {nextName}. UI-Sprache, Zeitzone, Währung, Datumsformat und Einheiten werden alle auf die Standardwerte für {nextName} zurückgesetzt. Ihre individuellen Anpassungen (falls vorhanden) werden überschrieben."
+      },
+      "cascadeFallbackCountry": {
+        "other": "das neue Land"
+      },
+      "uiLanguageLabel": {
+        "other": "UI-Sprache"
+      },
+      "dateLabel": {
+        "other": "Datum"
+      },
+      "timeLabel": {
+        "other": "Uhrzeit"
+      },
+      "unitsLabel": {
+        "other": "Einheiten"
+      },
+      "resetDefaults": {
+        "other": "Standardwerte zurücksetzen"
+      },
+      "savedLabel": {
+        "other": "Gespeichert"
+      },
+      "changeCountryAria": {
+        "other": "Land ändern"
+      },
+      "setTimeZonePlaceholder": {
+        "other": "Zeitzone festlegen"
+      },
+      "timeFormat": {
+        "other": "Zeitformat"
+      },
+      "dateFormat": {
+        "other": "Datumsformat"
+      },
+      "numberFormat": {
+        "other": "Zahlenformat"
+      },
+      "numbersLabel": {
+        "other": "Zahlen"
+      },
+      "weekStartsLabel": {
+        "other": "Woche beginnt"
+      },
+      "weekStartsOnTitle": {
+        "other": "Woche beginnt am"
+      },
+      "weekStartsHint": {
+        "other": "Wirkt sich auf Kalender, Wochenauswahl und Wochenberichte aus."
+      },
+      "pickOneHint": {
+        "other": "Wählen Sie die Option, die sich richtig anfühlt."
+      },
+      "uiLanguageTitle": {
+        "other": "UI-Sprache"
+      },
+      "uiLanguageHint": {
+        "other": "In welcher Sprache elvix-basierte Apps mit Ihnen sprechen sollen."
+      },
+      "languageSearchPlaceholder": {
+        "other": "English, Deutsch, fa..."
+      },
+      "currencyHint": {
+        "other": "Standard für Preise, Rechnungen und Auszahlungen in elvix-basierten Apps."
+      },
+      "currencySearchPlaceholder": {
+        "other": "EUR, Dollar, Real..."
+      },
+      "timeZoneHint": {
+        "other": "Wird für Terminplanung, \"9 Uhr Ihrer Zeit\" und Wochenberichte verwendet."
+      },
+      "timeZoneSearchPlaceholder": {
+        "other": "Berlin, Tehran, Pacific..."
+      }
+    },
+    "languages": {
+      "title": {
+        "other": "Sprachen, die Sie sprechen"
+      },
+      "addLanguage": {
+        "other": "Sprache hinzufügen"
+      },
+      "limitReached": {
+        "other": "Sie können bis zu {limit} Sprachen aufführen."
+      },
+      "level": {
+        "other": "Niveau"
+      },
+      "remove": {
+        "other": "Entfernen"
+      },
+      "saveLevel": {
+        "other": "Niveau speichern"
+      },
+      "updatingLevel": {
+        "other": "Niveau wird aktualisiert"
+      },
+      "addingLanguage": {
+        "other": "Sprache wird hinzugefügt"
+      },
+      "removing": {
+        "other": "Wird entfernt"
+      },
+      "emptyHint": {
+        "other": "Für UI-Standards, Jobs und ausgehende Nachrichten."
+      },
+      "searchHint": {
+        "other": "Suche nach englischem Namen, nativem Namen oder ISO-Code."
+      },
+      "searchPlaceholder": {
+        "other": "English, Deutsch, fa"
+      },
+      "takenBadge": {
+        "other": "hinzugefügt"
+      },
+      "levelPickTitle": {
+        "other": "Wie gut sprechen Sie {language}?"
+      },
+      "thisLanguageFallback": {
+        "other": "diese Sprache"
+      },
+      "levelPickSubtitle": {
+        "other": "Wählen Sie das passende Niveau. Sie können es später ändern."
+      },
+      "errorAlreadyAdded": {
+        "other": "Sie haben diese Sprache bereits hinzugefügt. Bearbeiten Sie das Niveau in der Liste."
+      },
+      "removeConfirmTitle": {
+        "other": "{language} entfernen?"
+      },
+      "removeConfirmBody": {
+        "other": "Apps, die auf {language} ausgerichtet sind, erreichen Sie nicht mehr darin. Sie können sie jederzeit wieder hinzufügen."
+      },
+      "keepCta": {
+        "other": "Behalten"
+      },
+      "addAnother": {
+        "other": "Weitere Sprache hinzufügen"
+      }
+    },
+    "addressBook": {
+      "title": {
+        "other": "Ihre Adressen"
+      },
+      "empty": {
+        "other": "Noch keine Adressen."
+      },
+      "addCta": {
+        "other": "Adresse hinzufügen"
+      },
+      "makeDefault": {
+        "other": "Als Standard festlegen"
+      },
+      "defaultBadge": {
+        "other": "Standard"
+      },
+      "remove": {
+        "other": "Entfernen"
+      },
+      "removeConfirmTitle": {
+        "other": "Diese Adresse entfernen?"
+      },
+      "savingLabel": {
+        "other": "Adresse wird gespeichert."
+      },
+      "deletingLabel": {
+        "other": "Adresse wird gelöscht."
+      },
+      "addBilling": {
+        "other": "Rechnungsadresse hinzufügen"
+      },
+      "addShipping": {
+        "other": "Lieferadresse hinzufügen"
+      },
+      "useForBilling": {
+        "other": "Wir verwenden diese für Rechnungen und Quittungen."
+      },
+      "useForShipping": {
+        "other": "Wir verwenden diese für Lieferungen und Abholungen."
+      },
+      "addAnotherBilling": {
+        "other": "Weitere Rechnungsadresse hinzufügen"
+      },
+      "addAnotherShipping": {
+        "other": "Weitere Lieferadresse hinzufügen"
+      },
+      "atCompany": {
+        "other": "bei {company}"
+      },
+      "setAsDefault": {
+        "other": "Als Standard festlegen"
+      },
+      "removeDefault": {
+        "other": "Standard entfernen"
+      },
+      "deleteAddress": {
+        "other": "Adresse löschen"
+      },
+      "newBillingAddress": {
+        "other": "Neue Rechnungsadresse"
+      },
+      "newShippingAddress": {
+        "other": "Neue Lieferadresse"
+      },
+      "searchPrompt": {
+        "other": "Beginnen Sie, Ihre Adresse einzugeben"
+      },
+      "searchPlaceholder": {
+        "other": "221B Baker Street, London."
+      },
+      "searchError": {
+        "other": "Suche nicht möglich: {error}"
+      },
+      "noMatchesKeepTyping": {
+        "other": "Noch keine Treffer. Tippen Sie weiter."
+      },
+      "aptFloorEyebrow": {
+        "other": "Wohnung, Etage, Suite"
+      },
+      "aptFloorTitle": {
+        "other": "Wohnung, Suite oder Etage?"
+      },
+      "aptFloorBodyBilling": {
+        "other": "Karten erfassen selten Einheitennummern. Fügt der Adresse eine zweite Zeile hinzu."
+      },
+      "aptFloorBodyShipping": {
+        "other": "Zusteller verfehlen ohne Einheitsinformationen das Ziel. Überspringen, falls nicht benötigt."
+      },
+      "line2Label": {
+        "other": "Adresszeile 2 (optional)"
+      },
+      "line2Placeholder": {
+        "other": "Whg. 4B, 3. Etage, Suite 200."
+      },
+      "step2of3": {
+        "other": "Schritt 2 von 3"
+      },
+      "recipientTitleBilling": {
+        "other": "Für wen ist diese Rechnungsadresse?"
+      },
+      "recipientTitleShipping": {
+        "other": "Für wen ist diese Lieferadresse?"
+      },
+      "recipientSubtitleBilling": {
+        "other": "Name auf der Rechnung."
+      },
+      "recipientSubtitleShipping": {
+        "other": "Name auf dem Paket."
+      },
+      "someoneElseSubtitleBilling": {
+        "other": "Ein anderer Name für die Rechnung"
+      },
+      "someoneElseSubtitleShipping": {
+        "other": "An jemand anderen senden"
+      },
+      "businessSubtitleBilling": {
+        "other": "Rechnung an das Unternehmen (B2B)"
+      },
+      "businessSubtitleShipping": {
+        "other": "An ein Unternehmen oder einen Arbeitsplatz senden"
+      },
+      "saveError": {
+        "other": "Speichern nicht möglich: {error}"
+      },
+      "recipientCustomTitle": {
+        "other": "Wer ist der Empfänger?"
+      },
+      "recipientCustomSubtitleBilling": {
+        "other": "Der Name, der auf der Rechnung erscheint."
+      },
+      "recipientCustomSubtitleShipping": {
+        "other": "Der Name, der auf dem Paket erscheint."
+      },
+      "recipientPlaceholder": {
+        "other": "Jane Doe"
+      },
+      "businessStep1of2": {
+        "other": "Unternehmen, Schritt 1 von 2"
+      },
+      "companyNameTitle": {
+        "other": "Wie lautet der Firmenname?"
+      },
+      "companyNameBodyBilling": {
+        "other": "Erscheint auf der Rechnung. Erforderlich für die spätere B2B-Steuerbehandlung."
+      },
+      "companyNameBodyShipping": {
+        "other": "Unternehmen, das das Paket erhält."
+      },
+      "companyNamePlaceholder": {
+        "other": "Edvone"
+      },
+      "businessStep2of2": {
+        "other": "Unternehmen, Schritt 2 von 2"
+      },
+      "contactAtCompanyTitle": {
+        "other": "Jemand Bestimmtes bei {company}?"
+      },
+      "attnBodyInvoice": {
+        "other": "Fügt der Rechnung eine \"z. Hd.\"-Zeile hinzu. Überspringen, um sie an das Unternehmen zu adressieren."
+      },
+      "attnBodyPackage": {
+        "other": "Fügt dem Paket eine \"z. Hd.\"-Zeile hinzu. Überspringen, um es an das Unternehmen zu adressieren."
+      },
+      "contactPersonOptional": {
+        "other": "Ansprechperson (optional)"
+      },
+      "skip": {
+        "other": "Überspringen"
+      },
+      "noteChoiceTitle": {
+        "other": "Möchten Sie eine Lieferhinweis hinzufügen?"
+      },
+      "noteChoiceBodyBilling": {
+        "other": "Was die Rechnungsabteilung wissen sollte. Z. Hd.-Zeile, Bestellnummer, c/o jemand."
+      },
+      "noteChoiceBodyShipping": {
+        "other": "Etwas für den Zusteller. Klingel, Torcode, vor der Tür abstellen."
+      },
+      "noteYesTitle": {
+        "other": "Ja, Hinweis hinzufügen"
+      },
+      "noteYesSubtitle": {
+        "other": "Schreiben Sie eine kurze Anweisung"
+      },
+      "noteNoTitle": {
+        "other": "Nein, überspringen"
+      },
+      "noteNoSubtitle": {
+        "other": "Adresse so speichern"
+      },
+      "noteLastStep": {
+        "other": "Hinweis, letzter Schritt"
+      },
+      "noteInputTitle": {
+        "other": "Was sollen wir sagen?"
+      },
+      "noteInputBodyBilling": {
+        "other": "Erscheint auf der Rechnung oder im Buchungsdatensatz."
+      },
+      "noteInputBodyShipping": {
+        "other": "Wird an den Zusteller weitergegeben."
+      },
+      "billingNote": {
+        "other": "Rechnungshinweis"
+      },
+      "deliveryNote": {
+        "other": "Lieferhinweis"
+      },
+      "notePlaceholderBilling": {
+        "other": "Rechnung z. Hd.: Finanzabteilung, Bestellnummer #ABC-1234."
+      },
+      "notePlaceholderShipping": {
+        "other": "Klingel Nr. 3 klingeln, beim Concierge abgeben, falls nicht zu Hause."
+      },
+      "backToList": {
+        "other": "Zurück zur Liste"
+      },
+      "billingAddressLabel": {
+        "other": "Rechnungsadresse"
+      },
+      "shippingAddressLabel": {
+        "other": "Lieferadresse"
+      },
+      "sectionWho": {
+        "other": "Wer"
+      },
+      "sectionWhere": {
+        "other": "Wo"
+      },
+      "sectionNotesMeta": {
+        "other": "Hinweise und Metadaten"
+      },
+      "fieldRecipient": {
+        "other": "Empfänger"
+      },
+      "fieldCompany": {
+        "other": "Unternehmen"
+      },
+      "addCompanyPlaceholder": {
+        "other": "Unternehmen hinzufügen"
+      },
+      "fieldStreet": {
+        "other": "Straße"
+      },
+      "fieldAptFloor": {
+        "other": "Wohnung oder Etage"
+      },
+      "addUnitPlaceholder": {
+        "other": "Einheit hinzufügen"
+      },
+      "fieldCity": {
+        "other": "Stadt"
+      },
+      "fieldPostalCode": {
+        "other": "Postleitzahl"
+      },
+      "fieldRegion": {
+        "other": "Region"
+      },
+      "fieldCountry": {
+        "other": "Land"
+      },
+      "fieldDeliveryNotes": {
+        "other": "Lieferhinweise"
+      },
+      "addNotePlaceholder": {
+        "other": "Hinweis hinzufügen"
+      },
+      "fieldTimezone": {
+        "other": "Zeitzone"
+      },
+      "fieldVenue": {
+        "other": "Veranstaltungsort oder Gebäude"
+      },
+      "nothingToChange": {
+        "other": "Nichts zu ändern"
+      },
+      "setDefaultTitle": {
+        "other": "Diese als Ihren Standard festlegen?"
+      },
+      "removeDefaultTitle": {
+        "other": "Standard von dieser Adresse entfernen?"
+      },
+      "setDefaultSubtitle": {
+        "other": "Sie wird beim Checkout oder bei der Rechnung automatisch ausgewählt."
+      },
+      "removeDefaultSubtitle": {
+        "other": "Beim Checkout oder bei der Rechnung wird nichts vorausgewählt."
+      },
+      "crossAppHeadsUp": {
+        "other": "Achtung. Dies betrifft jede App, die Sie mit elvix nutzen."
+      },
+      "crossAppDefaultBodySetting": {
+        "other": "Ihre Standard-{kind}-Adresse wird über alle Apps geteilt, in die Sie sich einloggen. Wenn Sie sie hier ändern, wird die Auto-Auswahl überall gleichzeitig aktualisiert."
+      },
+      "crossAppDefaultBodyClearing": {
+        "other": "Ihre Standard-{kind}-Adresse wird über alle Apps geteilt, in die Sie sich einloggen. Wenn Sie sie entfernen, wird nirgendwo eine Adresse vorausgewählt; Sie wählen sie jedes Mal beim Checkout oder bei der Rechnung."
+      },
+      "nothingToDelete": {
+        "other": "Nichts zu löschen"
+      },
+      "deleteBillingHeader": {
+        "other": "Rechnungsadresse löschen"
+      },
+      "deleteShippingHeader": {
+        "other": "Lieferadresse löschen"
+      },
+      "deleteConfirmTitle": {
+        "other": "Diese Adresse löschen?"
+      },
+      "cantBeUndone": {
+        "other": "Dies kann nicht rückgängig gemacht werden."
+      },
+      "crossAppDeleteBodyBilling": {
+        "other": "Ihre Rechnungsadresse wird einmal in Ihrem elvix-Profil gespeichert und mit den Apps geteilt, in die Sie sich einloggen. Beim Löschen wird sie überall entfernt. Jeder Checkout-, Rechnungs- oder Lieferablauf, der diese Adresse referenziert hat, benötigt eine neue."
+      },
+      "crossAppDeleteBodyShipping": {
+        "other": "Ihre Lieferadresse wird einmal in Ihrem elvix-Profil gespeichert und mit den Apps geteilt, in die Sie sich einloggen. Beim Löschen wird sie überall entfernt. Jeder Checkout-, Rechnungs- oder Lieferablauf, der diese Adresse referenziert hat, benötigt eine neue."
+      },
+      "deleteError": {
+        "other": "Löschen nicht möglich: {error}"
+      },
+      "yesDelete": {
+        "other": "Ja, löschen"
+      },
+      "pickAddressFirst": {
+        "other": "Wählen Sie zuerst eine Adresse"
+      },
+      "changeAddress": {
+        "other": "Adresse ändern"
+      },
+      "reviewBilling": {
+        "other": "Rechnungsadresse prüfen"
+      },
+      "reviewShipping": {
+        "other": "Lieferadresse prüfen"
+      },
+      "notRight": {
+        "other": "Nicht korrekt"
+      },
+      "looksRight": {
+        "other": "Sieht richtig aus"
+      },
+      "missingFieldsHint": {
+        "other": "Uns fehlt das Feld {fields}. Wählen Sie einen genaueren Vorschlag (mit Hausnummer), damit wir eine zustellbare Adresse speichern können."
+      }
+    },
+    "legalEntities": {
+      "title": {
+        "other": "Rechtsträger"
+      },
+      "addCta": {
+        "other": "Rechtsträger hinzufügen"
+      },
+      "companyName": {
+        "other": "Firmenname"
+      },
+      "vatId": {
+        "other": "USt-IdNr."
+      },
+      "taxCountry": {
+        "other": "Steuerland"
+      },
+      "verifyVat": {
+        "other": "USt prüfen"
+      },
+      "verifying": {
+        "other": "Wird geprüft"
+      },
+      "verifiedBadge": {
+        "other": "Verifiziert"
+      },
+      "notRegistered": {
+        "other": "Nicht registriert"
+      },
+      "unreachable": {
+        "other": "Nicht erreichbar"
+      },
+      "addCtaSubtitle": {
+        "other": "Für Rechnungen, Verträge und Steuererklärungen."
+      },
+      "addAnotherCta": {
+        "other": "Weiteren Rechtsträger hinzufügen"
+      },
+      "kindIndividual": {
+        "other": "Privatperson"
+      },
+      "kindSoleProp": {
+        "other": "Einzelunternehmen"
+      },
+      "kindCompany": {
+        "other": "Unternehmen"
+      },
+      "removeDefaultAria": {
+        "other": "Standard entfernen"
+      },
+      "setDefaultAria": {
+        "other": "Als Standard festlegen"
+      },
+      "deleteAria": {
+        "other": "Rechtsträger löschen"
+      },
+      "typeChoiceTitle": {
+        "other": "Um welche Art von Rechtsträger handelt es sich?"
+      },
+      "typeChoiceSubtitle": {
+        "other": "Bestimmt die Fragen, die wir als nächstes stellen."
+      },
+      "step1of3": {
+        "other": "Schritt 1 von 3"
+      },
+      "individualSubtitle": {
+        "other": "Nur Sie, kein Unternehmen. Rechnungen laufen auf Ihren persönlichen Namen."
+      },
+      "soleProprietorshipSubtitle": {
+        "other": "Sie plus ein Handelsname (Einzelunternehmen, Freelancer, etc.)."
+      },
+      "companySubtitle": {
+        "other": "Ein eingetragener Rechtsträger (GmbH, Ltd, S.r.l., etc.)."
+      },
+      "legalNameTitleIndividual": {
+        "other": "Ihr rechtlicher Name"
+      },
+      "legalNameTitleSoleProp": {
+        "other": "Ihr rechtlicher Name (Inhaber)"
+      },
+      "legalNameTitleCompany": {
+        "other": "Rechtlicher Name des Unternehmens"
+      },
+      "legalNameSubtitleIndividual": {
+        "other": "Wie er auf Ihrem Ausweis steht."
+      },
+      "legalNameSubtitleSoleProp": {
+        "other": "Die natürliche Person, die das Unternehmen betreibt."
+      },
+      "legalNameSubtitleCompany": {
+        "other": "Der eingetragene Name des Unternehmens."
+      },
+      "legalNameLabel": {
+        "other": "Rechtlicher Name"
+      },
+      "legalNamePlaceholderCompany": {
+        "other": "ACME GmbH"
+      },
+      "legalNamePlaceholderPerson": {
+        "other": "Jane Doe"
+      },
+      "legalNameInvalidCompany": {
+        "other": "Geben Sie mindestens 2 Zeichen mit mindestens einem Buchstaben ein."
+      },
+      "legalNameInvalidPerson": {
+        "other": "Geben Sie sowohl Vor- als auch Nachname ein."
+      },
+      "tradingNameTitle": {
+        "other": "Handelsname (optional)"
+      },
+      "tradingNameSubtitle": {
+        "other": "Geschäftsbezeichnung, DBA, doing-business-as. Die Marke, unter der der Rechtsträger handelt."
+      },
+      "tradingNameLabel": {
+        "other": "Handelsname"
+      },
+      "tradingNamePlaceholder": {
+        "other": "ACME Brands"
+      },
+      "dobTitle": {
+        "other": "Geburtsdatum"
+      },
+      "dobSubtitle": {
+        "other": "Erforderlich für die Rechnungsstellung in Ihrem Namen und KYC, falls ein Kunde später danach fragt."
+      },
+      "dobAgeError": {
+        "other": "Sie müssen 18 Jahre oder älter sein, um einen Rechtsträger zu registrieren."
+      },
+      "dobOutOfRange": {
+        "other": "Dieses Datum liegt außerhalb des zulässigen Bereichs."
+      },
+      "placeOfBirthTitle": {
+        "other": "Geburtsort"
+      },
+      "placeOfBirthSubtitle": {
+        "other": "Stadt wie auf Ihrem Ausweis. Erforderlich für Rechnungsstellung und KYC."
+      },
+      "placeOfBirthCityLabel": {
+        "other": "Stadt"
+      },
+      "placeOfBirthCityPlaceholder": {
+        "other": "Beginnen Sie, eine Stadt einzugeben."
+      },
+      "placeChangeCta": {
+        "other": "Ändern"
+      },
+      "placeSearchError": {
+        "other": "Suche nicht möglich: {error}"
+      },
+      "nationalityTitle": {
+        "other": "Staatsangehörigkeit"
+      },
+      "nationalitySubtitle": {
+        "other": "Wählen Sie eine oder mehrere (bis zu {max}). Die erste wird als primäre behandelt."
+      },
+      "nationalityPrimaryBadge": {
+        "other": "Primär"
+      },
+      "nationalityCapReached": {
+        "other": "Maximum von {max} Staatsangehörigkeiten erreicht. Entfernen Sie eine, um eine weitere hinzuzufügen."
+      },
+      "removeCountryAria": {
+        "other": "{name} entfernen"
+      },
+      "taxCountryTitle": {
+        "other": "Steuersitz"
+      },
+      "taxCountrySubtitle": {
+        "other": "Wo der Rechtsträger Steuern abführt. Es werden nur Länder aufgeführt, in denen wir die Steuer-ID live verifizieren können."
+      },
+      "taxIdsTitle": {
+        "other": "Steueridentifikationsnummern"
+      },
+      "taxIdsSubtitleIndividual": {
+        "other": "Ihre lokale Steuernummer aus {country}. Wird unverändert gespeichert."
+      },
+      "taxIdsSubtitleIndividualFallback": {
+        "other": "Ihre Steuerbehörde"
+      },
+      "taxIdsSubtitleCompany": {
+        "other": "USt-IdNr. wird live gegen {authority} validiert. Die lokale Steuernummer ist optional."
+      },
+      "taxIdsSubtitleCompanyFallback": {
+        "other": "die ausstellende Behörde"
+      },
+      "taxIdsSubtitleSoleProp": {
+        "other": "Beides ist optional. Fügen Sie die lokale Steuernummer hinzu, wenn Sie sie auf Rechnungen wünschen; USt nur, wenn Sie umsatzsteuerpflichtig sind. Die Gewerberegistrierung wird im nächsten Schritt erfasst."
+      },
+      "localTaxNumberLabel": {
+        "other": "Lokale Steuernummer"
+      },
+      "vatCompanyIdLabel": {
+        "other": "USt-IdNr. / Firmen-ID"
+      },
+      "blockReasonTaxIdRequired": {
+        "other": "Geben Sie die lokale Steuernummer ein, um fortzufahren."
+      },
+      "blockReasonTaxIdFormat": {
+        "other": "Lokale Steuernummer entspricht nicht dem {country}-Format. {hint}"
+      },
+      "blockReasonVatRequired": {
+        "other": "Geben Sie eine USt-IdNr. / Firmen-ID ein, um fortzufahren."
+      },
+      "blockReasonVatFormat": {
+        "other": "Diese USt-IdNr. entspricht nicht dem Format des Landes."
+      },
+      "taxIdFormatHint": {
+        "other": "Erwartet: {placeholder}."
+      },
+      "verifyHeadingChecking": {
+        "other": "Wird bei der Behörde verifiziert."
+      },
+      "verifyHeadingLive": {
+        "other": "Verifiziert."
+      },
+      "verifyHeadingInvalid": {
+        "other": "Konnte nicht verifiziert werden."
+      },
+      "verifyHeadingFormat": {
+        "other": "Behörde nicht erreichbar."
+      },
+      "verifySubtitleChecking": {
+        "other": "Prüfung von {vatId} im Register von {country}."
+      },
+      "verifySubtitleLiveNamed": {
+        "other": "{authority} hat diese USt-IdNr. als {name} erkannt."
+      },
+      "verifySubtitleLive": {
+        "other": "{authority} hat diese USt-IdNr. erkannt."
+      },
+      "verifySubtitleInvalid": {
+        "other": "{authority} führt {vatId} nicht als registriert. Gehen Sie zurück, um sie zu korrigieren."
+      },
+      "verifySubtitleFormat": {
+        "other": "Wir konnten {authority} im Moment nicht erreichen. Ihr Eintrag wird unverändert gespeichert und automatisch erneut verifiziert."
+      },
+      "authorityFallback": {
+        "other": "die Steuerbehörde"
+      },
+      "editTaxIdsBackLabel": {
+        "other": "Steuer-IDs bearbeiten"
+      },
+      "fixVatCta": {
+        "other": "USt korrigieren"
+      },
+      "continueAnywayCta": {
+        "other": "Trotzdem fortfahren"
+      },
+      "registrationTitle": {
+        "other": "Registrierung"
+      },
+      "registrationSubtitle": {
+        "other": "Handelsregister, Companies House, KvK. Das offizielle Register, in dem dieser Rechtsträger eingetragen ist."
+      },
+      "registrationNumberLabel": {
+        "other": "Registrierungsnummer"
+      },
+      "issuingAuthorityLabel": {
+        "other": "Ausstellende Behörde"
+      },
+      "issuingAuthorityPlaceholder": {
+        "other": "Lokales Gericht / Handelsregister"
+      },
+      "registeredSinceLabel": {
+        "other": "Registriert seit (optional)"
+      },
+      "registeredSinceRangeError": {
+        "other": "Wählen Sie ein Datum zwischen 1900 und heute."
+      },
+      "regNumberFormatHint": {
+        "other": "Entspricht nicht dem erwarteten Format. Versuchen Sie: {placeholder}."
+      },
+      "addressSearchTitle": {
+        "other": "Registrierte Adresse"
+      },
+      "addressSearchSubtitle": {
+        "other": "Wo der Rechtsträger bei der Behörde registriert ist. Beginnen Sie zu tippen."
+      },
+      "addressLabel": {
+        "other": "Adresse"
+      },
+      "addressSearchPlaceholder": {
+        "other": "Straße, Stadt."
+      },
+      "addressPickFirst": {
+        "other": "Wählen Sie zuerst eine Adresse"
+      },
+      "addressReviewTitle": {
+        "other": "Sieht es richtig aus?"
+      },
+      "addressReviewSubtitle": {
+        "other": "Stellen Sie sicher, dass der registrierte Sitz mit dem offiziellen Register übereinstimmt."
+      },
+      "addressMissing": {
+        "other": "Uns fehlt das Feld {fields}. Wählen Sie einen genaueren Vorschlag."
+      },
+      "addressFieldStreet": {
+        "other": "Straße"
+      },
+      "addressFieldCity": {
+        "other": "Stadt"
+      },
+      "addressFieldPostalCode": {
+        "other": "Postleitzahl"
+      },
+      "addressFieldRegion": {
+        "other": "Region"
+      },
+      "addressFieldCountry": {
+        "other": "Land"
+      },
+      "addressChangeBackLabel": {
+        "other": "Adresse ändern"
+      },
+      "addressNotRightCta": {
+        "other": "Nicht korrekt"
+      },
+      "addressLooksRightCta": {
+        "other": "Sieht richtig aus"
+      },
+      "addressAptTitle": {
+        "other": "Wohnung, Suite oder Etage?"
+      },
+      "addressAptSubtitle": {
+        "other": "Fügt der registrierten Adresse eine zweite Zeile hinzu. Überspringen, falls nicht benötigt."
+      },
+      "addressAptLabel": {
+        "other": "Adresszeile 2 (optional)"
+      },
+      "addressAptPlaceholder": {
+        "other": "Whg. 4B, 3. Etage, Suite 200."
+      },
+      "contactChoiceTitle": {
+        "other": "Möchten Sie Kontaktinformationen hinzufügen?"
+      },
+      "contactChoiceSubtitle": {
+        "other": "Optionale E-Mail und Telefonnummer für diesen Rechtsträger. Getrennt vom Hauptkontakt Ihres Kontos."
+      },
+      "contactYesCta": {
+        "other": "Ja, Kontakt hinzufügen"
+      },
+      "contactNoCta": {
+        "other": "Nein, ohne speichern"
+      },
+      "yesNoYesSubtitle": {
+        "other": "Fügt den nächsten Schritt hinzu"
+      },
+      "yesNoNoSubtitle": {
+        "other": "Rechtsträger so speichern"
+      },
+      "saveError": {
+        "other": "Speichern nicht möglich: {error}"
+      },
+      "contactInputTitle": {
+        "other": "Kontakt für diesen Rechtsträger"
+      },
+      "contactInputSubtitle": {
+        "other": "E-Mail und Telefonnummer, die auf Rechnungen und Verträgen angezeigt werden."
+      },
+      "contactEmailLabel": {
+        "other": "E-Mail (optional)"
+      },
+      "contactEmailPlaceholder": {
+        "other": "rechnungen@example.com"
+      },
+      "contactEmailInvalid": {
+        "other": "Geben Sie eine gültige E-Mail ein oder lassen Sie das Feld leer."
+      },
+      "contactPhoneLabel": {
+        "other": "Telefon (optional)"
+      },
+      "contactPhonePlaceholder": {
+        "other": "+49 ."
+      },
+      "contactPhoneInvalid": {
+        "other": "Verwenden Sie Ziffern mit optionalem führenden + (6 bis 20 Ziffern)."
+      },
+      "saveEntityCta": {
+        "other": "Rechtsträger speichern"
+      },
+      "saveChangesCta": {
+        "other": "Änderungen speichern"
+      },
+      "savingEntityLabel": {
+        "other": "Rechtsträger wird gespeichert."
+      },
+      "deletingEntityLabel": {
+        "other": "Rechtsträger wird gelöscht."
+      },
+      "backToList": {
+        "other": "Zurück zur Liste"
+      },
+      "detailSectionIdentity": {
+        "other": "Identität"
+      },
+      "detailSectionTax": {
+        "other": "Steuer"
+      },
+      "detailSectionRegistration": {
+        "other": "Registrierung"
+      },
+      "detailSectionAddress": {
+        "other": "Adresse"
+      },
+      "detailSectionContact": {
+        "other": "Kontakt"
+      },
+      "detailLegalName": {
+        "other": "Rechtlicher Name"
+      },
+      "detailTradingName": {
+        "other": "Handelsname"
+      },
+      "detailTradingNamePlaceholder": {
+        "other": "Handelsname hinzufügen"
+      },
+      "detailDob": {
+        "other": "Geburtsdatum"
+      },
+      "detailPlaceOfBirth": {
+        "other": "Geburtsort"
+      },
+      "detailPlaceOfBirthPlaceholder": {
+        "other": "Geburtsort hinzufügen"
+      },
+      "detailNationality": {
+        "other": "Staatsangehörigkeit"
+      },
+      "detailTaxResidence": {
+        "other": "Steuersitz"
+      },
+      "detailVatId": {
+        "other": "USt-IdNr. / Firmen-ID"
+      },
+      "detailVatIdPlaceholder": {
+        "other": "USt-IdNr. hinzufügen"
+      },
+      "detailLocalTaxNumber": {
+        "other": "Lokale Steuernummer"
+      },
+      "detailLocalTaxNumberPlaceholder": {
+        "other": "Steuernummer hinzufügen"
+      },
+      "detailRegistrationNumber": {
+        "other": "Registrierungs-Nr."
+      },
+      "detailIssuingAuthority": {
+        "other": "Ausstellende Behörde"
+      },
+      "detailRegisteredSince": {
+        "other": "Registriert seit"
+      },
+      "detailStreet": {
+        "other": "Straße"
+      },
+      "detailAptFloor": {
+        "other": "Whg. / Etage"
+      },
+      "detailCity": {
+        "other": "Stadt"
+      },
+      "detailPostalCode": {
+        "other": "Postleitzahl"
+      },
+      "detailCountry": {
+        "other": "Land"
+      },
+      "detailEmail": {
+        "other": "E-Mail"
+      },
+      "detailEmailPlaceholder": {
+        "other": "E-Mail hinzufügen"
+      },
+      "detailPhone": {
+        "other": "Telefon"
+      },
+      "detailPhonePlaceholder": {
+        "other": "Telefon hinzufügen"
+      },
+      "removeDefault": {
+        "other": "Standard entfernen"
+      },
+      "setDefault": {
+        "other": "Als Standard festlegen"
+      },
+      "deleteConfirmTitle": {
+        "other": "Diesen Rechtsträger löschen?"
+      },
+      "deleteConfirmBody": {
+        "other": "Dies kann nicht rückgängig gemacht werden."
+      },
+      "deleteEmpty": {
+        "other": "Nichts zu löschen"
+      },
+      "sharedAcrossAppsHeading": {
+        "other": "Achtung. Dies betrifft jede App, die Sie mit elvix nutzen."
+      },
+      "deleteSharedAcrossAppsBody": {
+        "other": "Rechtsträger werden über alle Apps geteilt, in die Sie sich einloggen. Beim Löschen wird der Datensatz überall entfernt; jede Rechnungsvorlage, die ihn referenziert hat, benötigt eine neue."
+      },
+      "deleteError": {
+        "other": "Löschen nicht möglich: {error}"
+      },
+      "yesDelete": {
+        "other": "Ja, löschen"
+      },
+      "nothingToChange": {
+        "other": "Nichts zu ändern"
+      },
+      "defaultConfirmTitleSet": {
+        "other": "Diesen als Ihren Standard-Rechtsträger festlegen?"
+      },
+      "defaultConfirmTitleUnset": {
+        "other": "Standard von diesem Rechtsträger entfernen?"
+      },
+      "defaultConfirmBodySet": {
+        "other": "Der Standard-Rechtsträger füllt Rechnungen und Vertragsvorlagen automatisch aus."
+      },
+      "defaultConfirmBodyUnset": {
+        "other": "Beim Erstellen von Rechnungen oder Verträgen wird nichts vorausgewählt."
+      },
+      "defaultSharedAcrossAppsBodySet": {
+        "other": "Der Standard-Rechtsträger wird über alle Apps geteilt, in die Sie sich einloggen. Wenn Sie ihn hier ändern, wird die Auto-Auswahl überall gleichzeitig aktualisiert."
+      },
+      "defaultSharedAcrossAppsBodyUnset": {
+        "other": "Der Standard-Rechtsträger wird über alle Apps geteilt, in die Sie sich einloggen. Wenn Sie ihn entfernen, wird nirgendwo ein Rechtsträger vorausgewählt."
+      }
+    },
+    "entityKind": {
+      "title": {
+        "other": "Für wen ist das?"
+      },
+      "me": {
+        "other": "Mich"
+      },
+      "someoneElse": {
+        "other": "Jemand anderen"
+      },
+      "business": {
+        "other": "Ein Unternehmen"
+      }
+    },
+    "export": {
+      "title": {
+        "other": "Ihre Daten herunterladen"
+      },
+      "body": {
+        "other": "Erhalten Sie eine Kopie aller Daten, die wir zu Ihnen speichern. DSGVO Artikel 15. Wir senden einen einmaligen Download-Link per E-Mail, der 24 Stunden gültig ist."
+      },
+      "sendCodeCta": {
+        "other": "Bestätigungscode senden"
+      },
+      "downloadCta": {
+        "other": "Link per E-Mail senden"
+      },
+      "doneTitle": {
+        "other": "Überprüfen Sie Ihren Posteingang"
+      },
+      "doneBody": {
+        "other": "Wir haben einen Download-Link an {email} gesendet. Er läuft in 24 Stunden ab."
+      },
+      "previewLoadFailed": {
+        "other": "Vorschau konnte nicht geladen werden. Versuchen Sie es erneut."
+      },
+      "whatYouReceive": {
+        "other": "Was Sie erhalten"
+      },
+      "archiveBlurbIdentity": {
+        "other": "Ihr Archiv enthält eine einzige JSON-Datei mit allem unten aufgeführten, plus Ihre Avatar- und Banner-Bilder, falls Sie welche hochgeladen haben, plus eine README, die jeden Abschnitt in einfacher Sprache erklärt und die DSGVO Art. 15(1)-Offenlegungen enthält."
+      },
+      "archiveBlurbApp": {
+        "other": "Ihr Archiv enthält eine einzige JSON-Datei, die auf {label} beschränkt ist, plus eine README, die jeden Abschnitt erklärt und die DSGVO Art. 15(1)-Offenlegungen enthält."
+      },
+      "notIncluded": {
+        "other": "Nicht enthalten: kryptografisches Schlüsselmaterial Ihrer Passkeys, OAuth-Token, OTP-Codes und alle Daten, die die von Ihnen genutzten Apps außerhalb von elvix über Sie speichern. Wenden Sie sich für letzteres an jede App."
+      },
+      "sendToHeading": {
+        "other": "Wir senden Ihre Daten an Ihre primäre E-Mail"
+      },
+      "sendToBody": {
+        "other": "Ihr Archiv landet als .zip-Anhang in {email}. Der Besitz dieses Posteingangs ist der Identitätsnachweis, daher liegt die Datei nie unter einer öffentlichen URL."
+      },
+      "sendToNotice": {
+        "other": "Wir senden zunächst einen 6-stelligen Code an Ihren primären Posteingang. Nachdem Sie ihn auf dem nächsten Bildschirm eingegeben haben, erstellen wir Ihr Archiv und senden es Ihnen als .zip-Anhang per E-Mail."
+      },
+      "sendingCode": {
+        "other": "Code wird gesendet"
+      },
+      "sendToCta": {
+        "other": "6-stelligen Code per E-Mail senden"
+      },
+      "otpHeading": {
+        "other": "Mit Ihrem Code bestätigen"
+      },
+      "otpBody": {
+        "other": "Wir haben einen 6-stelligen Code an {email} gesendet. Er läuft in 10 Minuten ab. Sobald Sie ihn eingeben, erstellen wir Ihr Archiv und senden es als .zip-Anhang an denselben Posteingang."
+      },
+      "confirmCta": {
+        "other": "Bestätigen und meine Daten per E-Mail senden"
+      },
+      "workingLabel": {
+        "other": "Wird bearbeitet"
+      },
+      "resendIn": {
+        "other": "Erneut senden in {seconds}s"
+      },
+      "noPendingCode": {
+        "other": "Kein ausstehender Code. Senden Sie einen neuen."
+      },
+      "networkError": {
+        "other": "Netzwerkfehler. Versuchen Sie es erneut."
+      },
+      "doneHeading": {
+        "other": "Gesendet."
+      },
+      "doneInboxBody": {
+        "other": "Überprüfen Sie Ihren primären Posteingang ({email}) in einer Minute. Ihr Archiv ist der E-Mail als .zip-Datei beigefügt. Sie können einen weiteren Export desselben Ziels in 24 Stunden anfordern."
+      },
+      "backToExports": {
+        "other": "Zurück zu Exporten"
+      },
+      "errorChallengeGeneric": {
+        "other": "Code konnte nicht gesendet werden. Versuchen Sie es erneut."
+      },
+      "errorChallengeTooRecent": {
+        "other": "Warten Sie {seconds}s, bevor Sie erneut anfordern."
+      },
+      "errorChallengeTooMany": {
+        "other": "Zu viele Anfragen in dieser Stunde. Versuchen Sie es später."
+      },
+      "errorChallengeSendFailed": {
+        "other": "Code konnte nicht per E-Mail gesendet werden. Versuchen Sie es erneut."
+      },
+      "errorChallengeRateLimit": {
+        "other": "Sie haben dies in den letzten 24 Stunden bereits exportiert. Wieder verfügbar in ~{hours}h."
+      },
+      "errorChallengeNotMember": {
+        "other": "Sie sind kein Mitglied dieser App mehr."
+      },
+      "errorChallengeAppNotFound": {
+        "other": "Diese App ist nicht verfügbar."
+      },
+      "errorApplyGeneric": {
+        "other": "Ihr Export konnte nicht erstellt werden. Versuchen Sie es erneut."
+      },
+      "errorApplyWrongCode": {
+        "one": "Falscher Code. {count} Versuch übrig.",
+        "other": "Falscher Code. {count} Versuche übrig."
+      },
+      "errorApplyLocked": {
+        "other": "Zu viele falsche Versuche. Senden Sie einen neuen Code."
+      },
+      "errorApplyExpired": {
+        "other": "Dieser Code ist abgelaufen. Senden Sie einen neuen."
+      },
+      "errorApplyGenerateFailed": {
+        "other": "Wir konnten Ihren Export nicht erstellen. Versuchen Sie es erneut."
+      },
+      "errorApplyStorageFailed": {
+        "other": "Wir konnten Ihren Export nicht speichern. Versuchen Sie es erneut."
+      },
+      "errorApplyEmailFailed": {
+        "other": "Ihr Archiv wurde erstellt, aber die E-Mail ist fehlgeschlagen. Wenden Sie sich an {email}, um den Link wiederherzustellen."
+      }
+    },
+    "deactivate": {
+      "title": {
+        "other": "Eine Pause einlegen"
+      },
+      "body": {
+        "other": "Beim Deaktivieren wird Ihr Konto vor dieser App verborgen. Reaktivieren Sie es jederzeit über Ihr elvix-Konto."
+      },
+      "confirmCta": {
+        "other": "Deaktivieren"
+      },
+      "doneTitle": {
+        "other": "Ihr Konto ist pausiert"
+      },
+      "reactivateCta": {
+        "other": "Reaktivieren"
+      },
+      "errorTooMany": {
+        "other": "Zu viele Codes angefordert. Versuchen Sie es später erneut."
+      },
+      "errorTooRecent": {
+        "other": "Warten Sie {seconds}s, bevor Sie erneut anfordern."
+      },
+      "errorSendFailed": {
+        "other": "Code konnte nicht per E-Mail gesendet werden. Versuchen Sie es erneut."
+      },
+      "errorRequestFailed": {
+        "other": "Code konnte nicht angefordert werden. Versuchen Sie es erneut."
+      },
+      "errorWrongCode": {
+        "one": "Falscher Code. {count} Versuch übrig.",
+        "other": "Falscher Code. {count} Versuche übrig."
+      },
+      "errorChallengeLocked": {
+        "other": "Zu viele falsche Versuche. Fordern Sie einen neuen Code an."
+      },
+      "errorChallengeExpired": {
+        "other": "Dieser Code ist abgelaufen. Fordern Sie einen neuen an."
+      },
+      "errorAlreadyLeft": {
+        "other": "Sie haben diese App bereits verlassen. Stellen Sie zuerst Ihre Mitgliedschaft wieder her."
+      },
+      "appNameFallback": {
+        "other": "Ihre App"
+      },
+      "warn1Title": {
+        "other": "Eine Pause von {app} einlegen"
+      },
+      "warn1Body": {
+        "other": "Ihr Profil legt eine stille Pause ein. Personen auf {app} sehen Sie nicht mehr, aber alles, was Sie aufgebaut haben, bleibt genau so, wie es ist. Kommen Sie hierher zurück und melden Sie sich erneut an, wann immer Sie bereit sind."
+      },
+      "soundGood": {
+        "other": "Klingt gut?"
+      },
+      "warn1Cta": {
+        "other": "Ich verstehe"
+      },
+      "warn2Title": {
+        "other": "Ein paar Dinge, die Sie wissen sollten"
+      },
+      "warn2Bullet1": {
+        "other": "Offene Sitzungen in dieser App werden sofort abgemeldet."
+      },
+      "warn2Bullet2": {
+        "other": "Ihr Benutzername und Ihre Kennung bleiben Ihnen. Niemand sonst kann sie sich nehmen, während Sie weg sind."
+      },
+      "warn2Bullet3": {
+        "other": "Sie können jederzeit über dieselbe Oberfläche zurückkehren."
+      },
+      "warn2Bullet4": {
+        "other": "Wir senden Ihnen zur Bestätigung einen 6-stelligen Code per E-Mail. Doppelte Absicherung, damit die Änderung nur durchgeht, wenn Sie auch Zugriff auf Ihren Posteingang haben."
+      },
+      "warn2Cta": {
+        "other": "Ich verstehe. Code per E-Mail senden"
+      },
+      "sendingLabel": {
+        "other": "Wird gesendet"
+      },
+      "reactivateTitle": {
+        "other": "Willkommen zurück bei {app}"
+      },
+      "reactivateBody": {
+        "other": "Sie machen gerade eine Pause. Reaktivieren Sie, um wieder auf {app} sichtbar zu werden."
+      },
+      "reactivateBodyByOwner": {
+        "other": "Sie machen gerade eine Pause (ein Administrator hat dies in Ihrem Namen getan). Reaktivieren Sie, um wieder auf {app} sichtbar zu werden."
+      },
+      "doneDeactivatedTitle": {
+        "other": "Sie machen eine Pause von {app}."
+      },
+      "doneReactivatedTitle": {
+        "other": "Sie sind wieder auf {app}."
+      },
+      "doneDeactivatedBody": {
+        "other": "Wir haben die App informiert. Kommen Sie jederzeit hierher zurück, um zu reaktivieren."
+      },
+      "doneReactivatedBody": {
+        "other": "Ihre Mitgliedschaft ist wieder aktiv. Offene Sitzungen auf der App-Seite können einen Moment brauchen, um sich zu aktualisieren."
+      },
+      "reactivateAgain": {
+        "other": "Erneut reaktivieren"
+      },
+      "deactivateAgain": {
+        "other": "Erneut deaktivieren"
+      },
+      "otpTitle": {
+        "other": "Geben Sie Ihren Bestätigungscode ein"
+      },
+      "otpDelivered": {
+        "other": "Wir haben einen 6-stelligen Code per E-Mail an {email} gesendet. Er läuft in 10 Minuten ab."
+      },
+      "otpSending": {
+        "other": "Wir senden Ihnen einen 6-stelligen Code."
+      },
+      "otpPending": {
+        "other": "Wir senden einen 6-stelligen Code an Ihre E-Mail."
+      },
+      "resendIn": {
+        "other": "Erneut senden in {seconds}s"
+      }
+    },
+    "leave": {
+      "title": {
+        "other": "{app} verlassen?"
+      },
+      "body": {
+        "other": "Entfernt Ihre Mitgliedschaft. Dies ist endgültig: der Eigentümer kann sie nicht wiederherstellen. Ihr elvix-Konto bleibt geöffnet."
+      },
+      "confirmCta": {
+        "other": "Für immer verlassen"
+      },
+      "doneTitle": {
+        "other": "Sie haben {app} verlassen."
+      },
+      "errorTooManyCodes": {
+        "other": "Zu viele Codes angefordert. Versuchen Sie es später erneut."
+      },
+      "errorTooRecent": {
+        "other": "Warten Sie {seconds}s, bevor Sie erneut anfordern."
+      },
+      "errorSendFailed": {
+        "other": "Code konnte nicht per E-Mail gesendet werden. Versuchen Sie es erneut."
+      },
+      "errorRequestFailed": {
+        "other": "Code konnte nicht angefordert werden. Versuchen Sie es erneut."
+      },
+      "errorWrongCode": {
+        "one": "Falscher Code. {count} Versuch übrig.",
+        "other": "Falscher Code. {count} Versuche übrig."
+      },
+      "errorChallengeLocked": {
+        "other": "Zu viele falsche Versuche. Fordern Sie einen neuen Code an."
+      },
+      "errorChallengeExpired": {
+        "other": "Dieser Code ist abgelaufen. Fordern Sie einen neuen an."
+      },
+      "errorOwnerInitiated": {
+        "other": "Ein Administrator hat Sie entfernt. Er muss dies über seine Console rückgängig machen."
+      },
+      "errorGraceExpired": {
+        "other": "Das 90-Tage-Fenster zur Wiederherstellung dieser Mitgliedschaft ist abgelaufen."
+      },
+      "errorRestoreFailed": {
+        "other": "Wiederherstellung nicht möglich. Versuchen Sie es erneut."
+      },
+      "otpActionLabel": {
+        "other": "{app} verlassen"
+      },
+      "warn1Heading": {
+        "other": "{app} verlassen"
+      },
+      "warn1Body": {
+        "other": "Ihre Mitgliedschaft wird sofort verborgen. Sie haben 90 Tage Zeit, Ihre Meinung zu ändern und über dieselbe Oberfläche wiederherzustellen. Danach erscheint die App nicht mehr in Ihrer Liste. Ihre Daten auf der App-Seite unterliegen weiterhin deren eigenen Richtlinien."
+      },
+      "understandPrompt": {
+        "other": "Verstehen Sie?"
+      },
+      "iUnderstandCta": {
+        "other": "Ich verstehe"
+      },
+      "dataHeading": {
+        "other": "Zu Ihren Daten auf {app}"
+      },
+      "warn2Body": {
+        "other": "elvix speichert oder löscht nicht, was {app} über Sie speichert. Der App-Eigentümer ist dafür im Rahmen seiner eigenen Datenschutzerklärung und Nutzungsbedingungen verantwortlich. Wir benachrichtigen die App in dem Moment, in dem Sie sie verlassen, damit sie gemäß diesen Bedingungen handeln kann. Lesen Sie diese, bevor Sie bestätigen."
+      },
+      "privacyPolicy": {
+        "other": "Datenschutzerklärung"
+      },
+      "termsOfService": {
+        "other": "Nutzungsbedingungen"
+      },
+      "warn2EmailPrompt": {
+        "other": "Wir senden Ihnen zur Bestätigung einen Code per E-Mail. Verstehen Sie?"
+      },
+      "warn2Cta": {
+        "other": "Ich verstehe. Code per E-Mail senden"
+      },
+      "restoreHeading": {
+        "other": "Ihre Mitgliedschaft auf {app} wiederherstellen"
+      },
+      "restoreBody": {
+        "one": "Sie haben {count} Tag im Kulanzfenster übrig. Stellen Sie jetzt wieder her und die App sieht Sie genau wie zuvor: derselbe Benutzername, dieselben Rollen, dieselbe Historie.",
+        "other": "Sie haben {count} Tage im Kulanzfenster übrig. Stellen Sie jetzt wieder her und die App sieht Sie genau wie zuvor: derselbe Benutzername, dieselben Rollen, dieselbe Historie."
+      },
+      "restoreCta": {
+        "other": "Mitgliedschaft wiederherstellen"
+      },
+      "ownerLockedHeading": {
+        "other": "Ein Administrator hat Sie aus {app} entfernt"
+      },
+      "ownerLockedBody": {
+        "one": "Entfernt am {date}. Der App-Eigentümer hat {count} Tag übrig, um dies von seiner Seite aus zu stornieren. Danach erscheint die App nicht mehr hier.",
+        "other": "Entfernt am {date}. Der App-Eigentümer hat {count} Tage übrig, um dies von seiner Seite aus zu stornieren. Danach erscheint die App nicht mehr hier."
+      },
+      "ownerLockedReachOut": {
+        "other": "Da sie die Entfernung initiiert haben, können nur sie sie rückgängig machen. Wenden Sie sich über ihren Support-Kanal an sie, wenn Sie mit ihnen darüber sprechen möchten."
+      },
+      "doneLeftTitle": {
+        "other": "Sie haben {app} verlassen."
+      },
+      "doneRestoredTitle": {
+        "other": "Sie sind wieder auf {app}."
+      },
+      "doneLeftBody": {
+        "other": "Wir haben die App benachrichtigt. Sie haben 90 Tage Zeit, zurückzukehren und über dieselbe Oberfläche wiederherzustellen. Danach erscheint die App nicht mehr in Ihrer Liste."
+      },
+      "doneRestoredBody": {
+        "other": "Ihre Mitgliedschaft ist wieder aktiv. Die App-Seite kann einen Moment brauchen, um sich zu aktualisieren."
+      }
+    },
+    "lifecycle": {
+      "bannedTitle": {
+        "other": "Ihr Zugang wurde entzogen."
+      },
+      "bannedBody": {
+        "other": "Ein Administrator hat Ihr Konto für diese App gesperrt. Sie werden abgemeldet und können sich nicht erneut anmelden. Wenden Sie sich an den Eigentümer, falls Sie dies für einen Fehler halten."
+      },
+      "pausedTitle": {
+        "other": "Ihr Zugang wurde pausiert."
+      },
+      "pausedBody": {
+        "other": "Ein Administrator hat Ihr Konto für diese App vorübergehend pausiert. Sie werden in Kürze abgemeldet; wenden Sie sich an den Eigentümer, um den Zugang wiederherzustellen."
+      },
+      "deletedTitle": {
+        "other": "Ihr Konto wurde entfernt."
+      },
+      "deletedBody": {
+        "other": "Ein Administrator hat Ihre Mitgliedschaft für diese App gelöscht. Sie werden abgemeldet und Ihre gespeicherten Daten sind in 90 Tagen zur Löschung vorgesehen, sofern nicht wiederhergestellt."
+      },
+      "inactiveTitle": {
+        "other": "Sie machen eine Pause von dieser App."
+      },
+      "inactiveBody": {
+        "other": "Ihre Mitgliedschaft ist deaktiviert, daher melden wir Sie hier ab. Sie können jederzeit über Ihr elvix-Konto reaktivieren und direkt zurückkommen."
+      },
+      "countdown": {
+        "other": "Sie werden in {seconds}s abgemeldet"
+      },
+      "recoverRestoredTitle": {
+        "other": "Sie sind wieder auf {app}."
+      },
+      "recoverRestoredBody": {
+        "other": "Ihre Mitgliedschaft ist wieder aktiv. Fahren Sie mit der App fort, wann immer Sie bereit sind."
+      },
+      "recoverSignedOutTitle": {
+        "other": "Sie sind abgemeldet."
+      },
+      "recoverSignedOutBody": {
+        "other": "Sie sind {app} ferngeblieben. Kommen Sie jederzeit zurück."
+      },
+      "recoverWelcomeBack": {
+        "other": "Willkommen zurück bei {app}"
+      },
+      "recoverDeletedIntro": {
+        "other": "Sie haben {app} zuvor verlassen."
+      },
+      "recoverDeletedDaysLeft": {
+        "one": "Sie haben {count} Tag übrig, um zurückzukehren.",
+        "other": "Sie haben {count} Tage übrig, um zurückzukehren."
+      },
+      "recoverDeletedNoCountdown": {
+        "other": "Sie befinden sich noch im Wiederherstellungsfenster."
+      },
+      "recoverDeletedOutro": {
+        "other": "Stellen Sie Ihren Platz jetzt wieder her oder melden Sie sich erneut ab."
+      },
+      "recoverPausedBody": {
+        "other": "Ihre Mitgliedschaft auf {app} ist gerade pausiert. Stellen Sie wieder her, um dort weiterzumachen, wo Sie aufgehört haben, oder melden Sie sich wieder ab und bleiben Sie weg."
+      },
+      "recoverRestoringLabel": {
+        "other": "Wird wiederhergestellt"
+      },
+      "recoverRestoreDeletedCta": {
+        "other": "Meinen Platz auf {app} wiederherstellen"
+      },
+      "recoverRestorePausedCta": {
+        "other": "Mich auf {app} zurückbringen"
+      },
+      "recoverSigningOutLabel": {
+        "other": "Sie werden abgemeldet"
+      },
+      "recoverDeclineCta": {
+        "other": "Nicht jetzt, mich abmelden"
+      }
+    }
+  }
+}

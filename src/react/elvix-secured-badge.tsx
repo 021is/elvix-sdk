@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { useT } from "../locale/use-t";
 import { ElvixShield } from "./elvix-shield";
 import { type ElvixSizeProps, sizeStyle } from "./size";
 
@@ -69,8 +70,9 @@ export function ElvixSecuredBadge({
   minHeight,
   maxHeight,
 }: ElvixSecuredBadgeProps) {
+  const t = useT();
   const s = SIZE[size];
-  const t = TONE[variant][theme];
+  const tone = TONE[variant][theme];
   const style: CSSProperties = {
     display: "inline-flex",
     alignItems: "center",
@@ -81,9 +83,9 @@ export function ElvixSecuredBadge({
     fontSize: s.font,
     fontWeight: 500,
     borderRadius: 9999,
-    background: t.bg,
-    border: `1px solid ${t.border}`,
-    color: t.brand,
+    background: tone.bg,
+    border: `1px solid ${tone.border}`,
+    color: tone.brand,
     textDecoration: "none",
     userSelect: "none",
     lineHeight: 1,
@@ -99,10 +101,10 @@ export function ElvixSecuredBadge({
       style={style}
       data-elvix-secured-badge=""
     >
-      <ElvixShield size={s.icon} fill={t.shield} accent={accentColor} />
+      <ElvixShield size={s.icon} fill={tone.shield} accent={accentColor} />
       <span style={{ display: "inline-flex", alignItems: "baseline", gap: 4 }}>
-        <span style={{ color: t.lead }}>Secured by</span>
-        <span style={{ color: t.brand, fontWeight: 600 }}>elvix</span>
+        <span style={{ color: tone.lead }}>{t("signin.securedBy").trim()}</span>
+        <span style={{ color: tone.brand, fontWeight: 600 }}>elvix</span>
       </span>
     </a>
   );

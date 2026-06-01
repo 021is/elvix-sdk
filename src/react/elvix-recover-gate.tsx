@@ -19,10 +19,13 @@
  * until they pick Restore or Cancel.
  */
 
+import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, EyeOff, LogOut, Undo2, X } from "lucide-react";
 import { useState } from "react";
 import { authInit } from "./session";
+
+type TFn = ReturnType<typeof useT>;
 
 const Decision = {
   RESTORE: "restore",
@@ -87,6 +90,7 @@ export function ElvixRecoverGate({
    *  error inline. */
   onFail?: (error: string) => void;
 }) {
+  const t = useT();
   const [pane, setPane] = useState<Pane>("decide");
   // LEGACY: spine-lint-disable-next-line spine/enum-over-string
   const [busy, setBusy] = useState<"none" | "restore" | "cancel">("none");
@@ -127,10 +131,10 @@ export function ElvixRecoverGate({
       if (!res.ok || !raw.success) {
         const msg =
           errorKey === "grace_expired"
-            ? "The 90-day window to restore has closed."
+            ? t("signin.errorGraceExpired")
             : errorKey === "unauthenticated"
-              ? "Your session ended. Sign in again."
-              : "Something went wrong. Try again.";
+              ? t("signin.errorSessionEnded")
+              : t("common.somethingWentWrong");
         setError(msg);
         onFail?.(msg);
         return;
@@ -145,7 +149,7 @@ export function ElvixRecoverGate({
         if (!onCancel) setPane("done_cancelled");
       }
     } catch {
-      const msg = "Network hiccup. Try again.";
+      const msg = t("common.errorNetwork");
       setError(msg);
       onFail?.(msg);
     } finally {
@@ -165,6 +169,7 @@ export function ElvixRecoverGate({
             transition={{ duration: 0.24, ease: [0.22, 0.61, 0.36, 1] }}
           >
             <DecidePane
+              t={t}
               appName={appName}
               state={state}
               daysLeft={daysLeft}
@@ -185,8 +190,8 @@ export function ElvixRecoverGate({
           >
             <DonePane
               icon="check"
-              title={`You're back on ${appName}.`}
-              body="Your membership is active again. Continue to the app whenever you're ready."
+              title={t("lifecycle.recoverRestoredTitle", { app: appName })}
+              body={t("lifecycle.recoverRestoredBody")}
             />
           </motion.div>
         )}
@@ -200,8 +205,8 @@ export function ElvixRecoverGate({
           >
             <DonePane
               icon="logout"
-              title="You're signed out."
-              body={`You stayed off ${appName}. Come back any time.`}
+              title={t("lifecycle.recoverSignedOutTitle")}
+              body={t("lifecycle.recoverSignedOutBody", { app: appName })}
             />
           </motion.div>
         )}
@@ -211,6 +216,7 @@ export function ElvixRecoverGate({
 }
 
 function DecidePane({
+  t,
   appName,
   state,
   daysLeft,
@@ -219,6 +225,7 @@ function DecidePane({
   onRestore,
   onCancel,
 }: {
+  t: TFn;
   appName: string;
   state: GateState;
   daysLeft: number | null;
@@ -250,16 +257,16 @@ function DecidePane({
         </span>
         <div className="min-w-0">
           <div className="text-[15px] font-semibold tracking-tight text-fg-1 leading-tight">
-            Welcome back to {appName}
+            {t("lifecycle.recoverWelcomeBack", { app: appName })}
           </div>
           <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-1">
             {isDeleted
-              ? `You left ${appName} earlier. ${
+              ? `${t("lifecycle.recoverDeletedIntro", { app: appName })} ${
                   daysLeft != null
-                    ? `You have ${daysLeft} ${daysLeft === 1 ? "day" : "days"} left to come back.`
-                    : "You're still inside the restore window."
-                } Restore your spot now or sign back out.`
-              : `Your membership on ${appName} is on pause right now. Restore to pick up where you left off, or sign back out and stay away.`}
+                    ? t("lifecycle.recoverDeletedDaysLeft", { count: daysLeft })
+                    : t("lifecycle.recoverDeletedNoCountdown")
+                } ${t("lifecycle.recoverDeletedOutro")}`
+              : t("lifecycle.recoverPausedBody", { app: appName })}
           </p>
         </div>
       </div>
@@ -282,11 +289,13 @@ function DecidePane({
         }}
       >
         {busy === "restore" ? (
-          "Restoring…"
+          `${t("lifecycle.recoverRestoringLabel")}…`
         ) : (
           <>
             <Undo2 className="size-3.5" />
-            {isDeleted ? `Restore my spot on ${appName}` : `Bring me back on ${appName}`}
+            {isDeleted
+              ? t("lifecycle.recoverRestoreDeletedCta", { app: appName })
+              : t("lifecycle.recoverRestorePausedCta", { app: appName })}
           </>
         )}
       </button>
@@ -298,11 +307,11 @@ function DecidePane({
         className="w-full h-10 rounded-[10px] text-[13px] font-medium text-fg-2 hover:text-fg-1 hover:bg-surface-hover cursor-pointer transition inline-flex items-center justify-center gap-1.5 disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {busy === "cancel" ? (
-          "Signing you out…"
+          `${t("lifecycle.recoverSigningOutLabel")}…`
         ) : (
           <>
             <X className="size-3.5" />
-            Not now, sign me out
+            {t("lifecycle.recoverDeclineCta")}
           </>
         )}
       </button>

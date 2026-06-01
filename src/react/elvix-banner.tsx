@@ -24,6 +24,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Camera, Check, Loader2, Pencil, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Cropper, { type Area } from "react-easy-crop";
+import { useT } from "../locale/use-t";
 import { toast } from "./toast";
 
 export type ElvixBannerResult =
@@ -82,6 +83,7 @@ function ElvixBannerInner({
   ...bannerProps
 }: ElvixBannerProps) {
   const ctx = useElvixContext();
+  const t = useT();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [view, setView] = useState<View>("display");
 
@@ -168,11 +170,12 @@ function ElvixBannerInner({
       });
       setView("display");
     } catch {
-      toast.error("Couldn't upload banner. Try a different image.");
+      const msg = t("banner.errorUpload");
+      toast.error(msg);
       onResult?.({
         ok: false,
         error: "upload_failed",
-        message: "Couldn't upload banner. Try a different image.",
+        message: msg,
       });
       setView("cropping");
     } finally {
@@ -210,8 +213,9 @@ function ElvixBannerInner({
       onResult?.({ ok: true, sizes: [], updatedAt: new Date(now).toISOString() });
       setView("display");
     } catch {
-      toast.error("Couldn't remove banner.");
-      onResult?.({ ok: false, error: "delete_failed", message: "Couldn't remove banner." });
+      const msg = t("banner.errorRemove");
+      toast.error(msg);
+      onResult?.({ ok: false, error: "delete_failed", message: msg });
       setView("display");
     }
   };
@@ -230,7 +234,7 @@ function ElvixBannerInner({
       {previewBlobUrl && (
         <img
           src={previewBlobUrl}
-          alt="Preview banner"
+          alt={t("banner.previewAlt")}
           className="absolute inset-0 w-full h-full object-cover"
         />
       )}
@@ -379,6 +383,7 @@ function CropLayer({
   disabled: boolean;
   cornerRadius: number;
 }) {
+  const t = useT();
   return (
     <Layer layoutKey="crop" className="bg-black">
       {source && (
@@ -405,7 +410,7 @@ function CropLayer({
           type="button"
           onClick={onCancel}
           className="pointer-events-auto grid size-8 place-items-center rounded-full border border-white/30 bg-black/55 text-white backdrop-blur-md transition hover:bg-black/75 cursor-pointer"
-          aria-label="Cancel"
+          aria-label={t("common.cancel")}
         >
           <X className="size-4" />
         </button>
@@ -414,10 +419,10 @@ function CropLayer({
           onClick={onConfirm}
           disabled={disabled}
           className="pointer-events-auto inline-flex h-8 items-center gap-1.5 rounded-full bg-[var(--elvix-primary-strong)] px-3 text-[12px] font-semibold text-[var(--elvix-on-primary)] transition hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-          aria-label="Use this crop"
+          aria-label={t("banner.cropUseAria")}
         >
           <Check className="size-3.5" />
-          Use
+          {t("banner.cropUse")}
         </button>
       </div>
     </Layer>
@@ -443,6 +448,7 @@ function BannerCornerControls({
   onEdit: () => void;
   onRemove: () => void;
 }) {
+  const t = useT();
   const [expanded, setExpanded] = useState(false);
   const [armed, setArmed] = useState(false);
 
@@ -478,8 +484,8 @@ function BannerCornerControls({
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          aria-label={hasMedia ? "Edit banner" : "Add banner"}
-          title={hasMedia ? "Edit banner" : "Add banner"}
+          aria-label={hasMedia ? t("banner.editAria") : t("banner.addAria")}
+          title={hasMedia ? t("banner.editAria") : t("banner.addAria")}
           className="grid size-7 place-items-center rounded-full border border-white/20 bg-black/40 text-white/85 shadow-[0_1px_4px_rgba(0,0,0,0.18)] backdrop-blur-md transition hover:bg-black/60 hover:text-white cursor-pointer"
         >
           <Pencil className="size-3.5" />
@@ -489,8 +495,8 @@ function BannerCornerControls({
           <button
             type="button"
             onClick={collapse}
-            aria-label="Back"
-            title="Back"
+            aria-label={t("common.back")}
+            title={t("common.back")}
             className="grid size-7 place-items-center rounded-full border border-white/20 bg-black/40 text-white/85 shadow-[0_1px_4px_rgba(0,0,0,0.18)] backdrop-blur-md transition hover:bg-black/60 hover:text-white cursor-pointer"
           >
             <ArrowLeft className="size-3.5" />
@@ -498,8 +504,8 @@ function BannerCornerControls({
           <button
             type="button"
             onClick={handleUpload}
-            aria-label={hasMedia ? "Replace banner" : "Upload banner"}
-            title={hasMedia ? "Replace banner" : "Upload banner"}
+            aria-label={hasMedia ? t("banner.replace") : t("banner.uploadAria")}
+            title={hasMedia ? t("banner.replace") : t("banner.uploadAria")}
             className="grid size-7 place-items-center rounded-full border border-white/20 bg-black/40 text-white/85 shadow-[0_1px_4px_rgba(0,0,0,0.18)] backdrop-blur-md transition hover:bg-black/60 hover:text-white cursor-pointer"
           >
             <Camera className="size-3.5" />
@@ -508,9 +514,9 @@ function BannerCornerControls({
             <button
               type="button"
               onClick={handleRemove}
-              aria-label={armed ? "Confirm remove" : "Remove banner"}
+              aria-label={armed ? t("banner.confirmRemoveAria") : t("banner.removeBanner")}
               aria-pressed={armed}
-              title={armed ? "Click again to confirm" : "Remove banner"}
+              title={armed ? t("banner.confirmRemoveHint") : t("banner.removeBanner")}
               className={
                 "grid size-7 place-items-center rounded-full backdrop-blur-md transition shadow-[0_1px_4px_rgba(0,0,0,0.18)] cursor-pointer " +
                 (armed

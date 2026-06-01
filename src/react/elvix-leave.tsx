@@ -29,6 +29,7 @@ import { ElvixSaveButton } from "./elvix-save-button";
 import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
+import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, CheckCircle2, Lock, LogOut, Trash2, Undo2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -116,6 +117,7 @@ function ElvixLeaveInner({
   onResult?: (result: ElvixLeaveResult) => void;
 }) {
   const ctx = useElvixContext();
+  const t = useT();
   const [localDeletedAt, setLocalDeletedAt] = useState<string | null>(deletedAt);
   const [localDeletedBy, setLocalDeletedBy] = useState<string | null>(deletedBy);
   const isDeleted = Boolean(localDeletedAt);
@@ -179,12 +181,12 @@ function ElvixLeaveInner({
         if (body.error === "too_recent") setResendIn(body.retryAfterSeconds ?? 30);
         setServerError(
           body.error === "too_many"
-            ? "Too many codes requested. Try again later."
+            ? t("leave.errorTooManyCodes")
             : body.error === "too_recent"
-              ? `Wait ${body.retryAfterSeconds ?? 30}s before requesting again.`
+              ? t("leave.errorTooRecent", { seconds: body.retryAfterSeconds ?? 30 })
               : body.error === "send_failed"
-                ? "Couldn't email the code. Try again."
-                : "Couldn't request a code. Try again.",
+                ? t("leave.errorSendFailed")
+                : t("leave.errorRequestFailed"),
         );
         return false;
       }
@@ -195,7 +197,7 @@ function ElvixLeaveInner({
       setResendIn(30);
       return true;
     } catch {
-      setServerError("Network hiccup. Try again.");
+      setServerError(t("common.errorNetwork"));
       return false;
     } finally {
       setRequesting(false);
@@ -230,27 +232,25 @@ function ElvixLeaveInner({
           setAttemptsLeft(body.attemptsLeft ?? null);
           setCode("");
           setServerError(
-            `Wrong code. ${body.attemptsLeft ?? 0} ${
-              (body.attemptsLeft ?? 0) === 1 ? "try" : "tries"
-            } left.`,
+            t("leave.errorWrongCode", { count: body.attemptsLeft ?? 0 }),
           );
         } else if (body.error === "challenge_locked") {
-          setServerError("Too many wrong attempts. Request a new code.");
+          setServerError(t("leave.errorChallengeLocked"));
           setChallengeId(null);
           setCode("");
         } else if (body.error === "challenge_expired") {
-          setServerError("That code expired. Request a new one.");
+          setServerError(t("leave.errorChallengeExpired"));
           setChallengeId(null);
           setCode("");
         } else {
-          const msg = "Couldn't save. Try again.";
+          const msg = t("common.errorSaveFailed");
           setServerError(msg);
           onFail?.(msg);
         }
         onResult?.({
           ok: false,
           error: body.error ?? "save_failed",
-          message: serverError ?? "Couldn't save. Try again.",
+          message: serverError ?? t("common.errorSaveFailed"),
         });
         return;
       }
@@ -263,11 +263,11 @@ function ElvixLeaveInner({
         setPane("done");
       }
     } catch {
-      setServerError("Network hiccup. Try again.");
+      setServerError(t("common.errorNetwork"));
       onResult?.({
         ok: false,
         error: "network_error",
-        message: "Network hiccup. Try again.",
+        message: t("common.errorNetwork"),
       });
     } finally {
       setSaving(false);
@@ -290,10 +290,10 @@ function ElvixLeaveInner({
       if (!res.ok || !body.ok) {
         const msg =
           body.error === "owner_initiated"
-            ? "An admin removed you. They have to reverse this from their Console."
+            ? t("leave.errorOwnerInitiated")
             : body.error === "grace_expired"
-              ? "The 90-day window to restore this membership has closed."
-              : "Couldn't restore. Try again.";
+              ? t("leave.errorGraceExpired")
+              : t("leave.errorRestoreFailed");
         setServerError(msg);
         onFail?.(msg);
         onResult?.({ ok: false, error: body.error ?? "restore_failed", message: msg });
@@ -308,7 +308,7 @@ function ElvixLeaveInner({
         setPane("done");
       }
     } catch {
-      const msg = "Network hiccup. Try again.";
+      const msg = t("common.errorNetwork");
       setServerError(msg);
       onFail?.(msg);
       onResult?.({ ok: false, error: "network_error", message: msg });
@@ -383,7 +383,7 @@ function ElvixLeaveInner({
               onBack={() => go("warn2", -1)}
               onConfirm={verifyAndLeave}
               onResend={requestChallenge}
-              actionLabel={`Leave ${appName}`}
+              actionLabel={t("leave.otpActionLabel", { app: appName })}
             />
           </motion.div>
         )}
@@ -431,6 +431,7 @@ function LeaveWarn1Pane({
   appName: string;
   onContinue: () => void;
 }) {
+  const t = useT();
   return (
     <form
       className="space-y-4"
@@ -445,17 +446,15 @@ function LeaveWarn1Pane({
         </span>
         <div className="min-w-0">
           <div className="text-[15px] font-semibold tracking-tight text-fg-1 leading-tight">
-            Leave {appName}
+            {t("leave.warn1Heading", { app: appName })}
           </div>
           <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-1">
-            Your membership is hidden right away. You have 90 days to change your mind and restore
-            from this same surface. After that, the app stops showing up in your list. Your data on
-            the app's side stays governed by their own policies.
+            {t("leave.warn1Body")}
           </p>
-          <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-3">Do you understand?</p>
+          <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-3">{t("leave.understandPrompt")}</p>
         </div>
       </div>
-      <ElvixSaveButton state="idle" label="I understand" hint="Enter" autoFocus />
+      <ElvixSaveButton state="idle" label={t("leave.iUnderstandCta")} hint={t("common.enterHint")} autoFocus />
     </form>
   );
 }
@@ -475,6 +474,7 @@ function LeaveWarn2Pane({
   onBack: () => void;
   onContinue: () => void;
 }) {
+  const t = useT();
   return (
     <form
       className="space-y-4"
@@ -489,16 +489,14 @@ function LeaveWarn2Pane({
         className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-fg-2 hover:text-fg-1 cursor-pointer"
       >
         <ArrowLeft className="size-3.5" />
-        Back
+        {t("common.back")}
       </button>
       <div className="text-[15px] font-semibold tracking-tight text-fg-1 leading-tight">
-        About your data on {appName}
+        {t("leave.dataHeading", { app: appName })}
       </div>
       <div className="rounded-[12px] p-4 bg-amber-500/8 border border-amber-500/30">
         <p className="text-[12.5px] text-fg-2 leading-[1.55]">
-          elvix doesn't store or delete what {appName} keeps about you. The app owner is responsible
-          for that under their own privacy policy and terms of service. We notify the app the moment
-          you leave so they can act according to those terms. Read them before you confirm.
+          {t("leave.warn2Body", { app: appName })}
         </p>
         {(privacyPolicyUrl || termsOfServiceUrl) && (
           <div className="mt-3 flex items-center gap-3 flex-wrap text-[11.5px]">
@@ -509,7 +507,7 @@ function LeaveWarn2Pane({
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-fg-1 font-semibold underline underline-offset-4 hover:text-amber-700 dark:hover:text-amber-300"
               >
-                Privacy policy
+                {t("leave.privacyPolicy")}
                 <ArrowUpRight className="size-3" />
               </a>
             ) : null}
@@ -520,7 +518,7 @@ function LeaveWarn2Pane({
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-fg-1 font-semibold underline underline-offset-4 hover:text-amber-700 dark:hover:text-amber-300"
               >
-                Terms of service
+                {t("leave.termsOfService")}
                 <ArrowUpRight className="size-3" />
               </a>
             ) : null}
@@ -528,13 +526,13 @@ function LeaveWarn2Pane({
         )}
       </div>
       <p className="text-[12.5px] text-fg-3 leading-[1.55]">
-        We'll email you a code to confirm. Do you understand?
+        {t("leave.warn2EmailPrompt")}
       </p>
       <ElvixSaveButton
         state={requesting ? "saving" : "idle"}
         disabled={requesting}
-        label="I understand. Email me a code"
-        savedLabel="Sending…"
+        label={t("leave.warn2Cta")}
+        savedLabel={`${t("common.sendingLabel")}…`}
         hint={null}
         autoFocus
       />
@@ -555,6 +553,7 @@ function RestorePane({
   serverError: string | null;
   onConfirm: () => void;
 }) {
+  const t = useT();
   return (
     <div className="space-y-4">
       <div className="flex items-start gap-3">
@@ -570,11 +569,10 @@ function RestorePane({
         </span>
         <div className="min-w-0">
           <div className="text-[15px] font-semibold tracking-tight text-fg-1 leading-tight">
-            Restore your membership on {appName}
+            {t("leave.restoreHeading", { app: appName })}
           </div>
           <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-1">
-            You have {daysLeft} {daysLeft === 1 ? "day" : "days"} left in the grace window. Restore
-            now and the app sees you exactly as before: same username, same roles, same history.
+            {t("leave.restoreBody", { count: daysLeft })}
           </p>
         </div>
       </div>
@@ -582,8 +580,8 @@ function RestorePane({
       <ElvixSaveButton
         state={saving ? "saving" : "idle"}
         disabled={saving}
-        label="Restore membership"
-        savedLabel="Saved"
+        label={t("leave.restoreCta")}
+        savedLabel={t("common.saved")}
         hint={null}
         onClick={onConfirm}
         autoFocus
@@ -601,6 +599,12 @@ function OwnerLockedPane({
   deletedAt: string;
   daysLeft: number;
 }) {
+  const t = useT();
+  const formattedDate = new Date(deletedAt).toLocaleDateString(undefined, {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
   return (
     <div className="space-y-4">
       <div className="flex items-start gap-3">
@@ -609,21 +613,13 @@ function OwnerLockedPane({
         </span>
         <div className="min-w-0">
           <div className="text-[15px] font-semibold tracking-tight text-fg-1 leading-tight">
-            An admin removed you from {appName}
+            {t("leave.ownerLockedHeading", { app: appName })}
           </div>
           <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-1">
-            Removed{" "}
-            {new Date(deletedAt).toLocaleDateString(undefined, {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            })}
-            . The app owner has {daysLeft} {daysLeft === 1 ? "day" : "days"} left to cancel from
-            their side. After that the app no longer shows up here.
+            {t("leave.ownerLockedBody", { date: formattedDate, count: daysLeft })}
           </p>
           <p className="text-[11.5px] text-fg-3 leading-[1.55] mt-2">
-            Because they initiated the removal, only they can reverse it. Reach out through their
-            support channel if you want to talk to them about it.
+            {t("leave.ownerLockedReachOut")}
           </p>
         </div>
       </div>
@@ -638,6 +634,7 @@ function DonePane({
   appName: string;
   kind: State;
 }) {
+  const t = useT();
   return (
     <div className="flex flex-col items-center text-center gap-4 py-2">
       <motion.span
@@ -660,12 +657,12 @@ function DonePane({
       </motion.span>
       <div className="space-y-1 max-w-[320px]">
         <div className="text-[15px] font-semibold tracking-tight text-fg-1">
-          {kind === "left" ? `You left ${appName}.` : `You're back on ${appName}.`}
+          {kind === "left"
+            ? t("leave.doneLeftTitle", { app: appName })
+            : t("leave.doneRestoredTitle", { app: appName })}
         </div>
         <div className="text-[12.5px] text-fg-3 leading-[1.55]">
-          {kind === "left"
-            ? "We notified the app. You have 90 days to come back and restore from this same surface. After that, the app stops appearing in your list."
-            : "Your membership is active again. The app side may take a moment to refresh."}
+          {kind === "left" ? t("leave.doneLeftBody") : t("leave.doneRestoredBody")}
         </div>
       </div>
     </div>

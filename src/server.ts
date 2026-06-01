@@ -1,10 +1,28 @@
 /**
- * Server-side helpers for verifying elvix-issued session tokens.
- * Customer backends call `verifyElvixToken` with the request's
- * Authorization header. Bearer-token auth, no cookies.
+ * Server-side helpers for elvix integrations.
+ *
+ *   - `verifyElvixToken`   end-user session token → live user envelope
+ *   - `verifyElvixWebhook` HMAC-verify an inbound webhook delivery and
+ *                          get a typed `ElvixWebhookEvent` back
  */
 
 import type { ElvixVerifyResult } from "./types/index";
+
+export { verifyElvixWebhook } from "./server/webhook";
+export type { VerifyWebhookArgs } from "./server/webhook";
+export type {
+  ElvixWebhookEvent,
+  ElvixWebhookVerifyResult,
+  UserLifecycleData,
+  UserMembershipData,
+  UserProfileData,
+  UserRef,
+  UserRoleData,
+  UserScopeData,
+  UserSignedInData,
+  UserSignedOutData,
+} from "./types/webhook";
+export { ElvixWebhookEventType } from "./types/webhook";
 
 const DEFAULT_BASE_URL = "https://elvix.is";
 

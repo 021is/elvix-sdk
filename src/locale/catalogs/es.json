@@ -1,0 +1,2276 @@
+{
+  "$comment": "Canonical English catalog for @elvix.is/sdk. Every key here must exist in every other locale. Bulk translation lifts from this file via the DC translate engine.",
+  "locale": "es",
+  "namespaces": {
+    "common": {
+      "ok": {
+        "other": "Aceptar"
+      },
+      "cancel": {
+        "other": "Cancelar"
+      },
+      "back": {
+        "other": "Atrás"
+      },
+      "next": {
+        "other": "Siguiente"
+      },
+      "continue": {
+        "other": "Continuar"
+      },
+      "save": {
+        "other": "Guardar"
+      },
+      "saving": {
+        "other": "Guardando"
+      },
+      "delete": {
+        "other": "Eliminar"
+      },
+      "remove": {
+        "other": "Quitar"
+      },
+      "edit": {
+        "other": "Editar"
+      },
+      "close": {
+        "other": "Cerrar"
+      },
+      "done": {
+        "other": "Hecho"
+      },
+      "retry": {
+        "other": "Inténtalo de nuevo"
+      },
+      "loading": {
+        "other": "Cargando"
+      },
+      "search": {
+        "other": "Buscar"
+      },
+      "noMatches": {
+        "other": "Sin coincidencias"
+      },
+      "lastStep": {
+        "other": "Último paso"
+      },
+      "skip": {
+        "other": "Omitir"
+      },
+      "durationSeconds": {
+        "other": "{seconds}s"
+      },
+      "durationOneMinute": {
+        "other": "1 minuto"
+      },
+      "durationMinutes": {
+        "one": "{minutes} minuto",
+        "other": "{minutes} minutos"
+      },
+      "somethingWentWrong": {
+        "other": "Algo ha ido mal. Inténtalo de nuevo."
+      },
+      "errorNetwork": {
+        "other": "Problema de red. Inténtalo de nuevo."
+      },
+      "errorSaveFailed": {
+        "other": "No se ha podido guardar. Inténtalo de nuevo."
+      },
+      "hintEnter": {
+        "other": "Intro"
+      },
+      "enterHint": {
+        "other": "Intro"
+      },
+      "sendingLabel": {
+        "other": "Enviando"
+      },
+      "saved": {
+        "other": "Guardado"
+      },
+      "optionalSuffix": {
+        "other": " (opcional)"
+      },
+      "savingDots": {
+        "other": "Guardando."
+      }
+    },
+    "signin": {
+      "title": {
+        "other": "Inicia sesión en {app}"
+      },
+      "titleDefault": {
+        "other": "Iniciar sesión"
+      },
+      "subtitle": {
+        "other": ""
+      },
+      "googleButton": {
+        "other": "Continuar con Google"
+      },
+      "passkeyButton": {
+        "other": "Continuar con clave de acceso"
+      },
+      "emailPlaceholder": {
+        "other": "Correo electrónico"
+      },
+      "sendCodeButton": {
+        "other": "Continuar"
+      },
+      "sendingLabel": {
+        "other": "Enviando"
+      },
+      "codeSentSubtitle": {
+        "other": "Hemos enviado un código a {email}"
+      },
+      "codePlaceholder": {
+        "other": "Código de verificación"
+      },
+      "submitButton": {
+        "other": "Iniciar sesión"
+      },
+      "verifyingLabel": {
+        "other": "Verificando"
+      },
+      "or": {
+        "other": "o"
+      },
+      "resendCode": {
+        "other": "Reenviar código"
+      },
+      "resentLabel": {
+        "other": "Enviado de nuevo"
+      },
+      "errorGeneric": {
+        "other": "Algo ha ido mal. Inténtalo de nuevo."
+      },
+      "errorBadCode": {
+        "other": "Ese código no coincide."
+      },
+      "errorRateLimited": {
+        "other": "Demasiados intentos. Espera un momento."
+      },
+      "securedBy": {
+        "other": "Protegido por "
+      },
+      "verbLogin": {
+        "other": "Acceder"
+      },
+      "titleLogin": {
+        "other": "Accede a {app}"
+      },
+      "bootstrapErrorTitle": {
+        "other": "No se ha podido cargar el inicio de sesión"
+      },
+      "bootstrapErrorBody": {
+        "other": "{clientIdToken} no válido o el origen no está permitido para este dominio. Abre Consola, tu Aplicación, Credenciales para confirmar el {clientIdToken} y, después, añade este origen a Orígenes permitidos."
+      },
+      "identifierPlaceholderEmailOrUsername": {
+        "other": "Correo electrónico o nombre de usuario"
+      },
+      "identifierPlaceholderUsername": {
+        "other": "Nombre de usuario"
+      },
+      "identifierPlaceholderEmail": {
+        "other": "Introduce tu correo electrónico"
+      },
+      "errorNetwork": {
+        "other": "Problema de red. Inténtalo de nuevo."
+      },
+      "errorPasskeyVerify": {
+        "other": "La verificación de la clave de acceso ha fallado."
+      },
+      "errorPasskeyAdd": {
+        "other": "No se ha podido añadir la clave de acceso. Inténtalo de nuevo u omítelo por ahora."
+      },
+      "visitAppWebsite": {
+        "other": "Visitar el sitio web de {app}"
+      },
+      "passkeyOnboardingTitleSignin": {
+        "other": "Inicia sesión más rápido la próxima vez"
+      },
+      "passkeyOnboardingTitleLogin": {
+        "other": "Accede más rápido la próxima vez"
+      },
+      "recoverTitle": {
+        "other": "Bienvenido de nuevo a {app}"
+      },
+      "appNameFallback": {
+        "other": "tu aplicación"
+      },
+      "legalAppFallback": {
+        "other": "la aplicación"
+      },
+      "passkeyOnboardingSubtitle": {
+        "other": "Touch ID, Face ID o tu llave de seguridad. Se acabaron los códigos por correo."
+      },
+      "recoverSubtitle": {
+        "other": "Elige si quieres volver o quedarte fuera."
+      },
+      "identifierSubtitle": {
+        "other": "Elige cómo quieres continuar."
+      },
+      "verifyButton": {
+        "other": "Verificar"
+      },
+      "useDifferentEmail": {
+        "other": "Usar otro correo electrónico"
+      },
+      "resendInSeconds": {
+        "other": "Reenviar en {seconds}s"
+      },
+      "passkeyBullet1": {
+        "other": "Se acabaron las contraseñas y los códigos por correo"
+      },
+      "passkeyBullet2": {
+        "other": "A prueba de phishing. Solo funciona en este sitio."
+      },
+      "passkeyBullet3": {
+        "other": "Se sincroniza entre tus dispositivos vía iCloud, Google o 1Password"
+      },
+      "addPasskeyCta": {
+        "other": "Añadir una clave de acceso"
+      },
+      "skipForNow": {
+        "other": "Omitir por ahora"
+      },
+      "previewEmptyMethods": {
+        "other": "Activa al menos un método para previsualizar el inicio de sesión."
+      },
+      "googleButtonShort": {
+        "other": "Google"
+      },
+      "passkeyButtonShort": {
+        "other": "Clave de acceso"
+      },
+      "legalIntro": {
+        "other": "Al continuar, aceptas los"
+      },
+      "termsOfService": {
+        "other": "Términos del Servicio"
+      },
+      "privacyPolicy": {
+        "other": "Política de Privacidad"
+      },
+      "framedPreviewLabel": {
+        "other": "Esto es una vista previa"
+      },
+      "errorTooRecentWithSeconds": {
+        "other": "Espera {seconds}s antes de pedir otro código."
+      },
+      "errorTooRecent": {
+        "other": "Espera un momento antes de pedir otro código."
+      },
+      "errorTooManyWithRetry": {
+        "other": "Se han enviado demasiados códigos a este correo. Inténtalo de nuevo en {retry}."
+      },
+      "errorTooMany": {
+        "other": "Se han enviado demasiados códigos a este correo. Inténtalo más tarde."
+      },
+      "errorInvalidCode": {
+        "other": "Ese código no ha funcionado. Inténtalo de nuevo."
+      },
+      "errorExpired": {
+        "other": "Ese código ha caducado. Envía uno nuevo."
+      },
+      "errorSendFailed": {
+        "other": "No se ha podido enviar el correo. Comprueba la dirección."
+      },
+      "errorUserPaused": {
+        "other": "Tu acceso ha sido pausado. Contacta con soporte."
+      },
+      "errorUserBanned": {
+        "other": "Acceso denegado."
+      },
+      "errorUsernameNotFound": {
+        "other": "No hay ninguna cuenta con ese nombre de usuario aquí."
+      },
+      "errorMethodDisabled": {
+        "other": "Ese método de inicio de sesión no está habilitado para esta aplicación."
+      },
+      "errorGraceExpired": {
+        "other": "La ventana de 90 días para restaurar se ha cerrado."
+      },
+      "errorSessionEnded": {
+        "other": "Tu sesión ha finalizado. Inicia sesión de nuevo."
+      }
+    },
+    "sessions": {
+      "title": {
+        "other": "Tus sesiones"
+      },
+      "empty": {
+        "other": "No hay sesiones activas aquí."
+      },
+      "currentBadge": {
+        "other": "Mantener esta con sesión iniciada"
+      },
+      "revokeOne": {
+        "other": "Cerrar sesión"
+      },
+      "revokeOthersCta": {
+        "other": "Cerrar sesión en otros dispositivos"
+      },
+      "revokeAllCta": {
+        "other": "Cerrar sesión en todas partes"
+      },
+      "confirmOthersTitle": {
+        "other": "¿Cerrar sesión en otros dispositivos?"
+      },
+      "confirmOthersBody": {
+        "other": "Elige qué sesiones quieres finalizar. Cada una se revoca en cuanto la pulsas, y cada pestaña de ese dispositivo se queda sin sesión en cuestión de segundos."
+      },
+      "confirmAllTitle": {
+        "other": "¿Cerrar sesión en todas partes?"
+      },
+      "confirmAllBody": {
+        "other": "Incluye este dispositivo. Después se te redirigirá para iniciar sesión de nuevo."
+      },
+      "doneTitle": {
+        "other": "Sesión cerrada"
+      },
+      "doneCount": {
+        "one": "{count} dispositivo con sesión cerrada.",
+        "other": "{count} dispositivos con sesión cerrada."
+      },
+      "errorLoad": {
+        "other": "No se han podido cargar las sesiones."
+      },
+      "errorRevoke": {
+        "other": "No se ha podido revocar. Inténtalo de nuevo."
+      },
+      "errorMassRevoke": {
+        "other": "No se ha podido cerrar la sesión. Inténtalo de nuevo."
+      },
+      "thisDeviceBadge": {
+        "other": "este dispositivo"
+      },
+      "deviceLine": {
+        "other": "{browser} en {os}"
+      },
+      "massRevokeCtaSelf": {
+        "other": "Cerrar sesión en este dispositivo"
+      },
+      "massRevokeCtaOpen": {
+        "other": "Cerrar sesión en dispositivos..."
+      },
+      "confirmChooserTitle": {
+        "other": "¿Cerrar sesión dónde?"
+      },
+      "confirmChooserBody": {
+        "other": "Elige qué sesiones quieres finalizar. Cada una se revoca en cuanto la pulsas, y cada pestaña de ese dispositivo cierra sesión en su próxima petición."
+      },
+      "signOutOtherDevicesCount": {
+        "one": "Cerrar sesión en el otro {count} dispositivo",
+        "other": "Cerrar sesión en los otros {count} dispositivos"
+      },
+      "signOutAllCtaSelf": {
+        "other": "Cerrar sesión en este dispositivo"
+      },
+      "signOutAllCtaIncludingThis": {
+        "other": "Cerrar sesión en todas partes, también este dispositivo"
+      },
+      "signOutAllRedirectHint": {
+        "other": "Aterrizarás en la página de inicio de sesión justo después"
+      },
+      "confirmTokensFootnote": {
+        "other": "Los tokens ya emitidos seguirán rechazados. No hay deshacer, pero volver a iniciar sesión en cualquier dispositivo vuelve a funcionar sin más."
+      },
+      "doneAlreadyAlone": {
+        "other": "Ya solo queda esta."
+      },
+      "doneFootnote": {
+        "other": "Tu dispositivo actual sigue con sesión iniciada. Esas otras pestañas se cerrarán en su próxima petición."
+      },
+      "backToList": {
+        "other": "Volver a mis sesiones"
+      },
+      "methodSignIn": {
+        "other": "Inicio de sesión"
+      },
+      "methodEmailCode": {
+        "other": "Código por correo"
+      },
+      "methodPasskey": {
+        "other": "Clave de acceso"
+      },
+      "relativeJustNow": {
+        "other": "ahora mismo"
+      },
+      "relativeMinutesAgo": {
+        "other": "hace {count}m"
+      },
+      "relativeHoursAgo": {
+        "other": "hace {count}h"
+      },
+      "relativeDaysAgo": {
+        "other": "hace {count}d"
+      }
+    },
+    "avatar": {
+      "replace": {
+        "other": "Reemplazar"
+      },
+      "removePhoto": {
+        "other": "Quitar foto"
+      },
+      "removeConfirmTitle": {
+        "other": "¿Quitar tu foto?"
+      },
+      "removeConfirmBody": {
+        "other": "Se mostrarán tus iniciales."
+      },
+      "uploading": {
+        "other": "Subiendo"
+      },
+      "cropTitle": {
+        "other": "Recortar"
+      },
+      "cropApply": {
+        "other": "Aplicar"
+      },
+      "errorTooLarge": {
+        "other": "Imagen demasiado grande. Elige una de menos de {limitMb} MB."
+      },
+      "errorBadType": {
+        "other": "Elige una imagen PNG, JPG o WebP."
+      },
+      "uploadFailed": {
+        "other": "No se ha podido subir la foto. Prueba con otra imagen."
+      },
+      "removeFailed": {
+        "other": "No se ha podido quitar la foto."
+      },
+      "editPhotoAria": {
+        "other": "Editar tu foto"
+      },
+      "addPhotoAria": {
+        "other": "Añadir una foto"
+      },
+      "confirmRemoveAria": {
+        "other": "Confirmar quitar"
+      },
+      "replacePhotoAria": {
+        "other": "Reemplazar foto"
+      },
+      "uploadPhotoAria": {
+        "other": "Subir foto"
+      },
+      "useThisCropAria": {
+        "other": "Usar este recorte"
+      }
+    },
+    "banner": {
+      "replace": {
+        "other": "Reemplazar"
+      },
+      "removeBanner": {
+        "other": "Quitar banner"
+      },
+      "removeConfirmTitle": {
+        "other": "¿Quitar tu banner?"
+      },
+      "removeConfirmBody": {
+        "other": "Se mostrará el marcador de degradado por defecto."
+      },
+      "uploading": {
+        "other": "Subiendo"
+      },
+      "cropTitle": {
+        "other": "Recortar banner"
+      },
+      "cropApply": {
+        "other": "Aplicar"
+      },
+      "errorUpload": {
+        "other": "No se ha podido subir el banner. Prueba con otra imagen."
+      },
+      "errorRemove": {
+        "other": "No se ha podido quitar el banner."
+      },
+      "previewAlt": {
+        "other": "Vista previa del banner"
+      },
+      "cropUse": {
+        "other": "Usar"
+      },
+      "cropUseAria": {
+        "other": "Usar este recorte"
+      },
+      "editAria": {
+        "other": "Editar banner"
+      },
+      "addAria": {
+        "other": "Añadir banner"
+      },
+      "uploadAria": {
+        "other": "Subir banner"
+      },
+      "confirmRemoveAria": {
+        "other": "Confirmar quitar"
+      },
+      "confirmRemoveHint": {
+        "other": "Pulsa de nuevo para confirmar"
+      }
+    },
+    "username": {
+      "title": {
+        "other": "Elige un nombre de usuario"
+      },
+      "placeholder": {
+        "other": "nombredeusuario"
+      },
+      "checking": {
+        "other": "Comprobando"
+      },
+      "available": {
+        "other": "Disponible"
+      },
+      "taken": {
+        "other": "Ocupado"
+      },
+      "tooShort": {
+        "other": "Demasiado corto"
+      },
+      "tooLong": {
+        "other": "Demasiado largo"
+      },
+      "badChars": {
+        "other": "Solo letras, números y guiones"
+      },
+      "reserved": {
+        "other": "Reservado"
+      },
+      "subtitle": {
+        "other": "Así te ve la gente en {app}."
+      },
+      "subtitleNoApp": {
+        "other": "Así te ve la gente."
+      },
+      "label": {
+        "other": "Nombre de usuario"
+      },
+      "exampleHandle": {
+        "other": "tunombre"
+      },
+      "rulesHint": {
+        "other": "De 4 a 30 caracteres, de la a a la z, de 0 a 9, punto, guion bajo. Debe empezar por una letra."
+      },
+      "availableHint": {
+        "other": "Tiene buena pinta. Este es tuyo."
+      },
+      "suggestionsHeading": {
+        "other": "Sugerencias"
+      },
+      "claimCta": {
+        "other": "Reclamar @{handle}"
+      },
+      "yournameFallback": {
+        "other": "tunombre"
+      },
+      "reasonBlank": {
+        "other": "Elige un nombre de usuario."
+      },
+      "reasonTooShort": {
+        "other": "Mínimo 4 caracteres."
+      },
+      "reasonTooLong": {
+        "other": "Máximo 30 caracteres."
+      },
+      "reasonOnlyNumbers": {
+        "other": "No puede ser solo números."
+      },
+      "reasonBadStart": {
+        "other": "Debe empezar por una letra."
+      },
+      "reasonBadChars": {
+        "other": "Solo de la a a la z, de 0 a 9, punto y guion bajo."
+      },
+      "reasonConsecutiveSpecial": {
+        "other": "No puede haber dos puntos o guiones bajos seguidos."
+      },
+      "reasonTrailingSpecial": {
+        "other": "No puede acabar en punto o guion bajo."
+      },
+      "reasonTaken": {
+        "other": "Ese ya está ocupado."
+      },
+      "reasonInvalid": {
+        "other": "Ese nombre de usuario no es válido."
+      },
+      "errorJustTaken": {
+        "other": "Ese nombre de usuario lo acaban de coger. Elige otro."
+      },
+      "errorFormat": {
+        "other": "Ese nombre de usuario no cumple las reglas."
+      },
+      "errorSaveFailed": {
+        "other": "No se ha podido guardar. Inténtalo de nuevo."
+      },
+      "errorNetwork": {
+        "other": "Problema de red. Inténtalo de nuevo."
+      },
+      "ruleLength": {
+        "other": "de {min} a {max} caracteres"
+      },
+      "ruleChars": {
+        "other": "letras minúsculas, dígitos, punto, guion bajo"
+      },
+      "ruleStartEnd": {
+        "other": "empieza por una letra, termina por letra o dígito"
+      },
+      "ruleNoDoubles": {
+        "other": "sin dos caracteres especiales seguidos, sin palabras reservadas"
+      },
+      "confirmHeading": {
+        "other": "Confirmar cambio"
+      },
+      "notSet": {
+        "other": "Sin establecer"
+      },
+      "confirmBody": {
+        "other": "Cualquiera que inicie sesión en esta aplicación con este nombre de usuario serás tú. Puedes cambiarlo de nuevo cuando quieras."
+      },
+      "confirmCta": {
+        "other": "Confirmar cambio"
+      },
+      "doneTitle": {
+        "other": "Eres @{username} en {appName}."
+      },
+      "doneBody": {
+        "other": "Lo hemos guardado. Puedes seguir usando esta superficie o volver atrás cuando quieras."
+      },
+      "changeAgain": {
+        "other": "Cambiarlo de nuevo"
+      },
+      "disabledMailSubject": {
+        "other": "Reactivar el inicio de sesión con nombre de usuario en {appName}"
+      },
+      "disabledContactSupport": {
+        "other": "Contactar con soporte de {appName}"
+      },
+      "disabledEmailSupport": {
+        "other": "Enviar correo a {appName}"
+      },
+      "disabledTitle": {
+        "other": "Los nombres de usuario están desactivados en {appName}."
+      },
+      "disabledBody": {
+        "other": "El propietario de la aplicación tiene desactivado el inicio de sesión por nombre de usuario, así que no podemos dejarte establecer o cambiar tu nombre de usuario aquí."
+      },
+      "disabledStillHave": {
+        "other": "Aún conservas @{current} de antes. Se queda en tu membresía hasta que el propietario vuelva a activar la función."
+      },
+      "disabledNoSupport": {
+        "other": "La aplicación todavía no ha publicado un contacto de soporte. Escríbeles por el canal que sueles usar con ellos."
+      },
+      "disabledHint": {
+        "other": "Pídeles que vuelvan a activar el inicio de sesión por nombre de usuario en Consola, Métodos de inicio de sesión. Cuando lo hagan, podrás volver aquí y elegir uno."
+      },
+      "idleCurrent": {
+        "other": "Actualmente @{current}. Escribe algo distinto para cambiarlo."
+      },
+      "idleEmpty": {
+        "other": "Elige un nombre que la gente de esta aplicación pueda usar para encontrarte."
+      },
+      "formatGeneric": {
+        "other": "No cumple las reglas de abajo."
+      },
+      "takenLine": {
+        "other": "Otra persona en esta aplicación ya tiene @{username}."
+      },
+      "currentLine": {
+        "other": "Ese es el nombre de usuario que ya tienes aquí."
+      },
+      "availableLine": {
+        "other": "@{username} está disponible."
+      },
+      "reasonMustStartLetter": {
+        "other": "Debe empezar por una letra."
+      },
+      "reasonMustEndAlnum": {
+        "other": "Debe acabar por una letra o un dígito."
+      },
+      "reasonNoDoubleSpecial": {
+        "other": "No puede haber dos puntos o guiones bajos seguidos."
+      },
+      "reasonReserved": {
+        "other": "Ese nombre de usuario está reservado. Elige otro."
+      },
+      "appNameFallback": {
+        "other": "tu aplicación"
+      }
+    },
+    "identity": {
+      "title": {
+        "other": "Tu perfil"
+      },
+      "fullName": {
+        "other": "Nombre completo"
+      },
+      "birthdate": {
+        "other": "Fecha de nacimiento"
+      },
+      "gender": {
+        "other": "Género"
+      },
+      "pronouns": {
+        "other": "Pronombres"
+      },
+      "save": {
+        "other": "Guardar perfil"
+      },
+      "saved": {
+        "other": "Guardado"
+      },
+      "genderMale": {
+        "other": "Hombre"
+      },
+      "genderFemale": {
+        "other": "Mujer"
+      },
+      "genderNonBinary": {
+        "other": "No binario"
+      },
+      "genderPreferNotToSay": {
+        "other": "Prefiero no decirlo"
+      },
+      "pronounSheHer": {
+        "other": "Ella"
+      },
+      "pronounHeHim": {
+        "other": "Él"
+      },
+      "pronounTheyThem": {
+        "other": "Elle"
+      },
+      "pronounOther": {
+        "other": "Otro"
+      },
+      "pronounPreferNotToSay": {
+        "other": "Prefiero no decirlo"
+      },
+      "errorSaveFailed": {
+        "other": "No se ha podido guardar."
+      },
+      "givenName": {
+        "other": "Nombre"
+      },
+      "givenNamePlaceholder": {
+        "other": "Juana"
+      },
+      "familyName": {
+        "other": "Apellidos"
+      },
+      "familyNamePlaceholder": {
+        "other": "García"
+      },
+      "pronounsOptional": {
+        "other": "Pronombres (opcional)"
+      }
+    },
+    "region": {
+      "title": {
+        "other": "Elige tu región"
+      },
+      "yourRegion": {
+        "other": "Tu región"
+      },
+      "country": {
+        "other": "País"
+      },
+      "uiLocale": {
+        "other": "Idioma"
+      },
+      "currency": {
+        "other": "Moneda"
+      },
+      "firstDayOfWeek": {
+        "other": "Primer día de la semana"
+      },
+      "timeZone": {
+        "other": "Zona horaria"
+      },
+      "save": {
+        "other": "Guardar región"
+      },
+      "confirmTitle": {
+        "other": "¿Cambiar región?"
+      },
+      "confirmBody": {
+        "other": "Cambiar el país arrastra la moneda y el primer día de la semana."
+      },
+      "errorSaveFailed": {
+        "other": "No se ha podido guardar la región."
+      },
+      "emptyHint": {
+        "other": "El idioma de la interfaz, la zona horaria, la moneda y el formato de fecha siguen a tu país."
+      },
+      "whereDoYouLive": {
+        "other": "¿Dónde vives?"
+      },
+      "cascadeHint": {
+        "other": "Configuraremos a partir de aquí el idioma de la interfaz, la zona horaria, la moneda y el formato de fecha. Puedes anular cada uno más tarde."
+      },
+      "cascadeResetTitle": {
+        "other": "¿Restablecer todo a {country}?"
+      },
+      "cascadeResetBody": {
+        "other": "Estás cambiando de {currentFlag} {currentName} a {nextFlag} {nextName}. El idioma de la interfaz, la zona horaria, la moneda, el formato de fecha y las unidades se restablecerán a los valores predeterminados de {nextName}. Tus ediciones personalizadas (si las hubiera) se sobrescribirán."
+      },
+      "cascadeFallbackCountry": {
+        "other": "el nuevo país"
+      },
+      "uiLanguageLabel": {
+        "other": "Idioma de la interfaz"
+      },
+      "dateLabel": {
+        "other": "Fecha"
+      },
+      "timeLabel": {
+        "other": "Hora"
+      },
+      "unitsLabel": {
+        "other": "Unidades"
+      },
+      "resetDefaults": {
+        "other": "Restablecer valores predeterminados"
+      },
+      "savedLabel": {
+        "other": "Guardado"
+      },
+      "changeCountryAria": {
+        "other": "Cambiar país"
+      },
+      "setTimeZonePlaceholder": {
+        "other": "Establecer zona horaria"
+      },
+      "timeFormat": {
+        "other": "Formato de hora"
+      },
+      "dateFormat": {
+        "other": "Formato de fecha"
+      },
+      "numberFormat": {
+        "other": "Formato de número"
+      },
+      "numbersLabel": {
+        "other": "Números"
+      },
+      "weekStartsLabel": {
+        "other": "La semana empieza"
+      },
+      "weekStartsOnTitle": {
+        "other": "La semana empieza en"
+      },
+      "weekStartsHint": {
+        "other": "Afecta a calendarios, selectores de semana e informes semanales."
+      },
+      "pickOneHint": {
+        "other": "Elige el que te parezca más adecuado."
+      },
+      "uiLanguageTitle": {
+        "other": "Idioma de la interfaz"
+      },
+      "uiLanguageHint": {
+        "other": "El idioma en el que las aplicaciones impulsadas por elvix deben hablarte."
+      },
+      "languageSearchPlaceholder": {
+        "other": "English, Deutsch, fa..."
+      },
+      "currencyHint": {
+        "other": "Predeterminada para precios, facturas y pagos en aplicaciones impulsadas por elvix."
+      },
+      "currencySearchPlaceholder": {
+        "other": "EUR, dollar, real..."
+      },
+      "timeZoneHint": {
+        "other": "Se usa para planificar, \"a las 9 de tu hora\" e informes semanales."
+      },
+      "timeZoneSearchPlaceholder": {
+        "other": "Berlín, Teherán, Pacífico..."
+      }
+    },
+    "languages": {
+      "title": {
+        "other": "Idiomas que hablas"
+      },
+      "addLanguage": {
+        "other": "Añadir un idioma"
+      },
+      "limitReached": {
+        "other": "Puedes listar hasta {limit} idiomas."
+      },
+      "level": {
+        "other": "Nivel"
+      },
+      "remove": {
+        "other": "Quitar"
+      },
+      "saveLevel": {
+        "other": "Guardar nivel"
+      },
+      "updatingLevel": {
+        "other": "Actualizando nivel"
+      },
+      "addingLanguage": {
+        "other": "Añadiendo idioma"
+      },
+      "removing": {
+        "other": "Quitando"
+      },
+      "emptyHint": {
+        "other": "Para valores predeterminados de la interfaz, trabajos y mensajes salientes."
+      },
+      "searchHint": {
+        "other": "Busca por nombre en inglés, nombre nativo o código ISO."
+      },
+      "searchPlaceholder": {
+        "other": "English, Deutsch, fa"
+      },
+      "takenBadge": {
+        "other": "añadido"
+      },
+      "levelPickTitle": {
+        "other": "¿Qué tal hablas {language}?"
+      },
+      "thisLanguageFallback": {
+        "other": "este idioma"
+      },
+      "levelPickSubtitle": {
+        "other": "Elige el nivel que te parezca correcto. Puedes cambiarlo más tarde."
+      },
+      "errorAlreadyAdded": {
+        "other": "Ya has añadido este idioma. Edita su nivel desde la lista."
+      },
+      "removeConfirmTitle": {
+        "other": "¿Quitar {language}?"
+      },
+      "removeConfirmBody": {
+        "other": "Las aplicaciones que se dirijan en {language} ya no podrán llegar a ti en ese idioma. Puedes volver a añadirlo cuando quieras."
+      },
+      "keepCta": {
+        "other": "Mantener"
+      },
+      "addAnother": {
+        "other": "Añadir otro idioma"
+      }
+    },
+    "addressBook": {
+      "title": {
+        "other": "Tus direcciones"
+      },
+      "empty": {
+        "other": "Aún no hay direcciones."
+      },
+      "addCta": {
+        "other": "Añadir una dirección"
+      },
+      "makeDefault": {
+        "other": "Establecer como predeterminada"
+      },
+      "defaultBadge": {
+        "other": "Predeterminada"
+      },
+      "remove": {
+        "other": "Quitar"
+      },
+      "removeConfirmTitle": {
+        "other": "¿Quitar esta dirección?"
+      },
+      "savingLabel": {
+        "other": "Guardando dirección."
+      },
+      "deletingLabel": {
+        "other": "Eliminando dirección."
+      },
+      "addBilling": {
+        "other": "Añadir dirección de facturación"
+      },
+      "addShipping": {
+        "other": "Añadir dirección de envío"
+      },
+      "useForBilling": {
+        "other": "La usaremos para facturas y recibos."
+      },
+      "useForShipping": {
+        "other": "La usaremos para entregas y recogidas."
+      },
+      "addAnotherBilling": {
+        "other": "Añadir otra dirección de facturación"
+      },
+      "addAnotherShipping": {
+        "other": "Añadir otra dirección de envío"
+      },
+      "atCompany": {
+        "other": "en {company}"
+      },
+      "setAsDefault": {
+        "other": "Establecer como predeterminada"
+      },
+      "removeDefault": {
+        "other": "Quitar como predeterminada"
+      },
+      "deleteAddress": {
+        "other": "Eliminar dirección"
+      },
+      "newBillingAddress": {
+        "other": "Nueva dirección de facturación"
+      },
+      "newShippingAddress": {
+        "other": "Nueva dirección de envío"
+      },
+      "searchPrompt": {
+        "other": "Empieza a escribir tu dirección"
+      },
+      "searchPlaceholder": {
+        "other": "Calle Mayor 1, Madrid."
+      },
+      "searchError": {
+        "other": "No se ha podido buscar: {error}"
+      },
+      "noMatchesKeepTyping": {
+        "other": "Aún no hay coincidencias. Sigue escribiendo."
+      },
+      "aptFloorEyebrow": {
+        "other": "Piso, planta, suite"
+      },
+      "aptFloorTitle": {
+        "other": "¿Piso, suite o planta?"
+      },
+      "aptFloorBodyBilling": {
+        "other": "Los mapas rara vez recogen los números de unidad. Añade una segunda línea a la dirección."
+      },
+      "aptFloorBodyShipping": {
+        "other": "Los transportistas se equivocan sin la información de la unidad. Omítelo si no lo necesitas."
+      },
+      "line2Label": {
+        "other": "Línea de dirección 2 (opcional)"
+      },
+      "line2Placeholder": {
+        "other": "Piso 4B, 3.ª planta, Suite 200."
+      },
+      "step2of3": {
+        "other": "Paso 2 de 3"
+      },
+      "recipientTitleBilling": {
+        "other": "¿Para quién es esta dirección de facturación?"
+      },
+      "recipientTitleShipping": {
+        "other": "¿Para quién es esta dirección de envío?"
+      },
+      "recipientSubtitleBilling": {
+        "other": "Nombre en la factura."
+      },
+      "recipientSubtitleShipping": {
+        "other": "Nombre en el paquete."
+      },
+      "someoneElseSubtitleBilling": {
+        "other": "Un nombre distinto para la factura"
+      },
+      "someoneElseSubtitleShipping": {
+        "other": "Enviar a otra persona"
+      },
+      "businessSubtitleBilling": {
+        "other": "Facturar a la empresa (B2B)"
+      },
+      "businessSubtitleShipping": {
+        "other": "Enviar a una empresa o lugar de trabajo"
+      },
+      "saveError": {
+        "other": "No se ha podido guardar: {error}"
+      },
+      "recipientCustomTitle": {
+        "other": "¿Quién es el destinatario?"
+      },
+      "recipientCustomSubtitleBilling": {
+        "other": "El nombre que aparecerá en la factura."
+      },
+      "recipientCustomSubtitleShipping": {
+        "other": "El nombre que aparecerá en el paquete."
+      },
+      "recipientPlaceholder": {
+        "other": "Juana García"
+      },
+      "businessStep1of2": {
+        "other": "Empresa, paso 1 de 2"
+      },
+      "companyNameTitle": {
+        "other": "¿Cuál es el nombre de la empresa?"
+      },
+      "companyNameBodyBilling": {
+        "other": "Aparece en la factura. Necesario para la gestión fiscal B2B más adelante."
+      },
+      "companyNameBodyShipping": {
+        "other": "Empresa que recibe el paquete."
+      },
+      "companyNamePlaceholder": {
+        "other": "Edvone"
+      },
+      "businessStep2of2": {
+        "other": "Empresa, paso 2 de 2"
+      },
+      "contactAtCompanyTitle": {
+        "other": "¿Hay alguien en particular en {company}?"
+      },
+      "attnBodyInvoice": {
+        "other": "Añade una línea \"A la atención de:\" a la factura. Omítelo para dirigirla a la empresa."
+      },
+      "attnBodyPackage": {
+        "other": "Añade una línea \"A la atención de:\" al paquete. Omítelo para dirigirlo a la empresa."
+      },
+      "contactPersonOptional": {
+        "other": "Persona de contacto (opcional)"
+      },
+      "skip": {
+        "other": "Omitir"
+      },
+      "noteChoiceTitle": {
+        "other": "¿Quieres añadir una nota de entrega?"
+      },
+      "noteChoiceBodyBilling": {
+        "other": "Cualquier cosa que el equipo de facturación deba saber. Línea de atención, número de PO, c/o alguien."
+      },
+      "noteChoiceBodyShipping": {
+        "other": "Cualquier cosa para la persona que entrega. Timbre, código de la puerta, dejar en la puerta."
+      },
+      "noteYesTitle": {
+        "other": "Sí, añadir una nota"
+      },
+      "noteYesSubtitle": {
+        "other": "Escribe una instrucción breve"
+      },
+      "noteNoTitle": {
+        "other": "No, omitir"
+      },
+      "noteNoSubtitle": {
+        "other": "Guardar la dirección tal cual"
+      },
+      "noteLastStep": {
+        "other": "Nota, último paso"
+      },
+      "noteInputTitle": {
+        "other": "¿Qué deberíamos decir?"
+      },
+      "noteInputBodyBilling": {
+        "other": "Aparece en la factura o en el registro de facturación."
+      },
+      "noteInputBodyShipping": {
+        "other": "Se traslada al transportista de la entrega."
+      },
+      "billingNote": {
+        "other": "Nota de facturación"
+      },
+      "deliveryNote": {
+        "other": "Nota de entrega"
+      },
+      "notePlaceholderBilling": {
+        "other": "Facturar A LA ATENCIÓN DE: Finanzas, PO #ABC-1234."
+      },
+      "notePlaceholderShipping": {
+        "other": "Llamar al timbre 3, dejar con el conserje si no hay nadie."
+      },
+      "backToList": {
+        "other": "Volver a la lista"
+      },
+      "billingAddressLabel": {
+        "other": "dirección de facturación"
+      },
+      "shippingAddressLabel": {
+        "other": "dirección de envío"
+      },
+      "sectionWho": {
+        "other": "Quién"
+      },
+      "sectionWhere": {
+        "other": "Dónde"
+      },
+      "sectionNotesMeta": {
+        "other": "Notas y metadatos"
+      },
+      "fieldRecipient": {
+        "other": "Destinatario"
+      },
+      "fieldCompany": {
+        "other": "Empresa"
+      },
+      "addCompanyPlaceholder": {
+        "other": "Añadir una empresa"
+      },
+      "fieldStreet": {
+        "other": "Calle"
+      },
+      "fieldAptFloor": {
+        "other": "Piso o planta"
+      },
+      "addUnitPlaceholder": {
+        "other": "Añadir una unidad"
+      },
+      "fieldCity": {
+        "other": "Ciudad"
+      },
+      "fieldPostalCode": {
+        "other": "Código postal"
+      },
+      "fieldRegion": {
+        "other": "Región"
+      },
+      "fieldCountry": {
+        "other": "País"
+      },
+      "fieldDeliveryNotes": {
+        "other": "Notas de entrega"
+      },
+      "addNotePlaceholder": {
+        "other": "Añadir una nota"
+      },
+      "fieldTimezone": {
+        "other": "Zona horaria"
+      },
+      "fieldVenue": {
+        "other": "Lugar o edificio"
+      },
+      "nothingToChange": {
+        "other": "No hay nada que cambiar"
+      },
+      "setDefaultTitle": {
+        "other": "¿Establecer esta como tu predeterminada?"
+      },
+      "removeDefaultTitle": {
+        "other": "¿Quitar el predeterminado de esta dirección?"
+      },
+      "setDefaultSubtitle": {
+        "other": "Será la seleccionada por defecto al pagar o facturar."
+      },
+      "removeDefaultSubtitle": {
+        "other": "No habrá nada preseleccionado al pagar o facturar."
+      },
+      "crossAppHeadsUp": {
+        "other": "Atención. Esto afecta a todas las aplicaciones que uses con elvix."
+      },
+      "crossAppDefaultBodySetting": {
+        "other": "Tu dirección {kind} predeterminada se comparte entre todas las aplicaciones a las que inicias sesión. Cambiarla aquí actualiza la selección automática en todas partes a la vez."
+      },
+      "crossAppDefaultBodyClearing": {
+        "other": "Tu dirección {kind} predeterminada se comparte entre todas las aplicaciones a las que inicias sesión. Quitarla significa que no se preseleccionará ninguna dirección en ningún sitio; elegirás una cada vez al pagar o facturar."
+      },
+      "nothingToDelete": {
+        "other": "No hay nada que eliminar"
+      },
+      "deleteBillingHeader": {
+        "other": "Eliminar dirección de facturación"
+      },
+      "deleteShippingHeader": {
+        "other": "Eliminar dirección de envío"
+      },
+      "deleteConfirmTitle": {
+        "other": "¿Eliminar esta dirección?"
+      },
+      "cantBeUndone": {
+        "other": "Esto no se puede deshacer."
+      },
+      "crossAppDeleteBodyBilling": {
+        "other": "Tu dirección de facturación se guarda una vez en tu perfil de elvix y se comparte con las aplicaciones a las que inicias sesión. Al eliminarla se quita en todas partes. Cualquier flujo de pago, factura o envío que hiciera referencia a esta dirección necesitará una nueva."
+      },
+      "crossAppDeleteBodyShipping": {
+        "other": "Tu dirección de envío se guarda una vez en tu perfil de elvix y se comparte con las aplicaciones a las que inicias sesión. Al eliminarla se quita en todas partes. Cualquier flujo de pago, factura o envío que hiciera referencia a esta dirección necesitará una nueva."
+      },
+      "deleteError": {
+        "other": "No se ha podido eliminar: {error}"
+      },
+      "yesDelete": {
+        "other": "Sí, eliminar"
+      },
+      "pickAddressFirst": {
+        "other": "Elige una dirección primero"
+      },
+      "changeAddress": {
+        "other": "Cambiar dirección"
+      },
+      "reviewBilling": {
+        "other": "Revisar dirección de facturación"
+      },
+      "reviewShipping": {
+        "other": "Revisar dirección de envío"
+      },
+      "notRight": {
+        "other": "No es correcta"
+      },
+      "looksRight": {
+        "other": "Tiene buena pinta"
+      },
+      "missingFieldsHint": {
+        "other": "Nos falta el campo {fields}. Elige una sugerencia más específica (con un número de calle) para que podamos guardar una dirección entregable."
+      }
+    },
+    "legalEntities": {
+      "title": {
+        "other": "Entidades jurídicas"
+      },
+      "addCta": {
+        "other": "Añadir una entidad jurídica"
+      },
+      "companyName": {
+        "other": "Nombre de la empresa"
+      },
+      "vatId": {
+        "other": "NIF / IVA"
+      },
+      "taxCountry": {
+        "other": "País fiscal"
+      },
+      "verifyVat": {
+        "other": "Verificar IVA"
+      },
+      "verifying": {
+        "other": "Comprobando"
+      },
+      "verifiedBadge": {
+        "other": "Verificado"
+      },
+      "notRegistered": {
+        "other": "No registrado"
+      },
+      "unreachable": {
+        "other": "Inaccesible"
+      },
+      "addCtaSubtitle": {
+        "other": "Para facturas, contratos y declaraciones fiscales."
+      },
+      "addAnotherCta": {
+        "other": "Añadir otra entidad jurídica"
+      },
+      "kindIndividual": {
+        "other": "Particular"
+      },
+      "kindSoleProp": {
+        "other": "Autónomo"
+      },
+      "kindCompany": {
+        "other": "Empresa"
+      },
+      "removeDefaultAria": {
+        "other": "Quitar como predeterminada"
+      },
+      "setDefaultAria": {
+        "other": "Establecer como predeterminada"
+      },
+      "deleteAria": {
+        "other": "Eliminar entidad"
+      },
+      "typeChoiceTitle": {
+        "other": "¿Qué tipo de entidad es esta?"
+      },
+      "typeChoiceSubtitle": {
+        "other": "Determina las preguntas que vendrán a continuación."
+      },
+      "step1of3": {
+        "other": "Paso 1 de 3"
+      },
+      "individualSubtitle": {
+        "other": "Solo tú, sin negocio. Las facturas van a tu nombre personal."
+      },
+      "soleProprietorshipSubtitle": {
+        "other": "Tú más un nombre comercial (Einzelunternehmen, autónomo, etc.)."
+      },
+      "companySubtitle": {
+        "other": "Una entidad jurídica registrada (GmbH, Ltd, S.L., etc.)."
+      },
+      "legalNameTitleIndividual": {
+        "other": "Tu nombre legal"
+      },
+      "legalNameTitleSoleProp": {
+        "other": "Tu nombre legal (el titular)"
+      },
+      "legalNameTitleCompany": {
+        "other": "Razón social de la empresa"
+      },
+      "legalNameSubtitleIndividual": {
+        "other": "Tal como aparece en tu DNI."
+      },
+      "legalNameSubtitleSoleProp": {
+        "other": "La persona física que opera el negocio."
+      },
+      "legalNameSubtitleCompany": {
+        "other": "El nombre registrado de la empresa."
+      },
+      "legalNameLabel": {
+        "other": "Nombre legal"
+      },
+      "legalNamePlaceholderCompany": {
+        "other": "ACME GmbH"
+      },
+      "legalNamePlaceholderPerson": {
+        "other": "Juana García"
+      },
+      "legalNameInvalidCompany": {
+        "other": "Introduce al menos 2 caracteres con al menos una letra."
+      },
+      "legalNameInvalidPerson": {
+        "other": "Introduce nombre y apellidos."
+      },
+      "tradingNameTitle": {
+        "other": "Nombre comercial (opcional)"
+      },
+      "tradingNameSubtitle": {
+        "other": "Geschaeftsbezeichnung, DBA, denominación comercial. La marca con la que opera la entidad."
+      },
+      "tradingNameLabel": {
+        "other": "Nombre comercial"
+      },
+      "tradingNamePlaceholder": {
+        "other": "ACME Brands"
+      },
+      "dobTitle": {
+        "other": "Fecha de nacimiento"
+      },
+      "dobSubtitle": {
+        "other": "Necesaria para facturar a tu nombre y KYC si un cliente la pide más adelante."
+      },
+      "dobAgeError": {
+        "other": "Debes ser mayor de 18 años para registrar una entidad."
+      },
+      "dobOutOfRange": {
+        "other": "Esa fecha está fuera de rango."
+      },
+      "placeOfBirthTitle": {
+        "other": "Lugar de nacimiento"
+      },
+      "placeOfBirthSubtitle": {
+        "other": "Ciudad tal como aparece en tu DNI. Necesario para facturación y KYC."
+      },
+      "placeOfBirthCityLabel": {
+        "other": "Ciudad"
+      },
+      "placeOfBirthCityPlaceholder": {
+        "other": "Empieza a escribir una ciudad."
+      },
+      "placeChangeCta": {
+        "other": "Cambiar"
+      },
+      "placeSearchError": {
+        "other": "No se ha podido buscar: {error}"
+      },
+      "nationalityTitle": {
+        "other": "Nacionalidad"
+      },
+      "nationalitySubtitle": {
+        "other": "Elige una o varias (hasta {max}). La primera se considera principal."
+      },
+      "nationalityPrimaryBadge": {
+        "other": "Principal"
+      },
+      "nationalityCapReached": {
+        "other": "Has alcanzado el máximo de {max} nacionalidades. Quita una para añadir otra."
+      },
+      "removeCountryAria": {
+        "other": "Quitar {name}"
+      },
+      "taxCountryTitle": {
+        "other": "Residencia fiscal"
+      },
+      "taxCountrySubtitle": {
+        "other": "Donde la entidad declara impuestos. Solo aparecen los países donde podemos verificar el ID fiscal en tiempo real."
+      },
+      "taxIdsTitle": {
+        "other": "Identificadores fiscales"
+      },
+      "taxIdsSubtitleIndividual": {
+        "other": "Tu número fiscal local de {country}. Se almacena tal cual."
+      },
+      "taxIdsSubtitleIndividualFallback": {
+        "other": "tu administración tributaria"
+      },
+      "taxIdsSubtitleCompany": {
+        "other": "El IVA se valida en tiempo real frente a {authority}. El número fiscal local es opcional."
+      },
+      "taxIdsSubtitleCompanyFallback": {
+        "other": "la administración emisora"
+      },
+      "taxIdsSubtitleSoleProp": {
+        "other": "Ambos son opcionales. Añade el número fiscal local si quieres que aparezca en las facturas; el IVA solo si estás registrado en IVA. El registro mercantil se recoge en el siguiente paso."
+      },
+      "localTaxNumberLabel": {
+        "other": "Número fiscal local"
+      },
+      "vatCompanyIdLabel": {
+        "other": "NIF / IVA"
+      },
+      "blockReasonTaxIdRequired": {
+        "other": "Introduce el número fiscal local para continuar."
+      },
+      "blockReasonTaxIdFormat": {
+        "other": "El número fiscal local no coincide con el formato de {country}. {hint}"
+      },
+      "blockReasonVatRequired": {
+        "other": "Introduce un NIF / IVA para continuar."
+      },
+      "blockReasonVatFormat": {
+        "other": "Este NIF/IVA no coincide con el formato del país."
+      },
+      "taxIdFormatHint": {
+        "other": "Esperado: {placeholder}."
+      },
+      "verifyHeadingChecking": {
+        "other": "Verificando con la administración."
+      },
+      "verifyHeadingLive": {
+        "other": "Verificado."
+      },
+      "verifyHeadingInvalid": {
+        "other": "No se ha podido verificar."
+      },
+      "verifyHeadingFormat": {
+        "other": "Administración inaccesible."
+      },
+      "verifySubtitleChecking": {
+        "other": "Comprobando {vatId} en el registro de {country}."
+      },
+      "verifySubtitleLiveNamed": {
+        "other": "{authority} ha reconocido este IVA como {name}."
+      },
+      "verifySubtitleLive": {
+        "other": "{authority} ha reconocido este IVA."
+      },
+      "verifySubtitleInvalid": {
+        "other": "{authority} no lista {vatId} como registrado. Vuelve atrás para corregirlo."
+      },
+      "verifySubtitleFormat": {
+        "other": "No hemos podido contactar con {authority} ahora mismo. Tu entrada se guarda tal cual y se volverá a verificar automáticamente."
+      },
+      "authorityFallback": {
+        "other": "la administración tributaria"
+      },
+      "editTaxIdsBackLabel": {
+        "other": "Editar identificadores fiscales"
+      },
+      "fixVatCta": {
+        "other": "Corregir IVA"
+      },
+      "continueAnywayCta": {
+        "other": "Continuar de todos modos"
+      },
+      "registrationTitle": {
+        "other": "Registro"
+      },
+      "registrationSubtitle": {
+        "other": "Handelsregister, Companies House, KvK. El registro oficial donde está inscrita esta entidad."
+      },
+      "registrationNumberLabel": {
+        "other": "Número de registro"
+      },
+      "issuingAuthorityLabel": {
+        "other": "Autoridad emisora"
+      },
+      "issuingAuthorityPlaceholder": {
+        "other": "Juzgado local / registro mercantil"
+      },
+      "registeredSinceLabel": {
+        "other": "Registrada desde (opcional)"
+      },
+      "registeredSinceRangeError": {
+        "other": "Elige una fecha entre 1900 y hoy."
+      },
+      "regNumberFormatHint": {
+        "other": "No coincide con el formato esperado. Prueba: {placeholder}."
+      },
+      "addressSearchTitle": {
+        "other": "Domicilio registrado"
+      },
+      "addressSearchSubtitle": {
+        "other": "Donde la entidad está registrada ante la administración. Empieza a escribir."
+      },
+      "addressLabel": {
+        "other": "Dirección"
+      },
+      "addressSearchPlaceholder": {
+        "other": "Calle, ciudad."
+      },
+      "addressPickFirst": {
+        "other": "Elige una dirección primero"
+      },
+      "addressReviewTitle": {
+        "other": "¿Está bien?"
+      },
+      "addressReviewSubtitle": {
+        "other": "Asegúrate de que la sede registrada coincide con el registro oficial."
+      },
+      "addressMissing": {
+        "other": "Nos falta el campo {fields}. Elige una sugerencia más específica."
+      },
+      "addressFieldStreet": {
+        "other": "Calle"
+      },
+      "addressFieldCity": {
+        "other": "Ciudad"
+      },
+      "addressFieldPostalCode": {
+        "other": "Código postal"
+      },
+      "addressFieldRegion": {
+        "other": "Región"
+      },
+      "addressFieldCountry": {
+        "other": "País"
+      },
+      "addressChangeBackLabel": {
+        "other": "Cambiar dirección"
+      },
+      "addressNotRightCta": {
+        "other": "No es correcta"
+      },
+      "addressLooksRightCta": {
+        "other": "Tiene buena pinta"
+      },
+      "addressAptTitle": {
+        "other": "¿Piso, suite o planta?"
+      },
+      "addressAptSubtitle": {
+        "other": "Añade una segunda línea a la dirección registrada. Omítelo si no hace falta."
+      },
+      "addressAptLabel": {
+        "other": "Línea de dirección 2 (opcional)"
+      },
+      "addressAptPlaceholder": {
+        "other": "Piso 4B, 3.ª planta, Suite 200."
+      },
+      "contactChoiceTitle": {
+        "other": "¿Quieres añadir información de contacto?"
+      },
+      "contactChoiceSubtitle": {
+        "other": "Correo y teléfono opcionales para esta entidad. Separados del contacto principal de tu cuenta."
+      },
+      "contactYesCta": {
+        "other": "Sí, añadir contacto"
+      },
+      "contactNoCta": {
+        "other": "No, guardar sin él"
+      },
+      "yesNoYesSubtitle": {
+        "other": "Añade el siguiente paso"
+      },
+      "yesNoNoSubtitle": {
+        "other": "Guardar la entidad tal cual"
+      },
+      "saveError": {
+        "other": "No se ha podido guardar: {error}"
+      },
+      "contactInputTitle": {
+        "other": "Contacto para esta entidad"
+      },
+      "contactInputSubtitle": {
+        "other": "Correo y teléfono que se muestran en facturas y contratos."
+      },
+      "contactEmailLabel": {
+        "other": "Correo electrónico (opcional)"
+      },
+      "contactEmailPlaceholder": {
+        "other": "facturas@example.com"
+      },
+      "contactEmailInvalid": {
+        "other": "Introduce un correo válido o déjalo en blanco."
+      },
+      "contactPhoneLabel": {
+        "other": "Teléfono (opcional)"
+      },
+      "contactPhonePlaceholder": {
+        "other": "+34 ."
+      },
+      "contactPhoneInvalid": {
+        "other": "Usa dígitos con un + inicial opcional (6 a 20 dígitos)."
+      },
+      "saveEntityCta": {
+        "other": "Guardar entidad"
+      },
+      "saveChangesCta": {
+        "other": "Guardar cambios"
+      },
+      "savingEntityLabel": {
+        "other": "Guardando entidad."
+      },
+      "deletingEntityLabel": {
+        "other": "Eliminando entidad."
+      },
+      "backToList": {
+        "other": "Volver a la lista"
+      },
+      "detailSectionIdentity": {
+        "other": "Identidad"
+      },
+      "detailSectionTax": {
+        "other": "Fiscalidad"
+      },
+      "detailSectionRegistration": {
+        "other": "Registro"
+      },
+      "detailSectionAddress": {
+        "other": "Dirección"
+      },
+      "detailSectionContact": {
+        "other": "Contacto"
+      },
+      "detailLegalName": {
+        "other": "Nombre legal"
+      },
+      "detailTradingName": {
+        "other": "Nombre comercial"
+      },
+      "detailTradingNamePlaceholder": {
+        "other": "Añadir un nombre comercial"
+      },
+      "detailDob": {
+        "other": "Fecha de nacimiento"
+      },
+      "detailPlaceOfBirth": {
+        "other": "Lugar de nacimiento"
+      },
+      "detailPlaceOfBirthPlaceholder": {
+        "other": "Añadir lugar de nacimiento"
+      },
+      "detailNationality": {
+        "other": "Nacionalidad"
+      },
+      "detailTaxResidence": {
+        "other": "Residencia fiscal"
+      },
+      "detailVatId": {
+        "other": "NIF / IVA"
+      },
+      "detailVatIdPlaceholder": {
+        "other": "Añadir NIF/IVA"
+      },
+      "detailLocalTaxNumber": {
+        "other": "Número fiscal local"
+      },
+      "detailLocalTaxNumberPlaceholder": {
+        "other": "Añadir número fiscal"
+      },
+      "detailRegistrationNumber": {
+        "other": "N.º de registro"
+      },
+      "detailIssuingAuthority": {
+        "other": "Autoridad emisora"
+      },
+      "detailRegisteredSince": {
+        "other": "Registrada desde"
+      },
+      "detailStreet": {
+        "other": "Calle"
+      },
+      "detailAptFloor": {
+        "other": "Piso / planta"
+      },
+      "detailCity": {
+        "other": "Ciudad"
+      },
+      "detailPostalCode": {
+        "other": "Código postal"
+      },
+      "detailCountry": {
+        "other": "País"
+      },
+      "detailEmail": {
+        "other": "Correo electrónico"
+      },
+      "detailEmailPlaceholder": {
+        "other": "Añadir correo"
+      },
+      "detailPhone": {
+        "other": "Teléfono"
+      },
+      "detailPhonePlaceholder": {
+        "other": "Añadir teléfono"
+      },
+      "removeDefault": {
+        "other": "Quitar como predeterminada"
+      },
+      "setDefault": {
+        "other": "Establecer como predeterminada"
+      },
+      "deleteConfirmTitle": {
+        "other": "¿Eliminar esta entidad?"
+      },
+      "deleteConfirmBody": {
+        "other": "Esto no se puede deshacer."
+      },
+      "deleteEmpty": {
+        "other": "No hay nada que eliminar"
+      },
+      "sharedAcrossAppsHeading": {
+        "other": "Atención. Esto afecta a todas las aplicaciones que uses con elvix."
+      },
+      "deleteSharedAcrossAppsBody": {
+        "other": "Las entidades jurídicas se comparten entre las aplicaciones a las que inicias sesión. Eliminarla quita el registro en todas partes; cualquier plantilla de factura que la referenciaba necesitará una nueva."
+      },
+      "deleteError": {
+        "other": "No se ha podido eliminar: {error}"
+      },
+      "yesDelete": {
+        "other": "Sí, eliminar"
+      },
+      "nothingToChange": {
+        "other": "No hay nada que cambiar"
+      },
+      "defaultConfirmTitleSet": {
+        "other": "¿Establecer esta como tu entidad predeterminada?"
+      },
+      "defaultConfirmTitleUnset": {
+        "other": "¿Quitar el predeterminado de esta entidad?"
+      },
+      "defaultConfirmBodySet": {
+        "other": "La entidad predeterminada autocompleta las facturas y las plantillas de contrato."
+      },
+      "defaultConfirmBodyUnset": {
+        "other": "No habrá nada preseleccionado al generar facturas o contratos."
+      },
+      "defaultSharedAcrossAppsBodySet": {
+        "other": "La entidad predeterminada se comparte entre todas las aplicaciones a las que inicias sesión. Cambiarla aquí actualiza la selección automática en todas partes a la vez."
+      },
+      "defaultSharedAcrossAppsBodyUnset": {
+        "other": "La entidad predeterminada se comparte entre todas las aplicaciones a las que inicias sesión. Quitarla significa que no se preseleccionará ninguna entidad en ningún sitio."
+      }
+    },
+    "entityKind": {
+      "title": {
+        "other": "¿Para quién es?"
+      },
+      "me": {
+        "other": "Para mí"
+      },
+      "someoneElse": {
+        "other": "Para otra persona"
+      },
+      "business": {
+        "other": "Para una empresa"
+      }
+    },
+    "export": {
+      "title": {
+        "other": "Descarga tus datos"
+      },
+      "body": {
+        "other": "Obtén una copia de todo lo que tenemos sobre ti. Artículo 15 del GDPR. Te enviamos por correo un enlace de descarga de un solo uso, válido durante 24 horas."
+      },
+      "sendCodeCta": {
+        "other": "Enviar código de verificación"
+      },
+      "downloadCta": {
+        "other": "Enviarme el enlace por correo"
+      },
+      "doneTitle": {
+        "other": "Revisa tu bandeja de entrada"
+      },
+      "doneBody": {
+        "other": "Hemos enviado un enlace de descarga a {email}. Caduca en 24 horas."
+      },
+      "previewLoadFailed": {
+        "other": "No se ha podido cargar la vista previa. Inténtalo de nuevo."
+      },
+      "whatYouReceive": {
+        "other": "Lo que recibirás"
+      },
+      "archiveBlurbIdentity": {
+        "other": "Tu archivo contendrá un único fichero JSON con todo lo de abajo, más tus imágenes de avatar y banner si has subido alguna, además de un README que explica cada sección en lenguaje sencillo e incluye las divulgaciones del art. 15(1) del GDPR."
+      },
+      "archiveBlurbApp": {
+        "other": "Tu archivo contendrá un único fichero JSON limitado a {label}, más un README que explica cada sección e incluye las divulgaciones del art. 15(1) del GDPR."
+      },
+      "notIncluded": {
+        "other": "No se incluyen: material criptográfico de tus claves de acceso, tokens OAuth, códigos OTP ni datos que las aplicaciones que usas guarden sobre ti fuera de elvix. Para esto último, contacta con cada aplicación."
+      },
+      "sendToHeading": {
+        "other": "Enviaremos tus datos a tu correo principal"
+      },
+      "sendToBody": {
+        "other": "Tu archivo aterrizará en {email} como adjunto .zip. La posesión de esta bandeja de entrada es la prueba de identidad, así que el fichero nunca vive en una URL pública."
+      },
+      "sendToNotice": {
+        "other": "Primero enviamos un código de 6 dígitos a tu bandeja principal. Después de introducirlo en la siguiente pantalla, generamos tu archivo y te lo enviamos por correo como adjunto .zip."
+      },
+      "sendingCode": {
+        "other": "Enviando código"
+      },
+      "sendToCta": {
+        "other": "Enviarme un código de 6 dígitos por correo"
+      },
+      "otpHeading": {
+        "other": "Confirma con tu código"
+      },
+      "otpBody": {
+        "other": "Hemos enviado un código de 6 dígitos a {email}. Caduca en 10 minutos. Una vez lo introduzcas, generaremos tu archivo y te lo enviaremos a la misma bandeja como adjunto .zip."
+      },
+      "confirmCta": {
+        "other": "Confirmar y enviarme mis datos por correo"
+      },
+      "workingLabel": {
+        "other": "Procesando"
+      },
+      "resendIn": {
+        "other": "Reenviar en {seconds}s"
+      },
+      "noPendingCode": {
+        "other": "No hay ningún código pendiente. Envía uno nuevo."
+      },
+      "networkError": {
+        "other": "Error de red. Inténtalo de nuevo."
+      },
+      "doneHeading": {
+        "other": "Enviado."
+      },
+      "doneInboxBody": {
+        "other": "Revisa tu bandeja principal ({email}) en un minuto. Tu archivo va adjunto al correo como fichero .zip. Puedes solicitar otra exportación del mismo destino en 24 horas."
+      },
+      "backToExports": {
+        "other": "Volver a exportaciones"
+      },
+      "errorChallengeGeneric": {
+        "other": "No se ha podido enviar un código. Inténtalo de nuevo."
+      },
+      "errorChallengeTooRecent": {
+        "other": "Espera {seconds}s antes de volver a pedirlo."
+      },
+      "errorChallengeTooMany": {
+        "other": "Demasiadas solicitudes esta hora. Inténtalo más tarde."
+      },
+      "errorChallengeSendFailed": {
+        "other": "No se ha podido enviar el código por correo. Inténtalo de nuevo."
+      },
+      "errorChallengeRateLimit": {
+        "other": "Ya has exportado esto en las últimas 24 horas. Disponible de nuevo en aproximadamente {hours}h."
+      },
+      "errorChallengeNotMember": {
+        "other": "Ya no eres miembro de esta aplicación."
+      },
+      "errorChallengeAppNotFound": {
+        "other": "Esa aplicación no está disponible."
+      },
+      "errorApplyGeneric": {
+        "other": "No se ha podido generar tu exportación. Inténtalo de nuevo."
+      },
+      "errorApplyWrongCode": {
+        "one": "Código incorrecto. Te queda {count} intento.",
+        "other": "Código incorrecto. Te quedan {count} intentos."
+      },
+      "errorApplyLocked": {
+        "other": "Demasiados intentos incorrectos. Envía un código nuevo."
+      },
+      "errorApplyExpired": {
+        "other": "Ese código ha caducado. Envía uno nuevo."
+      },
+      "errorApplyGenerateFailed": {
+        "other": "No hemos podido crear tu exportación. Inténtalo de nuevo."
+      },
+      "errorApplyStorageFailed": {
+        "other": "No hemos podido almacenar tu exportación. Inténtalo de nuevo."
+      },
+      "errorApplyEmailFailed": {
+        "other": "Tu archivo se ha generado pero el correo ha fallado. Contacta con {email} para recuperar el enlace."
+      }
+    },
+    "deactivate": {
+      "title": {
+        "other": "Tómate un descanso"
+      },
+      "body": {
+        "other": "Al desactivarla, tu cuenta se oculta en esta aplicación. Reactívala cuando quieras desde tu cuenta de elvix."
+      },
+      "confirmCta": {
+        "other": "Desactivar"
+      },
+      "doneTitle": {
+        "other": "Tu cuenta está en pausa"
+      },
+      "reactivateCta": {
+        "other": "Reactivar"
+      },
+      "errorTooMany": {
+        "other": "Se han pedido demasiados códigos. Inténtalo más tarde."
+      },
+      "errorTooRecent": {
+        "other": "Espera {seconds}s antes de volver a pedirlo."
+      },
+      "errorSendFailed": {
+        "other": "No se ha podido enviar el código por correo. Inténtalo de nuevo."
+      },
+      "errorRequestFailed": {
+        "other": "No se ha podido pedir un código. Inténtalo de nuevo."
+      },
+      "errorWrongCode": {
+        "one": "Código incorrecto. Te queda {count} intento.",
+        "other": "Código incorrecto. Te quedan {count} intentos."
+      },
+      "errorChallengeLocked": {
+        "other": "Demasiados intentos incorrectos. Solicita un código nuevo."
+      },
+      "errorChallengeExpired": {
+        "other": "Ese código ha caducado. Solicita uno nuevo."
+      },
+      "errorAlreadyLeft": {
+        "other": "Ya has abandonado esta aplicación. Restaura tu membresía primero."
+      },
+      "appNameFallback": {
+        "other": "tu aplicación"
+      },
+      "warn1Title": {
+        "other": "Tómate un descanso de {app}"
+      },
+      "warn1Body": {
+        "other": "Tu perfil se toma un descanso silencioso. La gente en {app} deja de verte, pero todo lo que has construido se queda exactamente igual. Cuando estés listo, vuelve aquí y vuelve a iniciar sesión."
+      },
+      "soundGood": {
+        "other": "¿Te parece bien?"
+      },
+      "warn1Cta": {
+        "other": "Lo entiendo"
+      },
+      "warn2Title": {
+        "other": "Algunas cosas que debes saber"
+      },
+      "warn2Bullet1": {
+        "other": "Las sesiones abiertas en esta aplicación se cierran de inmediato."
+      },
+      "warn2Bullet2": {
+        "other": "Tu nombre de usuario y tu identificador siguen siendo tuyos. Nadie más puede cogerlos mientras estés fuera."
+      },
+      "warn2Bullet3": {
+        "other": "Puedes volver cuando quieras desde esta misma superficie."
+      },
+      "warn2Bullet4": {
+        "other": "Te enviaremos por correo un código de 6 dígitos para confirmar. Por si acaso, así el cambio solo se aplica si también tienes acceso a tu bandeja."
+      },
+      "warn2Cta": {
+        "other": "Lo entiendo. Envíame un código por correo"
+      },
+      "sendingLabel": {
+        "other": "Enviando"
+      },
+      "reactivateTitle": {
+        "other": "Bienvenido de nuevo a {app}"
+      },
+      "reactivateBody": {
+        "other": "Estás de descanso ahora mismo. Reactívate para volver a aparecer en {app}."
+      },
+      "reactivateBodyByOwner": {
+        "other": "Estás de descanso ahora mismo (un administrador lo hizo en tu nombre). Reactívate para volver a aparecer en {app}."
+      },
+      "doneDeactivatedTitle": {
+        "other": "Estás de descanso de {app}."
+      },
+      "doneReactivatedTitle": {
+        "other": "Has vuelto a {app}."
+      },
+      "doneDeactivatedBody": {
+        "other": "Hemos avisado a la aplicación. Vuelve aquí cuando quieras para reactivarte."
+      },
+      "doneReactivatedBody": {
+        "other": "Tu membresía vuelve a estar activa. Las sesiones abiertas del lado de la aplicación pueden tardar un momento en refrescarse."
+      },
+      "reactivateAgain": {
+        "other": "Reactivar de nuevo"
+      },
+      "deactivateAgain": {
+        "other": "Desactivar de nuevo"
+      },
+      "otpTitle": {
+        "other": "Introduce tu código de confirmación"
+      },
+      "otpDelivered": {
+        "other": "Hemos enviado un código de 6 dígitos a {email}. Caduca en 10 minutos."
+      },
+      "otpSending": {
+        "other": "Te estamos enviando un código de 6 dígitos."
+      },
+      "otpPending": {
+        "other": "Estamos enviando un código de 6 dígitos a tu correo."
+      },
+      "resendIn": {
+        "other": "Reenviar en {seconds}s"
+      }
+    },
+    "leave": {
+      "title": {
+        "other": "¿Abandonar {app}?"
+      },
+      "body": {
+        "other": "Elimina tu membresía. Esto es definitivo: el propietario no puede recuperarla. Tu cuenta de elvix sigue abierta."
+      },
+      "confirmCta": {
+        "other": "Abandonar para siempre"
+      },
+      "doneTitle": {
+        "other": "Has abandonado {app}."
+      },
+      "errorTooManyCodes": {
+        "other": "Se han pedido demasiados códigos. Inténtalo más tarde."
+      },
+      "errorTooRecent": {
+        "other": "Espera {seconds}s antes de volver a pedirlo."
+      },
+      "errorSendFailed": {
+        "other": "No se ha podido enviar el código por correo. Inténtalo de nuevo."
+      },
+      "errorRequestFailed": {
+        "other": "No se ha podido pedir un código. Inténtalo de nuevo."
+      },
+      "errorWrongCode": {
+        "one": "Código incorrecto. Te queda {count} intento.",
+        "other": "Código incorrecto. Te quedan {count} intentos."
+      },
+      "errorChallengeLocked": {
+        "other": "Demasiados intentos incorrectos. Solicita un código nuevo."
+      },
+      "errorChallengeExpired": {
+        "other": "Ese código ha caducado. Solicita uno nuevo."
+      },
+      "errorOwnerInitiated": {
+        "other": "Un administrador te ha eliminado. Solo ellos pueden revertirlo desde su Consola."
+      },
+      "errorGraceExpired": {
+        "other": "La ventana de 90 días para restaurar esta membresía se ha cerrado."
+      },
+      "errorRestoreFailed": {
+        "other": "No se ha podido restaurar. Inténtalo de nuevo."
+      },
+      "otpActionLabel": {
+        "other": "Abandonar {app}"
+      },
+      "warn1Heading": {
+        "other": "Abandonar {app}"
+      },
+      "warn1Body": {
+        "other": "Tu membresía se oculta al instante. Tienes 90 días para cambiar de idea y restaurarla desde esta misma superficie. Después, la aplicación deja de aparecer en tu lista. Tus datos del lado de la aplicación siguen rigiéndose por sus propias políticas."
+      },
+      "understandPrompt": {
+        "other": "¿Lo entiendes?"
+      },
+      "iUnderstandCta": {
+        "other": "Lo entiendo"
+      },
+      "dataHeading": {
+        "other": "Sobre tus datos en {app}"
+      },
+      "warn2Body": {
+        "other": "elvix no almacena ni elimina lo que {app} guarda sobre ti. El propietario de la aplicación es responsable de ello según su propia política de privacidad y términos del servicio. Avisamos a la aplicación en el momento en que la abandonas para que pueda actuar conforme a esos términos. Léelos antes de confirmar."
+      },
+      "privacyPolicy": {
+        "other": "Política de privacidad"
+      },
+      "termsOfService": {
+        "other": "Términos del servicio"
+      },
+      "warn2EmailPrompt": {
+        "other": "Te enviaremos por correo un código para confirmar. ¿Lo entiendes?"
+      },
+      "warn2Cta": {
+        "other": "Lo entiendo. Envíame un código por correo"
+      },
+      "restoreHeading": {
+        "other": "Restaura tu membresía en {app}"
+      },
+      "restoreBody": {
+        "one": "Te queda {count} día en el periodo de gracia. Restaura ahora y la aplicación te verá exactamente como antes: mismo nombre de usuario, mismos roles, mismo historial.",
+        "other": "Te quedan {count} días en el periodo de gracia. Restaura ahora y la aplicación te verá exactamente como antes: mismo nombre de usuario, mismos roles, mismo historial."
+      },
+      "restoreCta": {
+        "other": "Restaurar membresía"
+      },
+      "ownerLockedHeading": {
+        "other": "Un administrador te ha eliminado de {app}"
+      },
+      "ownerLockedBody": {
+        "one": "Eliminado el {date}. Al propietario de la aplicación le queda {count} día para cancelarlo desde su lado. Después la aplicación dejará de aparecer aquí.",
+        "other": "Eliminado el {date}. Al propietario de la aplicación le quedan {count} días para cancelarlo desde su lado. Después la aplicación dejará de aparecer aquí."
+      },
+      "ownerLockedReachOut": {
+        "other": "Como ellos iniciaron la eliminación, solo ellos pueden revertirla. Escríbeles a su canal de soporte si quieres hablar con ellos del tema."
+      },
+      "doneLeftTitle": {
+        "other": "Has abandonado {app}."
+      },
+      "doneRestoredTitle": {
+        "other": "Has vuelto a {app}."
+      },
+      "doneLeftBody": {
+        "other": "Hemos avisado a la aplicación. Tienes 90 días para volver y restaurarla desde esta misma superficie. Después, la aplicación deja de aparecer en tu lista."
+      },
+      "doneRestoredBody": {
+        "other": "Tu membresía vuelve a estar activa. El lado de la aplicación puede tardar un momento en refrescarse."
+      }
+    },
+    "lifecycle": {
+      "bannedTitle": {
+        "other": "Tu acceso ha sido revocado."
+      },
+      "bannedBody": {
+        "other": "Un administrador ha vetado tu cuenta para esta aplicación. Se cerrará tu sesión y no podrás volver a iniciar sesión. Contacta con el propietario si crees que ha sido un error."
+      },
+      "pausedTitle": {
+        "other": "Tu acceso ha sido pausado."
+      },
+      "pausedBody": {
+        "other": "Un administrador ha pausado temporalmente tu cuenta para esta aplicación. Se cerrará tu sesión en breve; ponte en contacto con el propietario para restaurar el acceso."
+      },
+      "deletedTitle": {
+        "other": "Tu cuenta ha sido eliminada."
+      },
+      "deletedBody": {
+        "other": "Un administrador ha eliminado tu membresía para esta aplicación. Se cerrará tu sesión y tus datos almacenados están en cola para purgarse en 90 días salvo que se restauren."
+      },
+      "inactiveTitle": {
+        "other": "Estás tomándote un descanso de esta aplicación."
+      },
+      "inactiveBody": {
+        "other": "Tu membresía está desactivada, así que cerraremos tu sesión aquí. Puedes reactivarla desde tu cuenta de elvix cuando quieras y volver directamente."
+      },
+      "countdown": {
+        "other": "Cerrando tu sesión en {seconds}s"
+      },
+      "recoverRestoredTitle": {
+        "other": "Has vuelto a {app}."
+      },
+      "recoverRestoredBody": {
+        "other": "Tu membresía vuelve a estar activa. Continúa a la aplicación cuando estés listo."
+      },
+      "recoverSignedOutTitle": {
+        "other": "Has cerrado sesión."
+      },
+      "recoverSignedOutBody": {
+        "other": "Te has quedado fuera de {app}. Vuelve cuando quieras."
+      },
+      "recoverWelcomeBack": {
+        "other": "Bienvenido de nuevo a {app}"
+      },
+      "recoverDeletedIntro": {
+        "other": "Abandonaste {app} antes."
+      },
+      "recoverDeletedDaysLeft": {
+        "one": "Te queda {count} día para volver.",
+        "other": "Te quedan {count} días para volver."
+      },
+      "recoverDeletedNoCountdown": {
+        "other": "Aún estás dentro de la ventana de restauración."
+      },
+      "recoverDeletedOutro": {
+        "other": "Restaura tu plaza ahora o vuelve a cerrar sesión."
+      },
+      "recoverPausedBody": {
+        "other": "Tu membresía en {app} está en pausa ahora mismo. Restáurala para seguir donde lo dejaste, o vuelve a cerrar sesión y quédate fuera."
+      },
+      "recoverRestoringLabel": {
+        "other": "Restaurando"
+      },
+      "recoverRestoreDeletedCta": {
+        "other": "Restaurar mi plaza en {app}"
+      },
+      "recoverRestorePausedCta": {
+        "other": "Devuélveme a {app}"
+      },
+      "recoverSigningOutLabel": {
+        "other": "Cerrando tu sesión"
+      },
+      "recoverDeclineCta": {
+        "other": "Ahora no, cierra mi sesión"
+      }
+    }
+  }
+}

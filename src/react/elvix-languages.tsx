@@ -34,6 +34,7 @@ import {
   findLanguage,
 } from "./languages";
 import { unwrapEnvelope } from "./spine-fetch";
+import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -119,6 +120,7 @@ export function ElvixLanguages({
   onResult,
 }: ElvixLanguagesProps) {
   const ctx = useElvixContext();
+  const t = useT();
   const [view, setView] = useState<View>("loading");
   const [languages, setLanguages] = useState<LanguageRecord[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -294,7 +296,9 @@ export function ElvixLanguages({
           <AnimatePresence initial={false}>
             {view === "loading" || view === ("fallback-decide" as View) ? (
               <Pane key="loading">
-                <div className="grid h-full place-items-center text-fg-3 text-sm">Loading…</div>
+                <div className="grid h-full place-items-center text-fg-3 text-sm">
+                  {t("common.loading")}
+                </div>
               </Pane>
             ) : view === "empty" ? (
               <Pane key="empty">
@@ -326,13 +330,15 @@ export function ElvixLanguages({
                   onSelect={onPickLevel}
                   onConfirm={onLevelConfirm}
                   onBack={editing ? () => setView("list") : () => setView("language-pick")}
-                  saveLabel={editing ? "Save level" : "Continue"}
+                  saveLabel={editing ? t("languages.saveLevel") : t("common.continue")}
                   error={error}
                 />
               </Pane>
             ) : view === "saving" ? (
               <Pane key="saving">
-                <SavingView label={editing ? "Updating level…" : "Adding language…"} />
+                <SavingView
+                  label={editing ? t("languages.updatingLevel") : t("languages.addingLanguage")}
+                />
               </Pane>
             ) : view === "delete-confirm" ? (
               <Pane key="delete-confirm">
@@ -344,7 +350,7 @@ export function ElvixLanguages({
               </Pane>
             ) : view === "deleting" ? (
               <Pane key="deleting">
-                <SavingView label="Removing…" />
+                <SavingView label={t("languages.removing")} />
               </Pane>
             ) : null}
           </AnimatePresence>
@@ -357,6 +363,7 @@ export function ElvixLanguages({
 // ─── Sub-views ───────────────────────────────────────────────────────
 
 function EmptyState({ onAdd }: { onAdd: () => void }) {
+  const t = useT();
   return (
     <div className="flex h-full flex-col items-center justify-center text-center">
       <button
@@ -368,10 +375,8 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
           <LanguagesIcon className="size-6" />
         </div>
         <div>
-          <div className="text-[15px] font-semibold text-fg-1">Add a language</div>
-          <div className="mt-1 text-[12px] text-fg-3">
-            For UI defaults, jobs, and outbound messages.
-          </div>
+          <div className="text-[15px] font-semibold text-fg-1">{t("languages.addLanguage")}</div>
+          <div className="mt-1 text-[12px] text-fg-3">{t("languages.emptyHint")}</div>
         </div>
       </button>
     </div>
@@ -391,10 +396,11 @@ function ListView({
   onOpen: (l: LanguageRecord) => void;
   onDelete: (id: string) => void;
 }) {
+  const t = useT();
   return (
     <div className="flex h-full flex-col pt-4">
       <div className="mb-2 flex items-center justify-between px-1">
-        <Heading className="!mt-0">Languages you speak</Heading>
+        <Heading className="!mt-0">{t("languages.title")}</Heading>
       </div>
       <button
         type="button"
@@ -403,7 +409,9 @@ function ListView({
         className="mb-3 flex items-center justify-center gap-1.5 rounded-[12px] border border-dashed border-fg-3/35 px-3 py-2.5 text-[13.5px] font-medium text-fg-2 transition hover:border-[var(--elvix-primary)] hover:bg-[color-mix(in_srgb,var(--elvix-primary)_5%,transparent)] hover:text-fg-1 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
       >
         <Plus className="size-4" />
-        {atCap ? `Maximum of ${MAX_LANGUAGES_PER_USER} reached` : "Add another language"}
+        {atCap
+          ? t("languages.limitReached", { limit: MAX_LANGUAGES_PER_USER })
+          : t("languages.addAnother")}
       </button>
       <ul className="flex flex-col gap-2 pb-3">
         {languages.map((rec) => {
@@ -433,7 +441,7 @@ function ListView({
                 </span>
                 <button
                   type="button"
-                  aria-label={`Remove ${lang?.name ?? rec.code}`}
+                  aria-label={`${t("languages.remove")} ${lang?.name ?? rec.code}`}
                   onClick={() => onDelete(rec.id)}
                   className="grid size-7 place-items-center rounded-md text-fg-3 transition hover:bg-red-500/10 hover:text-red-500 cursor-pointer"
                 >
@@ -457,6 +465,7 @@ function LanguagePickView({
   onBack: () => void;
   takenCodes: string[];
 }) {
+  const t = useT();
   const [query, setQuery] = useState("");
   const taken = new Set(takenCodes);
   const q = query.trim().toLowerCase();
@@ -472,15 +481,15 @@ function LanguagePickView({
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onBack} />
-      <Heading>Add a language</Heading>
-      <Subtitle>Search by English name, native name, or ISO code.</Subtitle>
+      <Heading>{t("languages.addLanguage")}</Heading>
+      <Subtitle>{t("languages.searchHint")}</Subtitle>
       <div className="relative mt-4">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-3" />
         <ElvixInput
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="English, Deutsch, fa…"
+          placeholder={t("languages.searchPlaceholder")}
           autoFocus
           autoComplete="off"
           className="pl-9"
@@ -491,7 +500,9 @@ function LanguagePickView({
         style={{ maskImage: FADE_MASK, WebkitMaskImage: FADE_MASK }}
       >
         {filtered.length === 0 ? (
-          <div className="px-3 py-6 text-center text-[13px] text-fg-3">No matches</div>
+          <div className="px-3 py-6 text-center text-[13px] text-fg-3">
+            {t("common.noMatches")}
+          </div>
         ) : (
           <ul className="flex flex-col gap-1.5 py-1">
             {filtered.map((l) => {
@@ -519,7 +530,9 @@ function LanguagePickView({
                       {l.code}
                     </span>
                     {isTaken ? (
-                      <span className="text-[11px] uppercase tracking-wide text-fg-3">added</span>
+                      <span className="text-[11px] uppercase tracking-wide text-fg-3">
+                        {t("languages.takenBadge")}
+                      </span>
                     ) : (
                       <ChevronRight className="size-4 text-fg-3 transition group-hover:translate-x-0.5 group-hover:text-[var(--elvix-primary)]" />
                     )}
@@ -551,11 +564,16 @@ function LevelPickView({
   saveLabel: string;
   error: string | null;
 }) {
+  const t = useT();
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onBack} />
-      <Heading>How well do you speak {language?.name ?? "this language"}?</Heading>
-      <Subtitle>Pick the level that sounds right. You can change it later.</Subtitle>
+      <Heading>
+        {t("languages.levelPickTitle", {
+          language: language?.name ?? t("languages.thisLanguageFallback"),
+        })}
+      </Heading>
+      <Subtitle>{t("languages.levelPickSubtitle")}</Subtitle>
       <ul className="mt-4 flex flex-col gap-2">
         {LANGUAGE_LEVELS.map((lvl) => {
           const meta = LANGUAGE_LEVEL_META[lvl];
@@ -592,10 +610,10 @@ function LevelPickView({
       {error && (
         <div className="mt-3 rounded-md bg-red-500/10 px-3 py-2 text-[12.5px] text-red-600 dark:text-red-300">
           {error === "already_added"
-            ? "You've already added this language. Edit its level from the list."
+            ? t("languages.errorAlreadyAdded")
             : error === "cap_reached"
-              ? `Max ${MAX_LANGUAGES_PER_USER} languages.`
-              : "Something went wrong. Try again."}
+              ? t("languages.limitReached", { limit: MAX_LANGUAGES_PER_USER })
+              : t("signin.errorGeneric")}
         </div>
       )}
       <div className="mt-auto flex items-center justify-end pt-3">
@@ -603,7 +621,7 @@ function LevelPickView({
           state="idle"
           onClick={onConfirm}
           label={saveLabel}
-          savedLabel="Saved"
+          savedLabel={t("identity.saved")}
           hint={null}
           className="!w-auto !px-5"
         />
@@ -621,14 +639,20 @@ function DeleteConfirmView({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  const t = useT();
   const lang = record ? findLanguage(record.code) : null;
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onCancel} />
-      <Heading>Remove {lang?.name ?? "this language"}?</Heading>
+      <Heading>
+        {t("languages.removeConfirmTitle", {
+          language: lang?.name ?? t("languages.thisLanguageFallback"),
+        })}
+      </Heading>
       <Subtitle>
-        Apps that target {lang?.name ?? "this language"} won't reach you in it anymore. You can
-        re-add it any time.
+        {t("languages.removeConfirmBody", {
+          language: lang?.name ?? t("languages.thisLanguageFallback"),
+        })}
       </Subtitle>
       <div className="mt-auto flex items-center justify-end gap-3 pt-3">
         <button
@@ -636,28 +660,30 @@ function DeleteConfirmView({
           onClick={onCancel}
           className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
         >
-          Keep
+          {t("languages.keepCta")}
         </button>
         <button
           type="button"
           onClick={onConfirm}
           className="rounded-[10px] bg-red-500 px-4 py-2 text-[13px] font-semibold text-white transition hover:brightness-95 cursor-pointer"
         >
-          Remove
+          {t("languages.remove")}
         </button>
       </div>
     </div>
   );
 }
 
-function SavingView({ label = "Saving…" }: { label?: string }) {
+function SavingView({ label }: { label?: string }) {
+  const t = useT();
+  const resolved = label ?? t("common.saving");
   return (
     <div className="grid h-full place-items-center">
       <div className="flex flex-col items-center gap-3">
         <div className="grid size-12 place-items-center rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)] text-[var(--elvix-primary)]">
           <Loader2 className="size-5 animate-spin" />
         </div>
-        <div className="text-[13px] font-medium text-fg-2">{label}</div>
+        <div className="text-[13px] font-medium text-fg-2">{resolved}</div>
       </div>
     </div>
   );
@@ -667,11 +693,12 @@ function SavingView({ label = "Saving…" }: { label?: string }) {
 
 function WizardHeader({
   onBack,
-  backLabel = "Back",
+  backLabel,
 }: {
   onBack: () => void;
   backLabel?: string;
 }) {
+  const t = useT();
   return (
     <div className="flex items-center pt-2">
       <button
@@ -680,7 +707,7 @@ function WizardHeader({
         className="-ml-1 inline-flex items-center gap-1 rounded-md px-1.5 py-1 text-[12.5px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
       >
         <ArrowLeft className="size-4" />
-        {backLabel}
+        {backLabel ?? t("common.back")}
       </button>
     </div>
   );

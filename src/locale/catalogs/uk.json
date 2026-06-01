@@ -1,0 +1,2294 @@
+{
+  "$comment": "Ukrainian catalog for @elvix.is/sdk. Translated from canonical en.json.",
+  "locale": "uk",
+  "namespaces": {
+    "common": {
+      "ok": {
+        "other": "Гаразд"
+      },
+      "cancel": {
+        "other": "Скасувати"
+      },
+      "back": {
+        "other": "Назад"
+      },
+      "next": {
+        "other": "Далі"
+      },
+      "continue": {
+        "other": "Продовжити"
+      },
+      "save": {
+        "other": "Зберегти"
+      },
+      "saving": {
+        "other": "Збереження"
+      },
+      "delete": {
+        "other": "Видалити"
+      },
+      "remove": {
+        "other": "Прибрати"
+      },
+      "edit": {
+        "other": "Редагувати"
+      },
+      "close": {
+        "other": "Закрити"
+      },
+      "done": {
+        "other": "Готово"
+      },
+      "retry": {
+        "other": "Спробувати ще раз"
+      },
+      "loading": {
+        "other": "Завантаження"
+      },
+      "search": {
+        "other": "Пошук"
+      },
+      "noMatches": {
+        "other": "Немає збігів"
+      },
+      "lastStep": {
+        "other": "Останній крок"
+      },
+      "skip": {
+        "other": "Пропустити"
+      },
+      "durationSeconds": {
+        "other": "{seconds}с"
+      },
+      "durationOneMinute": {
+        "other": "1 хвилина"
+      },
+      "durationMinutes": {
+        "one": "{minutes} хвилина",
+        "few": "{minutes} хвилини",
+        "many": "{minutes} хвилин",
+        "other": "{minutes} хвилини"
+      },
+      "somethingWentWrong": {
+        "other": "Щось пішло не так. Спробуйте ще раз."
+      },
+      "errorNetwork": {
+        "other": "Збій мережі. Спробуйте ще раз."
+      },
+      "errorSaveFailed": {
+        "other": "Не вдалося зберегти. Спробуйте ще раз."
+      },
+      "hintEnter": {
+        "other": "Enter"
+      },
+      "enterHint": {
+        "other": "Enter"
+      },
+      "sendingLabel": {
+        "other": "Надсилання"
+      },
+      "saved": {
+        "other": "Збережено"
+      },
+      "optionalSuffix": {
+        "other": " (необов'язково)"
+      },
+      "savingDots": {
+        "other": "Збереження."
+      }
+    },
+    "signin": {
+      "title": {
+        "other": "Увійти в {app}"
+      },
+      "titleDefault": {
+        "other": "Увійти"
+      },
+      "subtitle": {
+        "other": ""
+      },
+      "googleButton": {
+        "other": "Продовжити з Google"
+      },
+      "passkeyButton": {
+        "other": "Продовжити з ключем доступу"
+      },
+      "emailPlaceholder": {
+        "other": "Електронна пошта"
+      },
+      "sendCodeButton": {
+        "other": "Продовжити"
+      },
+      "sendingLabel": {
+        "other": "Надсилання"
+      },
+      "codeSentSubtitle": {
+        "other": "Ми надіслали код на {email}"
+      },
+      "codePlaceholder": {
+        "other": "Код підтвердження"
+      },
+      "submitButton": {
+        "other": "Увійти"
+      },
+      "verifyingLabel": {
+        "other": "Перевірка"
+      },
+      "or": {
+        "other": "або"
+      },
+      "resendCode": {
+        "other": "Надіслати код ще раз"
+      },
+      "resentLabel": {
+        "other": "Надіслано повторно"
+      },
+      "errorGeneric": {
+        "other": "Щось пішло не так. Спробуйте ще раз."
+      },
+      "errorBadCode": {
+        "other": "Цей код не підійшов."
+      },
+      "errorRateLimited": {
+        "other": "Забагато спроб. Зачекайте трохи."
+      },
+      "securedBy": {
+        "other": "Захищено через "
+      },
+      "verbLogin": {
+        "other": "Увійти"
+      },
+      "titleLogin": {
+        "other": "Увійти в {app}"
+      },
+      "bootstrapErrorTitle": {
+        "other": "Не вдалося завантажити вхід"
+      },
+      "bootstrapErrorBody": {
+        "other": "Недійсний {clientIdToken} або джерело не дозволено для цього домену. Відкрийте Console, ваш Application, Credentials, щоб підтвердити {clientIdToken}, потім додайте це джерело до дозволених."
+      },
+      "identifierPlaceholderEmailOrUsername": {
+        "other": "Електронна пошта або ім'я користувача"
+      },
+      "identifierPlaceholderUsername": {
+        "other": "Ім'я користувача"
+      },
+      "identifierPlaceholderEmail": {
+        "other": "Введіть вашу електронну пошту"
+      },
+      "errorNetwork": {
+        "other": "Збій мережі. Спробуйте ще раз."
+      },
+      "errorPasskeyVerify": {
+        "other": "Не вдалося підтвердити ключ доступу."
+      },
+      "errorPasskeyAdd": {
+        "other": "Не вдалося додати ключ доступу. Спробуйте ще раз або пропустіть."
+      },
+      "visitAppWebsite": {
+        "other": "Відвідати сайт {app}"
+      },
+      "passkeyOnboardingTitleSignin": {
+        "other": "Увійдіть швидше наступного разу"
+      },
+      "passkeyOnboardingTitleLogin": {
+        "other": "Увійдіть швидше наступного разу"
+      },
+      "recoverTitle": {
+        "other": "З поверненням до {app}"
+      },
+      "appNameFallback": {
+        "other": "ваш застосунок"
+      },
+      "legalAppFallback": {
+        "other": "застосунок"
+      },
+      "passkeyOnboardingSubtitle": {
+        "other": "Touch ID, Face ID або ваш ключ безпеки. Більше ніяких кодів електронною поштою."
+      },
+      "recoverSubtitle": {
+        "other": "Виберіть: повернутися чи залишитися осторонь."
+      },
+      "identifierSubtitle": {
+        "other": "Виберіть, як ви хочете продовжити."
+      },
+      "verifyButton": {
+        "other": "Підтвердити"
+      },
+      "useDifferentEmail": {
+        "other": "Використати іншу електронну пошту"
+      },
+      "resendInSeconds": {
+        "other": "Повторно надіслати через {seconds}с"
+      },
+      "passkeyBullet1": {
+        "other": "Більше ніяких паролів чи кодів електронною поштою"
+      },
+      "passkeyBullet2": {
+        "other": "Захист від фішингу. Працює лише на цьому сайті."
+      },
+      "passkeyBullet3": {
+        "other": "Синхронізується між пристроями через iCloud, Google або 1Password"
+      },
+      "addPasskeyCta": {
+        "other": "Додати ключ доступу"
+      },
+      "skipForNow": {
+        "other": "Пропустити поки що"
+      },
+      "previewEmptyMethods": {
+        "other": "Увімкніть принаймні один метод, щоб переглянути вхід."
+      },
+      "googleButtonShort": {
+        "other": "Google"
+      },
+      "passkeyButtonShort": {
+        "other": "Ключ доступу"
+      },
+      "legalIntro": {
+        "other": "Продовжуючи, ви погоджуєтеся з"
+      },
+      "termsOfService": {
+        "other": "Умовами використання"
+      },
+      "privacyPolicy": {
+        "other": "Політикою конфіденційності"
+      },
+      "framedPreviewLabel": {
+        "other": "Це попередній перегляд"
+      },
+      "errorTooRecentWithSeconds": {
+        "other": "Зачекайте {seconds}с перед запитом нового коду."
+      },
+      "errorTooRecent": {
+        "other": "Зачекайте трохи перед запитом нового коду."
+      },
+      "errorTooManyWithRetry": {
+        "other": "Забагато кодів надіслано на цю електронну пошту. Спробуйте ще раз через {retry}."
+      },
+      "errorTooMany": {
+        "other": "Забагато кодів надіслано на цю електронну пошту. Спробуйте пізніше."
+      },
+      "errorInvalidCode": {
+        "other": "Цей код не спрацював. Спробуйте ще раз."
+      },
+      "errorExpired": {
+        "other": "Термін дії коду закінчився. Надішліть новий."
+      },
+      "errorSendFailed": {
+        "other": "Не вдалося надіслати лист. Перевірте адресу."
+      },
+      "errorUserPaused": {
+        "other": "Ваш доступ призупинено. Зверніться до підтримки."
+      },
+      "errorUserBanned": {
+        "other": "Доступ заборонено."
+      },
+      "errorUsernameNotFound": {
+        "other": "Тут немає облікового запису з таким іменем користувача."
+      },
+      "errorMethodDisabled": {
+        "other": "Цей метод входу не увімкнено для цього застосунку."
+      },
+      "errorGraceExpired": {
+        "other": "90-денне вікно для відновлення закрилося."
+      },
+      "errorSessionEnded": {
+        "other": "Ваша сесія завершилася. Увійдіть знову."
+      }
+    },
+    "sessions": {
+      "title": {
+        "other": "Ваші сесії"
+      },
+      "empty": {
+        "other": "Тут немає активних сесій."
+      },
+      "currentBadge": {
+        "other": "Залишити цю в системі"
+      },
+      "revokeOne": {
+        "other": "Вийти"
+      },
+      "revokeOthersCta": {
+        "other": "Вийти з інших пристроїв"
+      },
+      "revokeAllCta": {
+        "other": "Вийти звідусіль"
+      },
+      "confirmOthersTitle": {
+        "other": "Вийти з інших пристроїв?"
+      },
+      "confirmOthersBody": {
+        "other": "Виберіть, які сесії завершити. Кожну відкликають у момент натискання, і кожна вкладка на тому пристрої повертається до стану виходу за лічені секунди."
+      },
+      "confirmAllTitle": {
+        "other": "Вийти звідусіль?"
+      },
+      "confirmAllBody": {
+        "other": "Включно з цим пристроєм. Після цього вас перенаправить для повторного входу."
+      },
+      "doneTitle": {
+        "other": "Вихід виконано"
+      },
+      "doneCount": {
+        "one": "{count} пристрій вийшов із системи.",
+        "few": "{count} пристрої вийшли із системи.",
+        "many": "{count} пристроїв вийшли із системи.",
+        "other": "{count} пристроїв вийшли із системи."
+      },
+      "errorLoad": {
+        "other": "Не вдалося завантажити сесії."
+      },
+      "errorRevoke": {
+        "other": "Не вдалося відкликати. Спробуйте ще раз."
+      },
+      "errorMassRevoke": {
+        "other": "Не вдалося вийти. Спробуйте ще раз."
+      },
+      "thisDeviceBadge": {
+        "other": "цей пристрій"
+      },
+      "deviceLine": {
+        "other": "{browser} на {os}"
+      },
+      "massRevokeCtaSelf": {
+        "other": "Вийти з цього пристрою"
+      },
+      "massRevokeCtaOpen": {
+        "other": "Вийти з пристроїв..."
+      },
+      "confirmChooserTitle": {
+        "other": "Звідки вийти?"
+      },
+      "confirmChooserBody": {
+        "other": "Виберіть, які сесії завершити. Кожну відкликають у момент натискання, і кожна вкладка на тому пристрої виходить із системи при наступному запиті."
+      },
+      "signOutOtherDevicesCount": {
+        "one": "Вийти з іншого {count} пристрою",
+        "few": "Вийти з інших {count} пристроїв",
+        "many": "Вийти з інших {count} пристроїв",
+        "other": "Вийти з інших {count} пристроїв"
+      },
+      "signOutAllCtaSelf": {
+        "other": "Вийти з цього пристрою"
+      },
+      "signOutAllCtaIncludingThis": {
+        "other": "Вийти звідусіль, включно з цим пристроєм"
+      },
+      "signOutAllRedirectHint": {
+        "other": "Одразу після цього ви потрапите на сторінку входу"
+      },
+      "confirmTokensFootnote": {
+        "other": "Вже видані токени залишаються відхиленими. Скасувати не можна, але повторний вхід з будь-якого пристрою знову працює."
+      },
+      "doneAlreadyAlone": {
+        "other": "Це вже єдина сесія."
+      },
+      "doneFootnote": {
+        "other": "Ваш поточний пристрій залишається у системі. Інші вкладки будуть викинуті при наступному запиті."
+      },
+      "backToList": {
+        "other": "Назад до моїх сесій"
+      },
+      "methodSignIn": {
+        "other": "Вхід"
+      },
+      "methodEmailCode": {
+        "other": "Код електронною поштою"
+      },
+      "methodPasskey": {
+        "other": "Ключ доступу"
+      },
+      "relativeJustNow": {
+        "other": "щойно"
+      },
+      "relativeMinutesAgo": {
+        "other": "{count}хв тому"
+      },
+      "relativeHoursAgo": {
+        "other": "{count}год тому"
+      },
+      "relativeDaysAgo": {
+        "other": "{count}д тому"
+      }
+    },
+    "avatar": {
+      "replace": {
+        "other": "Замінити"
+      },
+      "removePhoto": {
+        "other": "Видалити фото"
+      },
+      "removeConfirmTitle": {
+        "other": "Видалити ваше фото?"
+      },
+      "removeConfirmBody": {
+        "other": "Замість нього показуватимуться ваші ініціали."
+      },
+      "uploading": {
+        "other": "Завантаження"
+      },
+      "cropTitle": {
+        "other": "Обрізати"
+      },
+      "cropApply": {
+        "other": "Застосувати"
+      },
+      "errorTooLarge": {
+        "other": "Зображення завелике. Виберіть менше за {limitMb} МБ."
+      },
+      "errorBadType": {
+        "other": "Виберіть зображення PNG, JPG або WebP."
+      },
+      "uploadFailed": {
+        "other": "Не вдалося завантажити фото. Спробуйте інше зображення."
+      },
+      "removeFailed": {
+        "other": "Не вдалося видалити фото."
+      },
+      "editPhotoAria": {
+        "other": "Редагувати ваше фото"
+      },
+      "addPhotoAria": {
+        "other": "Додати фото"
+      },
+      "confirmRemoveAria": {
+        "other": "Підтвердити видалення"
+      },
+      "replacePhotoAria": {
+        "other": "Замінити фото"
+      },
+      "uploadPhotoAria": {
+        "other": "Завантажити фото"
+      },
+      "useThisCropAria": {
+        "other": "Застосувати це обрізання"
+      }
+    },
+    "banner": {
+      "replace": {
+        "other": "Замінити"
+      },
+      "removeBanner": {
+        "other": "Видалити банер"
+      },
+      "removeConfirmTitle": {
+        "other": "Видалити ваш банер?"
+      },
+      "removeConfirmBody": {
+        "other": "Замість нього буде градієнтний заповнювач."
+      },
+      "uploading": {
+        "other": "Завантаження"
+      },
+      "cropTitle": {
+        "other": "Обрізати банер"
+      },
+      "cropApply": {
+        "other": "Застосувати"
+      },
+      "errorUpload": {
+        "other": "Не вдалося завантажити банер. Спробуйте інше зображення."
+      },
+      "errorRemove": {
+        "other": "Не вдалося видалити банер."
+      },
+      "previewAlt": {
+        "other": "Попередній перегляд банера"
+      },
+      "cropUse": {
+        "other": "Застосувати"
+      },
+      "cropUseAria": {
+        "other": "Застосувати це обрізання"
+      },
+      "editAria": {
+        "other": "Редагувати банер"
+      },
+      "addAria": {
+        "other": "Додати банер"
+      },
+      "uploadAria": {
+        "other": "Завантажити банер"
+      },
+      "confirmRemoveAria": {
+        "other": "Підтвердити видалення"
+      },
+      "confirmRemoveHint": {
+        "other": "Клацніть ще раз для підтвердження"
+      }
+    },
+    "username": {
+      "title": {
+        "other": "Виберіть ім'я користувача"
+      },
+      "placeholder": {
+        "other": "ім'я користувача"
+      },
+      "checking": {
+        "other": "Перевірка"
+      },
+      "available": {
+        "other": "Доступне"
+      },
+      "taken": {
+        "other": "Зайняте"
+      },
+      "tooShort": {
+        "other": "Закоротке"
+      },
+      "tooLong": {
+        "other": "Задовге"
+      },
+      "badChars": {
+        "other": "Лише літери, цифри, дефіси"
+      },
+      "reserved": {
+        "other": "Зарезервоване"
+      },
+      "subtitle": {
+        "other": "Так вас бачитимуть у {app}."
+      },
+      "subtitleNoApp": {
+        "other": "Так вас бачитимуть інші."
+      },
+      "label": {
+        "other": "Ім'я користувача"
+      },
+      "exampleHandle": {
+        "other": "вашеімя"
+      },
+      "rulesHint": {
+        "other": "Від 4 до 30 символів, a-z, 0-9, крапка, підкреслення. Має починатися з літери."
+      },
+      "availableHint": {
+        "other": "Чудово. Це ваше."
+      },
+      "suggestionsHeading": {
+        "other": "Пропозиції"
+      },
+      "claimCta": {
+        "other": "Зайняти @{handle}"
+      },
+      "yournameFallback": {
+        "other": "вашеімя"
+      },
+      "reasonBlank": {
+        "other": "Виберіть ім'я користувача."
+      },
+      "reasonTooShort": {
+        "other": "Мінімум 4 символи."
+      },
+      "reasonTooLong": {
+        "other": "Максимум 30 символів."
+      },
+      "reasonOnlyNumbers": {
+        "other": "Не може складатися лише з цифр."
+      },
+      "reasonBadStart": {
+        "other": "Має починатися з літери."
+      },
+      "reasonBadChars": {
+        "other": "Лише a-z, 0-9, крапка, підкреслення."
+      },
+      "reasonConsecutiveSpecial": {
+        "other": "Не можна дві крапки чи підкреслення поспіль."
+      },
+      "reasonTrailingSpecial": {
+        "other": "Не може закінчуватися крапкою чи підкресленням."
+      },
+      "reasonTaken": {
+        "other": "Це вже зайнято."
+      },
+      "reasonInvalid": {
+        "other": "Це ім'я користувача недійсне."
+      },
+      "errorJustTaken": {
+        "other": "Це ім'я щойно зайняли. Виберіть інше."
+      },
+      "errorFormat": {
+        "other": "Це ім'я користувача не відповідає правилам."
+      },
+      "errorSaveFailed": {
+        "other": "Не вдалося зберегти. Спробуйте ще раз."
+      },
+      "errorNetwork": {
+        "other": "Збій мережі. Спробуйте ще раз."
+      },
+      "ruleLength": {
+        "other": "від {min} до {max} символів"
+      },
+      "ruleChars": {
+        "other": "малі літери, цифри, крапка, підкреслення"
+      },
+      "ruleStartEnd": {
+        "other": "починати з літери, закінчувати літерою або цифрою"
+      },
+      "ruleNoDoubles": {
+        "other": "без двох спецсимволів поспіль, без зарезервованих слів"
+      },
+      "confirmHeading": {
+        "other": "Підтвердити зміну"
+      },
+      "notSet": {
+        "other": "Не встановлено"
+      },
+      "confirmBody": {
+        "other": "Кожен, хто заходитиме в цей застосунок під цим іменем користувача, буде вами. Ви можете змінити його знову будь-коли."
+      },
+      "confirmCta": {
+        "other": "Підтвердити зміну"
+      },
+      "doneTitle": {
+        "other": "Ви @{username} в {appName}."
+      },
+      "doneBody": {
+        "other": "Ми зберегли. Можете продовжити користуватися цим вікном або повернутися, коли будете готові."
+      },
+      "changeAgain": {
+        "other": "Змінити ще раз"
+      },
+      "disabledMailSubject": {
+        "other": "Знову увімкніть вхід за іменем користувача в {appName}"
+      },
+      "disabledContactSupport": {
+        "other": "Зв'язатися з підтримкою {appName}"
+      },
+      "disabledEmailSupport": {
+        "other": "Написати в {appName}"
+      },
+      "disabledTitle": {
+        "other": "Імена користувачів вимкнено в {appName}."
+      },
+      "disabledBody": {
+        "other": "Власник застосунку зараз вимкнув вхід за іменем користувача, тож ми не можемо дати вам встановити чи змінити ім'я тут."
+      },
+      "disabledStillHave": {
+        "other": "У вас досі є @{current} з попереднього разу. Воно залишається у вашому членстві, поки власник застосунку не увімкне функцію знову."
+      },
+      "disabledNoSupport": {
+        "other": "Застосунок ще не опублікував контакт підтримки. Звертайтеся через канал, яким зазвичай користуєтеся з ними."
+      },
+      "disabledHint": {
+        "other": "Попросіть їх знову увімкнути вхід за іменем користувача в Console, Sign-in methods. Як тільки це станеться, поверніться сюди й виберіть ім'я."
+      },
+      "idleCurrent": {
+        "other": "Зараз @{current}. Введіть щось інше, щоб змінити."
+      },
+      "idleEmpty": {
+        "other": "Виберіть ім'я, за яким інші люди в цьому застосунку зможуть вас знайти."
+      },
+      "formatGeneric": {
+        "other": "Не відповідає правилам нижче."
+      },
+      "takenLine": {
+        "other": "Хтось інший у цьому застосунку вже має @{username}."
+      },
+      "currentLine": {
+        "other": "Це ім'я користувача, яке у вас уже є тут."
+      },
+      "availableLine": {
+        "other": "@{username} доступне."
+      },
+      "reasonMustStartLetter": {
+        "other": "Має починатися з літери."
+      },
+      "reasonMustEndAlnum": {
+        "other": "Має закінчуватися літерою або цифрою."
+      },
+      "reasonNoDoubleSpecial": {
+        "other": "Не може містити дві крапки чи підкреслення поспіль."
+      },
+      "reasonReserved": {
+        "other": "Це ім'я зарезервоване. Виберіть інше."
+      },
+      "appNameFallback": {
+        "other": "ваш застосунок"
+      }
+    },
+    "identity": {
+      "title": {
+        "other": "Ваш профіль"
+      },
+      "fullName": {
+        "other": "Повне ім'я"
+      },
+      "birthdate": {
+        "other": "Дата народження"
+      },
+      "gender": {
+        "other": "Стать"
+      },
+      "pronouns": {
+        "other": "Займенники"
+      },
+      "save": {
+        "other": "Зберегти профіль"
+      },
+      "saved": {
+        "other": "Збережено"
+      },
+      "genderMale": {
+        "other": "Чоловіча"
+      },
+      "genderFemale": {
+        "other": "Жіноча"
+      },
+      "genderNonBinary": {
+        "other": "Небінарна"
+      },
+      "genderPreferNotToSay": {
+        "other": "Не хочу вказувати"
+      },
+      "pronounSheHer": {
+        "other": "Вона / її"
+      },
+      "pronounHeHim": {
+        "other": "Він / його"
+      },
+      "pronounTheyThem": {
+        "other": "Вони / їх"
+      },
+      "pronounOther": {
+        "other": "Інше"
+      },
+      "pronounPreferNotToSay": {
+        "other": "Не хочу вказувати"
+      },
+      "errorSaveFailed": {
+        "other": "Не вдалося зберегти."
+      },
+      "givenName": {
+        "other": "Ім'я"
+      },
+      "givenNamePlaceholder": {
+        "other": "Олена"
+      },
+      "familyName": {
+        "other": "Прізвище"
+      },
+      "familyNamePlaceholder": {
+        "other": "Петренко"
+      },
+      "pronounsOptional": {
+        "other": "Займенники (необов'язково)"
+      }
+    },
+    "region": {
+      "title": {
+        "other": "Виберіть ваш регіон"
+      },
+      "yourRegion": {
+        "other": "Ваш регіон"
+      },
+      "country": {
+        "other": "Країна"
+      },
+      "uiLocale": {
+        "other": "Мова"
+      },
+      "currency": {
+        "other": "Валюта"
+      },
+      "firstDayOfWeek": {
+        "other": "Перший день тижня"
+      },
+      "timeZone": {
+        "other": "Часовий пояс"
+      },
+      "save": {
+        "other": "Зберегти регіон"
+      },
+      "confirmTitle": {
+        "other": "Змінити регіон?"
+      },
+      "confirmBody": {
+        "other": "Зміна країни каскадно змінює валюту і перший день тижня."
+      },
+      "errorSaveFailed": {
+        "other": "Не вдалося зберегти регіон."
+      },
+      "emptyHint": {
+        "other": "Мова інтерфейсу, часовий пояс, валюта і формат дати залежать від вашої країни."
+      },
+      "whereDoYouLive": {
+        "other": "Де ви живете?"
+      },
+      "cascadeHint": {
+        "other": "Ми встановимо мову інтерфейсу, часовий пояс, валюту і формат дати на основі цього. Ви можете перевизначити кожне пізніше."
+      },
+      "cascadeResetTitle": {
+        "other": "Скинути все до {country}?"
+      },
+      "cascadeResetBody": {
+        "other": "Ви переходите з {currentFlag} {currentName} на {nextFlag} {nextName}. Мова інтерфейсу, часовий пояс, валюта, формат дати і одиниці виміру будуть скинуті до значень за замовчуванням для {nextName}. Ваші користувацькі зміни (якщо є) будуть перезаписані."
+      },
+      "cascadeFallbackCountry": {
+        "other": "нова країна"
+      },
+      "uiLanguageLabel": {
+        "other": "Мова інтерфейсу"
+      },
+      "dateLabel": {
+        "other": "Дата"
+      },
+      "timeLabel": {
+        "other": "Час"
+      },
+      "unitsLabel": {
+        "other": "Одиниці виміру"
+      },
+      "resetDefaults": {
+        "other": "Скинути за замовчуванням"
+      },
+      "savedLabel": {
+        "other": "Збережено"
+      },
+      "changeCountryAria": {
+        "other": "Змінити країну"
+      },
+      "setTimeZonePlaceholder": {
+        "other": "Встановити часовий пояс"
+      },
+      "timeFormat": {
+        "other": "Формат часу"
+      },
+      "dateFormat": {
+        "other": "Формат дати"
+      },
+      "numberFormat": {
+        "other": "Формат чисел"
+      },
+      "numbersLabel": {
+        "other": "Числа"
+      },
+      "weekStartsLabel": {
+        "other": "Тиждень починається"
+      },
+      "weekStartsOnTitle": {
+        "other": "Тиждень починається з"
+      },
+      "weekStartsHint": {
+        "other": "Впливає на календарі, вибір тижнів і тижневі звіти."
+      },
+      "pickOneHint": {
+        "other": "Виберіть те, що здається вам правильним."
+      },
+      "uiLanguageTitle": {
+        "other": "Мова інтерфейсу"
+      },
+      "uiLanguageHint": {
+        "other": "Якою мовою застосунки на elvix мають говорити з вами."
+      },
+      "languageSearchPlaceholder": {
+        "other": "English, Deutsch, fa..."
+      },
+      "currencyHint": {
+        "other": "За замовчуванням для цін, рахунків і виплат у застосунках на elvix."
+      },
+      "currencySearchPlaceholder": {
+        "other": "EUR, dollar, real..."
+      },
+      "timeZoneHint": {
+        "other": "Використовується для розкладу, \"9 ранку за вашим часом\" і тижневих звітів."
+      },
+      "timeZoneSearchPlaceholder": {
+        "other": "Berlin, Tehran, Pacific..."
+      }
+    },
+    "languages": {
+      "title": {
+        "other": "Мови, якими ви розмовляєте"
+      },
+      "addLanguage": {
+        "other": "Додати мову"
+      },
+      "limitReached": {
+        "other": "Ви можете додати до {limit} мов."
+      },
+      "level": {
+        "other": "Рівень"
+      },
+      "remove": {
+        "other": "Видалити"
+      },
+      "saveLevel": {
+        "other": "Зберегти рівень"
+      },
+      "updatingLevel": {
+        "other": "Оновлення рівня"
+      },
+      "addingLanguage": {
+        "other": "Додавання мови"
+      },
+      "removing": {
+        "other": "Видалення"
+      },
+      "emptyHint": {
+        "other": "Для налаштувань інтерфейсу за замовчуванням, завдань і вихідних повідомлень."
+      },
+      "searchHint": {
+        "other": "Шукайте за англійською назвою, рідною назвою або кодом ISO."
+      },
+      "searchPlaceholder": {
+        "other": "English, Deutsch, fa"
+      },
+      "takenBadge": {
+        "other": "додано"
+      },
+      "levelPickTitle": {
+        "other": "Наскільки добре ви розмовляєте мовою {language}?"
+      },
+      "thisLanguageFallback": {
+        "other": "ця мова"
+      },
+      "levelPickSubtitle": {
+        "other": "Виберіть рівень, який звучить правильно. Ви можете змінити його пізніше."
+      },
+      "errorAlreadyAdded": {
+        "other": "Ви вже додали цю мову. Редагуйте її рівень зі списку."
+      },
+      "removeConfirmTitle": {
+        "other": "Видалити {language}?"
+      },
+      "removeConfirmBody": {
+        "other": "Застосунки, орієнтовані на мову {language}, більше не зможуть звертатися до вас цією мовою. Ви можете додати її знову будь-коли."
+      },
+      "keepCta": {
+        "other": "Залишити"
+      },
+      "addAnother": {
+        "other": "Додати ще одну мову"
+      }
+    },
+    "addressBook": {
+      "title": {
+        "other": "Ваші адреси"
+      },
+      "empty": {
+        "other": "Поки що немає адрес."
+      },
+      "addCta": {
+        "other": "Додати адресу"
+      },
+      "makeDefault": {
+        "other": "Зробити за замовчуванням"
+      },
+      "defaultBadge": {
+        "other": "За замовчуванням"
+      },
+      "remove": {
+        "other": "Видалити"
+      },
+      "removeConfirmTitle": {
+        "other": "Видалити цю адресу?"
+      },
+      "savingLabel": {
+        "other": "Збереження адреси."
+      },
+      "deletingLabel": {
+        "other": "Видалення адреси."
+      },
+      "addBilling": {
+        "other": "Додати платіжну адресу"
+      },
+      "addShipping": {
+        "other": "Додати адресу доставки"
+      },
+      "useForBilling": {
+        "other": "Ми використаємо її для рахунків і квитанцій."
+      },
+      "useForShipping": {
+        "other": "Ми використаємо її для доставок і отримань."
+      },
+      "addAnotherBilling": {
+        "other": "Додати іншу платіжну адресу"
+      },
+      "addAnotherShipping": {
+        "other": "Додати іншу адресу доставки"
+      },
+      "atCompany": {
+        "other": "в {company}"
+      },
+      "setAsDefault": {
+        "other": "Встановити за замовчуванням"
+      },
+      "removeDefault": {
+        "other": "Прибрати за замовчуванням"
+      },
+      "deleteAddress": {
+        "other": "Видалити адресу"
+      },
+      "newBillingAddress": {
+        "other": "Нова платіжна адреса"
+      },
+      "newShippingAddress": {
+        "other": "Нова адреса доставки"
+      },
+      "searchPrompt": {
+        "other": "Почніть вводити вашу адресу"
+      },
+      "searchPlaceholder": {
+        "other": "221B Baker Street, London."
+      },
+      "searchError": {
+        "other": "Не вдалося шукати: {error}"
+      },
+      "noMatchesKeepTyping": {
+        "other": "Поки немає збігів. Продовжуйте вводити."
+      },
+      "aptFloorEyebrow": {
+        "other": "Квартира, поверх, офіс"
+      },
+      "aptFloorTitle": {
+        "other": "Квартира, офіс чи поверх?"
+      },
+      "aptFloorBodyBilling": {
+        "other": "Карти рідко фіксують номери квартир. Додає другий рядок до адреси."
+      },
+      "aptFloorBodyShipping": {
+        "other": "Перевізники направляють неправильно без даних про квартиру. Пропустіть, якщо вам це не потрібно."
+      },
+      "line2Label": {
+        "other": "Адресний рядок 2 (необов'язково)"
+      },
+      "line2Placeholder": {
+        "other": "Кв 4Б, 3-й поверх, офіс 200."
+      },
+      "step2of3": {
+        "other": "Крок 2 з 3"
+      },
+      "recipientTitleBilling": {
+        "other": "Для кого ця платіжна адреса?"
+      },
+      "recipientTitleShipping": {
+        "other": "Для кого ця адреса доставки?"
+      },
+      "recipientSubtitleBilling": {
+        "other": "Ім'я в рахунку."
+      },
+      "recipientSubtitleShipping": {
+        "other": "Ім'я на посилці."
+      },
+      "someoneElseSubtitleBilling": {
+        "other": "Інше ім'я для рахунку"
+      },
+      "someoneElseSubtitleShipping": {
+        "other": "Надсилання комусь іншому"
+      },
+      "businessSubtitleBilling": {
+        "other": "Виставити рахунок компанії (B2B)"
+      },
+      "businessSubtitleShipping": {
+        "other": "Доставити до компанії або робочого місця"
+      },
+      "saveError": {
+        "other": "Не вдалося зберегти: {error}"
+      },
+      "recipientCustomTitle": {
+        "other": "Хто отримувач?"
+      },
+      "recipientCustomSubtitleBilling": {
+        "other": "Ім'я, яке з'явиться в рахунку."
+      },
+      "recipientCustomSubtitleShipping": {
+        "other": "Ім'я, яке з'явиться на посилці."
+      },
+      "recipientPlaceholder": {
+        "other": "Олена Петренко"
+      },
+      "businessStep1of2": {
+        "other": "Бізнес, крок 1 з 2"
+      },
+      "companyNameTitle": {
+        "other": "Як називається компанія?"
+      },
+      "companyNameBodyBilling": {
+        "other": "З'являється в рахунку. Потрібно для обробки податків B2B пізніше."
+      },
+      "companyNameBodyShipping": {
+        "other": "Компанія, яка отримує посилку."
+      },
+      "companyNamePlaceholder": {
+        "other": "Edvone"
+      },
+      "businessStep2of2": {
+        "other": "Бізнес, крок 2 з 2"
+      },
+      "contactAtCompanyTitle": {
+        "other": "Конкретно хтось у {company}?"
+      },
+      "attnBodyInvoice": {
+        "other": "Додає рядок \"Attn:\" до рахунку. Пропустіть, щоб адресувати компанії."
+      },
+      "attnBodyPackage": {
+        "other": "Додає рядок \"Attn:\" до посилки. Пропустіть, щоб адресувати компанії."
+      },
+      "contactPersonOptional": {
+        "other": "Контактна особа (необов'язково)"
+      },
+      "skip": {
+        "other": "Пропустити"
+      },
+      "noteChoiceTitle": {
+        "other": "Бажаєте додати примітку до доставки?"
+      },
+      "noteChoiceBodyBilling": {
+        "other": "Усе, що має знати команда оплати: рядок ATTN, номер замовлення, c/o когось."
+      },
+      "noteChoiceBodyShipping": {
+        "other": "Усе для кур'єра: домофон, код воріт, залишити біля дверей."
+      },
+      "noteYesTitle": {
+        "other": "Так, додати примітку"
+      },
+      "noteYesSubtitle": {
+        "other": "Написати коротку інструкцію"
+      },
+      "noteNoTitle": {
+        "other": "Ні, пропустити"
+      },
+      "noteNoSubtitle": {
+        "other": "Зберегти адресу як є"
+      },
+      "noteLastStep": {
+        "other": "Примітка, останній крок"
+      },
+      "noteInputTitle": {
+        "other": "Що нам сказати?"
+      },
+      "noteInputBodyBilling": {
+        "other": "З'являється в рахунку або платіжному записі."
+      },
+      "noteInputBodyShipping": {
+        "other": "Передається кур'єру доставки."
+      },
+      "billingNote": {
+        "other": "Платіжна примітка"
+      },
+      "deliveryNote": {
+        "other": "Примітка до доставки"
+      },
+      "notePlaceholderBilling": {
+        "other": "Виставити ATTN: Фінанси, замовлення #ABC-1234."
+      },
+      "notePlaceholderShipping": {
+        "other": "Дзвонити в домофон 3, залишити консьєржу, якщо немає вдома."
+      },
+      "backToList": {
+        "other": "Назад до списку"
+      },
+      "billingAddressLabel": {
+        "other": "платіжна адреса"
+      },
+      "shippingAddressLabel": {
+        "other": "адреса доставки"
+      },
+      "sectionWho": {
+        "other": "Хто"
+      },
+      "sectionWhere": {
+        "other": "Де"
+      },
+      "sectionNotesMeta": {
+        "other": "Примітки і метадані"
+      },
+      "fieldRecipient": {
+        "other": "Отримувач"
+      },
+      "fieldCompany": {
+        "other": "Компанія"
+      },
+      "addCompanyPlaceholder": {
+        "other": "Додати компанію"
+      },
+      "fieldStreet": {
+        "other": "Вулиця"
+      },
+      "fieldAptFloor": {
+        "other": "Квартира або поверх"
+      },
+      "addUnitPlaceholder": {
+        "other": "Додати квартиру"
+      },
+      "fieldCity": {
+        "other": "Місто"
+      },
+      "fieldPostalCode": {
+        "other": "Поштовий індекс"
+      },
+      "fieldRegion": {
+        "other": "Регіон"
+      },
+      "fieldCountry": {
+        "other": "Країна"
+      },
+      "fieldDeliveryNotes": {
+        "other": "Примітки до доставки"
+      },
+      "addNotePlaceholder": {
+        "other": "Додати примітку"
+      },
+      "fieldTimezone": {
+        "other": "Часовий пояс"
+      },
+      "fieldVenue": {
+        "other": "Заклад або будівля"
+      },
+      "nothingToChange": {
+        "other": "Нічого змінювати"
+      },
+      "setDefaultTitle": {
+        "other": "Встановити це як адресу за замовчуванням?"
+      },
+      "removeDefaultTitle": {
+        "other": "Прибрати позначку за замовчуванням з цієї адреси?"
+      },
+      "setDefaultSubtitle": {
+        "other": "Її автоматично вибиратимуть при оформленні замовлення або рахунку."
+      },
+      "removeDefaultSubtitle": {
+        "other": "Нічого не буде попередньо вибрано при оформленні замовлення або рахунку."
+      },
+      "crossAppHeadsUp": {
+        "other": "Увага. Це впливає на кожен застосунок, яким ви користуєтеся з elvix."
+      },
+      "crossAppDefaultBodySetting": {
+        "other": "Ваша адреса {kind} за замовчуванням спільна для всіх застосунків, у які ви входите. Зміна тут оновлює автовибір всюди одразу."
+      },
+      "crossAppDefaultBodyClearing": {
+        "other": "Ваша адреса {kind} за замовчуванням спільна для всіх застосунків, у які ви входите. Прибирання означає, що ніяка адреса не буде попередньо вибрана ніде; ви будете вибирати щоразу при оформленні замовлення чи рахунку."
+      },
+      "nothingToDelete": {
+        "other": "Нічого видаляти"
+      },
+      "deleteBillingHeader": {
+        "other": "Видалити платіжну адресу"
+      },
+      "deleteShippingHeader": {
+        "other": "Видалити адресу доставки"
+      },
+      "deleteConfirmTitle": {
+        "other": "Видалити цю адресу?"
+      },
+      "cantBeUndone": {
+        "other": "Цю дію не можна скасувати."
+      },
+      "crossAppDeleteBodyBilling": {
+        "other": "Ваша платіжна адреса зберігається один раз у вашому профілі elvix і ділиться між застосунками, у які ви входите. Видалення прибирає її звідусіль. Будь-яке оформлення замовлення, рахунок або потік доставки, які посилалися на цю адресу, потребуватимуть нової."
+      },
+      "crossAppDeleteBodyShipping": {
+        "other": "Ваша адреса доставки зберігається один раз у вашому профілі elvix і ділиться між застосунками, у які ви входите. Видалення прибирає її звідусіль. Будь-яке оформлення замовлення, рахунок або потік доставки, які посилалися на цю адресу, потребуватимуть нової."
+      },
+      "deleteError": {
+        "other": "Не вдалося видалити: {error}"
+      },
+      "yesDelete": {
+        "other": "Так, видалити"
+      },
+      "pickAddressFirst": {
+        "other": "Спочатку виберіть адресу"
+      },
+      "changeAddress": {
+        "other": "Змінити адресу"
+      },
+      "reviewBilling": {
+        "other": "Перевірити платіжну адресу"
+      },
+      "reviewShipping": {
+        "other": "Перевірити адресу доставки"
+      },
+      "notRight": {
+        "other": "Не так"
+      },
+      "looksRight": {
+        "other": "Виглядає правильно"
+      },
+      "missingFieldsHint": {
+        "other": "Не вистачає таких даних: {fields}. Виберіть більш конкретну пропозицію (з номером будинку), щоб ми могли зберегти адресу для доставки."
+      }
+    },
+    "legalEntities": {
+      "title": {
+        "other": "Юридичні особи"
+      },
+      "addCta": {
+        "other": "Додати юридичну особу"
+      },
+      "companyName": {
+        "other": "Назва компанії"
+      },
+      "vatId": {
+        "other": "ПДВ ID"
+      },
+      "taxCountry": {
+        "other": "Податкова країна"
+      },
+      "verifyVat": {
+        "other": "Перевірити ПДВ"
+      },
+      "verifying": {
+        "other": "Перевірка"
+      },
+      "verifiedBadge": {
+        "other": "Перевірено"
+      },
+      "notRegistered": {
+        "other": "Не зареєстровано"
+      },
+      "unreachable": {
+        "other": "Недоступно"
+      },
+      "addCtaSubtitle": {
+        "other": "Для рахунків, контрактів і податкових декларацій."
+      },
+      "addAnotherCta": {
+        "other": "Додати ще одну юридичну особу"
+      },
+      "kindIndividual": {
+        "other": "Фізична особа"
+      },
+      "kindSoleProp": {
+        "other": "Приватний підприємець"
+      },
+      "kindCompany": {
+        "other": "Компанія"
+      },
+      "removeDefaultAria": {
+        "other": "Прибрати за замовчуванням"
+      },
+      "setDefaultAria": {
+        "other": "Встановити за замовчуванням"
+      },
+      "deleteAria": {
+        "other": "Видалити юр. особу"
+      },
+      "typeChoiceTitle": {
+        "other": "Який це тип особи?"
+      },
+      "typeChoiceSubtitle": {
+        "other": "Визначає питання, які ми поставимо далі."
+      },
+      "step1of3": {
+        "other": "Крок 1 з 3"
+      },
+      "individualSubtitle": {
+        "other": "Тільки ви, без бізнесу. Рахунки виставляються на ваше особисте ім'я."
+      },
+      "soleProprietorshipSubtitle": {
+        "other": "Ви плюс торгова назва (ФОП, фрілансер тощо)."
+      },
+      "companySubtitle": {
+        "other": "Зареєстрована юридична особа (ТОВ, Ltd, S.r.l. тощо)."
+      },
+      "legalNameTitleIndividual": {
+        "other": "Ваше юридичне ім'я"
+      },
+      "legalNameTitleSoleProp": {
+        "other": "Ваше юридичне ім'я (власник)"
+      },
+      "legalNameTitleCompany": {
+        "other": "Юридична назва компанії"
+      },
+      "legalNameSubtitleIndividual": {
+        "other": "Як зазначено у вашому документі."
+      },
+      "legalNameSubtitleSoleProp": {
+        "other": "Фізична особа, яка веде бізнес."
+      },
+      "legalNameSubtitleCompany": {
+        "other": "Зареєстрована назва компанії."
+      },
+      "legalNameLabel": {
+        "other": "Юридична назва"
+      },
+      "legalNamePlaceholderCompany": {
+        "other": "ACME ТОВ"
+      },
+      "legalNamePlaceholderPerson": {
+        "other": "Олена Петренко"
+      },
+      "legalNameInvalidCompany": {
+        "other": "Введіть щонайменше 2 символи з принаймні однією літерою."
+      },
+      "legalNameInvalidPerson": {
+        "other": "Введіть і ім'я, і прізвище."
+      },
+      "tradingNameTitle": {
+        "other": "Торгова назва (необов'язково)"
+      },
+      "tradingNameSubtitle": {
+        "other": "Geschaeftsbezeichnung, DBA, doing-business-as. Бренд, під яким працює юр. особа."
+      },
+      "tradingNameLabel": {
+        "other": "Торгова назва"
+      },
+      "tradingNamePlaceholder": {
+        "other": "ACME Brands"
+      },
+      "dobTitle": {
+        "other": "Дата народження"
+      },
+      "dobSubtitle": {
+        "other": "Потрібно для виставлення рахунків на ваше ім'я і KYC, якщо клієнт спитає пізніше."
+      },
+      "dobAgeError": {
+        "other": "Вам має бути 18 років або більше, щоб зареєструвати юр. особу."
+      },
+      "dobOutOfRange": {
+        "other": "Ця дата поза допустимим діапазоном."
+      },
+      "placeOfBirthTitle": {
+        "other": "Місце народження"
+      },
+      "placeOfBirthSubtitle": {
+        "other": "Місто, як зазначено у вашому документі. Потрібно для виставлення рахунків і KYC."
+      },
+      "placeOfBirthCityLabel": {
+        "other": "Місто"
+      },
+      "placeOfBirthCityPlaceholder": {
+        "other": "Почніть вводити місто."
+      },
+      "placeChangeCta": {
+        "other": "Змінити"
+      },
+      "placeSearchError": {
+        "other": "Не вдалося шукати: {error}"
+      },
+      "nationalityTitle": {
+        "other": "Громадянство"
+      },
+      "nationalitySubtitle": {
+        "other": "Виберіть одне або кілька (до {max}). Перше вважається основним."
+      },
+      "nationalityPrimaryBadge": {
+        "other": "Основне"
+      },
+      "nationalityCapReached": {
+        "other": "Досягнуто максимуму в {max} громадянств. Видаліть одне, щоб додати інше."
+      },
+      "removeCountryAria": {
+        "other": "Видалити {name}"
+      },
+      "taxCountryTitle": {
+        "other": "Податкова резиденція"
+      },
+      "taxCountrySubtitle": {
+        "other": "Де юр. особа сплачує податки. Перелічені лише країни, де ми можемо перевірити податковий ID наживо."
+      },
+      "taxIdsTitle": {
+        "other": "Податкові ідентифікатори"
+      },
+      "taxIdsSubtitleIndividual": {
+        "other": "Ваш місцевий податковий номер з {country}. Зберігається як є."
+      },
+      "taxIdsSubtitleIndividualFallback": {
+        "other": "ваш податковий орган"
+      },
+      "taxIdsSubtitleCompany": {
+        "other": "ПДВ перевіряється наживо через {authority}. Місцевий податковий номер не є обов'язковим."
+      },
+      "taxIdsSubtitleCompanyFallback": {
+        "other": "орган видачі"
+      },
+      "taxIdsSubtitleSoleProp": {
+        "other": "Обидва не є обов'язковими. Додайте місцевий податковий номер, якщо хочете бачити його в рахунках; ПДВ лише якщо ви зареєстровані платником ПДВ. Реєстрація бізнесу фіксується на наступному кроці."
+      },
+      "localTaxNumberLabel": {
+        "other": "Місцевий податковий номер"
+      },
+      "vatCompanyIdLabel": {
+        "other": "ПДВ / ID компанії"
+      },
+      "blockReasonTaxIdRequired": {
+        "other": "Введіть місцевий податковий номер, щоб продовжити."
+      },
+      "blockReasonTaxIdFormat": {
+        "other": "Місцевий податковий номер не відповідає формату {country}. {hint}"
+      },
+      "blockReasonVatRequired": {
+        "other": "Введіть ПДВ / ID компанії, щоб продовжити."
+      },
+      "blockReasonVatFormat": {
+        "other": "Цей ПДВ ID не відповідає формату країни."
+      },
+      "taxIdFormatHint": {
+        "other": "Очікується: {placeholder}."
+      },
+      "verifyHeadingChecking": {
+        "other": "Перевірка через орган."
+      },
+      "verifyHeadingLive": {
+        "other": "Перевірено."
+      },
+      "verifyHeadingInvalid": {
+        "other": "Не вдалося перевірити."
+      },
+      "verifyHeadingFormat": {
+        "other": "Орган недоступний."
+      },
+      "verifySubtitleChecking": {
+        "other": "Перевірка {vatId} у реєстрі {country}."
+      },
+      "verifySubtitleLiveNamed": {
+        "other": "{authority} визнав цей ПДВ як {name}."
+      },
+      "verifySubtitleLive": {
+        "other": "{authority} визнав цей ПДВ."
+      },
+      "verifySubtitleInvalid": {
+        "other": "{authority} не реєструє {vatId} як зареєстрований. Поверніться, щоб виправити."
+      },
+      "verifySubtitleFormat": {
+        "other": "Зараз ми не можемо зв'язатися з {authority}. Ваш запис збережено як є і буде автоматично перевірено повторно."
+      },
+      "authorityFallback": {
+        "other": "податковий орган"
+      },
+      "editTaxIdsBackLabel": {
+        "other": "Редагувати податкові ID"
+      },
+      "fixVatCta": {
+        "other": "Виправити ПДВ"
+      },
+      "continueAnywayCta": {
+        "other": "Продовжити все одно"
+      },
+      "registrationTitle": {
+        "other": "Реєстрація"
+      },
+      "registrationSubtitle": {
+        "other": "Handelsregister, Companies House, KvK. Офіційний реєстр, у якому зареєстровано цю особу."
+      },
+      "registrationNumberLabel": {
+        "other": "Реєстраційний номер"
+      },
+      "issuingAuthorityLabel": {
+        "other": "Орган видачі"
+      },
+      "issuingAuthorityPlaceholder": {
+        "other": "Місцевий суд / комерційний реєстр"
+      },
+      "registeredSinceLabel": {
+        "other": "Зареєстровано з (необов'язково)"
+      },
+      "registeredSinceRangeError": {
+        "other": "Виберіть дату між 1900 і сьогоднішнім днем."
+      },
+      "regNumberFormatHint": {
+        "other": "Не відповідає очікуваному формату. Спробуйте: {placeholder}."
+      },
+      "addressSearchTitle": {
+        "other": "Зареєстрована адреса"
+      },
+      "addressSearchSubtitle": {
+        "other": "Де юр. особу зареєстровано в органі. Почніть вводити."
+      },
+      "addressLabel": {
+        "other": "Адреса"
+      },
+      "addressSearchPlaceholder": {
+        "other": "Вулиця, місто."
+      },
+      "addressPickFirst": {
+        "other": "Спочатку виберіть адресу"
+      },
+      "addressReviewTitle": {
+        "other": "Виглядає правильно?"
+      },
+      "addressReviewSubtitle": {
+        "other": "Переконайтеся, що зареєстроване місцезнаходження відповідає офіційному реєстру."
+      },
+      "addressMissing": {
+        "other": "Не вистачає таких даних: {fields}. Виберіть більш конкретну пропозицію."
+      },
+      "addressFieldStreet": {
+        "other": "Вулиця"
+      },
+      "addressFieldCity": {
+        "other": "Місто"
+      },
+      "addressFieldPostalCode": {
+        "other": "Поштовий індекс"
+      },
+      "addressFieldRegion": {
+        "other": "Регіон"
+      },
+      "addressFieldCountry": {
+        "other": "Країна"
+      },
+      "addressChangeBackLabel": {
+        "other": "Змінити адресу"
+      },
+      "addressNotRightCta": {
+        "other": "Не так"
+      },
+      "addressLooksRightCta": {
+        "other": "Виглядає правильно"
+      },
+      "addressAptTitle": {
+        "other": "Квартира, офіс чи поверх?"
+      },
+      "addressAptSubtitle": {
+        "other": "Додає другий рядок до зареєстрованої адреси. Пропустіть, якщо не потрібно."
+      },
+      "addressAptLabel": {
+        "other": "Адресний рядок 2 (необов'язково)"
+      },
+      "addressAptPlaceholder": {
+        "other": "Кв 4Б, 3-й поверх, офіс 200."
+      },
+      "contactChoiceTitle": {
+        "other": "Бажаєте додати контактні дані?"
+      },
+      "contactChoiceSubtitle": {
+        "other": "Необов'язкові електронна пошта і телефон для цієї юр. особи. Окремо від основного контакту вашого облікового запису."
+      },
+      "contactYesCta": {
+        "other": "Так, додати контакт"
+      },
+      "contactNoCta": {
+        "other": "Ні, зберегти без"
+      },
+      "yesNoYesSubtitle": {
+        "other": "Додає наступний крок"
+      },
+      "yesNoNoSubtitle": {
+        "other": "Зберегти юр. особу як є"
+      },
+      "saveError": {
+        "other": "Не вдалося зберегти: {error}"
+      },
+      "contactInputTitle": {
+        "other": "Контакт для цієї юр. особи"
+      },
+      "contactInputSubtitle": {
+        "other": "Електронна пошта і телефон, які показуються в рахунках і контрактах."
+      },
+      "contactEmailLabel": {
+        "other": "Електронна пошта (необов'язково)"
+      },
+      "contactEmailPlaceholder": {
+        "other": "invoices@example.com"
+      },
+      "contactEmailInvalid": {
+        "other": "Введіть дійсну електронну пошту або залиште порожнім."
+      },
+      "contactPhoneLabel": {
+        "other": "Телефон (необов'язково)"
+      },
+      "contactPhonePlaceholder": {
+        "other": "+49 ."
+      },
+      "contactPhoneInvalid": {
+        "other": "Використовуйте цифри з необов'язковим знаком + на початку (6-20 цифр)."
+      },
+      "saveEntityCta": {
+        "other": "Зберегти юр. особу"
+      },
+      "saveChangesCta": {
+        "other": "Зберегти зміни"
+      },
+      "savingEntityLabel": {
+        "other": "Збереження юр. особи."
+      },
+      "deletingEntityLabel": {
+        "other": "Видалення юр. особи."
+      },
+      "backToList": {
+        "other": "Назад до списку"
+      },
+      "detailSectionIdentity": {
+        "other": "Особа"
+      },
+      "detailSectionTax": {
+        "other": "Податки"
+      },
+      "detailSectionRegistration": {
+        "other": "Реєстрація"
+      },
+      "detailSectionAddress": {
+        "other": "Адреса"
+      },
+      "detailSectionContact": {
+        "other": "Контакт"
+      },
+      "detailLegalName": {
+        "other": "Юридична назва"
+      },
+      "detailTradingName": {
+        "other": "Торгова назва"
+      },
+      "detailTradingNamePlaceholder": {
+        "other": "Додати торгову назву"
+      },
+      "detailDob": {
+        "other": "Дата народження"
+      },
+      "detailPlaceOfBirth": {
+        "other": "Місце народження"
+      },
+      "detailPlaceOfBirthPlaceholder": {
+        "other": "Додати місце народження"
+      },
+      "detailNationality": {
+        "other": "Громадянство"
+      },
+      "detailTaxResidence": {
+        "other": "Податкова резиденція"
+      },
+      "detailVatId": {
+        "other": "ПДВ / ID компанії"
+      },
+      "detailVatIdPlaceholder": {
+        "other": "Додати ПДВ ID"
+      },
+      "detailLocalTaxNumber": {
+        "other": "Місцевий податковий номер"
+      },
+      "detailLocalTaxNumberPlaceholder": {
+        "other": "Додати податковий номер"
+      },
+      "detailRegistrationNumber": {
+        "other": "Реєстраційний #"
+      },
+      "detailIssuingAuthority": {
+        "other": "Орган видачі"
+      },
+      "detailRegisteredSince": {
+        "other": "Зареєстровано з"
+      },
+      "detailStreet": {
+        "other": "Вулиця"
+      },
+      "detailAptFloor": {
+        "other": "Квартира / поверх"
+      },
+      "detailCity": {
+        "other": "Місто"
+      },
+      "detailPostalCode": {
+        "other": "Поштовий індекс"
+      },
+      "detailCountry": {
+        "other": "Країна"
+      },
+      "detailEmail": {
+        "other": "Електронна пошта"
+      },
+      "detailEmailPlaceholder": {
+        "other": "Додати ел. пошту"
+      },
+      "detailPhone": {
+        "other": "Телефон"
+      },
+      "detailPhonePlaceholder": {
+        "other": "Додати телефон"
+      },
+      "removeDefault": {
+        "other": "Прибрати за замовчуванням"
+      },
+      "setDefault": {
+        "other": "Встановити за замовчуванням"
+      },
+      "deleteConfirmTitle": {
+        "other": "Видалити цю юр. особу?"
+      },
+      "deleteConfirmBody": {
+        "other": "Цю дію не можна скасувати."
+      },
+      "deleteEmpty": {
+        "other": "Нічого видаляти"
+      },
+      "sharedAcrossAppsHeading": {
+        "other": "Увага. Це впливає на кожен застосунок, яким ви користуєтеся з elvix."
+      },
+      "deleteSharedAcrossAppsBody": {
+        "other": "Юридичні особи спільні для застосунків, у які ви входите. Видалення прибирає запис звідусіль; будь-який шаблон рахунку, який посилався на нього, потребуватиме нового."
+      },
+      "deleteError": {
+        "other": "Не вдалося видалити: {error}"
+      },
+      "yesDelete": {
+        "other": "Так, видалити"
+      },
+      "nothingToChange": {
+        "other": "Нічого змінювати"
+      },
+      "defaultConfirmTitleSet": {
+        "other": "Встановити це як вашу юр. особу за замовчуванням?"
+      },
+      "defaultConfirmTitleUnset": {
+        "other": "Прибрати позначку за замовчуванням з цієї юр. особи?"
+      },
+      "defaultConfirmBodySet": {
+        "other": "Юр. особа за замовчуванням автоматично заповнює рахунки і шаблони контрактів."
+      },
+      "defaultConfirmBodyUnset": {
+        "other": "Нічого не буде попередньо вибрано при створенні рахунків чи контрактів."
+      },
+      "defaultSharedAcrossAppsBodySet": {
+        "other": "Юр. особа за замовчуванням спільна для всіх застосунків, у які ви входите. Зміна тут оновлює автовибір всюди одразу."
+      },
+      "defaultSharedAcrossAppsBodyUnset": {
+        "other": "Юр. особа за замовчуванням спільна для всіх застосунків, у які ви входите. Прибирання означає, що жодна юр. особа не буде попередньо вибрана ніде."
+      }
+    },
+    "entityKind": {
+      "title": {
+        "other": "Для кого це?"
+      },
+      "me": {
+        "other": "Я"
+      },
+      "someoneElse": {
+        "other": "Хтось інший"
+      },
+      "business": {
+        "other": "Бізнес"
+      }
+    },
+    "export": {
+      "title": {
+        "other": "Завантажити ваші дані"
+      },
+      "body": {
+        "other": "Отримайте копію всього, що ми зберігаємо про вас. GDPR Стаття 15. Ми надсилаємо одноразове посилання для завантаження електронною поштою, дійсне 24 години."
+      },
+      "sendCodeCta": {
+        "other": "Надіслати код підтвердження"
+      },
+      "downloadCta": {
+        "other": "Надіслати мені посилання"
+      },
+      "doneTitle": {
+        "other": "Перевірте поштову скриньку"
+      },
+      "doneBody": {
+        "other": "Ми надіслали посилання для завантаження на {email}. Воно дійсне 24 години."
+      },
+      "previewLoadFailed": {
+        "other": "Не вдалося завантажити попередній перегляд. Спробуйте ще раз."
+      },
+      "whatYouReceive": {
+        "other": "Що ви отримаєте"
+      },
+      "archiveBlurbIdentity": {
+        "other": "Ваш архів міститиме один файл JSON з усім нижчезазначеним, плюс ваші зображення аватара і банера, якщо ви їх завантажували, плюс README, який пояснює кожен розділ простою мовою і містить розкриття GDPR Ст. 15(1)."
+      },
+      "archiveBlurbApp": {
+        "other": "Ваш архів міститиме один файл JSON, обмежений {label}, плюс README, який пояснює кожен розділ і містить розкриття GDPR Ст. 15(1)."
+      },
+      "notIncluded": {
+        "other": "Не включено: криптографічний матеріал ключів на ваших ключах доступу, токени OAuth, коди OTP і будь-які дані, які застосунки, якими ви користуєтесь, зберігають про вас поза elvix. Звертайтеся до кожного застосунку щодо останнього."
+      },
+      "sendToHeading": {
+        "other": "Ми надішлемо ваші дані на вашу основну електронну пошту"
+      },
+      "sendToBody": {
+        "other": "Ваш архів прийде на {email} як .zip-вкладення. Володіння цією скринькою є доказом особистості, тож файл ніколи не лежить за публічною URL."
+      },
+      "sendToNotice": {
+        "other": "Ми надсилаємо 6-значний код на вашу основну скриньку спочатку. Після того як ви введете його на наступному екрані, ми згенеруємо ваш архів і надішлемо його вам як .zip-вкладення."
+      },
+      "sendingCode": {
+        "other": "Надсилання коду"
+      },
+      "sendToCta": {
+        "other": "Надіслати мені 6-значний код"
+      },
+      "otpHeading": {
+        "other": "Підтвердьте своїм кодом"
+      },
+      "otpBody": {
+        "other": "Ми надіслали 6-значний код на {email}. Він діє 10 хвилин. Як тільки ви введете його, ми згенеруємо ваш архів і надішлемо його на ту ж скриньку як .zip-вкладення."
+      },
+      "confirmCta": {
+        "other": "Підтвердити і надіслати мені мої дані"
+      },
+      "workingLabel": {
+        "other": "Робота"
+      },
+      "resendIn": {
+        "other": "Повторно надіслати через {seconds}с"
+      },
+      "noPendingCode": {
+        "other": "Немає очікуваного коду. Надішліть новий."
+      },
+      "networkError": {
+        "other": "Помилка мережі. Спробуйте ще раз."
+      },
+      "doneHeading": {
+        "other": "Надіслано."
+      },
+      "doneInboxBody": {
+        "other": "Перевірте вашу основну скриньку ({email}) за хвилину. Ваш архів додано до листа як .zip-файл. Ви можете запитати ще один експорт тієї ж цілі через 24 години."
+      },
+      "backToExports": {
+        "other": "Назад до експортів"
+      },
+      "errorChallengeGeneric": {
+        "other": "Не вдалося надіслати код. Спробуйте ще раз."
+      },
+      "errorChallengeTooRecent": {
+        "other": "Зачекайте {seconds}с перед повторним запитом."
+      },
+      "errorChallengeTooMany": {
+        "other": "Забагато запитів за цю годину. Спробуйте пізніше."
+      },
+      "errorChallengeSendFailed": {
+        "other": "Не вдалося надіслати код електронною поштою. Спробуйте ще раз."
+      },
+      "errorChallengeRateLimit": {
+        "other": "Ви вже експортували це за останні 24 години. Доступно знову через ~{hours}год."
+      },
+      "errorChallengeNotMember": {
+        "other": "Ви більше не є учасником цього застосунку."
+      },
+      "errorChallengeAppNotFound": {
+        "other": "Цей застосунок недоступний."
+      },
+      "errorApplyGeneric": {
+        "other": "Не вдалося згенерувати ваш експорт. Спробуйте ще раз."
+      },
+      "errorApplyWrongCode": {
+        "one": "Невірний код. Залишилася {count} спроба.",
+        "few": "Невірний код. Залишилися {count} спроби.",
+        "many": "Невірний код. Залишилося {count} спроб.",
+        "other": "Невірний код. Залишилося {count} спроб."
+      },
+      "errorApplyLocked": {
+        "other": "Забагато невірних спроб. Надішліть новий код."
+      },
+      "errorApplyExpired": {
+        "other": "Термін дії коду закінчився. Надішліть новий."
+      },
+      "errorApplyGenerateFailed": {
+        "other": "Ми не змогли побудувати ваш експорт. Спробуйте ще раз."
+      },
+      "errorApplyStorageFailed": {
+        "other": "Ми не змогли зберегти ваш експорт. Спробуйте ще раз."
+      },
+      "errorApplyEmailFailed": {
+        "other": "Ваш архів згенерований, але не вдалося надіслати листа. Зв'яжіться з {email}, щоб відновити посилання."
+      }
+    },
+    "deactivate": {
+      "title": {
+        "other": "Зробити перерву"
+      },
+      "body": {
+        "other": "Деактивація приховує ваш обліковий запис у цьому застосунку. Реактивуйте будь-коли зі свого облікового запису elvix."
+      },
+      "confirmCta": {
+        "other": "Деактивувати"
+      },
+      "doneTitle": {
+        "other": "Ваш обліковий запис призупинено"
+      },
+      "reactivateCta": {
+        "other": "Реактивувати"
+      },
+      "errorTooMany": {
+        "other": "Забагато запитуваних кодів. Спробуйте пізніше."
+      },
+      "errorTooRecent": {
+        "other": "Зачекайте {seconds}с перед повторним запитом."
+      },
+      "errorSendFailed": {
+        "other": "Не вдалося надіслати код електронною поштою. Спробуйте ще раз."
+      },
+      "errorRequestFailed": {
+        "other": "Не вдалося запитати код. Спробуйте ще раз."
+      },
+      "errorWrongCode": {
+        "one": "Невірний код. Залишилася {count} спроба.",
+        "few": "Невірний код. Залишилися {count} спроби.",
+        "many": "Невірний код. Залишилося {count} спроб.",
+        "other": "Невірний код. Залишилося {count} спроб."
+      },
+      "errorChallengeLocked": {
+        "other": "Забагато невірних спроб. Запитайте новий код."
+      },
+      "errorChallengeExpired": {
+        "other": "Термін дії коду закінчився. Запитайте новий."
+      },
+      "errorAlreadyLeft": {
+        "other": "Ви вже залишили цей застосунок. Спочатку відновіть своє членство."
+      },
+      "appNameFallback": {
+        "other": "ваш застосунок"
+      },
+      "warn1Title": {
+        "other": "Зробити перерву від {app}"
+      },
+      "warn1Body": {
+        "other": "Ваш профіль робить тиху перерву. Люди в {app} перестають вас бачити, але все, що ви побудували, залишається саме таким, як є. Коли будете готові, поверніться сюди і знову увійдіть."
+      },
+      "soundGood": {
+        "other": "Звучить добре?"
+      },
+      "warn1Cta": {
+        "other": "Я розумію"
+      },
+      "warn2Title": {
+        "other": "Кілька речей, які варто знати"
+      },
+      "warn2Bullet1": {
+        "other": "Відкриті сесії в цьому застосунку одразу закриваються."
+      },
+      "warn2Bullet2": {
+        "other": "Ваше ім'я користувача та ідентифікатор залишаються вашими. Ніхто інший не може їх взяти, поки вас немає."
+      },
+      "warn2Bullet3": {
+        "other": "Ви можете повернутися будь-коли з цього ж вікна."
+      },
+      "warn2Bullet4": {
+        "other": "Ми надішлемо вам 6-значний код для підтвердження. Подвійний захист, щоб зміна пройшла, лише якщо у вас також є доступ до скриньки."
+      },
+      "warn2Cta": {
+        "other": "Я розумію. Надішліть мені код"
+      },
+      "sendingLabel": {
+        "other": "Надсилання"
+      },
+      "reactivateTitle": {
+        "other": "З поверненням до {app}"
+      },
+      "reactivateBody": {
+        "other": "Зараз ви на перерві. Реактивуйте, щоб знову з'явитися в {app}."
+      },
+      "reactivateBodyByOwner": {
+        "other": "Зараз ви на перерві (адмін зробив це від вашого імені). Реактивуйте, щоб знову з'явитися в {app}."
+      },
+      "doneDeactivatedTitle": {
+        "other": "Ви на перерві від {app}."
+      },
+      "doneReactivatedTitle": {
+        "other": "Ви повернулися в {app}."
+      },
+      "doneDeactivatedBody": {
+        "other": "Ми повідомили застосунок. Поверніться сюди будь-коли, щоб реактивуватися."
+      },
+      "doneReactivatedBody": {
+        "other": "Ваше членство знову активне. Відкриті сесії на стороні застосунку можуть оновитися за мить."
+      },
+      "reactivateAgain": {
+        "other": "Реактивувати знову"
+      },
+      "deactivateAgain": {
+        "other": "Деактивувати знову"
+      },
+      "otpTitle": {
+        "other": "Введіть ваш код підтвердження"
+      },
+      "otpDelivered": {
+        "other": "Ми надіслали 6-значний код електронною поштою на {email}. Він діє 10 хвилин."
+      },
+      "otpSending": {
+        "other": "Надсилання вам 6-значного коду."
+      },
+      "otpPending": {
+        "other": "Ми надсилаємо 6-значний код на вашу електронну пошту."
+      },
+      "resendIn": {
+        "other": "Повторно надіслати через {seconds}с"
+      }
+    },
+    "leave": {
+      "title": {
+        "other": "Залишити {app}?"
+      },
+      "body": {
+        "other": "Видаляє ваше членство. Це остаточно: власник не може його повернути. Ваш обліковий запис elvix залишається відкритим."
+      },
+      "confirmCta": {
+        "other": "Піти назавжди"
+      },
+      "doneTitle": {
+        "other": "Ви залишили {app}."
+      },
+      "errorTooManyCodes": {
+        "other": "Забагато запитуваних кодів. Спробуйте пізніше."
+      },
+      "errorTooRecent": {
+        "other": "Зачекайте {seconds}с перед повторним запитом."
+      },
+      "errorSendFailed": {
+        "other": "Не вдалося надіслати код електронною поштою. Спробуйте ще раз."
+      },
+      "errorRequestFailed": {
+        "other": "Не вдалося запитати код. Спробуйте ще раз."
+      },
+      "errorWrongCode": {
+        "one": "Невірний код. Залишилася {count} спроба.",
+        "few": "Невірний код. Залишилися {count} спроби.",
+        "many": "Невірний код. Залишилося {count} спроб.",
+        "other": "Невірний код. Залишилося {count} спроб."
+      },
+      "errorChallengeLocked": {
+        "other": "Забагато невірних спроб. Запитайте новий код."
+      },
+      "errorChallengeExpired": {
+        "other": "Термін дії коду закінчився. Запитайте новий."
+      },
+      "errorOwnerInitiated": {
+        "other": "Адмін видалив вас. Лише вони можуть відмінити це зі своєї Console."
+      },
+      "errorGraceExpired": {
+        "other": "90-денне вікно для відновлення цього членства закрилося."
+      },
+      "errorRestoreFailed": {
+        "other": "Не вдалося відновити. Спробуйте ще раз."
+      },
+      "otpActionLabel": {
+        "other": "Залишити {app}"
+      },
+      "warn1Heading": {
+        "other": "Залишити {app}"
+      },
+      "warn1Body": {
+        "other": "Ваше членство одразу приховується. У вас є 90 днів, щоб передумати і відновити з цього ж вікна. Після цього застосунок перестає з'являтися у вашому списку. Ваші дані на стороні застосунку залишаються під керуванням їхньої власної політики."
+      },
+      "understandPrompt": {
+        "other": "Ви розумієте?"
+      },
+      "iUnderstandCta": {
+        "other": "Я розумію"
+      },
+      "dataHeading": {
+        "other": "Про ваші дані в {app}"
+      },
+      "warn2Body": {
+        "other": "elvix не зберігає і не видаляє те, що {app} тримає про вас. Власник застосунку відповідає за це згідно зі своєю політикою конфіденційності та умовами використання. Ми повідомляємо застосунок у момент вашого виходу, щоб вони могли діяти відповідно до цих умов. Прочитайте їх перед підтвердженням."
+      },
+      "privacyPolicy": {
+        "other": "Політика конфіденційності"
+      },
+      "termsOfService": {
+        "other": "Умови використання"
+      },
+      "warn2EmailPrompt": {
+        "other": "Ми надішлемо вам код для підтвердження. Ви розумієте?"
+      },
+      "warn2Cta": {
+        "other": "Я розумію. Надішліть мені код"
+      },
+      "restoreHeading": {
+        "other": "Відновити ваше членство в {app}"
+      },
+      "restoreBody": {
+        "one": "У вас залишився {count} день у вікні відновлення. Відновіть зараз, і застосунок побачить вас точно як раніше: те ж ім'я користувача, ті ж ролі, та ж історія.",
+        "few": "У вас залишилося {count} дні у вікні відновлення. Відновіть зараз, і застосунок побачить вас точно як раніше: те ж ім'я користувача, ті ж ролі, та ж історія.",
+        "many": "У вас залишилося {count} днів у вікні відновлення. Відновіть зараз, і застосунок побачить вас точно як раніше: те ж ім'я користувача, ті ж ролі, та ж історія.",
+        "other": "У вас залишилося {count} днів у вікні відновлення. Відновіть зараз, і застосунок побачить вас точно як раніше: те ж ім'я користувача, ті ж ролі, та ж історія."
+      },
+      "restoreCta": {
+        "other": "Відновити членство"
+      },
+      "ownerLockedHeading": {
+        "other": "Адмін видалив вас з {app}"
+      },
+      "ownerLockedBody": {
+        "one": "Видалено {date}. У власника застосунку залишився {count} день, щоб скасувати зі свого боку. Після цього застосунок більше не з'являється тут.",
+        "few": "Видалено {date}. У власника застосунку залишилося {count} дні, щоб скасувати зі свого боку. Після цього застосунок більше не з'являється тут.",
+        "many": "Видалено {date}. У власника застосунку залишилося {count} днів, щоб скасувати зі свого боку. Після цього застосунок більше не з'являється тут.",
+        "other": "Видалено {date}. У власника застосунку залишилося {count} днів, щоб скасувати зі свого боку. Після цього застосунок більше не з'являється тут."
+      },
+      "ownerLockedReachOut": {
+        "other": "Оскільки вони ініціювали видалення, лише вони можуть його відмінити. Зверніться через їхній канал підтримки, якщо хочете поговорити з ними про це."
+      },
+      "doneLeftTitle": {
+        "other": "Ви залишили {app}."
+      },
+      "doneRestoredTitle": {
+        "other": "Ви повернулися в {app}."
+      },
+      "doneLeftBody": {
+        "other": "Ми повідомили застосунок. У вас є 90 днів, щоб повернутися і відновити з цього ж вікна. Після цього застосунок перестає з'являтися у вашому списку."
+      },
+      "doneRestoredBody": {
+        "other": "Ваше членство знову активне. Сторона застосунку може оновитися за мить."
+      }
+    },
+    "lifecycle": {
+      "bannedTitle": {
+        "other": "Ваш доступ було відкликано."
+      },
+      "bannedBody": {
+        "other": "Адміністратор заблокував ваш обліковий запис у цьому застосунку. Вас буде виведено з системи, і ви не зможете знову увійти. Зв'яжіться з власником, якщо вважаєте, що це помилка."
+      },
+      "pausedTitle": {
+        "other": "Ваш доступ було призупинено."
+      },
+      "pausedBody": {
+        "other": "Адміністратор тимчасово призупинив ваш обліковий запис у цьому застосунку. Вас скоро виведуть із системи; зверніться до власника, щоб відновити доступ."
+      },
+      "deletedTitle": {
+        "other": "Ваш обліковий запис було видалено."
+      },
+      "deletedBody": {
+        "other": "Адміністратор видалив ваше членство в цьому застосунку. Вас буде виведено із системи, і ваші збережені дані поставлено в чергу на видалення через 90 днів, якщо не буде відновлено."
+      },
+      "inactiveTitle": {
+        "other": "Ви робите перерву від цього застосунку."
+      },
+      "inactiveBody": {
+        "other": "Ваше членство деактивовано, тож ми виведемо вас із системи тут. Ви можете реактивувати зі свого облікового запису elvix будь-коли і одразу повернутися."
+      },
+      "countdown": {
+        "other": "Виводимо вас із системи через {seconds}с"
+      },
+      "recoverRestoredTitle": {
+        "other": "Ви повернулися в {app}."
+      },
+      "recoverRestoredBody": {
+        "other": "Ваше членство знову активне. Переходьте в застосунок, коли будете готові."
+      },
+      "recoverSignedOutTitle": {
+        "other": "Ви вийшли із системи."
+      },
+      "recoverSignedOutBody": {
+        "other": "Ви залишилися поза {app}. Поверніться будь-коли."
+      },
+      "recoverWelcomeBack": {
+        "other": "З поверненням до {app}"
+      },
+      "recoverDeletedIntro": {
+        "other": "Ви залишили {app} раніше."
+      },
+      "recoverDeletedDaysLeft": {
+        "one": "У вас залишився {count} день, щоб повернутися.",
+        "few": "У вас залишилося {count} дні, щоб повернутися.",
+        "many": "У вас залишилося {count} днів, щоб повернутися.",
+        "other": "У вас залишилося {count} днів, щоб повернутися."
+      },
+      "recoverDeletedNoCountdown": {
+        "other": "Ви досі всередині вікна відновлення."
+      },
+      "recoverDeletedOutro": {
+        "other": "Відновіть своє місце зараз або вийдіть знову."
+      },
+      "recoverPausedBody": {
+        "other": "Ваше членство в {app} зараз призупинено. Відновіть, щоб продовжити з того місця, де зупинилися, або вийдіть і залишайтеся осторонь."
+      },
+      "recoverRestoringLabel": {
+        "other": "Відновлення"
+      },
+      "recoverRestoreDeletedCta": {
+        "other": "Відновити моє місце в {app}"
+      },
+      "recoverRestorePausedCta": {
+        "other": "Повернути мене в {app}"
+      },
+      "recoverSigningOutLabel": {
+        "other": "Виводимо вас із системи"
+      },
+      "recoverDeclineCta": {
+        "other": "Не зараз, виведіть мене"
+      }
+    }
+  }
+}
