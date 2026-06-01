@@ -597,26 +597,26 @@ function AuthBody({
   // redirect handler (router.push, cookie write) runs — exactly like
   // an in-frame OTP / passkey sign-in already does.
   useEffect(() => {
+    // Hosts that want to own navigation (cookie-exchange first) wire
+    // `onAuthenticated`; hosts that just react to terminal state wire
+    // `onResult`. Mirror the in-frame success path (passkey / onboarding):
+    // fire both, leave the choice to the host.
+    const dispatch = (token: string) => {
+      onResult?.({ ok: true, token, redirect: redirectAfterSignIn });
+      if (onAuthenticated) {
+        onAuthenticated({ ok: true, token, redirect: redirectAfterSignIn });
+      }
+    };
     const token = takeJustReturnedToken();
-    if (token) {
-      onResult?.({
-        ok: true,
-        token,
-        redirect: redirectAfterSignIn,
-      });
-    }
+    if (token) dispatch(token);
     const listener = (e: Event) => {
       const ce = e as CustomEvent<{ token: string }>;
       if (!ce.detail?.token) return;
-      onResult?.({
-        ok: true,
-        token: ce.detail.token,
-        redirect: redirectAfterSignIn,
-      });
+      dispatch(ce.detail.token);
     };
     window.addEventListener("elvix:return-token", listener);
     return () => window.removeEventListener("elvix:return-token", listener);
-  }, [onResult, redirectAfterSignIn]);
+  }, [onAuthenticated, onResult, redirectAfterSignIn]);
 
   /**
    * Set the inline error string AND fire `onResult({ ok: false })`
