@@ -46,6 +46,7 @@ import {
 } from "./legal-entity-schema";
 import { unwrapEnvelope } from "./spine-fetch";
 import { localTaxIdMatches, registrationNumberMatches } from "./tax-validation";
+import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertTriangle,
@@ -195,6 +196,7 @@ export function ElvixLegalEntities({
   onResult,
 }: ElvixLegalEntitiesProps) {
   const ctx = useElvixContext();
+  const t = useT();
   const [entities, setEntities] = useState<LegalEntityRecord[]>([]);
   const [view, setView] = useState<View>("empty");
   const [loading, setLoading] = useState(true);
@@ -672,7 +674,7 @@ export function ElvixLegalEntities({
           <AnimatePresence initial={false}>
             {loading ? (
               <Pane key="loading">
-                <div className="grid h-full place-items-center text-fg-3 text-sm">Loading…</div>
+                <div className="grid h-full place-items-center text-fg-3 text-sm">{t("common.loading")}</div>
               </Pane>
             ) : view === "empty" ? (
               <Pane key="empty">
@@ -696,16 +698,16 @@ export function ElvixLegalEntities({
             ) : view === "legal-name" ? (
               <Pane key="legal-name">
                 <SingleTextView
-                  title={typeTitleCopy(type, "legal-name")}
+                  title={typeTitleCopy(type, "legal-name", t)}
                   subtitle={
                     type === "individual"
-                      ? "As it appears on your ID."
+                      ? t("legalEntities.legalNameSubtitleIndividual")
                       : type === "sole_prop"
-                        ? "The natural person operating the business."
-                        : "The company's registered name."
+                        ? t("legalEntities.legalNameSubtitleSoleProp")
+                        : t("legalEntities.legalNameSubtitleCompany")
                   }
-                  label="Legal name"
-                  placeholder={type === "company" ? "ACME GmbH" : "Jane Doe"}
+                  label={t("legalEntities.legalNameLabel")}
+                  placeholder={type === "company" ? t("legalEntities.legalNamePlaceholderCompany") : t("legalEntities.legalNamePlaceholderPerson")}
                   value={legalName}
                   onChange={setLegalName}
                   onConfirm={afterLegalName}
@@ -717,18 +719,18 @@ export function ElvixLegalEntities({
                   requireWords={type === "company" ? undefined : 2}
                   invalidMessage={
                     type === "company"
-                      ? "Enter at least 2 characters with at least one letter."
-                      : "Enter both given name and family name."
+                      ? t("legalEntities.legalNameInvalidCompany")
+                      : t("legalEntities.legalNameInvalidPerson")
                   }
                 />
               </Pane>
             ) : view === "trading-name" ? (
               <Pane key="trading-name">
                 <SingleTextView
-                  title="Trading name (optional)"
-                  subtitle="Geschäftsbezeichnung, DBA, doing-business-as. The brand the entity trades under."
-                  label="Trading name"
-                  placeholder="ACME Brands"
+                  title={t("legalEntities.tradingNameTitle")}
+                  subtitle={t("legalEntities.tradingNameSubtitle")}
+                  label={t("legalEntities.tradingNameLabel")}
+                  placeholder={t("legalEntities.tradingNamePlaceholder")}
                   value={tradingName}
                   onChange={setTradingName}
                   onConfirm={afterTradingName}
@@ -740,9 +742,9 @@ export function ElvixLegalEntities({
             ) : view === "dob" ? (
               <Pane key="dob">
                 <DateView
-                  title="Date of birth"
-                  subtitle="Required for invoicing under your name and KYC if a customer asks later."
-                  label="Date of birth"
+                  title={t("legalEntities.dobTitle")}
+                  subtitle={t("legalEntities.dobSubtitle")}
+                  label={t("legalEntities.dobTitle")}
                   value={dob}
                   onChange={setDob}
                   onConfirm={afterDob}
@@ -753,7 +755,7 @@ export function ElvixLegalEntities({
                   }
                   minDate={isoYearsAgo(120)}
                   maxDate={isoYearsAgo(18)}
-                  outOfRangeMessage="You must be 18 or older to register an entity."
+                  outOfRangeMessage={t("legalEntities.dobAgeError")}
                 />
               </Pane>
             ) : view === "place-of-birth" ? (
@@ -785,8 +787,8 @@ export function ElvixLegalEntities({
             ) : view === "tax-country" ? (
               <Pane key="tax-country">
                 <CountryView
-                  title="Tax residence"
-                  subtitle="Where the entity files taxes. Only countries where we can verify the tax ID live are listed."
+                  title={t("legalEntities.taxCountryTitle")}
+                  subtitle={t("legalEntities.taxCountrySubtitle")}
                   value={taxCountry}
                   onChange={setTaxCountry}
                   onConfirm={afterTaxCountry}
@@ -860,10 +862,10 @@ export function ElvixLegalEntities({
             ) : view === "address-apt-floor" ? (
               <Pane key="address-apt-floor">
                 <SingleTextView
-                  title="Apartment, suite, or floor?"
-                  subtitle="Adds a second line to the registered address. Skip if not needed."
-                  label="Address line 2 (optional)"
-                  placeholder="Apt 4B, 3rd floor, Suite 200…"
+                  title={t("legalEntities.addressAptTitle")}
+                  subtitle={t("legalEntities.addressAptSubtitle")}
+                  label={t("legalEntities.addressAptLabel")}
+                  placeholder={t("legalEntities.addressAptPlaceholder")}
                   value={addressLine2}
                   onChange={setAddressLine2}
                   onConfirm={afterAddressAptFloor}
@@ -875,14 +877,14 @@ export function ElvixLegalEntities({
             ) : view === "contact-choice" ? (
               <Pane key="contact-choice">
                 <YesNoView
-                  title="Want to add contact info?"
-                  subtitle="Optional email + phone for this entity. Separate from your main account contact."
+                  title={t("legalEntities.contactChoiceTitle")}
+                  subtitle={t("legalEntities.contactChoiceSubtitle")}
                   onYes={onContactYes}
                   onNo={onContactNo}
                   onBack={() => setView("address-apt-floor")}
                   error={error}
-                  yesLabel="Yes, add contact"
-                  noLabel="No, save without"
+                  yesLabel={t("legalEntities.contactYesCta")}
+                  noLabel={t("legalEntities.contactNoCta")}
                 />
               </Pane>
             ) : view === "contact-input" ? (
@@ -894,12 +896,12 @@ export function ElvixLegalEntities({
                   setPhone={setContactPhone}
                   onConfirm={onContactSave}
                   onBack={editingMode ? cancelEdit : () => setView("contact-choice")}
-                  saveLabel={editingMode ? "Save changes" : "Save entity"}
+                  saveLabel={editingMode ? t("legalEntities.saveChangesCta") : t("legalEntities.saveEntityCta")}
                 />
               </Pane>
             ) : view === "saving" ? (
               <Pane key="saving">
-                <SavingView label="Saving entity…" />
+                <SavingView label={t("legalEntities.savingEntityLabel")} />
               </Pane>
             ) : view === "detail" ? (
               <Pane key="detail">
@@ -979,7 +981,7 @@ export function ElvixLegalEntities({
               </Pane>
             ) : view === "deleting" ? (
               <Pane key="deleting">
-                <SavingView label="Deleting entity…" />
+                <SavingView label={t("legalEntities.deletingEntityLabel")} />
               </Pane>
             ) : (
               <Pane key="default-confirm">
@@ -1003,6 +1005,7 @@ export function ElvixLegalEntities({
 //     when the wizard's footprint stabilises). ────────────────────────
 
 function EmptyState({ onAdd }: { onAdd: () => void }) {
+  const t = useT();
   return (
     <div className="flex h-full flex-col items-center justify-center text-center">
       <button
@@ -1014,9 +1017,9 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
           <Building2 className="size-6" />
         </div>
         <div>
-          <div className="text-[15px] font-semibold text-fg-1">Add a legal entity</div>
+          <div className="text-[15px] font-semibold text-fg-1">{t("legalEntities.addCta")}</div>
           <div className="mt-1 text-[12px] text-fg-3">
-            For invoices, contracts, and tax filings.
+            {t("legalEntities.addCtaSubtitle")}
           </div>
         </div>
       </button>
@@ -1037,6 +1040,7 @@ function ListView({
   onDelete: (id: string) => void;
   onToggleDefault: (id: string, currentlyDefault: boolean) => void;
 }) {
+  const t = useT();
   return (
     <div className="flex flex-col gap-2 pt-3 pb-4">
       <button
@@ -1045,16 +1049,16 @@ function ListView({
         className="group flex items-center justify-center gap-2 rounded-[12px] border border-dashed border-fg-3/30 px-4 py-3 text-[13px] font-medium text-fg-2 transition hover:border-[var(--elvix-primary)] hover:text-[var(--elvix-primary)] cursor-pointer"
       >
         <Plus className="size-4" />
-        Add another legal entity
+        {t("legalEntities.addAnotherCta")}
       </button>
       {entities.map((e) => {
         const icon = typeIcon(e.type as LegalEntityType);
         const subtitle =
           e.type === "individual"
-            ? "Individual"
+            ? t("legalEntities.kindIndividual")
             : e.type === "sole_prop"
-              ? "Sole proprietorship"
-              : "Company";
+              ? t("legalEntities.kindSoleProp")
+              : t("legalEntities.kindCompany");
         return (
           <div
             key={e.id}
@@ -1074,7 +1078,7 @@ function ListView({
                   {e.isDefault && (
                     <span className="inline-flex items-center gap-1 rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_15%,transparent)] px-2 py-[1px] text-[10px] font-medium text-[var(--elvix-primary)]">
                       <Star className="size-2.5 fill-current" />
-                      Default
+                      {t("addressBook.defaultBadge")}
                     </span>
                   )}
                 </div>
@@ -1102,7 +1106,7 @@ function ListView({
                     ? "text-[var(--elvix-primary)] hover:bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)]"
                     : "text-fg-3 hover:bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)] hover:text-[var(--elvix-primary)]")
                 }
-                aria-label={e.isDefault ? "Remove default" : "Set as default"}
+                aria-label={e.isDefault ? t("legalEntities.removeDefaultAria") : t("legalEntities.setDefaultAria")}
               >
                 <Star className={e.isDefault ? "size-4 fill-current" : "size-4"} />
               </button>
@@ -1113,7 +1117,7 @@ function ListView({
                   onDelete(e.id);
                 }}
                 className="inline-flex size-8 items-center justify-center rounded-md text-fg-3 transition hover:bg-red-500/10 hover:text-red-600 cursor-pointer"
-                aria-label="Delete entity"
+                aria-label={t("legalEntities.deleteAria")}
               >
                 <Trash2 className="size-4" />
               </button>
@@ -1132,6 +1136,7 @@ function TypeChoiceView({
   onPick: (t: LegalEntityType) => void;
   onBack: () => void;
 }) {
+  const t = useT();
   const TYPES: Array<{
     type: LegalEntityType;
     title: string;
@@ -1140,36 +1145,36 @@ function TypeChoiceView({
   }> = [
     {
       type: "individual",
-      title: "Individual",
-      subtitle: "Just you, no business. Invoices go in your personal name.",
+      title: t("legalEntities.kindIndividual"),
+      subtitle: t("legalEntities.individualSubtitle"),
       icon: <User className="size-4" />,
     },
     {
       type: "sole_prop",
-      title: "Sole proprietorship",
-      subtitle: "You + a trading name (Einzelunternehmen, freelancer, etc.).",
+      title: t("legalEntities.kindSoleProp"),
+      subtitle: t("legalEntities.soleProprietorshipSubtitle"),
       icon: <Briefcase className="size-4" />,
     },
     {
       type: "company",
-      title: "Company",
-      subtitle: "A registered legal entity (GmbH, Ltd, S.r.l., …).",
+      title: t("legalEntities.kindCompany"),
+      subtitle: t("legalEntities.companySubtitle"),
       icon: <Building2 className="size-4" />,
     },
   ];
   return (
     <div className="flex h-full flex-col">
-      <WizardHeader stepLabel="Step 1 of 3" onBack={onBack} />
-      <Heading>What kind of entity is this?</Heading>
-      <Subtitle>Drives the questions we'll ask next.</Subtitle>
+      <WizardHeader stepLabel={t("legalEntities.step1of3")} onBack={onBack} />
+      <Heading>{t("legalEntities.typeChoiceTitle")}</Heading>
+      <Subtitle>{t("legalEntities.typeChoiceSubtitle")}</Subtitle>
       <div className="mt-4 flex flex-col gap-2">
-        {TYPES.map((t) => (
+        {TYPES.map((opt) => (
           <ChoiceCard
-            key={t.type}
-            onClick={() => onPick(t.type)}
-            icon={t.icon}
-            title={t.title}
-            subtitle={t.subtitle}
+            key={opt.type}
+            onClick={() => onPick(opt.type)}
+            icon={opt.icon}
+            title={opt.title}
+            subtitle={opt.subtitle}
           />
         ))}
       </div>
@@ -1217,6 +1222,7 @@ function SingleTextView({
   /** Shown inline when the value is non-empty but fails the gate. */
   invalidMessage?: string;
 }) {
+  const t = useT();
   const trimmed = value.trim();
   const effectiveMin = minLength ?? (required ? 1 : 0);
   const lengthOk = trimmed.length >= effectiveMin && trimmed.length <= maxLength;
@@ -1258,9 +1264,9 @@ function SingleTextView({
           state="idle"
           disabled={!valid}
           onClick={() => valid && onConfirm()}
-          label="Continue"
-          savedLabel="Continue"
-          hint="Enter"
+          label={t("common.continue")}
+          savedLabel={t("common.continue")}
+          hint={t("common.enterHint")}
           className="!w-auto !px-5"
         />
       </div>
@@ -1278,7 +1284,7 @@ function DateView({
   onBack,
   minDate,
   maxDate,
-  outOfRangeMessage = "That date is out of range.",
+  outOfRangeMessage,
 }: {
   title: string;
   subtitle: string;
@@ -1293,6 +1299,8 @@ function DateView({
   maxDate?: string;
   outOfRangeMessage?: string;
 }) {
+  const t = useT();
+  const fallbackOutOfRangeMessage = outOfRangeMessage ?? t("legalEntities.dobOutOfRange");
   const today = new Date().toISOString().slice(0, 10);
   const upper = maxDate ?? today;
   const formatOk = /^\d{4}-\d{2}-\d{2}$/.test(value);
@@ -1326,7 +1334,7 @@ function DateView({
         />
         {showError && (
           <span className="mt-1.5 block text-[12px] text-red-600 dark:text-red-300">
-            {outOfRangeMessage}
+            {fallbackOutOfRangeMessage}
           </span>
         )}
       </label>
@@ -1335,9 +1343,9 @@ function DateView({
           state="idle"
           disabled={!valid}
           onClick={() => valid && onConfirm()}
-          label="Continue"
-          savedLabel="Continue"
-          hint="Enter"
+          label={t("common.continue")}
+          savedLabel={t("common.continue")}
+          hint={t("common.enterHint")}
           className="!w-auto !px-5"
         />
       </div>
@@ -1371,6 +1379,7 @@ function CountryView({
   restrictTo?: readonly string[];
   required?: boolean;
 }) {
+  const t = useT();
   const valid = required ? Boolean(value) : true;
   const selected = value ? findCountry(value) : null;
   return (
@@ -1397,8 +1406,8 @@ function CountryView({
           state="idle"
           disabled={!valid}
           onClick={() => valid && onConfirm()}
-          label="Continue"
-          savedLabel="Continue"
+          label={t("common.continue")}
+          savedLabel={t("common.continue")}
           hint={null}
           className="!w-auto !px-5"
         />
@@ -1421,6 +1430,7 @@ function CountryChip({
   onRemove: () => void;
   badge?: string | null;
 }) {
+  const t = useT();
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--elvix-primary)] bg-[color-mix(in_srgb,var(--elvix-primary)_10%,transparent)] px-2.5 py-1 text-[12.5px] font-medium text-fg-1">
       <span aria-hidden className="text-[14px] leading-none">
@@ -1434,7 +1444,7 @@ function CountryChip({
       )}
       <button
         type="button"
-        aria-label={`Remove ${country.name}`}
+        aria-label={t("legalEntities.removeCountryAria", { name: country.name })}
         onClick={onRemove}
         className="ml-0.5 grid size-4 place-items-center rounded-full text-fg-3 transition hover:bg-fg-3/15 hover:text-fg-1 cursor-pointer"
       >
@@ -1464,6 +1474,7 @@ function NationalityView({
   onConfirm: () => void;
   onBack: () => void;
 }) {
+  const t = useT();
   const codes = value
     ? value
         .split(",")
@@ -1484,9 +1495,9 @@ function NationalityView({
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onBack} />
-      <Heading>Nationality</Heading>
+      <Heading>{t("legalEntities.nationalityTitle")}</Heading>
       <Subtitle>
-        Pick one or more (up to {MAX_NATIONALITIES}). The first one is treated as primary.
+        {t("legalEntities.nationalitySubtitle", { max: MAX_NATIONALITIES })}
       </Subtitle>
 
       {codes.length > 0 && (
@@ -1498,7 +1509,7 @@ function NationalityView({
                 key={code}
                 country={c}
                 onRemove={() => remove(code)}
-                badge={idx === 0 && codes.length > 1 ? "Primary" : null}
+                badge={idx === 0 && codes.length > 1 ? t("legalEntities.nationalityPrimaryBadge") : null}
               />
             );
           })}
@@ -1517,7 +1528,7 @@ function NationalityView({
       )}
       {atCap && (
         <div className="mt-4 rounded-[10px] bg-fg-3/8 px-3 py-2 text-[12.5px] text-fg-2">
-          Maximum of {MAX_NATIONALITIES} nationalities reached. Remove one to add another.
+          {t("legalEntities.nationalityCapReached", { max: MAX_NATIONALITIES })}
         </div>
       )}
 
@@ -1526,8 +1537,8 @@ function NationalityView({
           state="idle"
           disabled={!valid}
           onClick={() => valid && onConfirm()}
-          label="Continue"
-          savedLabel="Continue"
+          label={t("common.continue")}
+          savedLabel={t("common.continue")}
           hint={null}
           className="!w-auto !px-5"
         />
@@ -1559,6 +1570,7 @@ function TaxIdsView({
   onConfirm: () => void;
   onBack: () => void;
 }) {
+  const t = useT();
   // Per-type required-field gates:
   //
   //   Individual → only the local tax number (Steuernummer/NINO/…) is
@@ -1590,12 +1602,15 @@ function TaxIdsView({
 
   let blockReason: string | null = null;
   if (taxIdRequired && trimmedTax.length === 0) {
-    blockReason = "Enter the local tax number to continue.";
+    blockReason = t("legalEntities.blockReasonTaxIdRequired");
   } else if (trimmedTax.length > 0 && !taxIdFormatOk) {
-    blockReason = `Local tax number doesn't match ${findCountry(country)?.name ?? country} format. ${taxIdFormatHint(country)}`;
+    blockReason = t("legalEntities.blockReasonTaxIdFormat", {
+      country: findCountry(country)?.name ?? country,
+      hint: taxIdFormatHint(country, t),
+    });
   } else if (showVat) {
     if (vatRequired && trimmedVat.length === 0) {
-      blockReason = "Enter a VAT / company ID to continue.";
+      blockReason = t("legalEntities.blockReasonVatRequired");
     } else if (trimmedVat.length > 0) {
       // The input now runs a synchronous client-side format check
       // and emits `invalid` for bad format, `format` for OK format.
@@ -1603,17 +1618,21 @@ function TaxIdsView({
       // call happens.
       // LEGACY: spine-lint-disable-next-line spine/enum-over-string
       if (vatValidation.level === "invalid") {
-        blockReason = "This VAT ID doesn't match the country's format.";
+        blockReason = t("legalEntities.blockReasonVatFormat");
       }
     }
   }
   const canContinue = blockReason === null;
 
   const subtitleCopy = isIndividual
-    ? `Your local tax number from ${findCountry(country)?.name ?? "your tax authority"}. Stored as-is.`
+    ? t("legalEntities.taxIdsSubtitleIndividual", {
+        country: findCountry(country)?.name ?? t("legalEntities.taxIdsSubtitleIndividualFallback"),
+      })
     : isCompany
-      ? `VAT is validated live against ${findCountry(country)?.name ?? "the issuing authority"}. Local tax number is optional.`
-      : `Both are optional. Add the local tax number if you want it on invoices; VAT only if you're VAT-registered. The business registration is captured in the next step.`;
+      ? t("legalEntities.taxIdsSubtitleCompany", {
+          authority: findCountry(country)?.name ?? t("legalEntities.taxIdsSubtitleCompanyFallback"),
+        })
+      : t("legalEntities.taxIdsSubtitleSoleProp");
 
   return (
     <form
@@ -1624,12 +1643,12 @@ function TaxIdsView({
       }}
     >
       <WizardHeader onBack={onBack} />
-      <Heading>Tax identifiers</Heading>
+      <Heading>{t("legalEntities.taxIdsTitle")}</Heading>
       <Subtitle>{subtitleCopy}</Subtitle>
       <div className="mt-4 space-y-3">
         <label className="block">
           <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
-            Local tax number{taxIdRequired ? "" : " (optional)"}
+            {t("legalEntities.localTaxNumberLabel")}{taxIdRequired ? "" : t("common.optionalSuffix")}
           </span>
           <ElvixInput
             type="text"
@@ -1644,7 +1663,7 @@ function TaxIdsView({
         {showVat && (
           <label className="block">
             <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
-              VAT / company ID{vatRequired ? "" : " (optional)"}
+              {t("legalEntities.vatCompanyIdLabel")}{vatRequired ? "" : t("common.optionalSuffix")}
             </span>
             <ElvixTaxIdInput
               country={country}
@@ -1663,8 +1682,8 @@ function TaxIdsView({
           state="idle"
           disabled={!canContinue}
           onClick={() => canContinue && onConfirm()}
-          label="Continue"
-          savedLabel="Continue"
+          label={t("common.continue")}
+          savedLabel={t("common.continue")}
           hint={null}
           className="!w-auto !px-5"
         />
@@ -1705,6 +1724,7 @@ function VerifyingTaxIdView({
   // the cached `validation` prop. We always re-run so the user sees
   // a fresh authority call, not a cached verdict.
   const ctx = useElvixContext();
+  const t = useT();
   // LEGACY: spine-lint-disable-next-line spine/enum-over-string
   const [phase, setPhase] = useState<"checking" | "settled">("checking");
   const [result, setResult] = useState<TaxIdValidationState>(validation);
@@ -1778,7 +1798,7 @@ function VerifyingTaxIdView({
     return () => clearTimeout(handle);
   }, [phase, result.level, onPass]);
 
-  const authorityName = result.authority ?? "the tax authority";
+  const authorityName = result.authority ?? t("legalEntities.authorityFallback");
   // LEGACY: spine-lint-disable-next-line spine/enum-over-string
   const isChecking = phase === "checking";
   const isLive = phase === "settled" && result.level === "live";
@@ -1787,26 +1807,26 @@ function VerifyingTaxIdView({
 
   return (
     <div className="flex h-full flex-col">
-      <WizardHeader onBack={onBack} backLabel="Edit tax IDs" />
+      <WizardHeader onBack={onBack} backLabel={t("legalEntities.editTaxIdsBackLabel")} />
       <Heading>
         {isChecking
-          ? "Verifying with the authority…"
+          ? t("legalEntities.verifyHeadingChecking")
           : isLive
-            ? "Verified."
+            ? t("legalEntities.verifyHeadingLive")
             : isInvalid
-              ? "Couldn't verify."
-              : "Authority unreachable."}
+              ? t("legalEntities.verifyHeadingInvalid")
+              : t("legalEntities.verifyHeadingFormat")}
       </Heading>
       <Subtitle>
         {isChecking
-          ? `Checking ${vatId} against ${findCountry(country)?.name ?? country}'s register.`
+          ? t("legalEntities.verifySubtitleChecking", { vatId, country: findCountry(country)?.name ?? country })
           : isLive && result.name
-            ? `${authorityName} recognised this VAT as ${result.name}.`
+            ? t("legalEntities.verifySubtitleLiveNamed", { authority: authorityName, name: result.name })
             : isLive
-              ? `${authorityName} recognised this VAT.`
+              ? t("legalEntities.verifySubtitleLive", { authority: authorityName })
               : isInvalid
-                ? `${authorityName} doesn't list ${vatId} as registered. Go back to fix it.`
-                : `We couldn't reach ${authorityName} right now. Your entry is saved as-is and will re-verify automatically.`}
+                ? t("legalEntities.verifySubtitleInvalid", { authority: authorityName, vatId })
+                : t("legalEntities.verifySubtitleFormat", { authority: authorityName })}
       </Subtitle>
 
       <div className="mt-6 grid flex-1 place-items-center">
@@ -1820,8 +1840,8 @@ function VerifyingTaxIdView({
             <ElvixSaveButton
               state="idle"
               onClick={onBack}
-              label="Fix VAT"
-              savedLabel="Fix VAT"
+              label={t("legalEntities.fixVatCta")}
+              savedLabel={t("legalEntities.fixVatCta")}
               hint={null}
               className="!w-auto !px-5"
             />
@@ -1833,13 +1853,13 @@ function VerifyingTaxIdView({
               onClick={onBack}
               className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
             >
-              Back
+              {t("common.back")}
             </button>
             <ElvixSaveButton
               state="idle"
               onClick={onPass}
-              label="Continue anyway"
-              savedLabel="Continue"
+              label={t("legalEntities.continueAnywayCta")}
+              savedLabel={t("common.continue")}
               hint={null}
               className="!w-auto !px-5"
             />
@@ -1859,13 +1879,14 @@ function VerifyingBadge({
   phase: Phase;
   level: TaxIdValidationState["level"];
 }) {
+  const t = useT();
   if (phase === "checking") {
     return (
       <div className="flex flex-col items-center gap-3">
         <div className="grid size-16 place-items-center rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)] text-[var(--elvix-primary)]">
           <Loader2 className="size-7 animate-spin" />
         </div>
-        <div className="text-[12px] uppercase tracking-wide text-fg-3">Checking</div>
+        <div className="text-[12px] uppercase tracking-wide text-fg-3">{t("legalEntities.verifying")}</div>
       </div>
     );
   }
@@ -1881,7 +1902,7 @@ function VerifyingBadge({
           <CheckCircle2 className="size-8" />
         </div>
         <div className="text-[12px] uppercase tracking-wide text-[var(--elvix-primary)]">
-          Verified
+          {t("legalEntities.verifiedBadge")}
         </div>
       </motion.div>
     );
@@ -1897,7 +1918,7 @@ function VerifyingBadge({
         <div className="grid size-16 place-items-center rounded-full bg-red-500/10 text-red-500">
           <XCircle className="size-8" />
         </div>
-        <div className="text-[12px] uppercase tracking-wide text-red-500">Not registered</div>
+        <div className="text-[12px] uppercase tracking-wide text-red-500">{t("legalEntities.notRegistered")}</div>
       </motion.div>
     );
   }
@@ -1911,7 +1932,7 @@ function VerifyingBadge({
       <div className="grid size-16 place-items-center rounded-full bg-amber-500/10 text-amber-500">
         <AlertTriangle className="size-8" />
       </div>
-      <div className="text-[12px] uppercase tracking-wide text-amber-500">Unreachable</div>
+      <div className="text-[12px] uppercase tracking-wide text-amber-500">{t("legalEntities.unreachable")}</div>
     </motion.div>
   );
 }
@@ -1937,6 +1958,7 @@ function RegistrationView({
   onConfirm: () => void;
   onBack: () => void;
 }) {
+  const t = useT();
   const today = new Date().toISOString().slice(0, 10);
   const sinceFormatOk = since === "" || /^\d{4}-\d{2}-\d{2}$/.test(since);
   const sinceRangeOk = since === "" || (since <= today && since >= "1900-01-01");
@@ -1955,14 +1977,14 @@ function RegistrationView({
       }}
     >
       <WizardHeader onBack={onBack} />
-      <Heading>Registration</Heading>
+      <Heading>{t("legalEntities.registrationTitle")}</Heading>
       <Subtitle>
-        Handelsregister, Companies House, KvK. The official register where this entity is recorded.
+        {t("legalEntities.registrationSubtitle")}
       </Subtitle>
       <div className="mt-4 space-y-3">
         <label className="block">
           <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
-            Registration number
+            {t("legalEntities.registrationNumberLabel")}
           </span>
           <ElvixInput
             type="text"
@@ -1975,23 +1997,23 @@ function RegistrationView({
           />
           {showNumberError && (
             <span className="mt-1.5 block text-[12px] text-red-600 dark:text-red-300">
-              {regNumberFormatHint(country)}
+              {regNumberFormatHint(country, t)}
             </span>
           )}
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-[13px] font-medium text-fg-2">Issuing authority</span>
+          <span className="mb-1.5 block text-[13px] font-medium text-fg-2">{t("legalEntities.issuingAuthorityLabel")}</span>
           <ElvixInput
             type="text"
             value={body}
             onChange={(e) => setBody(e.target.value)}
-            placeholder="Local court / commercial register"
+            placeholder={t("legalEntities.issuingAuthorityPlaceholder")}
             maxLength={180}
           />
         </label>
         <label className="block">
           <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
-            Registered since (optional)
+            {t("legalEntities.registeredSinceLabel")}
           </span>
           <ElvixInput
             type="date"
@@ -2003,7 +2025,7 @@ function RegistrationView({
           />
           {!sinceOk && (
             <span className="mt-1.5 block text-[12px] text-red-600 dark:text-red-300">
-              Pick a date between 1900 and today.
+              {t("legalEntities.registeredSinceRangeError")}
             </span>
           )}
         </label>
@@ -2013,8 +2035,8 @@ function RegistrationView({
           state="idle"
           disabled={!valid}
           onClick={() => valid && onConfirm()}
-          label="Continue"
-          savedLabel="Continue"
+          label={t("common.continue")}
+          savedLabel={t("common.continue")}
           hint={null}
           className="!w-auto !px-5"
         />
@@ -2050,6 +2072,7 @@ function PlaceOfBirthView({
   onBack: () => void;
 }) {
   const ctx = useElvixContext();
+  const t = useT();
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
   const [searching, setSearching] = useState(false);
@@ -2109,8 +2132,8 @@ function PlaceOfBirthView({
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onBack} />
-      <Heading>Place of birth</Heading>
-      <Subtitle>City as it appears on your ID. Required for invoicing and KYC.</Subtitle>
+      <Heading>{t("legalEntities.placeOfBirthTitle")}</Heading>
+      <Subtitle>{t("legalEntities.placeOfBirthSubtitle")}</Subtitle>
 
       {hasPick && (
         <div className="mt-4 flex items-start gap-3 rounded-[12px] border border-[var(--elvix-primary)] bg-[color-mix(in_srgb,var(--elvix-primary)_8%,transparent)] px-3 py-2.5">
@@ -2123,21 +2146,21 @@ function PlaceOfBirthView({
             onClick={onClear}
             className="rounded-md px-2 py-1 text-[12px] font-medium text-fg-2 transition hover:bg-fg-3/10 hover:text-fg-1 cursor-pointer"
           >
-            Change
+            {t("legalEntities.placeChangeCta")}
           </button>
         </div>
       )}
 
       {!hasPick && (
         <label className="mt-4 block">
-          <span className="mb-1.5 block text-[13px] font-medium text-fg-2">City</span>
+          <span className="mb-1.5 block text-[13px] font-medium text-fg-2">{t("legalEntities.placeOfBirthCityLabel")}</span>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-3" />
             <ElvixInput
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Start typing a city…"
+              placeholder={t("legalEntities.placeOfBirthCityPlaceholder")}
               autoFocus
               autoComplete="off"
               className="pl-9"
@@ -2153,7 +2176,7 @@ function PlaceOfBirthView({
         <div className="mt-2 flex-1 min-h-0 overflow-y-auto pr-1">
           {err && (
             <div className="rounded-md bg-red-500/10 px-3 py-2 text-[12.5px] text-red-600 dark:text-red-300">
-              Couldn&apos;t search: {err}
+              {t("legalEntities.placeSearchError", { error: err })}
             </div>
           )}
           <ul className="flex flex-col gap-1">
@@ -2186,8 +2209,8 @@ function PlaceOfBirthView({
           state="idle"
           disabled={!hasPick}
           onClick={() => hasPick && onConfirm()}
-          label="Continue"
-          savedLabel="Continue"
+          label={t("common.continue")}
+          savedLabel={t("common.continue")}
           hint={null}
           className="!w-auto !px-5"
         />
@@ -2206,6 +2229,7 @@ function AddressSearchView({
   onBack: () => void;
 }) {
   const ctx = useElvixContext();
+  const t = useT();
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
   const [searching, setSearching] = useState(false);
@@ -2273,17 +2297,17 @@ function AddressSearchView({
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onBack} />
-      <Heading>Registered address</Heading>
-      <Subtitle>Where the entity is registered with the authority. Start typing.</Subtitle>
+      <Heading>{t("legalEntities.addressSearchTitle")}</Heading>
+      <Subtitle>{t("legalEntities.addressSearchSubtitle")}</Subtitle>
       <label className="mt-4 block">
-        <span className="mb-1.5 block text-[13px] font-medium text-fg-2">Address</span>
+        <span className="mb-1.5 block text-[13px] font-medium text-fg-2">{t("legalEntities.addressLabel")}</span>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-3" />
           <ElvixInput
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Street, city…"
+            placeholder={t("legalEntities.addressSearchPlaceholder")}
             autoFocus
             autoComplete="off"
             className="pl-9"
@@ -2296,7 +2320,7 @@ function AddressSearchView({
       <div className="mt-2 flex-1 min-h-0 overflow-y-auto pr-1">
         {err && (
           <div className="rounded-md bg-red-500/10 px-3 py-2 text-[12.5px] text-red-600 dark:text-red-300">
-            Couldn&apos;t search: {err}
+            {t("legalEntities.placeSearchError", { error: err })}
           </div>
         )}
         <ul className="flex flex-col gap-1">
@@ -2340,11 +2364,12 @@ function AddressReviewView({
   onConfirm: () => void;
   onChange: () => void;
 }) {
+  const t = useT();
   if (!details) {
     return (
       <div className="grid h-full place-items-center text-sm text-fg-3">
         <button type="button" onClick={onChange} className="underline cursor-pointer">
-          Pick an address first
+          {t("legalEntities.addressPickFirst")}
         </button>
       </div>
     );
@@ -2358,23 +2383,23 @@ function AddressReviewView({
       ? `${details.countryName} (${details.country})`
       : details.countryName || details.country || null;
   const rows: Array<{ label: string; value: string | null }> = [
-    { label: "Street", value: details.line1 || null },
-    { label: "City", value: details.city || null },
-    { label: "Postal code", value: details.postalCode },
-    { label: "Region", value: region },
-    { label: "Country", value: country },
+    { label: t("legalEntities.addressFieldStreet"), value: details.line1 || null },
+    { label: t("legalEntities.addressFieldCity"), value: details.city || null },
+    { label: t("legalEntities.addressFieldPostalCode"), value: details.postalCode },
+    { label: t("legalEntities.addressFieldRegion"), value: region },
+    { label: t("legalEntities.addressFieldCountry"), value: country },
   ];
   const missing: string[] = [];
-  if (!details.line1?.trim()) missing.push("street");
-  if (!details.city?.trim()) missing.push("city");
-  if (!details.country || !/^[A-Z]{2}$/.test(details.country)) missing.push("country");
+  if (!details.line1?.trim()) missing.push(t("legalEntities.addressFieldStreet").toLowerCase());
+  if (!details.city?.trim()) missing.push(t("legalEntities.addressFieldCity").toLowerCase());
+  if (!details.country || !/^[A-Z]{2}$/.test(details.country)) missing.push(t("legalEntities.addressFieldCountry").toLowerCase());
   const canContinue = missing.length === 0;
 
   return (
     <div className="flex h-full flex-col">
-      <WizardHeader onBack={onChange} backLabel="Change address" />
-      <Heading>Looks right?</Heading>
-      <Subtitle>Make sure the registered seat matches the official register.</Subtitle>
+      <WizardHeader onBack={onChange} backLabel={t("legalEntities.addressChangeBackLabel")} />
+      <Heading>{t("legalEntities.addressReviewTitle")}</Heading>
+      <Subtitle>{t("legalEntities.addressReviewSubtitle")}</Subtitle>
       <div className="mt-4 rounded-[12px] border border-fg-3/15 bg-surface px-4 py-3">
         <div className="flex items-start gap-3">
           <MapPin className="mt-0.5 size-4 shrink-0 text-[var(--elvix-primary)]" />
@@ -2399,7 +2424,7 @@ function AddressReviewView({
         </dl>
         {!canContinue && (
           <div className="mt-3 rounded-md bg-amber-500/10 px-3 py-2 text-[12.5px] text-amber-700 dark:text-amber-300">
-            We&apos;re missing the {missing.join(", ")}. Pick a more specific suggestion.
+            {t("legalEntities.addressMissing", { fields: missing.join(", ") })}
           </div>
         )}
       </div>
@@ -2409,15 +2434,15 @@ function AddressReviewView({
           onClick={onChange}
           className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
         >
-          Not right
+          {t("legalEntities.addressNotRightCta")}
         </button>
         <div className="ml-auto">
           <ElvixSaveButton
             state="idle"
             disabled={!canContinue}
             onClick={onConfirm}
-            label="Looks right"
-            savedLabel="Looks right"
+            label={t("legalEntities.addressLooksRightCta")}
+            savedLabel={t("legalEntities.addressLooksRightCta")}
             hint={null}
             className="!w-auto !px-5"
           />
@@ -2448,6 +2473,7 @@ function YesNoView({
   yesLabel: string;
   noLabel: string;
 }) {
+  const t = useT();
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onBack} />
@@ -2458,18 +2484,18 @@ function YesNoView({
           onClick={onYes}
           icon={<Plus className="size-4" />}
           title={yesLabel}
-          subtitle="Adds the next step"
+          subtitle={t("legalEntities.yesNoYesSubtitle")}
         />
         <ChoiceCard
           onClick={onNo}
           icon={<ChevronRight className="size-4" />}
           title={noLabel}
-          subtitle="Save the entity as-is"
+          subtitle={t("legalEntities.yesNoNoSubtitle")}
         />
       </div>
       {error && (
         <div className="mt-3 rounded-md bg-red-500/10 px-3 py-2 text-[12.5px] text-red-600 dark:text-red-300">
-          Couldn&apos;t save: {error}
+          {t("legalEntities.saveError", { error })}
         </div>
       )}
     </div>
@@ -2483,7 +2509,7 @@ function ContactInputView({
   setPhone,
   onConfirm,
   onBack,
-  saveLabel = "Save entity",
+  saveLabel,
 }: {
   email: string;
   phone: string;
@@ -2493,6 +2519,8 @@ function ContactInputView({
   onBack: () => void;
   saveLabel?: string;
 }) {
+  const t = useT();
+  const effectiveSaveLabel = saveLabel ?? t("legalEntities.saveEntityCta");
   const emailOk = !email.trim() || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   // Light phone gate: allow optional leading +, then 6-20 digits. Accept
   // separators (spaces, dashes, parens, dots) but require at least 6
@@ -2512,38 +2540,38 @@ function ContactInputView({
       }}
     >
       <WizardHeader onBack={onBack} />
-      <Heading>Contact for this entity</Heading>
-      <Subtitle>Email + phone shown on invoices and contracts.</Subtitle>
+      <Heading>{t("legalEntities.contactInputTitle")}</Heading>
+      <Subtitle>{t("legalEntities.contactInputSubtitle")}</Subtitle>
       <div className="mt-4 space-y-3">
         <label className="block">
-          <span className="mb-1.5 block text-[13px] font-medium text-fg-2">Email (optional)</span>
+          <span className="mb-1.5 block text-[13px] font-medium text-fg-2">{t("legalEntities.contactEmailLabel")}</span>
           <ElvixInput
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="invoices@example.com"
+            placeholder={t("legalEntities.contactEmailPlaceholder")}
             maxLength={240}
             hasError={!emailOk}
           />
           {!emailOk && (
             <span className="mt-1.5 block text-[12px] text-red-600 dark:text-red-300">
-              Enter a valid email or leave blank.
+              {t("legalEntities.contactEmailInvalid")}
             </span>
           )}
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-[13px] font-medium text-fg-2">Phone (optional)</span>
+          <span className="mb-1.5 block text-[13px] font-medium text-fg-2">{t("legalEntities.contactPhoneLabel")}</span>
           <ElvixInput
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="+49 …"
+            placeholder={t("legalEntities.contactPhonePlaceholder")}
             maxLength={40}
             hasError={!phoneOk}
           />
           {!phoneOk && (
             <span className="mt-1.5 block text-[12px] text-red-600 dark:text-red-300">
-              Use digits with an optional leading + (6 to 20 digits).
+              {t("legalEntities.contactPhoneInvalid")}
             </span>
           )}
         </label>
@@ -2553,8 +2581,8 @@ function ContactInputView({
           state="idle"
           disabled={!allOk}
           onClick={() => allOk && onConfirm()}
-          label={saveLabel}
-          savedLabel="Saved"
+          label={effectiveSaveLabel}
+          savedLabel={t("common.saved")}
           hint={null}
           className="!w-auto !px-5"
         />
@@ -2565,14 +2593,16 @@ function ContactInputView({
 
 // ─── Spinner / Detail / Confirms ─────────────────────────────────────
 
-function SavingView({ label = "Saving…" }: { label?: string }) {
+function SavingView({ label }: { label?: string }) {
+  const t = useT();
+  const effectiveLabel = label ?? t("common.savingDots");
   return (
     <div className="grid h-full place-items-center">
       <div className="flex flex-col items-center gap-3">
         <div className="grid size-12 place-items-center rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)] text-[var(--elvix-primary)]">
           <Loader2 className="size-5 animate-spin" />
         </div>
-        <div className="text-[13px] font-medium text-fg-2">{label}</div>
+        <div className="text-[13px] font-medium text-fg-2">{effectiveLabel}</div>
       </div>
     </div>
   );
@@ -2607,11 +2637,12 @@ function DetailView({
   onEditRegistration: () => void;
   onEditContact: () => void;
 }) {
+  const t = useT();
   if (!entity) {
     return (
       <div className="grid h-full place-items-center text-sm text-fg-3">
         <button type="button" onClick={onBack} className="underline cursor-pointer">
-          Back to list
+          {t("legalEntities.backToList")}
         </button>
       </div>
     );
@@ -2636,12 +2667,12 @@ function DetailView({
               {entity.isDefault && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_15%,transparent)] px-2 py-[1px] text-[10px] font-medium text-[var(--elvix-primary)]">
                   <Star className="size-2.5 fill-current" />
-                  Default
+                  {t("addressBook.defaultBadge")}
                 </span>
               )}
             </div>
             <div className="mt-1 text-[12.5px] leading-snug text-fg-2">
-              {humanType(type)}
+              {humanType(type, t)}
               {entity.tradingName ? ` · ${entity.tradingName}` : ""} · {c?.flag}{" "}
               {c?.name ?? entity.taxCountry}
             </div>
@@ -2653,31 +2684,31 @@ function DetailView({
         className="mt-3 flex-1 min-h-0 overflow-y-auto pr-1 pt-3 pb-6 space-y-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         style={{ maskImage: FADE_MASK, WebkitMaskImage: FADE_MASK }}
       >
-        <DetailSection title="Identity">
-          <DetailRow label="Legal name" value={entity.legalName} onClick={onEditLegalName} />
+        <DetailSection title={t("legalEntities.detailSectionIdentity")}>
+          <DetailRow label={t("legalEntities.detailLegalName")} value={entity.legalName} onClick={onEditLegalName} />
           {isRegistered && (
             <DetailRow
-              label="Trading name"
+              label={t("legalEntities.detailTradingName")}
               value={entity.tradingName}
-              placeholder="Add a trading name"
+              placeholder={t("legalEntities.detailTradingNamePlaceholder")}
               onClick={onEditTradingName}
             />
           )}
           {isPerson && (
             <>
               <DetailRow
-                label="Date of birth"
+                label={t("legalEntities.detailDob")}
                 value={entity.dateOfBirth ? formatIsoDate(entity.dateOfBirth) : null}
                 onClick={onEditDob}
               />
               <DetailRow
-                label="Place of birth"
+                label={t("legalEntities.detailPlaceOfBirth")}
                 value={entity.placeOfBirth}
-                placeholder="Add place of birth"
+                placeholder={t("legalEntities.detailPlaceOfBirthPlaceholder")}
                 onClick={onEditPlaceOfBirth}
               />
               <DetailRow
-                label="Nationality"
+                label={t("legalEntities.detailNationality")}
                 value={renderNationality(entity.nationality)}
                 onClick={onEditNationality}
               />
@@ -2685,57 +2716,57 @@ function DetailView({
           )}
         </DetailSection>
 
-        <DetailSection title="Tax">
+        <DetailSection title={t("legalEntities.detailSectionTax")}>
           <DetailRow
-            label="Tax residence"
+            label={t("legalEntities.detailTaxResidence")}
             value={c ? `${c.flag} ${c.name} (${c.code})` : entity.taxCountry}
             onClick={onEditTaxCountry}
           />
           <DetailRow
-            label="VAT / company ID"
+            label={t("legalEntities.detailVatId")}
             value={
               entity.vatId
                 ? `${entity.vatId}${entity.vatIdValidatedName ? ` · ${entity.vatIdValidatedName}` : ""}`
                 : null
             }
-            placeholder="Add VAT ID"
+            placeholder={t("legalEntities.detailVatIdPlaceholder")}
             onClick={onEditTaxIds}
           />
           <DetailRow
-            label="Local tax number"
+            label={t("legalEntities.detailLocalTaxNumber")}
             value={entity.taxId}
-            placeholder="Add tax number"
+            placeholder={t("legalEntities.detailLocalTaxNumberPlaceholder")}
             onClick={onEditTaxIds}
           />
         </DetailSection>
 
         {isRegistered && (
-          <DetailSection title="Registration">
+          <DetailSection title={t("legalEntities.detailSectionRegistration")}>
             <DetailRow
-              label="Registration #"
+              label={t("legalEntities.detailRegistrationNumber")}
               value={entity.registrationNumber}
               onClick={onEditRegistration}
             />
             <DetailRow
-              label="Issuing authority"
+              label={t("legalEntities.detailIssuingAuthority")}
               value={entity.registrationBody}
               onClick={onEditRegistration}
             />
             <DetailRow
-              label="Registered since"
+              label={t("legalEntities.detailRegisteredSince")}
               value={entity.registeredSince ? formatIsoDate(entity.registeredSince) : null}
               onClick={onEditRegistration}
             />
           </DetailSection>
         )}
 
-        <DetailSection title="Address">
-          <DetailRow label="Street" value={entity.addressLine1} />
-          <DetailRow label="Apt / floor" value={entity.addressLine2} />
-          <DetailRow label="City" value={entity.addressCity} />
-          <DetailRow label="Postal code" value={entity.addressPostalCode} />
+        <DetailSection title={t("legalEntities.detailSectionAddress")}>
+          <DetailRow label={t("legalEntities.detailStreet")} value={entity.addressLine1} />
+          <DetailRow label={t("legalEntities.detailAptFloor")} value={entity.addressLine2} />
+          <DetailRow label={t("legalEntities.detailCity")} value={entity.addressCity} />
+          <DetailRow label={t("legalEntities.detailPostalCode")} value={entity.addressPostalCode} />
           <DetailRow
-            label="Country"
+            label={t("legalEntities.detailCountry")}
             value={
               entity.addressCountry
                 ? `${findCountry(entity.addressCountry)?.flag ?? ""} ${entity.addressCountryName ?? entity.addressCountry}`
@@ -2744,17 +2775,17 @@ function DetailView({
           />
         </DetailSection>
 
-        <DetailSection title="Contact">
+        <DetailSection title={t("legalEntities.detailSectionContact")}>
           <DetailRow
-            label="Email"
+            label={t("legalEntities.detailEmail")}
             value={entity.contactEmail}
-            placeholder="Add email"
+            placeholder={t("legalEntities.detailEmailPlaceholder")}
             onClick={onEditContact}
           />
           <DetailRow
-            label="Phone"
+            label={t("legalEntities.detailPhone")}
             value={entity.contactPhone}
-            placeholder="Add phone"
+            placeholder={t("legalEntities.detailPhonePlaceholder")}
             onClick={onEditContact}
           />
         </DetailSection>
@@ -2767,7 +2798,7 @@ function DetailView({
           className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[12.5px] text-fg-3 transition hover:bg-red-500/10 hover:text-red-600 cursor-pointer"
         >
           <Trash2 className="size-3.5" />
-          Delete
+          {t("common.delete")}
         </button>
         <div className="ml-auto">
           <button
@@ -2782,7 +2813,7 @@ function DetailView({
                   : "size-3.5"
               }
             />
-            {entity.isDefault ? "Remove default" : "Set as default"}
+            {entity.isDefault ? t("legalEntities.removeDefault") : t("legalEntities.setDefault")}
           </button>
         </div>
       </div>
@@ -2801,11 +2832,12 @@ function DeleteConfirmView({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  const t = useT();
   if (!entity) {
     return (
       <div className="grid h-full place-items-center text-sm text-fg-3">
         <button type="button" onClick={onCancel} className="underline cursor-pointer">
-          Nothing to delete
+          {t("legalEntities.deleteEmpty")}
         </button>
       </div>
     );
@@ -2813,29 +2845,28 @@ function DeleteConfirmView({
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onCancel} />
-      <Heading>Delete this entity?</Heading>
-      <Subtitle>This can&apos;t be undone.</Subtitle>
+      <Heading>{t("legalEntities.deleteConfirmTitle")}</Heading>
+      <Subtitle>{t("legalEntities.deleteConfirmBody")}</Subtitle>
       <div className="mt-4 rounded-[12px] border border-fg-3/15 bg-surface px-4 py-3">
         <div className="text-[14px] font-semibold text-fg-1">
           {entity.label?.trim() || entity.legalName}
         </div>
         <div className="mt-0.5 text-[12.5px] text-fg-2">
-          {humanType(entity.type as LegalEntityType)}
+          {humanType(entity.type as LegalEntityType, t)}
         </div>
         {entity.vatId && <div className="mt-0.5 text-[12px] text-fg-3">{entity.vatId}</div>}
       </div>
       <div className="mt-3 rounded-[10px] border border-amber-500/30 bg-amber-500/[0.08] px-3 py-2.5">
         <div className="text-[12.5px] font-semibold text-amber-700 dark:text-amber-300">
-          Heads up. This affects every app you use with elvix.
+          {t("legalEntities.sharedAcrossAppsHeading")}
         </div>
         <div className="mt-1 text-[12px] leading-snug text-amber-700/85 dark:text-amber-300/85">
-          Legal entities are shared across apps you sign in to. Deleting removes the record
-          everywhere; any invoice template that referenced it will need a fresh one.
+          {t("legalEntities.deleteSharedAcrossAppsBody")}
         </div>
       </div>
       {error && (
         <div className="mt-3 rounded-md bg-red-500/10 px-3 py-2 text-[12.5px] text-red-600 dark:text-red-300">
-          Couldn&apos;t delete: {error}
+          {t("legalEntities.deleteError", { error })}
         </div>
       )}
       <div className="mt-auto flex items-center gap-2 pt-3">
@@ -2844,7 +2875,7 @@ function DeleteConfirmView({
           onClick={onCancel}
           className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
         >
-          Cancel
+          {t("common.cancel")}
         </button>
         <div className="ml-auto">
           <button
@@ -2853,7 +2884,7 @@ function DeleteConfirmView({
             className="inline-flex h-10 items-center gap-1.5 rounded-[10px] bg-red-600 px-5 text-[14px] font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_2px_3px_-1px_rgba(0,0,0,0.18),0_0_0_1px_rgba(25,28,33,0.08)] transition hover:bg-red-700 active:scale-[0.985] cursor-pointer"
           >
             <Trash2 className="size-4" />
-            Yes, delete
+            {t("legalEntities.yesDelete")}
           </button>
         </div>
       </div>
@@ -2874,49 +2905,49 @@ function DefaultConfirmView({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  const t = useT();
   if (!entity) {
     return (
       <div className="grid h-full place-items-center text-sm text-fg-3">
         <button type="button" onClick={onCancel} className="underline cursor-pointer">
-          Nothing to change
+          {t("legalEntities.nothingToChange")}
         </button>
       </div>
     );
   }
-  const verb = setting ? "Set as default" : "Remove default";
+  const verb = setting ? t("legalEntities.setDefault") : t("legalEntities.removeDefault");
   return (
     <div className="flex h-full flex-col">
-      <WizardHeader onBack={onCancel} backLabel="Back" rightLabel={verb} />
+      <WizardHeader onBack={onCancel} rightLabel={verb} />
       <Heading>
-        {setting ? "Set this as your default entity?" : "Remove default from this entity?"}
+        {setting ? t("legalEntities.defaultConfirmTitleSet") : t("legalEntities.defaultConfirmTitleUnset")}
       </Heading>
       <Subtitle>
         {setting
-          ? "Default entity auto-fills invoices and contract templates."
-          : "Nothing will be pre-selected when you generate invoices or contracts."}
+          ? t("legalEntities.defaultConfirmBodySet")
+          : t("legalEntities.defaultConfirmBodyUnset")}
       </Subtitle>
       <div className="mt-4 rounded-[12px] border border-fg-3/15 bg-surface px-4 py-3">
         <div className="text-[14px] font-semibold text-fg-1">
           {entity.label?.trim() || entity.legalName}
         </div>
         <div className="mt-0.5 text-[12.5px] text-fg-2">
-          {humanType(entity.type as LegalEntityType)}
+          {humanType(entity.type as LegalEntityType, t)}
         </div>
       </div>
       <div className="mt-3 rounded-[10px] border border-amber-500/30 bg-amber-500/[0.08] px-3 py-2.5">
         <div className="text-[12.5px] font-semibold text-amber-700 dark:text-amber-300">
-          Heads up. This affects every app you use with elvix.
+          {t("legalEntities.sharedAcrossAppsHeading")}
         </div>
         <div className="mt-1 text-[12px] leading-snug text-amber-700/85 dark:text-amber-300/85">
-          The default entity is shared across every app you sign in to.{" "}
           {setting
-            ? "Switching it here updates the auto-pick everywhere at once."
-            : "Removing it means no entity is pre-selected anywhere."}
+            ? t("legalEntities.defaultSharedAcrossAppsBodySet")
+            : t("legalEntities.defaultSharedAcrossAppsBodyUnset")}
         </div>
       </div>
       {error && (
         <div className="mt-3 rounded-md bg-red-500/10 px-3 py-2 text-[12.5px] text-red-600 dark:text-red-300">
-          Couldn&apos;t save: {error}
+          {t("legalEntities.saveError", { error })}
         </div>
       )}
       <div className="mt-auto flex items-center gap-2 pt-3">
@@ -2925,7 +2956,7 @@ function DefaultConfirmView({
           onClick={onCancel}
           className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
         >
-          Cancel
+          {t("common.cancel")}
         </button>
         <div className="ml-auto">
           <ElvixSaveButton
@@ -2946,7 +2977,7 @@ function DefaultConfirmView({
 
 function WizardHeader({
   onBack,
-  backLabel = "Back",
+  backLabel,
   stepLabel,
   rightLabel,
 }: {
@@ -2955,6 +2986,7 @@ function WizardHeader({
   stepLabel?: string;
   rightLabel?: string;
 }) {
+  const t = useT();
   return (
     <div className="mb-3 flex items-center gap-2">
       <button
@@ -2963,7 +2995,7 @@ function WizardHeader({
         className="inline-flex items-center gap-1 text-[12.5px] text-fg-2 hover:text-fg-1 cursor-pointer"
       >
         <ArrowLeft className="size-3.5" />
-        {backLabel}
+        {backLabel ?? t("common.back")}
       </button>
       <div className="ml-auto text-[12px] text-fg-3">{rightLabel ?? stepLabel ?? ""}</div>
     </div>
@@ -3064,17 +3096,24 @@ function typeIcon(t: LegalEntityType, size = 4) {
   return <Building2 className={`size-${size}`} />;
 }
 
-function humanType(t: LegalEntityType): string {
-  if (t === "individual") return "Individual";
-  if (t === "sole_prop") return "Sole proprietorship";
-  return "Company";
+function humanType(
+  type: LegalEntityType,
+  t: (key: string, params?: Record<string, string | number>) => string,
+): string {
+  if (type === "individual") return t("legalEntities.kindIndividual");
+  if (type === "sole_prop") return t("legalEntities.kindSoleProp");
+  return t("legalEntities.kindCompany");
 }
 
-function typeTitleCopy(type: LegalEntityType | null, view: View): string {
+function typeTitleCopy(
+  type: LegalEntityType | null,
+  view: View,
+  t: (key: string, params?: Record<string, string | number>) => string,
+): string {
   if (view === "legal-name") {
-    if (type === "individual") return "Your legal name";
-    if (type === "sole_prop") return "Your legal name (the owner)";
-    return "Company's legal name";
+    if (type === "individual") return t("legalEntities.legalNameTitleIndividual");
+    if (type === "sole_prop") return t("legalEntities.legalNameTitleSoleProp");
+    return t("legalEntities.legalNameTitleCompany");
   }
   return "";
 }
@@ -3156,8 +3195,11 @@ function taxIdPlaceholder(country: string): string {
 }
 
 /** Human-readable hint for the format gate inline error. */
-function taxIdFormatHint(country: string): string {
-  return `Expected: ${taxIdPlaceholder(country)}.`;
+function taxIdFormatHint(
+  country: string,
+  t: (key: string, params?: Record<string, string | number>) => string,
+): string {
+  return t("legalEntities.taxIdFormatHint", { placeholder: taxIdPlaceholder(country) });
 }
 
 function regNumberPlaceholder(country: string): string {
@@ -3197,8 +3239,11 @@ function regNumberPlaceholder(country: string): string {
   }
 }
 
-function regNumberFormatHint(country: string): string {
-  return `Doesn't match the expected format. Try: ${regNumberPlaceholder(country)}.`;
+function regNumberFormatHint(
+  country: string,
+  t: (key: string, params?: Record<string, string | number>) => string,
+): string {
+  return t("legalEntities.regNumberFormatHint", { placeholder: regNumberPlaceholder(country) });
 }
 
 function formatIsoDate(iso: string): string {

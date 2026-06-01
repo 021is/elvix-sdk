@@ -1,0 +1,2294 @@
+{
+  "$comment": "Canonical English catalog for @elvix.is/sdk. Every key here must exist in every other locale. Bulk translation lifts from this file via the DC translate engine.",
+  "locale": "ru",
+  "namespaces": {
+    "common": {
+      "ok": {
+        "other": "ОК"
+      },
+      "cancel": {
+        "other": "Отмена"
+      },
+      "back": {
+        "other": "Назад"
+      },
+      "next": {
+        "other": "Далее"
+      },
+      "continue": {
+        "other": "Продолжить"
+      },
+      "save": {
+        "other": "Сохранить"
+      },
+      "saving": {
+        "other": "Сохранение"
+      },
+      "delete": {
+        "other": "Удалить"
+      },
+      "remove": {
+        "other": "Убрать"
+      },
+      "edit": {
+        "other": "Изменить"
+      },
+      "close": {
+        "other": "Закрыть"
+      },
+      "done": {
+        "other": "Готово"
+      },
+      "retry": {
+        "other": "Попробуйте ещё раз"
+      },
+      "loading": {
+        "other": "Загрузка"
+      },
+      "search": {
+        "other": "Поиск"
+      },
+      "noMatches": {
+        "other": "Совпадений нет"
+      },
+      "lastStep": {
+        "other": "Последний шаг"
+      },
+      "skip": {
+        "other": "Пропустить"
+      },
+      "durationSeconds": {
+        "other": "{seconds} с"
+      },
+      "durationOneMinute": {
+        "other": "1 минута"
+      },
+      "durationMinutes": {
+        "one": "{minutes} минута",
+        "few": "{minutes} минуты",
+        "many": "{minutes} минут",
+        "other": "{minutes} минуты"
+      },
+      "somethingWentWrong": {
+        "other": "Что-то пошло не так. Попробуйте ещё раз."
+      },
+      "errorNetwork": {
+        "other": "Сбой сети. Попробуйте ещё раз."
+      },
+      "errorSaveFailed": {
+        "other": "Не удалось сохранить. Попробуйте ещё раз."
+      },
+      "hintEnter": {
+        "other": "Enter"
+      },
+      "enterHint": {
+        "other": "Enter"
+      },
+      "sendingLabel": {
+        "other": "Отправка"
+      },
+      "saved": {
+        "other": "Сохранено"
+      },
+      "optionalSuffix": {
+        "other": " (необязательно)"
+      },
+      "savingDots": {
+        "other": "Сохранение."
+      }
+    },
+    "signin": {
+      "title": {
+        "other": "Вход в {app}"
+      },
+      "titleDefault": {
+        "other": "Вход"
+      },
+      "subtitle": {
+        "other": ""
+      },
+      "googleButton": {
+        "other": "Продолжить с Google"
+      },
+      "passkeyButton": {
+        "other": "Продолжить с passkey"
+      },
+      "emailPlaceholder": {
+        "other": "Электронная почта"
+      },
+      "sendCodeButton": {
+        "other": "Продолжить"
+      },
+      "sendingLabel": {
+        "other": "Отправка"
+      },
+      "codeSentSubtitle": {
+        "other": "Мы отправили код на {email}"
+      },
+      "codePlaceholder": {
+        "other": "Код подтверждения"
+      },
+      "submitButton": {
+        "other": "Войти"
+      },
+      "verifyingLabel": {
+        "other": "Проверка"
+      },
+      "or": {
+        "other": "или"
+      },
+      "resendCode": {
+        "other": "Отправить код повторно"
+      },
+      "resentLabel": {
+        "other": "Отправлено повторно"
+      },
+      "errorGeneric": {
+        "other": "Что-то пошло не так. Попробуйте ещё раз."
+      },
+      "errorBadCode": {
+        "other": "Код не совпал."
+      },
+      "errorRateLimited": {
+        "other": "Слишком много попыток. Подождите немного."
+      },
+      "securedBy": {
+        "other": "Защищено "
+      },
+      "verbLogin": {
+        "other": "Войти"
+      },
+      "titleLogin": {
+        "other": "Вход в {app}"
+      },
+      "bootstrapErrorTitle": {
+        "other": "Не удалось загрузить вход"
+      },
+      "bootstrapErrorBody": {
+        "other": "Недействительный {clientIdToken} или источник не разрешён для этого домена. Откройте Console, ваше Application, Credentials, чтобы проверить {clientIdToken}, затем добавьте этот источник в Allowed origins."
+      },
+      "identifierPlaceholderEmailOrUsername": {
+        "other": "Электронная почта или имя пользователя"
+      },
+      "identifierPlaceholderUsername": {
+        "other": "Имя пользователя"
+      },
+      "identifierPlaceholderEmail": {
+        "other": "Введите вашу электронную почту"
+      },
+      "errorNetwork": {
+        "other": "Сбой сети. Попробуйте ещё раз."
+      },
+      "errorPasskeyVerify": {
+        "other": "Проверка passkey не удалась."
+      },
+      "errorPasskeyAdd": {
+        "other": "Не удалось добавить passkey. Попробуйте снова или пропустите пока."
+      },
+      "visitAppWebsite": {
+        "other": "Перейти на сайт {app}"
+      },
+      "passkeyOnboardingTitleSignin": {
+        "other": "Входите быстрее в следующий раз"
+      },
+      "passkeyOnboardingTitleLogin": {
+        "other": "Входите быстрее в следующий раз"
+      },
+      "recoverTitle": {
+        "other": "С возвращением в {app}"
+      },
+      "appNameFallback": {
+        "other": "ваше приложение"
+      },
+      "legalAppFallback": {
+        "other": "приложение"
+      },
+      "passkeyOnboardingSubtitle": {
+        "other": "Touch ID, Face ID или ключ безопасности. Больше никаких кодов по почте."
+      },
+      "recoverSubtitle": {
+        "other": "Выберите: вернуться или остаться вне."
+      },
+      "identifierSubtitle": {
+        "other": "Выберите, как продолжить."
+      },
+      "verifyButton": {
+        "other": "Подтвердить"
+      },
+      "useDifferentEmail": {
+        "other": "Использовать другую электронную почту"
+      },
+      "resendInSeconds": {
+        "other": "Повторно через {seconds} с"
+      },
+      "passkeyBullet1": {
+        "other": "Больше никаких паролей или кодов по почте"
+      },
+      "passkeyBullet2": {
+        "other": "Защищено от фишинга. Работает только на этом сайте."
+      },
+      "passkeyBullet3": {
+        "other": "Синхронизируется между устройствами через iCloud, Google или 1Password"
+      },
+      "addPasskeyCta": {
+        "other": "Добавить passkey"
+      },
+      "skipForNow": {
+        "other": "Пропустить пока"
+      },
+      "previewEmptyMethods": {
+        "other": "Включите хотя бы один способ для предпросмотра входа."
+      },
+      "googleButtonShort": {
+        "other": "Google"
+      },
+      "passkeyButtonShort": {
+        "other": "Passkey"
+      },
+      "legalIntro": {
+        "other": "Продолжая, вы соглашаетесь с"
+      },
+      "termsOfService": {
+        "other": "Условиями использования"
+      },
+      "privacyPolicy": {
+        "other": "Политикой конфиденциальности"
+      },
+      "framedPreviewLabel": {
+        "other": "Это предпросмотр"
+      },
+      "errorTooRecentWithSeconds": {
+        "other": "Подождите {seconds} с перед запросом нового кода."
+      },
+      "errorTooRecent": {
+        "other": "Подождите немного перед запросом нового кода."
+      },
+      "errorTooManyWithRetry": {
+        "other": "Слишком много кодов отправлено на эту почту. Попробуйте через {retry}."
+      },
+      "errorTooMany": {
+        "other": "Слишком много кодов отправлено на эту почту. Попробуйте позже."
+      },
+      "errorInvalidCode": {
+        "other": "Код не подошёл. Попробуйте ещё раз."
+      },
+      "errorExpired": {
+        "other": "Срок действия кода истёк. Отправьте новый."
+      },
+      "errorSendFailed": {
+        "other": "Не удалось отправить письмо. Проверьте адрес."
+      },
+      "errorUserPaused": {
+        "other": "Ваш доступ приостановлен. Свяжитесь с поддержкой."
+      },
+      "errorUserBanned": {
+        "other": "Доступ запрещён."
+      },
+      "errorUsernameNotFound": {
+        "other": "Здесь нет аккаунта с таким именем пользователя."
+      },
+      "errorMethodDisabled": {
+        "other": "Этот способ входа не включён для этого приложения."
+      },
+      "errorGraceExpired": {
+        "other": "90-дневное окно для восстановления закрылось."
+      },
+      "errorSessionEnded": {
+        "other": "Ваша сессия завершилась. Войдите снова."
+      }
+    },
+    "sessions": {
+      "title": {
+        "other": "Ваши сессии"
+      },
+      "empty": {
+        "other": "Активных сессий нет."
+      },
+      "currentBadge": {
+        "other": "Оставить эту сессию активной"
+      },
+      "revokeOne": {
+        "other": "Выйти"
+      },
+      "revokeOthersCta": {
+        "other": "Выйти на других устройствах"
+      },
+      "revokeAllCta": {
+        "other": "Выйти везде"
+      },
+      "confirmOthersTitle": {
+        "other": "Выйти на других устройствах?"
+      },
+      "confirmOthersBody": {
+        "other": "Выберите, какие сессии завершить. Каждая отзывается в момент нажатия, и любая вкладка на том устройстве переходит в состояние выхода в течение нескольких секунд."
+      },
+      "confirmAllTitle": {
+        "other": "Выйти везде?"
+      },
+      "confirmAllBody": {
+        "other": "Включая это устройство. После этого вас перенаправит на вход."
+      },
+      "doneTitle": {
+        "other": "Вы вышли"
+      },
+      "doneCount": {
+        "one": "{count} устройство выведено.",
+        "few": "{count} устройства выведено.",
+        "many": "{count} устройств выведено.",
+        "other": "{count} устройств выведено."
+      },
+      "errorLoad": {
+        "other": "Не удалось загрузить сессии."
+      },
+      "errorRevoke": {
+        "other": "Не удалось отозвать. Попробуйте ещё раз."
+      },
+      "errorMassRevoke": {
+        "other": "Не удалось выйти. Попробуйте ещё раз."
+      },
+      "thisDeviceBadge": {
+        "other": "это устройство"
+      },
+      "deviceLine": {
+        "other": "{browser} на {os}"
+      },
+      "massRevokeCtaSelf": {
+        "other": "Выйти с этого устройства"
+      },
+      "massRevokeCtaOpen": {
+        "other": "Выйти с устройств..."
+      },
+      "confirmChooserTitle": {
+        "other": "Откуда выйти?"
+      },
+      "confirmChooserBody": {
+        "other": "Выберите, какие сессии завершить. Каждая отзывается в момент нажатия, и любая вкладка на том устройстве выйдет при следующем запросе."
+      },
+      "signOutOtherDevicesCount": {
+        "one": "Выйти на ещё {count} устройстве",
+        "few": "Выйти на ещё {count} устройствах",
+        "many": "Выйти на ещё {count} устройствах",
+        "other": "Выйти на ещё {count} устройствах"
+      },
+      "signOutAllCtaSelf": {
+        "other": "Выйти с этого устройства"
+      },
+      "signOutAllCtaIncludingThis": {
+        "other": "Выйти везде, включая это устройство"
+      },
+      "signOutAllRedirectHint": {
+        "other": "Сразу после вы попадёте на страницу входа"
+      },
+      "confirmTokensFootnote": {
+        "other": "Уже выданные токены остаются отклонёнными. Отмены нет, но повторный вход на любом устройстве снова работает."
+      },
+      "doneAlreadyAlone": {
+        "other": "Уже только эта сессия."
+      },
+      "doneFootnote": {
+        "other": "Текущее устройство по-прежнему авторизовано. Остальные вкладки будут выкинуты при следующем запросе."
+      },
+      "backToList": {
+        "other": "Назад к моим сессиям"
+      },
+      "methodSignIn": {
+        "other": "Вход"
+      },
+      "methodEmailCode": {
+        "other": "Код по почте"
+      },
+      "methodPasskey": {
+        "other": "Passkey"
+      },
+      "relativeJustNow": {
+        "other": "только что"
+      },
+      "relativeMinutesAgo": {
+        "other": "{count} мин назад"
+      },
+      "relativeHoursAgo": {
+        "other": "{count} ч назад"
+      },
+      "relativeDaysAgo": {
+        "other": "{count} д назад"
+      }
+    },
+    "avatar": {
+      "replace": {
+        "other": "Заменить"
+      },
+      "removePhoto": {
+        "other": "Удалить фото"
+      },
+      "removeConfirmTitle": {
+        "other": "Удалить ваше фото?"
+      },
+      "removeConfirmBody": {
+        "other": "Будут показаны ваши инициалы."
+      },
+      "uploading": {
+        "other": "Загрузка"
+      },
+      "cropTitle": {
+        "other": "Обрезка"
+      },
+      "cropApply": {
+        "other": "Применить"
+      },
+      "errorTooLarge": {
+        "other": "Изображение слишком большое. Выберите файл до {limitMb} МБ."
+      },
+      "errorBadType": {
+        "other": "Выберите изображение PNG, JPG или WebP."
+      },
+      "uploadFailed": {
+        "other": "Не удалось загрузить фото. Попробуйте другое изображение."
+      },
+      "removeFailed": {
+        "other": "Не удалось удалить фото."
+      },
+      "editPhotoAria": {
+        "other": "Изменить ваше фото"
+      },
+      "addPhotoAria": {
+        "other": "Добавить фото"
+      },
+      "confirmRemoveAria": {
+        "other": "Подтвердить удаление"
+      },
+      "replacePhotoAria": {
+        "other": "Заменить фото"
+      },
+      "uploadPhotoAria": {
+        "other": "Загрузить фото"
+      },
+      "useThisCropAria": {
+        "other": "Использовать эту обрезку"
+      }
+    },
+    "banner": {
+      "replace": {
+        "other": "Заменить"
+      },
+      "removeBanner": {
+        "other": "Удалить баннер"
+      },
+      "removeConfirmTitle": {
+        "other": "Удалить ваш баннер?"
+      },
+      "removeConfirmBody": {
+        "other": "Вернётся градиентная заглушка."
+      },
+      "uploading": {
+        "other": "Загрузка"
+      },
+      "cropTitle": {
+        "other": "Обрезка баннера"
+      },
+      "cropApply": {
+        "other": "Применить"
+      },
+      "errorUpload": {
+        "other": "Не удалось загрузить баннер. Попробуйте другое изображение."
+      },
+      "errorRemove": {
+        "other": "Не удалось удалить баннер."
+      },
+      "previewAlt": {
+        "other": "Предпросмотр баннера"
+      },
+      "cropUse": {
+        "other": "Использовать"
+      },
+      "cropUseAria": {
+        "other": "Использовать эту обрезку"
+      },
+      "editAria": {
+        "other": "Изменить баннер"
+      },
+      "addAria": {
+        "other": "Добавить баннер"
+      },
+      "uploadAria": {
+        "other": "Загрузить баннер"
+      },
+      "confirmRemoveAria": {
+        "other": "Подтвердить удаление"
+      },
+      "confirmRemoveHint": {
+        "other": "Нажмите ещё раз для подтверждения"
+      }
+    },
+    "username": {
+      "title": {
+        "other": "Выберите имя пользователя"
+      },
+      "placeholder": {
+        "other": "имя пользователя"
+      },
+      "checking": {
+        "other": "Проверка"
+      },
+      "available": {
+        "other": "Доступно"
+      },
+      "taken": {
+        "other": "Занято"
+      },
+      "tooShort": {
+        "other": "Слишком короткое"
+      },
+      "tooLong": {
+        "other": "Слишком длинное"
+      },
+      "badChars": {
+        "other": "Только буквы, цифры и дефисы"
+      },
+      "reserved": {
+        "other": "Зарезервировано"
+      },
+      "subtitle": {
+        "other": "Так вас будут видеть в {app}."
+      },
+      "subtitleNoApp": {
+        "other": "Так вас будут видеть другие."
+      },
+      "label": {
+        "other": "Имя пользователя"
+      },
+      "exampleHandle": {
+        "other": "yourname"
+      },
+      "rulesHint": {
+        "other": "От 4 до 30 символов, a-z, 0-9, точка, подчёркивание. Должно начинаться с буквы."
+      },
+      "availableHint": {
+        "other": "Выглядит хорошо. Оно ваше."
+      },
+      "suggestionsHeading": {
+        "other": "Предложения"
+      },
+      "claimCta": {
+        "other": "Занять @{handle}"
+      },
+      "yournameFallback": {
+        "other": "yourname"
+      },
+      "reasonBlank": {
+        "other": "Выберите имя пользователя."
+      },
+      "reasonTooShort": {
+        "other": "Минимум 4 символа."
+      },
+      "reasonTooLong": {
+        "other": "Максимум 30 символов."
+      },
+      "reasonOnlyNumbers": {
+        "other": "Не может состоять только из цифр."
+      },
+      "reasonBadStart": {
+        "other": "Должно начинаться с буквы."
+      },
+      "reasonBadChars": {
+        "other": "Только a-z, 0-9, точка, подчёркивание."
+      },
+      "reasonConsecutiveSpecial": {
+        "other": "Нельзя две точки или подчёркивания подряд."
+      },
+      "reasonTrailingSpecial": {
+        "other": "Не может заканчиваться точкой или подчёркиванием."
+      },
+      "reasonTaken": {
+        "other": "Уже занято."
+      },
+      "reasonInvalid": {
+        "other": "Это имя пользователя недопустимо."
+      },
+      "errorJustTaken": {
+        "other": "Это имя пользователя только что заняли. Выберите другое."
+      },
+      "errorFormat": {
+        "other": "Это имя пользователя не соответствует правилам."
+      },
+      "errorSaveFailed": {
+        "other": "Не удалось сохранить. Попробуйте ещё раз."
+      },
+      "errorNetwork": {
+        "other": "Сбой сети. Попробуйте ещё раз."
+      },
+      "ruleLength": {
+        "other": "от {min} до {max} символов"
+      },
+      "ruleChars": {
+        "other": "строчные буквы, цифры, точка, подчёркивание"
+      },
+      "ruleStartEnd": {
+        "other": "начинается с буквы, заканчивается буквой или цифрой"
+      },
+      "ruleNoDoubles": {
+        "other": "никаких двух спецсимволов подряд, никаких зарезервированных слов"
+      },
+      "confirmHeading": {
+        "other": "Подтвердите изменение"
+      },
+      "notSet": {
+        "other": "Не задано"
+      },
+      "confirmBody": {
+        "other": "Каждый, кто войдёт в это приложение с этим именем пользователя, будет вами. Вы можете изменить его в любое время."
+      },
+      "confirmCta": {
+        "other": "Подтвердить изменение"
+      },
+      "doneTitle": {
+        "other": "Вы @{username} в {appName}."
+      },
+      "doneBody": {
+        "other": "Мы сохранили. Можно остаться здесь или вернуться, когда будете готовы."
+      },
+      "changeAgain": {
+        "other": "Изменить снова"
+      },
+      "disabledMailSubject": {
+        "other": "Включить вход по имени пользователя в {appName}"
+      },
+      "disabledContactSupport": {
+        "other": "Связаться с поддержкой {appName}"
+      },
+      "disabledEmailSupport": {
+        "other": "Написать на {appName}"
+      },
+      "disabledTitle": {
+        "other": "Имена пользователей отключены в {appName}."
+      },
+      "disabledBody": {
+        "other": "Владелец приложения сейчас отключил вход по имени пользователя, поэтому здесь нельзя задать или изменить ваше имя."
+      },
+      "disabledStillHave": {
+        "other": "У вас всё ещё есть @{current} с прошлого раза. Оно остаётся в вашем членстве, пока владелец приложения снова не включит эту функцию."
+      },
+      "disabledNoSupport": {
+        "other": "Приложение ещё не опубликовало контакт поддержки. Свяжитесь с ними тем способом, которым обычно пользуетесь."
+      },
+      "disabledHint": {
+        "other": "Попросите их снова включить вход по имени пользователя в Console, Sign-in methods. Как только включат, вы сможете вернуться сюда и выбрать имя."
+      },
+      "idleCurrent": {
+        "other": "Сейчас @{current}. Введите что-то другое, чтобы изменить."
+      },
+      "idleEmpty": {
+        "other": "Выберите имя, по которому другие в этом приложении смогут вас найти."
+      },
+      "formatGeneric": {
+        "other": "Не соответствует правилам ниже."
+      },
+      "takenLine": {
+        "other": "В этом приложении @{username} уже есть у другого пользователя."
+      },
+      "currentLine": {
+        "other": "Это имя пользователя у вас уже есть здесь."
+      },
+      "availableLine": {
+        "other": "@{username} доступно."
+      },
+      "reasonMustStartLetter": {
+        "other": "Должно начинаться с буквы."
+      },
+      "reasonMustEndAlnum": {
+        "other": "Должно заканчиваться буквой или цифрой."
+      },
+      "reasonNoDoubleSpecial": {
+        "other": "Не может содержать две точки или подчёркивания подряд."
+      },
+      "reasonReserved": {
+        "other": "Это имя пользователя зарезервировано. Выберите другое."
+      },
+      "appNameFallback": {
+        "other": "ваше приложение"
+      }
+    },
+    "identity": {
+      "title": {
+        "other": "Ваш профиль"
+      },
+      "fullName": {
+        "other": "Полное имя"
+      },
+      "birthdate": {
+        "other": "Дата рождения"
+      },
+      "gender": {
+        "other": "Пол"
+      },
+      "pronouns": {
+        "other": "Местоимения"
+      },
+      "save": {
+        "other": "Сохранить профиль"
+      },
+      "saved": {
+        "other": "Сохранено"
+      },
+      "genderMale": {
+        "other": "Мужской"
+      },
+      "genderFemale": {
+        "other": "Женский"
+      },
+      "genderNonBinary": {
+        "other": "Небинарный"
+      },
+      "genderPreferNotToSay": {
+        "other": "Предпочитаю не говорить"
+      },
+      "pronounSheHer": {
+        "other": "Она / её"
+      },
+      "pronounHeHim": {
+        "other": "Он / его"
+      },
+      "pronounTheyThem": {
+        "other": "Они / их"
+      },
+      "pronounOther": {
+        "other": "Другое"
+      },
+      "pronounPreferNotToSay": {
+        "other": "Предпочитаю не говорить"
+      },
+      "errorSaveFailed": {
+        "other": "Не удалось сохранить."
+      },
+      "givenName": {
+        "other": "Имя"
+      },
+      "givenNamePlaceholder": {
+        "other": "Анна"
+      },
+      "familyName": {
+        "other": "Фамилия"
+      },
+      "familyNamePlaceholder": {
+        "other": "Иванова"
+      },
+      "pronounsOptional": {
+        "other": "Местоимения (необязательно)"
+      }
+    },
+    "region": {
+      "title": {
+        "other": "Выберите ваш регион"
+      },
+      "yourRegion": {
+        "other": "Ваш регион"
+      },
+      "country": {
+        "other": "Страна"
+      },
+      "uiLocale": {
+        "other": "Язык"
+      },
+      "currency": {
+        "other": "Валюта"
+      },
+      "firstDayOfWeek": {
+        "other": "Первый день недели"
+      },
+      "timeZone": {
+        "other": "Часовой пояс"
+      },
+      "save": {
+        "other": "Сохранить регион"
+      },
+      "confirmTitle": {
+        "other": "Изменить регион?"
+      },
+      "confirmBody": {
+        "other": "Смена страны каскадно меняет валюту и первый день недели."
+      },
+      "errorSaveFailed": {
+        "other": "Не удалось сохранить регион."
+      },
+      "emptyHint": {
+        "other": "Язык интерфейса, часовой пояс, валюта и формат даты следуют за вашей страной."
+      },
+      "whereDoYouLive": {
+        "other": "Где вы живёте?"
+      },
+      "cascadeHint": {
+        "other": "Мы зададим язык интерфейса, часовой пояс, валюту и формат даты на основе этого. Каждое значение можно переопределить позже."
+      },
+      "cascadeResetTitle": {
+        "other": "Сбросить всё под {country}?"
+      },
+      "cascadeResetBody": {
+        "other": "Вы переходите с {currentFlag} {currentName} на {nextFlag} {nextName}. Язык интерфейса, часовой пояс, валюта, формат даты и единицы измерения будут сброшены к настройкам по умолчанию для {nextName}. Ваши пользовательские правки (если есть) будут перезаписаны."
+      },
+      "cascadeFallbackCountry": {
+        "other": "новая страна"
+      },
+      "uiLanguageLabel": {
+        "other": "Язык интерфейса"
+      },
+      "dateLabel": {
+        "other": "Дата"
+      },
+      "timeLabel": {
+        "other": "Время"
+      },
+      "unitsLabel": {
+        "other": "Единицы измерения"
+      },
+      "resetDefaults": {
+        "other": "Сбросить настройки"
+      },
+      "savedLabel": {
+        "other": "Сохранено"
+      },
+      "changeCountryAria": {
+        "other": "Изменить страну"
+      },
+      "setTimeZonePlaceholder": {
+        "other": "Установить часовой пояс"
+      },
+      "timeFormat": {
+        "other": "Формат времени"
+      },
+      "dateFormat": {
+        "other": "Формат даты"
+      },
+      "numberFormat": {
+        "other": "Формат чисел"
+      },
+      "numbersLabel": {
+        "other": "Числа"
+      },
+      "weekStartsLabel": {
+        "other": "Неделя начинается"
+      },
+      "weekStartsOnTitle": {
+        "other": "Неделя начинается с"
+      },
+      "weekStartsHint": {
+        "other": "Влияет на календари, выбор недели и недельные отчёты."
+      },
+      "pickOneHint": {
+        "other": "Выберите то, что вам удобнее."
+      },
+      "uiLanguageTitle": {
+        "other": "Язык интерфейса"
+      },
+      "uiLanguageHint": {
+        "other": "На каком языке приложения на базе elvix должны с вами общаться."
+      },
+      "languageSearchPlaceholder": {
+        "other": "English, Deutsch, fa..."
+      },
+      "currencyHint": {
+        "other": "По умолчанию для цен, счетов и выплат в приложениях на базе elvix."
+      },
+      "currencySearchPlaceholder": {
+        "other": "EUR, доллар, реал..."
+      },
+      "timeZoneHint": {
+        "other": "Используется для планирования, \"9 утра по вашему времени\" и недельных отчётов."
+      },
+      "timeZoneSearchPlaceholder": {
+        "other": "Берлин, Тегеран, Тихий океан..."
+      }
+    },
+    "languages": {
+      "title": {
+        "other": "Языки, на которых вы говорите"
+      },
+      "addLanguage": {
+        "other": "Добавить язык"
+      },
+      "limitReached": {
+        "other": "Можно указать до {limit} языков."
+      },
+      "level": {
+        "other": "Уровень"
+      },
+      "remove": {
+        "other": "Удалить"
+      },
+      "saveLevel": {
+        "other": "Сохранить уровень"
+      },
+      "updatingLevel": {
+        "other": "Обновление уровня"
+      },
+      "addingLanguage": {
+        "other": "Добавление языка"
+      },
+      "removing": {
+        "other": "Удаление"
+      },
+      "emptyHint": {
+        "other": "Для настроек интерфейса по умолчанию, заданий и исходящих сообщений."
+      },
+      "searchHint": {
+        "other": "Поиск по английскому названию, родному названию или ISO-коду."
+      },
+      "searchPlaceholder": {
+        "other": "English, Deutsch, fa"
+      },
+      "takenBadge": {
+        "other": "добавлено"
+      },
+      "levelPickTitle": {
+        "other": "Насколько хорошо вы говорите на {language}?"
+      },
+      "thisLanguageFallback": {
+        "other": "этот язык"
+      },
+      "levelPickSubtitle": {
+        "other": "Выберите подходящий уровень. Позже его можно изменить."
+      },
+      "errorAlreadyAdded": {
+        "other": "Вы уже добавили этот язык. Измените уровень в списке."
+      },
+      "removeConfirmTitle": {
+        "other": "Удалить {language}?"
+      },
+      "removeConfirmBody": {
+        "other": "Приложения, ориентированные на {language}, больше не будут обращаться к вам на нём. Вы можете добавить его снова в любое время."
+      },
+      "keepCta": {
+        "other": "Оставить"
+      },
+      "addAnother": {
+        "other": "Добавить ещё один язык"
+      }
+    },
+    "addressBook": {
+      "title": {
+        "other": "Ваши адреса"
+      },
+      "empty": {
+        "other": "Адресов пока нет."
+      },
+      "addCta": {
+        "other": "Добавить адрес"
+      },
+      "makeDefault": {
+        "other": "Сделать основным"
+      },
+      "defaultBadge": {
+        "other": "Основной"
+      },
+      "remove": {
+        "other": "Удалить"
+      },
+      "removeConfirmTitle": {
+        "other": "Удалить этот адрес?"
+      },
+      "savingLabel": {
+        "other": "Сохранение адреса."
+      },
+      "deletingLabel": {
+        "other": "Удаление адреса."
+      },
+      "addBilling": {
+        "other": "Добавить платёжный адрес"
+      },
+      "addShipping": {
+        "other": "Добавить адрес доставки"
+      },
+      "useForBilling": {
+        "other": "Мы будем использовать его для счетов и квитанций."
+      },
+      "useForShipping": {
+        "other": "Мы будем использовать его для доставок и самовывоза."
+      },
+      "addAnotherBilling": {
+        "other": "Добавить ещё один платёжный адрес"
+      },
+      "addAnotherShipping": {
+        "other": "Добавить ещё один адрес доставки"
+      },
+      "atCompany": {
+        "other": "в {company}"
+      },
+      "setAsDefault": {
+        "other": "Сделать основным"
+      },
+      "removeDefault": {
+        "other": "Убрать основной"
+      },
+      "deleteAddress": {
+        "other": "Удалить адрес"
+      },
+      "newBillingAddress": {
+        "other": "Новый платёжный адрес"
+      },
+      "newShippingAddress": {
+        "other": "Новый адрес доставки"
+      },
+      "searchPrompt": {
+        "other": "Начните вводить адрес"
+      },
+      "searchPlaceholder": {
+        "other": "Бейкер-стрит, 221Б, Лондон."
+      },
+      "searchError": {
+        "other": "Не удалось найти: {error}"
+      },
+      "noMatchesKeepTyping": {
+        "other": "Совпадений пока нет. Продолжайте вводить."
+      },
+      "aptFloorEyebrow": {
+        "other": "Квартира, этаж, офис"
+      },
+      "aptFloorTitle": {
+        "other": "Квартира, офис или этаж?"
+      },
+      "aptFloorBodyBilling": {
+        "other": "Карты редко учитывают номера помещений. Добавляется вторая строка адреса."
+      },
+      "aptFloorBodyShipping": {
+        "other": "Без сведений о помещении курьеры могут отправить не туда. Пропустите, если не нужно."
+      },
+      "line2Label": {
+        "other": "Адрес, строка 2 (необязательно)"
+      },
+      "line2Placeholder": {
+        "other": "Кв. 4Б, 3 этаж, офис 200."
+      },
+      "step2of3": {
+        "other": "Шаг 2 из 3"
+      },
+      "recipientTitleBilling": {
+        "other": "Для кого этот платёжный адрес?"
+      },
+      "recipientTitleShipping": {
+        "other": "Для кого этот адрес доставки?"
+      },
+      "recipientSubtitleBilling": {
+        "other": "Имя в счёте."
+      },
+      "recipientSubtitleShipping": {
+        "other": "Имя на посылке."
+      },
+      "someoneElseSubtitleBilling": {
+        "other": "Другое имя для счёта"
+      },
+      "someoneElseSubtitleShipping": {
+        "other": "Отправка другому человеку"
+      },
+      "businessSubtitleBilling": {
+        "other": "Счёт на компанию (B2B)"
+      },
+      "businessSubtitleShipping": {
+        "other": "Доставка в компанию или на рабочее место"
+      },
+      "saveError": {
+        "other": "Не удалось сохранить: {error}"
+      },
+      "recipientCustomTitle": {
+        "other": "Кто получатель?"
+      },
+      "recipientCustomSubtitleBilling": {
+        "other": "Имя, которое появится в счёте."
+      },
+      "recipientCustomSubtitleShipping": {
+        "other": "Имя, которое появится на посылке."
+      },
+      "recipientPlaceholder": {
+        "other": "Анна Иванова"
+      },
+      "businessStep1of2": {
+        "other": "Бизнес, шаг 1 из 2"
+      },
+      "companyNameTitle": {
+        "other": "Как называется компания?"
+      },
+      "companyNameBodyBilling": {
+        "other": "Появится в счёте. Требуется для последующей обработки B2B-налогов."
+      },
+      "companyNameBodyShipping": {
+        "other": "Компания-получатель посылки."
+      },
+      "companyNamePlaceholder": {
+        "other": "Edvone"
+      },
+      "businessStep2of2": {
+        "other": "Бизнес, шаг 2 из 2"
+      },
+      "contactAtCompanyTitle": {
+        "other": "Конкретный человек в {company}?"
+      },
+      "attnBodyInvoice": {
+        "other": "Добавляет строку \"Attn:\" в счёт. Пропустите, чтобы адресовать компании."
+      },
+      "attnBodyPackage": {
+        "other": "Добавляет строку \"Attn:\" на посылку. Пропустите, чтобы адресовать компании."
+      },
+      "contactPersonOptional": {
+        "other": "Контактное лицо (необязательно)"
+      },
+      "skip": {
+        "other": "Пропустить"
+      },
+      "noteChoiceTitle": {
+        "other": "Хотите добавить примечание к доставке?"
+      },
+      "noteChoiceBodyBilling": {
+        "other": "Всё, что должна знать команда по биллингу. Строка ATTN, номер заказа, через кого-то."
+      },
+      "noteChoiceBodyShipping": {
+        "other": "Всё для курьера. Звонок, код домофона, оставить у двери."
+      },
+      "noteYesTitle": {
+        "other": "Да, добавить примечание"
+      },
+      "noteYesSubtitle": {
+        "other": "Написать короткую инструкцию"
+      },
+      "noteNoTitle": {
+        "other": "Нет, пропустить"
+      },
+      "noteNoSubtitle": {
+        "other": "Сохранить адрес как есть"
+      },
+      "noteLastStep": {
+        "other": "Примечание, последний шаг"
+      },
+      "noteInputTitle": {
+        "other": "Что нам написать?"
+      },
+      "noteInputBodyBilling": {
+        "other": "Появится в счёте или платёжной записи."
+      },
+      "noteInputBodyShipping": {
+        "other": "Передаётся курьерской службе."
+      },
+      "billingNote": {
+        "other": "Платёжное примечание"
+      },
+      "deliveryNote": {
+        "other": "Примечание к доставке"
+      },
+      "notePlaceholderBilling": {
+        "other": "Bill to ATTN: Финансы, PO #ABC-1234."
+      },
+      "notePlaceholderShipping": {
+        "other": "Позвоните в звонок 3, оставьте у консьержа, если меня нет."
+      },
+      "backToList": {
+        "other": "Назад к списку"
+      },
+      "billingAddressLabel": {
+        "other": "платёжный адрес"
+      },
+      "shippingAddressLabel": {
+        "other": "адрес доставки"
+      },
+      "sectionWho": {
+        "other": "Кто"
+      },
+      "sectionWhere": {
+        "other": "Где"
+      },
+      "sectionNotesMeta": {
+        "other": "Примечания и метаданные"
+      },
+      "fieldRecipient": {
+        "other": "Получатель"
+      },
+      "fieldCompany": {
+        "other": "Компания"
+      },
+      "addCompanyPlaceholder": {
+        "other": "Добавить компанию"
+      },
+      "fieldStreet": {
+        "other": "Улица"
+      },
+      "fieldAptFloor": {
+        "other": "Кв. или этаж"
+      },
+      "addUnitPlaceholder": {
+        "other": "Добавить помещение"
+      },
+      "fieldCity": {
+        "other": "Город"
+      },
+      "fieldPostalCode": {
+        "other": "Индекс"
+      },
+      "fieldRegion": {
+        "other": "Регион"
+      },
+      "fieldCountry": {
+        "other": "Страна"
+      },
+      "fieldDeliveryNotes": {
+        "other": "Примечания к доставке"
+      },
+      "addNotePlaceholder": {
+        "other": "Добавить примечание"
+      },
+      "fieldTimezone": {
+        "other": "Часовой пояс"
+      },
+      "fieldVenue": {
+        "other": "Место или здание"
+      },
+      "nothingToChange": {
+        "other": "Менять нечего"
+      },
+      "setDefaultTitle": {
+        "other": "Сделать этот адрес основным?"
+      },
+      "removeDefaultTitle": {
+        "other": "Убрать статус основного с этого адреса?"
+      },
+      "setDefaultSubtitle": {
+        "other": "Он будет автоматически выбираться при оформлении или выставлении счёта."
+      },
+      "removeDefaultSubtitle": {
+        "other": "Ничто не будет выбрано заранее при оформлении или выставлении счёта."
+      },
+      "crossAppHeadsUp": {
+        "other": "Внимание. Это влияет на каждое приложение, которым вы пользуетесь через elvix."
+      },
+      "crossAppDefaultBodySetting": {
+        "other": "Ваш основной {kind} адрес общий для всех приложений, в которые вы входите. Переключение здесь обновляет автоматический выбор везде сразу."
+      },
+      "crossAppDefaultBodyClearing": {
+        "other": "Ваш основной {kind} адрес общий для всех приложений, в которые вы входите. Если убрать его, ни один адрес не будет выбран заранее: вы будете выбирать каждый раз при оформлении или выставлении счёта."
+      },
+      "nothingToDelete": {
+        "other": "Удалять нечего"
+      },
+      "deleteBillingHeader": {
+        "other": "Удалить платёжный адрес"
+      },
+      "deleteShippingHeader": {
+        "other": "Удалить адрес доставки"
+      },
+      "deleteConfirmTitle": {
+        "other": "Удалить этот адрес?"
+      },
+      "cantBeUndone": {
+        "other": "Это нельзя отменить."
+      },
+      "crossAppDeleteBodyBilling": {
+        "other": "Ваш платёжный адрес хранится один раз в профиле elvix и используется во всех приложениях, в которые вы входите. Удаление убирает его везде. Любая оплата, счёт или доставка, ссылавшаяся на этот адрес, потребует новый."
+      },
+      "crossAppDeleteBodyShipping": {
+        "other": "Ваш адрес доставки хранится один раз в профиле elvix и используется во всех приложениях, в которые вы входите. Удаление убирает его везде. Любая оплата, счёт или доставка, ссылавшаяся на этот адрес, потребует новый."
+      },
+      "deleteError": {
+        "other": "Не удалось удалить: {error}"
+      },
+      "yesDelete": {
+        "other": "Да, удалить"
+      },
+      "pickAddressFirst": {
+        "other": "Сначала выберите адрес"
+      },
+      "changeAddress": {
+        "other": "Изменить адрес"
+      },
+      "reviewBilling": {
+        "other": "Проверьте платёжный адрес"
+      },
+      "reviewShipping": {
+        "other": "Проверьте адрес доставки"
+      },
+      "notRight": {
+        "other": "Неверно"
+      },
+      "looksRight": {
+        "other": "Всё верно"
+      },
+      "missingFieldsHint": {
+        "other": "Отсутствует {fields}. Выберите более точное предложение (с номером дома), чтобы мы сохранили адрес для доставки."
+      }
+    },
+    "legalEntities": {
+      "title": {
+        "other": "Юридические лица"
+      },
+      "addCta": {
+        "other": "Добавить юридическое лицо"
+      },
+      "companyName": {
+        "other": "Название компании"
+      },
+      "vatId": {
+        "other": "VAT ID"
+      },
+      "taxCountry": {
+        "other": "Страна налогообложения"
+      },
+      "verifyVat": {
+        "other": "Проверить VAT"
+      },
+      "verifying": {
+        "other": "Проверка"
+      },
+      "verifiedBadge": {
+        "other": "Подтверждено"
+      },
+      "notRegistered": {
+        "other": "Не зарегистрировано"
+      },
+      "unreachable": {
+        "other": "Недоступно"
+      },
+      "addCtaSubtitle": {
+        "other": "Для счетов, договоров и налоговой отчётности."
+      },
+      "addAnotherCta": {
+        "other": "Добавить ещё одно юридическое лицо"
+      },
+      "kindIndividual": {
+        "other": "Физическое лицо"
+      },
+      "kindSoleProp": {
+        "other": "Индивидуальный предприниматель"
+      },
+      "kindCompany": {
+        "other": "Компания"
+      },
+      "removeDefaultAria": {
+        "other": "Убрать основной статус"
+      },
+      "setDefaultAria": {
+        "other": "Сделать основным"
+      },
+      "deleteAria": {
+        "other": "Удалить лицо"
+      },
+      "typeChoiceTitle": {
+        "other": "Какой это тип лица?"
+      },
+      "typeChoiceSubtitle": {
+        "other": "От этого зависят вопросы, которые мы зададим дальше."
+      },
+      "step1of3": {
+        "other": "Шаг 1 из 3"
+      },
+      "individualSubtitle": {
+        "other": "Только вы, без бизнеса. Счета на ваше личное имя."
+      },
+      "soleProprietorshipSubtitle": {
+        "other": "Вы плюс торговое имя (Einzelunternehmen, фрилансер и т. п.)."
+      },
+      "companySubtitle": {
+        "other": "Зарегистрированное юридическое лицо (GmbH, Ltd, S.r.l. и т. п.)."
+      },
+      "legalNameTitleIndividual": {
+        "other": "Ваше юридическое имя"
+      },
+      "legalNameTitleSoleProp": {
+        "other": "Ваше юридическое имя (владельца)"
+      },
+      "legalNameTitleCompany": {
+        "other": "Юридическое название компании"
+      },
+      "legalNameSubtitleIndividual": {
+        "other": "Как указано в вашем удостоверении личности."
+      },
+      "legalNameSubtitleSoleProp": {
+        "other": "Физическое лицо, ведущее бизнес."
+      },
+      "legalNameSubtitleCompany": {
+        "other": "Зарегистрированное название компании."
+      },
+      "legalNameLabel": {
+        "other": "Юридическое название"
+      },
+      "legalNamePlaceholderCompany": {
+        "other": "ACME GmbH"
+      },
+      "legalNamePlaceholderPerson": {
+        "other": "Анна Иванова"
+      },
+      "legalNameInvalidCompany": {
+        "other": "Введите минимум 2 символа, хотя бы одну букву."
+      },
+      "legalNameInvalidPerson": {
+        "other": "Введите имя и фамилию."
+      },
+      "tradingNameTitle": {
+        "other": "Торговое имя (необязательно)"
+      },
+      "tradingNameSubtitle": {
+        "other": "Geschaeftsbezeichnung, DBA, doing-business-as. Бренд, под которым действует лицо."
+      },
+      "tradingNameLabel": {
+        "other": "Торговое имя"
+      },
+      "tradingNamePlaceholder": {
+        "other": "ACME Brands"
+      },
+      "dobTitle": {
+        "other": "Дата рождения"
+      },
+      "dobSubtitle": {
+        "other": "Требуется для счетов на ваше имя и KYC, если позже спросит клиент."
+      },
+      "dobAgeError": {
+        "other": "Чтобы зарегистрировать лицо, вам должно быть 18 лет или больше."
+      },
+      "dobOutOfRange": {
+        "other": "Эта дата вне допустимого диапазона."
+      },
+      "placeOfBirthTitle": {
+        "other": "Место рождения"
+      },
+      "placeOfBirthSubtitle": {
+        "other": "Город, как указан в вашем удостоверении личности. Требуется для счетов и KYC."
+      },
+      "placeOfBirthCityLabel": {
+        "other": "Город"
+      },
+      "placeOfBirthCityPlaceholder": {
+        "other": "Начните вводить город."
+      },
+      "placeChangeCta": {
+        "other": "Изменить"
+      },
+      "placeSearchError": {
+        "other": "Не удалось найти: {error}"
+      },
+      "nationalityTitle": {
+        "other": "Гражданство"
+      },
+      "nationalitySubtitle": {
+        "other": "Выберите одно или несколько (до {max}). Первое считается основным."
+      },
+      "nationalityPrimaryBadge": {
+        "other": "Основное"
+      },
+      "nationalityCapReached": {
+        "other": "Достигнут максимум в {max} гражданств. Удалите одно, чтобы добавить другое."
+      },
+      "removeCountryAria": {
+        "other": "Удалить {name}"
+      },
+      "taxCountryTitle": {
+        "other": "Налоговое резидентство"
+      },
+      "taxCountrySubtitle": {
+        "other": "Где лицо подаёт налоги. Перечислены только страны, где мы можем проверить налоговый ID в реальном времени."
+      },
+      "taxIdsTitle": {
+        "other": "Налоговые идентификаторы"
+      },
+      "taxIdsSubtitleIndividual": {
+        "other": "Ваш местный налоговый номер из {country}. Хранится как есть."
+      },
+      "taxIdsSubtitleIndividualFallback": {
+        "other": "ваш налоговый орган"
+      },
+      "taxIdsSubtitleCompany": {
+        "other": "VAT проверяется в реальном времени через {authority}. Местный налоговый номер опционален."
+      },
+      "taxIdsSubtitleCompanyFallback": {
+        "other": "выдающий орган"
+      },
+      "taxIdsSubtitleSoleProp": {
+        "other": "Оба поля опциональны. Добавьте местный налоговый номер, если хотите видеть его в счетах; VAT только если вы зарегистрированы как плательщик VAT. Регистрация бизнеса фиксируется на следующем шаге."
+      },
+      "localTaxNumberLabel": {
+        "other": "Местный налоговый номер"
+      },
+      "vatCompanyIdLabel": {
+        "other": "VAT / ID компании"
+      },
+      "blockReasonTaxIdRequired": {
+        "other": "Введите местный налоговый номер, чтобы продолжить."
+      },
+      "blockReasonTaxIdFormat": {
+        "other": "Местный налоговый номер не соответствует формату {country}. {hint}"
+      },
+      "blockReasonVatRequired": {
+        "other": "Введите VAT / ID компании, чтобы продолжить."
+      },
+      "blockReasonVatFormat": {
+        "other": "Этот VAT ID не соответствует формату страны."
+      },
+      "taxIdFormatHint": {
+        "other": "Ожидаемый формат: {placeholder}."
+      },
+      "verifyHeadingChecking": {
+        "other": "Проверка в органе."
+      },
+      "verifyHeadingLive": {
+        "other": "Подтверждено."
+      },
+      "verifyHeadingInvalid": {
+        "other": "Не удалось подтвердить."
+      },
+      "verifyHeadingFormat": {
+        "other": "Орган недоступен."
+      },
+      "verifySubtitleChecking": {
+        "other": "Проверка {vatId} по реестру {country}."
+      },
+      "verifySubtitleLiveNamed": {
+        "other": "{authority} распознал этот VAT как {name}."
+      },
+      "verifySubtitleLive": {
+        "other": "{authority} распознал этот VAT."
+      },
+      "verifySubtitleInvalid": {
+        "other": "{authority} не находит {vatId} в реестре. Вернитесь и исправьте."
+      },
+      "verifySubtitleFormat": {
+        "other": "Нам сейчас не удаётся связаться с {authority}. Ваша запись сохранена как есть и будет переподтверждена автоматически."
+      },
+      "authorityFallback": {
+        "other": "налоговый орган"
+      },
+      "editTaxIdsBackLabel": {
+        "other": "Изменить налоговые ID"
+      },
+      "fixVatCta": {
+        "other": "Исправить VAT"
+      },
+      "continueAnywayCta": {
+        "other": "Всё равно продолжить"
+      },
+      "registrationTitle": {
+        "other": "Регистрация"
+      },
+      "registrationSubtitle": {
+        "other": "Handelsregister, Companies House, KvK. Официальный реестр, где зарегистрировано это лицо."
+      },
+      "registrationNumberLabel": {
+        "other": "Номер регистрации"
+      },
+      "issuingAuthorityLabel": {
+        "other": "Выдающий орган"
+      },
+      "issuingAuthorityPlaceholder": {
+        "other": "Местный суд / торговый реестр"
+      },
+      "registeredSinceLabel": {
+        "other": "Зарегистрировано с (необязательно)"
+      },
+      "registeredSinceRangeError": {
+        "other": "Выберите дату между 1900 и сегодняшним днём."
+      },
+      "regNumberFormatHint": {
+        "other": "Не соответствует ожидаемому формату. Пример: {placeholder}."
+      },
+      "addressSearchTitle": {
+        "other": "Адрес регистрации"
+      },
+      "addressSearchSubtitle": {
+        "other": "Где лицо зарегистрировано в органе. Начните вводить."
+      },
+      "addressLabel": {
+        "other": "Адрес"
+      },
+      "addressSearchPlaceholder": {
+        "other": "Улица, город."
+      },
+      "addressPickFirst": {
+        "other": "Сначала выберите адрес"
+      },
+      "addressReviewTitle": {
+        "other": "Всё верно?"
+      },
+      "addressReviewSubtitle": {
+        "other": "Убедитесь, что зарегистрированный юридический адрес совпадает с официальным реестром."
+      },
+      "addressMissing": {
+        "other": "Отсутствует {fields}. Выберите более точное предложение."
+      },
+      "addressFieldStreet": {
+        "other": "Улица"
+      },
+      "addressFieldCity": {
+        "other": "Город"
+      },
+      "addressFieldPostalCode": {
+        "other": "Индекс"
+      },
+      "addressFieldRegion": {
+        "other": "Регион"
+      },
+      "addressFieldCountry": {
+        "other": "Страна"
+      },
+      "addressChangeBackLabel": {
+        "other": "Изменить адрес"
+      },
+      "addressNotRightCta": {
+        "other": "Неверно"
+      },
+      "addressLooksRightCta": {
+        "other": "Всё верно"
+      },
+      "addressAptTitle": {
+        "other": "Квартира, офис или этаж?"
+      },
+      "addressAptSubtitle": {
+        "other": "Добавляет вторую строку к адресу регистрации. Пропустите, если не нужно."
+      },
+      "addressAptLabel": {
+        "other": "Адрес, строка 2 (необязательно)"
+      },
+      "addressAptPlaceholder": {
+        "other": "Кв. 4Б, 3 этаж, офис 200."
+      },
+      "contactChoiceTitle": {
+        "other": "Добавить контактную информацию?"
+      },
+      "contactChoiceSubtitle": {
+        "other": "Опциональные email и телефон для этого лица. Отдельно от основного контакта аккаунта."
+      },
+      "contactYesCta": {
+        "other": "Да, добавить контакт"
+      },
+      "contactNoCta": {
+        "other": "Нет, сохранить без него"
+      },
+      "yesNoYesSubtitle": {
+        "other": "Добавляет следующий шаг"
+      },
+      "yesNoNoSubtitle": {
+        "other": "Сохранить лицо как есть"
+      },
+      "saveError": {
+        "other": "Не удалось сохранить: {error}"
+      },
+      "contactInputTitle": {
+        "other": "Контакт для этого лица"
+      },
+      "contactInputSubtitle": {
+        "other": "Email и телефон отображаются в счетах и договорах."
+      },
+      "contactEmailLabel": {
+        "other": "Email (необязательно)"
+      },
+      "contactEmailPlaceholder": {
+        "other": "invoices@example.com"
+      },
+      "contactEmailInvalid": {
+        "other": "Введите корректный email или оставьте пустым."
+      },
+      "contactPhoneLabel": {
+        "other": "Телефон (необязательно)"
+      },
+      "contactPhonePlaceholder": {
+        "other": "+49 ."
+      },
+      "contactPhoneInvalid": {
+        "other": "Используйте цифры с опциональным ведущим + (от 6 до 20 цифр)."
+      },
+      "saveEntityCta": {
+        "other": "Сохранить лицо"
+      },
+      "saveChangesCta": {
+        "other": "Сохранить изменения"
+      },
+      "savingEntityLabel": {
+        "other": "Сохранение лица."
+      },
+      "deletingEntityLabel": {
+        "other": "Удаление лица."
+      },
+      "backToList": {
+        "other": "Назад к списку"
+      },
+      "detailSectionIdentity": {
+        "other": "Идентичность"
+      },
+      "detailSectionTax": {
+        "other": "Налоги"
+      },
+      "detailSectionRegistration": {
+        "other": "Регистрация"
+      },
+      "detailSectionAddress": {
+        "other": "Адрес"
+      },
+      "detailSectionContact": {
+        "other": "Контакт"
+      },
+      "detailLegalName": {
+        "other": "Юридическое название"
+      },
+      "detailTradingName": {
+        "other": "Торговое имя"
+      },
+      "detailTradingNamePlaceholder": {
+        "other": "Добавить торговое имя"
+      },
+      "detailDob": {
+        "other": "Дата рождения"
+      },
+      "detailPlaceOfBirth": {
+        "other": "Место рождения"
+      },
+      "detailPlaceOfBirthPlaceholder": {
+        "other": "Добавить место рождения"
+      },
+      "detailNationality": {
+        "other": "Гражданство"
+      },
+      "detailTaxResidence": {
+        "other": "Налоговое резидентство"
+      },
+      "detailVatId": {
+        "other": "VAT / ID компании"
+      },
+      "detailVatIdPlaceholder": {
+        "other": "Добавить VAT ID"
+      },
+      "detailLocalTaxNumber": {
+        "other": "Местный налоговый номер"
+      },
+      "detailLocalTaxNumberPlaceholder": {
+        "other": "Добавить налоговый номер"
+      },
+      "detailRegistrationNumber": {
+        "other": "Регистрационный №"
+      },
+      "detailIssuingAuthority": {
+        "other": "Выдающий орган"
+      },
+      "detailRegisteredSince": {
+        "other": "Зарегистрировано с"
+      },
+      "detailStreet": {
+        "other": "Улица"
+      },
+      "detailAptFloor": {
+        "other": "Кв. / этаж"
+      },
+      "detailCity": {
+        "other": "Город"
+      },
+      "detailPostalCode": {
+        "other": "Индекс"
+      },
+      "detailCountry": {
+        "other": "Страна"
+      },
+      "detailEmail": {
+        "other": "Email"
+      },
+      "detailEmailPlaceholder": {
+        "other": "Добавить email"
+      },
+      "detailPhone": {
+        "other": "Телефон"
+      },
+      "detailPhonePlaceholder": {
+        "other": "Добавить телефон"
+      },
+      "removeDefault": {
+        "other": "Убрать основной"
+      },
+      "setDefault": {
+        "other": "Сделать основным"
+      },
+      "deleteConfirmTitle": {
+        "other": "Удалить это лицо?"
+      },
+      "deleteConfirmBody": {
+        "other": "Это нельзя отменить."
+      },
+      "deleteEmpty": {
+        "other": "Удалять нечего"
+      },
+      "sharedAcrossAppsHeading": {
+        "other": "Внимание. Это влияет на каждое приложение, которым вы пользуетесь через elvix."
+      },
+      "deleteSharedAcrossAppsBody": {
+        "other": "Юридические лица общие для всех приложений, в которые вы входите. Удаление убирает запись везде; любой шаблон счёта, ссылавшийся на него, потребует новый."
+      },
+      "deleteError": {
+        "other": "Не удалось удалить: {error}"
+      },
+      "yesDelete": {
+        "other": "Да, удалить"
+      },
+      "nothingToChange": {
+        "other": "Менять нечего"
+      },
+      "defaultConfirmTitleSet": {
+        "other": "Сделать это лицо основным?"
+      },
+      "defaultConfirmTitleUnset": {
+        "other": "Убрать статус основного с этого лица?"
+      },
+      "defaultConfirmBodySet": {
+        "other": "Основное лицо автоматически подставляется в счета и шаблоны договоров."
+      },
+      "defaultConfirmBodyUnset": {
+        "other": "Ничто не будет выбрано заранее при создании счетов или договоров."
+      },
+      "defaultSharedAcrossAppsBodySet": {
+        "other": "Основное лицо общее для всех приложений, в которые вы входите. Переключение здесь обновляет автоматический выбор везде сразу."
+      },
+      "defaultSharedAcrossAppsBodyUnset": {
+        "other": "Основное лицо общее для всех приложений, в которые вы входите. Если убрать его, ни одно лицо не будет выбрано заранее нигде."
+      }
+    },
+    "entityKind": {
+      "title": {
+        "other": "Для кого это?"
+      },
+      "me": {
+        "other": "Я"
+      },
+      "someoneElse": {
+        "other": "Кто-то другой"
+      },
+      "business": {
+        "other": "Бизнес"
+      }
+    },
+    "export": {
+      "title": {
+        "other": "Скачать ваши данные"
+      },
+      "body": {
+        "other": "Получите копию всего, что мы о вас храним. Статья 15 GDPR. Мы пришлём одноразовую ссылку для скачивания, действительную 24 часа."
+      },
+      "sendCodeCta": {
+        "other": "Отправить код подтверждения"
+      },
+      "downloadCta": {
+        "other": "Отправить мне ссылку по почте"
+      },
+      "doneTitle": {
+        "other": "Проверьте свою почту"
+      },
+      "doneBody": {
+        "other": "Мы отправили ссылку для скачивания на {email}. Она истекает через 24 часа."
+      },
+      "previewLoadFailed": {
+        "other": "Не удалось загрузить предпросмотр. Попробуйте ещё раз."
+      },
+      "whatYouReceive": {
+        "other": "Что вы получите"
+      },
+      "archiveBlurbIdentity": {
+        "other": "Ваш архив будет содержать один JSON-файл со всем нижеперечисленным, ваши изображения аватара и баннера (если загружены), а также README с пояснением каждого раздела простыми словами и раскрытием информации согласно ст. 15(1) GDPR."
+      },
+      "archiveBlurbApp": {
+        "other": "Ваш архив будет содержать один JSON-файл с данными для {label}, а также README с пояснением каждого раздела и раскрытием информации согласно ст. 15(1) GDPR."
+      },
+      "notIncluded": {
+        "other": "Не включено: криптографический материал ключей для ваших passkey, OAuth-токены, OTP-коды и любые данные, которые приложения хранят о вас вне elvix. По последним свяжитесь с каждым приложением отдельно."
+      },
+      "sendToHeading": {
+        "other": "Мы отправим ваши данные на основной email"
+      },
+      "sendToBody": {
+        "other": "Ваш архив попадёт на {email} вложением .zip. Владение этой почтой служит доказательством личности, поэтому файл никогда не лежит по публичному URL."
+      },
+      "sendToNotice": {
+        "other": "Сначала мы отправляем 6-значный код на ваш основной ящик. После ввода на следующем экране мы сформируем архив и пришлём его вам вложением .zip."
+      },
+      "sendingCode": {
+        "other": "Отправка кода"
+      },
+      "sendToCta": {
+        "other": "Отправить мне 6-значный код"
+      },
+      "otpHeading": {
+        "other": "Подтвердите вашим кодом"
+      },
+      "otpBody": {
+        "other": "Мы отправили 6-значный код на {email}. Он истекает через 10 минут. После ввода мы сформируем архив и пришлём его на тот же ящик вложением .zip."
+      },
+      "confirmCta": {
+        "other": "Подтвердить и прислать мне данные"
+      },
+      "workingLabel": {
+        "other": "Обработка"
+      },
+      "resendIn": {
+        "other": "Повторно через {seconds} с"
+      },
+      "noPendingCode": {
+        "other": "Нет ожидающего кода. Отправьте новый."
+      },
+      "networkError": {
+        "other": "Ошибка сети. Попробуйте ещё раз."
+      },
+      "doneHeading": {
+        "other": "Отправлено."
+      },
+      "doneInboxBody": {
+        "other": "Через минуту проверьте свой основной ящик ({email}). Архив прикреплён к письму как файл .zip. Запросить ещё один экспорт той же цели можно через 24 часа."
+      },
+      "backToExports": {
+        "other": "Назад к экспортам"
+      },
+      "errorChallengeGeneric": {
+        "other": "Не удалось отправить код. Попробуйте ещё раз."
+      },
+      "errorChallengeTooRecent": {
+        "other": "Подождите {seconds} с перед повторным запросом."
+      },
+      "errorChallengeTooMany": {
+        "other": "Слишком много запросов в этом часу. Попробуйте позже."
+      },
+      "errorChallengeSendFailed": {
+        "other": "Не удалось отправить код по почте. Попробуйте ещё раз."
+      },
+      "errorChallengeRateLimit": {
+        "other": "Вы уже выгружали это за последние 24 часа. Снова доступно примерно через {hours} ч."
+      },
+      "errorChallengeNotMember": {
+        "other": "Вы больше не участник этого приложения."
+      },
+      "errorChallengeAppNotFound": {
+        "other": "Это приложение недоступно."
+      },
+      "errorApplyGeneric": {
+        "other": "Не удалось сформировать ваш экспорт. Попробуйте ещё раз."
+      },
+      "errorApplyWrongCode": {
+        "one": "Неверный код. Осталась {count} попытка.",
+        "few": "Неверный код. Осталось {count} попытки.",
+        "many": "Неверный код. Осталось {count} попыток.",
+        "other": "Неверный код. Осталось {count} попыток."
+      },
+      "errorApplyLocked": {
+        "other": "Слишком много неверных попыток. Отправьте новый код."
+      },
+      "errorApplyExpired": {
+        "other": "Срок действия кода истёк. Отправьте новый."
+      },
+      "errorApplyGenerateFailed": {
+        "other": "Не удалось собрать ваш экспорт. Попробуйте ещё раз."
+      },
+      "errorApplyStorageFailed": {
+        "other": "Не удалось сохранить ваш экспорт. Попробуйте ещё раз."
+      },
+      "errorApplyEmailFailed": {
+        "other": "Архив создан, но письмо не доставлено. Свяжитесь с {email}, чтобы получить ссылку."
+      }
+    },
+    "deactivate": {
+      "title": {
+        "other": "Сделать перерыв"
+      },
+      "body": {
+        "other": "Деактивация скрывает ваш аккаунт в этом приложении. Реактивировать можно в любой момент из вашего elvix-аккаунта."
+      },
+      "confirmCta": {
+        "other": "Деактивировать"
+      },
+      "doneTitle": {
+        "other": "Ваш аккаунт на паузе"
+      },
+      "reactivateCta": {
+        "other": "Реактивировать"
+      },
+      "errorTooMany": {
+        "other": "Запрошено слишком много кодов. Попробуйте позже."
+      },
+      "errorTooRecent": {
+        "other": "Подождите {seconds} с перед повторным запросом."
+      },
+      "errorSendFailed": {
+        "other": "Не удалось отправить код по почте. Попробуйте ещё раз."
+      },
+      "errorRequestFailed": {
+        "other": "Не удалось запросить код. Попробуйте ещё раз."
+      },
+      "errorWrongCode": {
+        "one": "Неверный код. Осталась {count} попытка.",
+        "few": "Неверный код. Осталось {count} попытки.",
+        "many": "Неверный код. Осталось {count} попыток.",
+        "other": "Неверный код. Осталось {count} попыток."
+      },
+      "errorChallengeLocked": {
+        "other": "Слишком много неверных попыток. Запросите новый код."
+      },
+      "errorChallengeExpired": {
+        "other": "Срок действия кода истёк. Запросите новый."
+      },
+      "errorAlreadyLeft": {
+        "other": "Вы уже покинули это приложение. Сначала восстановите членство."
+      },
+      "appNameFallback": {
+        "other": "ваше приложение"
+      },
+      "warn1Title": {
+        "other": "Сделайте перерыв от {app}"
+      },
+      "warn1Body": {
+        "other": "Ваш профиль уходит в тихий перерыв. Люди в {app} перестают вас видеть, но всё, что вы накопили, остаётся как есть. Когда будете готовы, возвращайтесь сюда и снова войдите."
+      },
+      "soundGood": {
+        "other": "Звучит хорошо?"
+      },
+      "warn1Cta": {
+        "other": "Понятно"
+      },
+      "warn2Title": {
+        "other": "Несколько вещей, которые стоит знать"
+      },
+      "warn2Bullet1": {
+        "other": "Открытые сессии в этом приложении сразу выходят."
+      },
+      "warn2Bullet2": {
+        "other": "Ваше имя пользователя и идентификатор остаются вашими. Никто другой не сможет занять их, пока вас нет."
+      },
+      "warn2Bullet3": {
+        "other": "Вы можете вернуться в любой момент с этого же экрана."
+      },
+      "warn2Bullet4": {
+        "other": "Мы пришлём 6-значный код для подтверждения. На всякий случай, чтобы изменение произошло, только если у вас есть и доступ к ящику."
+      },
+      "warn2Cta": {
+        "other": "Понятно. Отправьте мне код"
+      },
+      "sendingLabel": {
+        "other": "Отправка"
+      },
+      "reactivateTitle": {
+        "other": "С возвращением в {app}"
+      },
+      "reactivateBody": {
+        "other": "Сейчас вы на перерыве. Реактивируйте, чтобы снова появиться в {app}."
+      },
+      "reactivateBodyByOwner": {
+        "other": "Сейчас вы на перерыве (это сделал администратор от вашего имени). Реактивируйте, чтобы снова появиться в {app}."
+      },
+      "doneDeactivatedTitle": {
+        "other": "Вы на перерыве от {app}."
+      },
+      "doneReactivatedTitle": {
+        "other": "Вы снова в {app}."
+      },
+      "doneDeactivatedBody": {
+        "other": "Мы сообщили приложению. Возвращайтесь сюда в любое время, чтобы реактивировать."
+      },
+      "doneReactivatedBody": {
+        "other": "Ваше членство снова активно. Открытым сессиям со стороны приложения может потребоваться немного времени на обновление."
+      },
+      "reactivateAgain": {
+        "other": "Реактивировать снова"
+      },
+      "deactivateAgain": {
+        "other": "Деактивировать снова"
+      },
+      "otpTitle": {
+        "other": "Введите ваш код подтверждения"
+      },
+      "otpDelivered": {
+        "other": "Мы отправили 6-значный код на {email}. Он истекает через 10 минут."
+      },
+      "otpSending": {
+        "other": "Отправляем вам 6-значный код."
+      },
+      "otpPending": {
+        "other": "Мы отправляем 6-значный код на вашу почту."
+      },
+      "resendIn": {
+        "other": "Повторно через {seconds} с"
+      }
+    },
+    "leave": {
+      "title": {
+        "other": "Покинуть {app}?"
+      },
+      "body": {
+        "other": "Удаляет ваше членство. Это окончательно: владелец не сможет вернуть его. Ваш elvix-аккаунт остаётся открытым."
+      },
+      "confirmCta": {
+        "other": "Покинуть навсегда"
+      },
+      "doneTitle": {
+        "other": "Вы покинули {app}."
+      },
+      "errorTooManyCodes": {
+        "other": "Запрошено слишком много кодов. Попробуйте позже."
+      },
+      "errorTooRecent": {
+        "other": "Подождите {seconds} с перед повторным запросом."
+      },
+      "errorSendFailed": {
+        "other": "Не удалось отправить код по почте. Попробуйте ещё раз."
+      },
+      "errorRequestFailed": {
+        "other": "Не удалось запросить код. Попробуйте ещё раз."
+      },
+      "errorWrongCode": {
+        "one": "Неверный код. Осталась {count} попытка.",
+        "few": "Неверный код. Осталось {count} попытки.",
+        "many": "Неверный код. Осталось {count} попыток.",
+        "other": "Неверный код. Осталось {count} попыток."
+      },
+      "errorChallengeLocked": {
+        "other": "Слишком много неверных попыток. Запросите новый код."
+      },
+      "errorChallengeExpired": {
+        "other": "Срок действия кода истёк. Запросите новый."
+      },
+      "errorOwnerInitiated": {
+        "other": "Администратор удалил вас. Отменить это можно только из их Console."
+      },
+      "errorGraceExpired": {
+        "other": "90-дневное окно для восстановления этого членства закрылось."
+      },
+      "errorRestoreFailed": {
+        "other": "Не удалось восстановить. Попробуйте ещё раз."
+      },
+      "otpActionLabel": {
+        "other": "Покинуть {app}"
+      },
+      "warn1Heading": {
+        "other": "Покинуть {app}"
+      },
+      "warn1Body": {
+        "other": "Ваше членство сразу скрывается. У вас есть 90 дней, чтобы передумать и восстановить с этого же экрана. После этого приложение перестаёт появляться в вашем списке. Ваши данные на стороне приложения подчиняются их собственным политикам."
+      },
+      "understandPrompt": {
+        "other": "Понятно?"
+      },
+      "iUnderstandCta": {
+        "other": "Понятно"
+      },
+      "dataHeading": {
+        "other": "О ваших данных в {app}"
+      },
+      "warn2Body": {
+        "other": "elvix не хранит и не удаляет то, что {app} держит о вас. За это отвечает владелец приложения согласно своей политике конфиденциальности и условиям использования. Мы уведомим приложение в момент вашего ухода, чтобы они могли действовать по своим условиям. Прочтите их перед подтверждением."
+      },
+      "privacyPolicy": {
+        "other": "Политика конфиденциальности"
+      },
+      "termsOfService": {
+        "other": "Условия использования"
+      },
+      "warn2EmailPrompt": {
+        "other": "Мы пришлём код для подтверждения. Понятно?"
+      },
+      "warn2Cta": {
+        "other": "Понятно. Отправьте мне код"
+      },
+      "restoreHeading": {
+        "other": "Восстановить ваше членство в {app}"
+      },
+      "restoreBody": {
+        "one": "У вас остался {count} день в окне восстановления. Восстановите сейчас, и приложение увидит вас точно как раньше: то же имя пользователя, те же роли, та же история.",
+        "few": "У вас осталось {count} дня в окне восстановления. Восстановите сейчас, и приложение увидит вас точно как раньше: то же имя пользователя, те же роли, та же история.",
+        "many": "У вас осталось {count} дней в окне восстановления. Восстановите сейчас, и приложение увидит вас точно как раньше: то же имя пользователя, те же роли, та же история.",
+        "other": "У вас осталось {count} дней в окне восстановления. Восстановите сейчас, и приложение увидит вас точно как раньше: то же имя пользователя, те же роли, та же история."
+      },
+      "restoreCta": {
+        "other": "Восстановить членство"
+      },
+      "ownerLockedHeading": {
+        "other": "Администратор удалил вас из {app}"
+      },
+      "ownerLockedBody": {
+        "one": "Удалено {date}. У владельца приложения остался {count} день, чтобы отменить со своей стороны. После этого приложение перестаёт здесь появляться.",
+        "few": "Удалено {date}. У владельца приложения осталось {count} дня, чтобы отменить со своей стороны. После этого приложение перестаёт здесь появляться.",
+        "many": "Удалено {date}. У владельца приложения осталось {count} дней, чтобы отменить со своей стороны. После этого приложение перестаёт здесь появляться.",
+        "other": "Удалено {date}. У владельца приложения осталось {count} дней, чтобы отменить со своей стороны. После этого приложение перестаёт здесь появляться."
+      },
+      "ownerLockedReachOut": {
+        "other": "Поскольку удаление инициировали они, отменить его могут только они. Свяжитесь через их канал поддержки, если хотите это обсудить."
+      },
+      "doneLeftTitle": {
+        "other": "Вы покинули {app}."
+      },
+      "doneRestoredTitle": {
+        "other": "Вы снова в {app}."
+      },
+      "doneLeftBody": {
+        "other": "Мы уведомили приложение. У вас есть 90 дней, чтобы вернуться и восстановиться с этого же экрана. После этого приложение перестанет появляться в вашем списке."
+      },
+      "doneRestoredBody": {
+        "other": "Ваше членство снова активно. Стороне приложения может потребоваться немного времени на обновление."
+      }
+    },
+    "lifecycle": {
+      "bannedTitle": {
+        "other": "Ваш доступ отозван."
+      },
+      "bannedBody": {
+        "other": "Администратор заблокировал ваш аккаунт для этого приложения. Вы будете выведены и не сможете снова войти. Свяжитесь с владельцем, если считаете это ошибкой."
+      },
+      "pausedTitle": {
+        "other": "Ваш доступ приостановлен."
+      },
+      "pausedBody": {
+        "other": "Администратор временно приостановил ваш аккаунт для этого приложения. Вы скоро выйдете; свяжитесь с владельцем, чтобы восстановить доступ."
+      },
+      "deletedTitle": {
+        "other": "Ваш аккаунт удалён."
+      },
+      "deletedBody": {
+        "other": "Администратор удалил ваше членство для этого приложения. Вы будете выведены, а сохранённые данные будут поставлены в очередь на удаление через 90 дней, если их не восстановят."
+      },
+      "inactiveTitle": {
+        "other": "Вы делаете перерыв от этого приложения."
+      },
+      "inactiveBody": {
+        "other": "Ваше членство деактивировано, поэтому мы здесь выведем вас. Вы можете реактивировать со своего elvix-аккаунта в любое время и сразу вернуться."
+      },
+      "countdown": {
+        "other": "Выводим вас через {seconds} с"
+      },
+      "recoverRestoredTitle": {
+        "other": "Вы снова в {app}."
+      },
+      "recoverRestoredBody": {
+        "other": "Ваше членство снова активно. Перейдите в приложение, когда будете готовы."
+      },
+      "recoverSignedOutTitle": {
+        "other": "Вы вышли."
+      },
+      "recoverSignedOutBody": {
+        "other": "Вы остались вне {app}. Возвращайтесь в любое время."
+      },
+      "recoverWelcomeBack": {
+        "other": "С возвращением в {app}"
+      },
+      "recoverDeletedIntro": {
+        "other": "Вы покинули {app} ранее."
+      },
+      "recoverDeletedDaysLeft": {
+        "one": "У вас остался {count} день, чтобы вернуться.",
+        "few": "У вас осталось {count} дня, чтобы вернуться.",
+        "many": "У вас осталось {count} дней, чтобы вернуться.",
+        "other": "У вас осталось {count} дней, чтобы вернуться."
+      },
+      "recoverDeletedNoCountdown": {
+        "other": "Вы всё ещё внутри окна восстановления."
+      },
+      "recoverDeletedOutro": {
+        "other": "Восстановите своё место сейчас или снова выйдите."
+      },
+      "recoverPausedBody": {
+        "other": "Ваше членство в {app} сейчас на паузе. Восстановите, чтобы продолжить с того же места, или снова выйдите и оставайтесь вне."
+      },
+      "recoverRestoringLabel": {
+        "other": "Восстановление"
+      },
+      "recoverRestoreDeletedCta": {
+        "other": "Восстановить моё место в {app}"
+      },
+      "recoverRestorePausedCta": {
+        "other": "Вернуть меня в {app}"
+      },
+      "recoverSigningOutLabel": {
+        "other": "Выводим вас"
+      },
+      "recoverDeclineCta": {
+        "other": "Не сейчас, выведите меня"
+      }
+    }
+  }
+}

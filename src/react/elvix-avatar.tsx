@@ -24,6 +24,7 @@ import { cropToBlob } from "./image-crop";
 import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
+import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Camera, Check, Loader2, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -99,6 +100,7 @@ function ElvixAvatarInner({
   ...avatarProps
 }: ElvixAvatarProps) {
   const ctx = useElvixContext();
+  const t = useT();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [view, setView] = useState<View>("display");
 
@@ -190,11 +192,12 @@ function ElvixAvatarInner({
       });
       setView("display");
     } catch {
-      toast.error("Couldn't upload photo. Try a different image.");
+      const msg = t("avatar.uploadFailed");
+      toast.error(msg);
       onResult?.({
         ok: false,
         error: "upload_failed",
-        message: "Couldn't upload photo. Try a different image.",
+        message: msg,
       });
       setView("cropping");
     } finally {
@@ -253,11 +256,12 @@ function ElvixAvatarInner({
       });
       setView("display");
     } catch {
-      toast.error("Couldn't remove photo.");
+      const msg = t("avatar.removeFailed");
+      toast.error(msg);
       onResult?.({
         ok: false,
         error: "delete_failed",
-        message: "Couldn't remove photo.",
+        message: msg,
       });
       setView("choice");
     }
@@ -346,6 +350,7 @@ function DisplayLayer({
   hasMedia: boolean;
   onTap: () => void;
 }) {
+  const t = useT();
   return (
     <motion.div
       variants={layerVariants}
@@ -363,7 +368,7 @@ function DisplayLayer({
       <button
         type="button"
         onClick={onTap}
-        aria-label={hasMedia ? "Edit your photo" : "Add a photo"}
+        aria-label={hasMedia ? t("avatar.editPhotoAria") : t("avatar.addPhotoAria")}
         className="absolute inset-0 cursor-pointer rounded-full focus:outline-none focus:ring-2 focus:ring-[var(--elvix-primary)] focus:ring-offset-2 focus:ring-offset-canvas"
       >
         {/* Always-visible edit hint — a full-circle overlay that's
@@ -447,13 +452,15 @@ export function ArmableRemoveButton({
   onConfirm,
   size,
   iconPx,
-  ariaLabel = "Remove",
+  ariaLabel,
 }: {
   onConfirm: () => void;
   size: number;
   iconPx: number;
   ariaLabel?: string;
 }) {
+  const t = useT();
+  const restingLabel = ariaLabel ?? t("common.remove");
   const [armed, setArmed] = useState(false);
   useEffect(() => {
     if (!armed) return;
@@ -478,7 +485,7 @@ export function ArmableRemoveButton({
     <button
       type="button"
       onClick={handleClick}
-      aria-label={armed ? "Confirm remove" : ariaLabel}
+      aria-label={armed ? t("avatar.confirmRemoveAria") : restingLabel}
       aria-pressed={armed}
       className={
         "grid place-items-center rounded-full transition shadow-[0_4px_14px_rgba(0,0,0,0.28)] cursor-pointer " +
@@ -642,6 +649,7 @@ function ChoiceLayer({
   onRemove: () => void;
   onBack: () => void;
 }) {
+  const t = useT();
   // All three triangle buttons share a single size — visual weight
   // stays even, the cluster reads as a balanced trio rather than
   // "primary + sidekick".
@@ -664,14 +672,14 @@ function ChoiceLayer({
         hasMedia={hasMedia}
       />
       <VertexSlot pos={TRIANGLE_POS.back}>
-        <IconButton onClick={onBack} ariaLabel="Back" variant="neutral" size={actionSize}>
+        <IconButton onClick={onBack} ariaLabel={t("common.back")} variant="neutral" size={actionSize}>
           <ArrowLeft style={{ width: iconPx, height: iconPx }} />
         </IconButton>
       </VertexSlot>
       <VertexSlot pos={TRIANGLE_POS.left}>
         <IconButton
           onClick={onReplace}
-          ariaLabel={hasMedia ? "Replace photo" : "Upload photo"}
+          ariaLabel={hasMedia ? t("avatar.replacePhotoAria") : t("avatar.uploadPhotoAria")}
           variant="brand"
           size={actionSize}
         >
@@ -713,6 +721,7 @@ function CropLayer({
   onConfirm: () => void;
   disabled: boolean;
 }) {
+  const t = useT();
   const btnSize = Math.max(24, Math.round(size * 0.22));
   const iconPx = Math.max(12, Math.round(btnSize * 0.5));
   return (
@@ -747,7 +756,7 @@ function CropLayer({
         <button
           type="button"
           onClick={onBack}
-          aria-label="Back"
+          aria-label={t("common.back")}
           className="pointer-events-auto grid place-items-center rounded-full border border-white/30 bg-black/55 text-white backdrop-blur transition hover:bg-black/75 cursor-pointer"
           style={{ width: btnSize, height: btnSize }}
         >
@@ -757,7 +766,7 @@ function CropLayer({
           type="button"
           onClick={onConfirm}
           disabled={disabled}
-          aria-label="Use this crop"
+          aria-label={t("avatar.useThisCropAria")}
           className="pointer-events-auto grid place-items-center rounded-full bg-[var(--elvix-primary-strong)] text-[var(--elvix-on-primary)] transition hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           style={{ width: btnSize, height: btnSize }}
         >

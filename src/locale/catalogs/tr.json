@@ -1,0 +1,2275 @@
+{
+  "locale": "tr",
+  "namespaces": {
+    "common": {
+      "ok": {
+        "other": "Tamam"
+      },
+      "cancel": {
+        "other": "İptal"
+      },
+      "back": {
+        "other": "Geri"
+      },
+      "next": {
+        "other": "İleri"
+      },
+      "continue": {
+        "other": "Devam et"
+      },
+      "save": {
+        "other": "Kaydet"
+      },
+      "saving": {
+        "other": "Kaydediliyor"
+      },
+      "delete": {
+        "other": "Sil"
+      },
+      "remove": {
+        "other": "Kaldır"
+      },
+      "edit": {
+        "other": "Düzenle"
+      },
+      "close": {
+        "other": "Kapat"
+      },
+      "done": {
+        "other": "Tamamlandı"
+      },
+      "retry": {
+        "other": "Tekrar dene"
+      },
+      "loading": {
+        "other": "Yükleniyor"
+      },
+      "search": {
+        "other": "Ara"
+      },
+      "noMatches": {
+        "other": "Eşleşme yok"
+      },
+      "lastStep": {
+        "other": "Son adım"
+      },
+      "skip": {
+        "other": "Atla"
+      },
+      "durationSeconds": {
+        "other": "{seconds}sn"
+      },
+      "durationOneMinute": {
+        "other": "1 dakika"
+      },
+      "durationMinutes": {
+        "one": "{minutes} dakika",
+        "other": "{minutes} dakika"
+      },
+      "somethingWentWrong": {
+        "other": "Bir şeyler ters gitti. Tekrar deneyin."
+      },
+      "errorNetwork": {
+        "other": "Bağlantı sorunu. Tekrar deneyin."
+      },
+      "errorSaveFailed": {
+        "other": "Kaydedilemedi. Tekrar deneyin."
+      },
+      "hintEnter": {
+        "other": "Enter"
+      },
+      "enterHint": {
+        "other": "Enter"
+      },
+      "sendingLabel": {
+        "other": "Gönderiliyor"
+      },
+      "saved": {
+        "other": "Kaydedildi"
+      },
+      "optionalSuffix": {
+        "other": " (isteğe bağlı)"
+      },
+      "savingDots": {
+        "other": "Kaydediliyor."
+      }
+    },
+    "signin": {
+      "title": {
+        "other": "{app} uygulamasına oturum aç"
+      },
+      "titleDefault": {
+        "other": "Oturum aç"
+      },
+      "subtitle": {
+        "other": ""
+      },
+      "googleButton": {
+        "other": "Google ile devam et"
+      },
+      "passkeyButton": {
+        "other": "Geçiş anahtarı ile devam et"
+      },
+      "emailPlaceholder": {
+        "other": "E-posta"
+      },
+      "sendCodeButton": {
+        "other": "Devam et"
+      },
+      "sendingLabel": {
+        "other": "Gönderiliyor"
+      },
+      "codeSentSubtitle": {
+        "other": "{email} adresine bir kod gönderdik"
+      },
+      "codePlaceholder": {
+        "other": "Doğrulama kodu"
+      },
+      "submitButton": {
+        "other": "Oturum aç"
+      },
+      "verifyingLabel": {
+        "other": "Doğrulanıyor"
+      },
+      "or": {
+        "other": "veya"
+      },
+      "resendCode": {
+        "other": "Kodu tekrar gönder"
+      },
+      "resentLabel": {
+        "other": "Yeniden gönderildi"
+      },
+      "errorGeneric": {
+        "other": "Bir şeyler ters gitti. Tekrar deneyin."
+      },
+      "errorBadCode": {
+        "other": "Bu kod eşleşmedi."
+      },
+      "errorRateLimited": {
+        "other": "Çok fazla deneme. Biraz bekleyin."
+      },
+      "securedBy": {
+        "other": "Güvenliği sağlayan: "
+      },
+      "verbLogin": {
+        "other": "Giriş yap"
+      },
+      "titleLogin": {
+        "other": "{app} uygulamasına giriş yap"
+      },
+      "bootstrapErrorTitle": {
+        "other": "Oturum açma yüklenemedi"
+      },
+      "bootstrapErrorBody": {
+        "other": "Geçersiz {clientIdToken} veya bu alan adı için izin verilmeyen bir kaynak. Konsolu açın, Uygulamanız, Kimlik Bilgileri bölümünden {clientIdToken} değerini doğrulayın, ardından bu kaynağı İzin verilen kaynaklara ekleyin."
+      },
+      "identifierPlaceholderEmailOrUsername": {
+        "other": "E-posta veya kullanıcı adı"
+      },
+      "identifierPlaceholderUsername": {
+        "other": "Kullanıcı adı"
+      },
+      "identifierPlaceholderEmail": {
+        "other": "E-postanızı girin"
+      },
+      "errorNetwork": {
+        "other": "Bağlantı sorunu. Tekrar deneyin."
+      },
+      "errorPasskeyVerify": {
+        "other": "Geçiş anahtarı doğrulaması başarısız oldu."
+      },
+      "errorPasskeyAdd": {
+        "other": "Geçiş anahtarı eklenemedi. Tekrar deneyin veya şimdilik atlayın."
+      },
+      "visitAppWebsite": {
+        "other": "{app} web sitesini ziyaret et"
+      },
+      "passkeyOnboardingTitleSignin": {
+        "other": "Bir dahaki sefere daha hızlı oturum açın"
+      },
+      "passkeyOnboardingTitleLogin": {
+        "other": "Bir dahaki sefere daha hızlı giriş yapın"
+      },
+      "recoverTitle": {
+        "other": "{app} uygulamasına tekrar hoş geldiniz"
+      },
+      "appNameFallback": {
+        "other": "uygulamanız"
+      },
+      "legalAppFallback": {
+        "other": "uygulama"
+      },
+      "passkeyOnboardingSubtitle": {
+        "other": "Touch ID, Face ID veya güvenlik anahtarınız. Artık e-posta kodu yok."
+      },
+      "recoverSubtitle": {
+        "other": "Geri dönmek mi yoksa uzak kalmak mı istediğinizi seçin."
+      },
+      "identifierSubtitle": {
+        "other": "Nasıl devam etmek istediğinizi seçin."
+      },
+      "verifyButton": {
+        "other": "Doğrula"
+      },
+      "useDifferentEmail": {
+        "other": "Farklı bir e-posta kullan"
+      },
+      "resendInSeconds": {
+        "other": "{seconds}sn içinde tekrar gönder"
+      },
+      "passkeyBullet1": {
+        "other": "Artık parola veya e-posta kodu yok"
+      },
+      "passkeyBullet2": {
+        "other": "Kimlik avına karşı dayanıklı. Yalnızca bu sitede çalışır."
+      },
+      "passkeyBullet3": {
+        "other": "iCloud, Google veya 1Password üzerinden cihazlarınız arasında senkronize olur"
+      },
+      "addPasskeyCta": {
+        "other": "Geçiş anahtarı ekle"
+      },
+      "skipForNow": {
+        "other": "Şimdilik atla"
+      },
+      "previewEmptyMethods": {
+        "other": "Oturum açmayı önizlemek için en az bir yöntemi etkinleştirin."
+      },
+      "googleButtonShort": {
+        "other": "Google"
+      },
+      "passkeyButtonShort": {
+        "other": "Geçiş anahtarı"
+      },
+      "legalIntro": {
+        "other": "Devam ederek {app} uygulamasının şu şartlarını kabul edersiniz:"
+      },
+      "termsOfService": {
+        "other": "Hizmet Şartları"
+      },
+      "privacyPolicy": {
+        "other": "Gizlilik Politikası"
+      },
+      "framedPreviewLabel": {
+        "other": "Bu bir önizlemedir"
+      },
+      "errorTooRecentWithSeconds": {
+        "other": "Yeni bir kod istemeden önce {seconds}sn bekleyin."
+      },
+      "errorTooRecent": {
+        "other": "Yeni bir kod istemeden önce biraz bekleyin."
+      },
+      "errorTooManyWithRetry": {
+        "other": "Bu e-postaya çok fazla kod gönderildi. {retry} sonra tekrar deneyin."
+      },
+      "errorTooMany": {
+        "other": "Bu e-postaya çok fazla kod gönderildi. Daha sonra tekrar deneyin."
+      },
+      "errorInvalidCode": {
+        "other": "Bu kod işe yaramadı. Tekrar deneyin."
+      },
+      "errorExpired": {
+        "other": "Bu kodun süresi doldu. Yeni bir kod gönderin."
+      },
+      "errorSendFailed": {
+        "other": "E-posta gönderilemedi. Adresi kontrol edin."
+      },
+      "errorUserPaused": {
+        "other": "Erişiminiz duraklatıldı. Destek ile iletişime geçin."
+      },
+      "errorUserBanned": {
+        "other": "Erişim reddedildi."
+      },
+      "errorUsernameNotFound": {
+        "other": "Burada bu kullanıcı adına sahip bir hesap yok."
+      },
+      "errorMethodDisabled": {
+        "other": "Bu oturum açma yöntemi bu uygulama için etkin değil."
+      },
+      "errorGraceExpired": {
+        "other": "Geri yükleme için 90 günlük süre kapandı."
+      },
+      "errorSessionEnded": {
+        "other": "Oturumunuz sona erdi. Tekrar oturum açın."
+      }
+    },
+    "sessions": {
+      "title": {
+        "other": "Oturumlarınız"
+      },
+      "empty": {
+        "other": "Burada aktif oturum yok."
+      },
+      "currentBadge": {
+        "other": "Bunda oturum açık kalsın"
+      },
+      "revokeOne": {
+        "other": "Oturumu kapat"
+      },
+      "revokeOthersCta": {
+        "other": "Diğer cihazlardan çıkış yap"
+      },
+      "revokeAllCta": {
+        "other": "Her yerde oturumu kapat"
+      },
+      "confirmOthersTitle": {
+        "other": "Diğer cihazlardan çıkış yapılsın mı?"
+      },
+      "confirmOthersBody": {
+        "other": "Hangi oturumların sonlandırılacağını seçin. Dokunduğunuz anda her biri iptal edilir ve o cihazdaki her sekme saniyeler içinde oturum kapalı duruma düşer."
+      },
+      "confirmAllTitle": {
+        "other": "Her yerde oturumu kapat?"
+      },
+      "confirmAllBody": {
+        "other": "Bu cihaz da dahil. Sonrasında tekrar oturum açmaya yönlendirileceksiniz."
+      },
+      "doneTitle": {
+        "other": "Oturum kapatıldı"
+      },
+      "doneCount": {
+        "one": "{count} cihazda oturum kapatıldı.",
+        "other": "{count} cihazda oturum kapatıldı."
+      },
+      "errorLoad": {
+        "other": "Oturumlar yüklenemedi."
+      },
+      "errorRevoke": {
+        "other": "İptal edilemedi. Tekrar deneyin."
+      },
+      "errorMassRevoke": {
+        "other": "Oturum kapatılamadı. Tekrar deneyin."
+      },
+      "thisDeviceBadge": {
+        "other": "bu cihaz"
+      },
+      "deviceLine": {
+        "other": "{os} üzerinde {browser}"
+      },
+      "massRevokeCtaSelf": {
+        "other": "Beni bu cihazdan çıkar"
+      },
+      "massRevokeCtaOpen": {
+        "other": "Cihazlardan çıkış yap..."
+      },
+      "confirmChooserTitle": {
+        "other": "Nereden çıkış yapılsın?"
+      },
+      "confirmChooserBody": {
+        "other": "Hangi oturumların sonlandırılacağını seçin. Dokunduğunuz anda her biri iptal edilir ve o cihazdaki her sekme bir sonraki isteğinde oturum kapalı olur."
+      },
+      "signOutOtherDevicesCount": {
+        "one": "Diğer {count} cihazdan çıkış yap",
+        "other": "Diğer {count} cihazdan çıkış yap"
+      },
+      "signOutAllCtaSelf": {
+        "other": "Beni bu cihazdan çıkar"
+      },
+      "signOutAllCtaIncludingThis": {
+        "other": "Her yerde, bu cihazda da çıkış yap"
+      },
+      "signOutAllRedirectHint": {
+        "other": "Hemen ardından oturum açma sayfasına yönleneceksiniz"
+      },
+      "confirmTokensFootnote": {
+        "other": "Daha önce verilmiş tokenlar reddedilmeye devam eder. Geri alma yok, ancak herhangi bir cihazdan tekrar oturum açmak sorunsuz çalışır."
+      },
+      "doneAlreadyAlone": {
+        "other": "Zaten yalnızca bu var."
+      },
+      "doneFootnote": {
+        "other": "Mevcut cihazınızda oturumunuz hala açık. Diğer sekmeler bir sonraki isteklerinde dışarı çıkarılacak."
+      },
+      "backToList": {
+        "other": "Oturumlarıma dön"
+      },
+      "methodSignIn": {
+        "other": "Oturum açma"
+      },
+      "methodEmailCode": {
+        "other": "E-posta kodu"
+      },
+      "methodPasskey": {
+        "other": "Geçiş anahtarı"
+      },
+      "relativeJustNow": {
+        "other": "az önce"
+      },
+      "relativeMinutesAgo": {
+        "other": "{count}dk önce"
+      },
+      "relativeHoursAgo": {
+        "other": "{count}sa önce"
+      },
+      "relativeDaysAgo": {
+        "other": "{count}g önce"
+      }
+    },
+    "avatar": {
+      "replace": {
+        "other": "Değiştir"
+      },
+      "removePhoto": {
+        "other": "Fotoğrafı kaldır"
+      },
+      "removeConfirmTitle": {
+        "other": "Fotoğrafınızı kaldırmak istiyor musunuz?"
+      },
+      "removeConfirmBody": {
+        "other": "Baş harflerinize geri dönülür."
+      },
+      "uploading": {
+        "other": "Yükleniyor"
+      },
+      "cropTitle": {
+        "other": "Kırp"
+      },
+      "cropApply": {
+        "other": "Uygula"
+      },
+      "errorTooLarge": {
+        "other": "Görsel çok büyük. {limitMb} MB altında seçin."
+      },
+      "errorBadType": {
+        "other": "Bir PNG, JPG veya WebP görseli seçin."
+      },
+      "uploadFailed": {
+        "other": "Fotoğraf yüklenemedi. Farklı bir görsel deneyin."
+      },
+      "removeFailed": {
+        "other": "Fotoğraf kaldırılamadı."
+      },
+      "editPhotoAria": {
+        "other": "Fotoğrafınızı düzenleyin"
+      },
+      "addPhotoAria": {
+        "other": "Fotoğraf ekle"
+      },
+      "confirmRemoveAria": {
+        "other": "Kaldırmayı onayla"
+      },
+      "replacePhotoAria": {
+        "other": "Fotoğrafı değiştir"
+      },
+      "uploadPhotoAria": {
+        "other": "Fotoğraf yükle"
+      },
+      "useThisCropAria": {
+        "other": "Bu kırpmayı kullan"
+      }
+    },
+    "banner": {
+      "replace": {
+        "other": "Değiştir"
+      },
+      "removeBanner": {
+        "other": "Afişi kaldır"
+      },
+      "removeConfirmTitle": {
+        "other": "Afişinizi kaldırmak istiyor musunuz?"
+      },
+      "removeConfirmBody": {
+        "other": "Gradyan yer tutucusuna geri dönülür."
+      },
+      "uploading": {
+        "other": "Yükleniyor"
+      },
+      "cropTitle": {
+        "other": "Afişi kırp"
+      },
+      "cropApply": {
+        "other": "Uygula"
+      },
+      "errorUpload": {
+        "other": "Afiş yüklenemedi. Farklı bir görsel deneyin."
+      },
+      "errorRemove": {
+        "other": "Afiş kaldırılamadı."
+      },
+      "previewAlt": {
+        "other": "Önizleme afişi"
+      },
+      "cropUse": {
+        "other": "Kullan"
+      },
+      "cropUseAria": {
+        "other": "Bu kırpmayı kullan"
+      },
+      "editAria": {
+        "other": "Afişi düzenle"
+      },
+      "addAria": {
+        "other": "Afiş ekle"
+      },
+      "uploadAria": {
+        "other": "Afiş yükle"
+      },
+      "confirmRemoveAria": {
+        "other": "Kaldırmayı onayla"
+      },
+      "confirmRemoveHint": {
+        "other": "Onaylamak için tekrar tıklayın"
+      }
+    },
+    "username": {
+      "title": {
+        "other": "Bir kullanıcı adı seçin"
+      },
+      "placeholder": {
+        "other": "kullanıcı adı"
+      },
+      "checking": {
+        "other": "Kontrol ediliyor"
+      },
+      "available": {
+        "other": "Uygun"
+      },
+      "taken": {
+        "other": "Alınmış"
+      },
+      "tooShort": {
+        "other": "Çok kısa"
+      },
+      "tooLong": {
+        "other": "Çok uzun"
+      },
+      "badChars": {
+        "other": "Yalnızca harfler, rakamlar, tireler"
+      },
+      "reserved": {
+        "other": "Ayrılmış"
+      },
+      "subtitle": {
+        "other": "Bu, insanların sizi {app} üzerinde nasıl gördüğüdür."
+      },
+      "subtitleNoApp": {
+        "other": "Bu, insanların sizi nasıl gördüğüdür."
+      },
+      "label": {
+        "other": "Kullanıcı adı"
+      },
+      "exampleHandle": {
+        "other": "adiniz"
+      },
+      "rulesHint": {
+        "other": "4 ila 30 karakter, a ile z arası, 0 ile 9 arası, nokta, alt çizgi. Bir harfle başlamalıdır."
+      },
+      "availableHint": {
+        "other": "İyi görünüyor. Bu sizin."
+      },
+      "suggestionsHeading": {
+        "other": "Öneriler"
+      },
+      "claimCta": {
+        "other": "@{handle} adını al"
+      },
+      "yournameFallback": {
+        "other": "adiniz"
+      },
+      "reasonBlank": {
+        "other": "Bir kullanıcı adı seçin."
+      },
+      "reasonTooShort": {
+        "other": "En az 4 karakter."
+      },
+      "reasonTooLong": {
+        "other": "En fazla 30 karakter."
+      },
+      "reasonOnlyNumbers": {
+        "other": "Tamamı rakam olamaz."
+      },
+      "reasonBadStart": {
+        "other": "Bir harfle başlamalıdır."
+      },
+      "reasonBadChars": {
+        "other": "Yalnızca a ile z arası, 0 ile 9 arası, nokta, alt çizgi."
+      },
+      "reasonConsecutiveSpecial": {
+        "other": "Üst üste iki nokta veya alt çizgi olamaz."
+      },
+      "reasonTrailingSpecial": {
+        "other": "Nokta veya alt çizgi ile bitemez."
+      },
+      "reasonTaken": {
+        "other": "Bu alınmış."
+      },
+      "reasonInvalid": {
+        "other": "Bu kullanıcı adı geçerli değil."
+      },
+      "errorJustTaken": {
+        "other": "Bu kullanıcı adı az önce alındı. Başka birini seçin."
+      },
+      "errorFormat": {
+        "other": "Bu kullanıcı adı kurallara uymuyor."
+      },
+      "errorSaveFailed": {
+        "other": "Kaydedilemedi. Tekrar deneyin."
+      },
+      "errorNetwork": {
+        "other": "Bağlantı sorunu. Tekrar deneyin."
+      },
+      "ruleLength": {
+        "other": "{min} ile {max} karakter arası"
+      },
+      "ruleChars": {
+        "other": "küçük harfler, rakamlar, nokta, alt çizgi"
+      },
+      "ruleStartEnd": {
+        "other": "bir harfle başla, bir harf veya rakamla bitir"
+      },
+      "ruleNoDoubles": {
+        "other": "üst üste iki özel karakter yok, ayrılmış kelimeler yok"
+      },
+      "confirmHeading": {
+        "other": "Değişikliği onayla"
+      },
+      "notSet": {
+        "other": "Ayarlanmadı"
+      },
+      "confirmBody": {
+        "other": "Bu uygulamaya bu kullanıcı adıyla giriş yapan herkes siz olacaksınız. İstediğiniz zaman tekrar değiştirebilirsiniz."
+      },
+      "confirmCta": {
+        "other": "Değişikliği onayla"
+      },
+      "doneTitle": {
+        "other": "{appName} üzerinde @{username} sizsiniz."
+      },
+      "doneBody": {
+        "other": "Kaydettik. Bu yüzeyi kullanmaya devam edebilir veya hazır olduğunuzda geri dönebilirsiniz."
+      },
+      "changeAgain": {
+        "other": "Tekrar değiştir"
+      },
+      "disabledMailSubject": {
+        "other": "{appName} üzerinde kullanıcı adı ile oturum açmayı yeniden etkinleştir"
+      },
+      "disabledContactSupport": {
+        "other": "{appName} desteği ile iletişime geç"
+      },
+      "disabledEmailSupport": {
+        "other": "{appName} adresine e-posta gönder"
+      },
+      "disabledTitle": {
+        "other": "{appName} üzerinde kullanıcı adları kapalı."
+      },
+      "disabledBody": {
+        "other": "Uygulama sahibi şu anda kullanıcı adıyla oturum açmayı devre dışı bırakmış, bu yüzden burada kullanıcı adınızı ayarlamanıza veya değiştirmenize izin veremeyiz."
+      },
+      "disabledStillHave": {
+        "other": "Önceden sahip olduğunuz @{current} hala sizde. Uygulama sahibi özelliği tekrar açana kadar üyeliğinizde kalır."
+      },
+      "disabledNoSupport": {
+        "other": "Uygulama henüz bir destek iletişimi yayınlamadı. Onlarla genellikle kullandığınız kanal üzerinden iletişime geçin."
+      },
+      "disabledHint": {
+        "other": "Konsol, Oturum açma yöntemleri bölümünden kullanıcı adıyla oturum açmayı tekrar açmalarını isteyin. Bunu yaptıklarında buraya gelip bir kullanıcı adı seçebilirsiniz."
+      },
+      "idleCurrent": {
+        "other": "Şu anda @{current}. Değiştirmek için farklı bir şey yazın."
+      },
+      "idleEmpty": {
+        "other": "Bu uygulamadaki diğer kişilerin sizi bulmak için kullanabileceği bir ad seçin."
+      },
+      "formatGeneric": {
+        "other": "Aşağıdaki kurallara uymuyor."
+      },
+      "takenLine": {
+        "other": "Bu uygulamada başka biri zaten @{username} adına sahip."
+      },
+      "currentLine": {
+        "other": "Bu zaten burada sahip olduğunuz kullanıcı adı."
+      },
+      "availableLine": {
+        "other": "@{username} uygun."
+      },
+      "reasonMustStartLetter": {
+        "other": "Bir harfle başlamalıdır."
+      },
+      "reasonMustEndAlnum": {
+        "other": "Bir harf veya rakamla bitmelidir."
+      },
+      "reasonNoDoubleSpecial": {
+        "other": "Üst üste iki nokta veya alt çizgi olamaz."
+      },
+      "reasonReserved": {
+        "other": "Bu kullanıcı adı ayrılmıştır. Başka birini seçin."
+      },
+      "appNameFallback": {
+        "other": "uygulamanız"
+      }
+    },
+    "identity": {
+      "title": {
+        "other": "Profiliniz"
+      },
+      "fullName": {
+        "other": "Tam ad"
+      },
+      "birthdate": {
+        "other": "Doğum tarihi"
+      },
+      "gender": {
+        "other": "Cinsiyet"
+      },
+      "pronouns": {
+        "other": "Zamirler"
+      },
+      "save": {
+        "other": "Profili kaydet"
+      },
+      "saved": {
+        "other": "Kaydedildi"
+      },
+      "genderMale": {
+        "other": "Erkek"
+      },
+      "genderFemale": {
+        "other": "Kadın"
+      },
+      "genderNonBinary": {
+        "other": "İkili olmayan"
+      },
+      "genderPreferNotToSay": {
+        "other": "Söylemeyi tercih etmiyorum"
+      },
+      "pronounSheHer": {
+        "other": "O / ona (kadın)"
+      },
+      "pronounHeHim": {
+        "other": "O / ona (erkek)"
+      },
+      "pronounTheyThem": {
+        "other": "Onlar / onlara"
+      },
+      "pronounOther": {
+        "other": "Diğer"
+      },
+      "pronounPreferNotToSay": {
+        "other": "Söylemeyi tercih etmiyorum"
+      },
+      "errorSaveFailed": {
+        "other": "Kaydedilemedi."
+      },
+      "givenName": {
+        "other": "Ad"
+      },
+      "givenNamePlaceholder": {
+        "other": "Ayşe"
+      },
+      "familyName": {
+        "other": "Soyad"
+      },
+      "familyNamePlaceholder": {
+        "other": "Yılmaz"
+      },
+      "pronounsOptional": {
+        "other": "Zamirler (isteğe bağlı)"
+      }
+    },
+    "region": {
+      "title": {
+        "other": "Bölgenizi seçin"
+      },
+      "yourRegion": {
+        "other": "Bölgeniz"
+      },
+      "country": {
+        "other": "Ülke"
+      },
+      "uiLocale": {
+        "other": "Dil"
+      },
+      "currency": {
+        "other": "Para birimi"
+      },
+      "firstDayOfWeek": {
+        "other": "Haftanın ilk günü"
+      },
+      "timeZone": {
+        "other": "Saat dilimi"
+      },
+      "save": {
+        "other": "Bölgeyi kaydet"
+      },
+      "confirmTitle": {
+        "other": "Bölge değiştirilsin mi?"
+      },
+      "confirmBody": {
+        "other": "Ülke değişikliği para birimini ve haftanın ilk gününü de etkiler."
+      },
+      "errorSaveFailed": {
+        "other": "Bölge kaydedilemedi."
+      },
+      "emptyHint": {
+        "other": "Arayüz dili, saat dilimi, para birimi ve tarih biçimi ülkenize göre belirlenir."
+      },
+      "whereDoYouLive": {
+        "other": "Nerede yaşıyorsunuz?"
+      },
+      "cascadeHint": {
+        "other": "Arayüz dilinizi, saat diliminizi, para biriminizi ve tarih biçiminizi buna göre ayarlayacağız. Her birini daha sonra geçersiz kılabilirsiniz."
+      },
+      "cascadeResetTitle": {
+        "other": "Her şey {country} için sıfırlansın mı?"
+      },
+      "cascadeResetBody": {
+        "other": "{currentFlag} {currentName} ülkesinden {nextFlag} {nextName} ülkesine geçiyorsunuz. Arayüz dili, saat dilimi, para birimi, tarih biçimi ve birimler {nextName} için varsayılanlara sıfırlanır. Özel düzenlemeleriniz (varsa) üzerine yazılır."
+      },
+      "cascadeFallbackCountry": {
+        "other": "yeni ülke"
+      },
+      "uiLanguageLabel": {
+        "other": "Arayüz dili"
+      },
+      "dateLabel": {
+        "other": "Tarih"
+      },
+      "timeLabel": {
+        "other": "Saat"
+      },
+      "unitsLabel": {
+        "other": "Birimler"
+      },
+      "resetDefaults": {
+        "other": "Varsayılanları sıfırla"
+      },
+      "savedLabel": {
+        "other": "Kaydedildi"
+      },
+      "changeCountryAria": {
+        "other": "Ülkeyi değiştir"
+      },
+      "setTimeZonePlaceholder": {
+        "other": "Saat dilimini ayarla"
+      },
+      "timeFormat": {
+        "other": "Saat biçimi"
+      },
+      "dateFormat": {
+        "other": "Tarih biçimi"
+      },
+      "numberFormat": {
+        "other": "Sayı biçimi"
+      },
+      "numbersLabel": {
+        "other": "Sayılar"
+      },
+      "weekStartsLabel": {
+        "other": "Hafta başlangıcı"
+      },
+      "weekStartsOnTitle": {
+        "other": "Hafta şu gün başlar"
+      },
+      "weekStartsHint": {
+        "other": "Takvimleri, hafta seçicileri ve haftalık raporları etkiler."
+      },
+      "pickOneHint": {
+        "other": "Size doğru gelen birini seçin."
+      },
+      "uiLanguageTitle": {
+        "other": "Arayüz dili"
+      },
+      "uiLanguageHint": {
+        "other": "elvix tabanlı uygulamaların sizinle hangi dilde konuşacağı."
+      },
+      "languageSearchPlaceholder": {
+        "other": "English, Deutsch, fa..."
+      },
+      "currencyHint": {
+        "other": "elvix tabanlı uygulamalardaki fiyatlar, faturalar ve ödemeler için varsayılan."
+      },
+      "currencySearchPlaceholder": {
+        "other": "EUR, dolar, real..."
+      },
+      "timeZoneHint": {
+        "other": "Planlama, \"sizin saatinizle 09.00\" ve haftalık raporlar için kullanılır."
+      },
+      "timeZoneSearchPlaceholder": {
+        "other": "Berlin, Tahran, Pasifik..."
+      }
+    },
+    "languages": {
+      "title": {
+        "other": "Konuştuğunuz diller"
+      },
+      "addLanguage": {
+        "other": "Bir dil ekle"
+      },
+      "limitReached": {
+        "other": "En fazla {limit} dil listeleyebilirsiniz."
+      },
+      "level": {
+        "other": "Seviye"
+      },
+      "remove": {
+        "other": "Kaldır"
+      },
+      "saveLevel": {
+        "other": "Seviyeyi kaydet"
+      },
+      "updatingLevel": {
+        "other": "Seviye güncelleniyor"
+      },
+      "addingLanguage": {
+        "other": "Dil ekleniyor"
+      },
+      "removing": {
+        "other": "Kaldırılıyor"
+      },
+      "emptyHint": {
+        "other": "Arayüz varsayılanları, işler ve giden mesajlar için."
+      },
+      "searchHint": {
+        "other": "İngilizce ad, yerel ad veya ISO koduna göre arayın."
+      },
+      "searchPlaceholder": {
+        "other": "English, Deutsch, fa"
+      },
+      "takenBadge": {
+        "other": "eklendi"
+      },
+      "levelPickTitle": {
+        "other": "{language} dilini ne kadar iyi konuşuyorsunuz?"
+      },
+      "thisLanguageFallback": {
+        "other": "bu dil"
+      },
+      "levelPickSubtitle": {
+        "other": "Size uygun gelen seviyeyi seçin. Daha sonra değiştirebilirsiniz."
+      },
+      "errorAlreadyAdded": {
+        "other": "Bu dili zaten eklemişsiniz. Seviyesini listeden düzenleyin."
+      },
+      "removeConfirmTitle": {
+        "other": "{language} kaldırılsın mı?"
+      },
+      "removeConfirmBody": {
+        "other": "{language} dilini hedefleyen uygulamalar artık size bu dilde ulaşamayacak. İstediğiniz zaman tekrar ekleyebilirsiniz."
+      },
+      "keepCta": {
+        "other": "Tut"
+      },
+      "addAnother": {
+        "other": "Başka bir dil ekle"
+      }
+    },
+    "addressBook": {
+      "title": {
+        "other": "Adresleriniz"
+      },
+      "empty": {
+        "other": "Henüz adres yok."
+      },
+      "addCta": {
+        "other": "Bir adres ekle"
+      },
+      "makeDefault": {
+        "other": "Varsayılan yap"
+      },
+      "defaultBadge": {
+        "other": "Varsayılan"
+      },
+      "remove": {
+        "other": "Kaldır"
+      },
+      "removeConfirmTitle": {
+        "other": "Bu adres kaldırılsın mı?"
+      },
+      "savingLabel": {
+        "other": "Adres kaydediliyor."
+      },
+      "deletingLabel": {
+        "other": "Adres siliniyor."
+      },
+      "addBilling": {
+        "other": "Fatura adresi ekle"
+      },
+      "addShipping": {
+        "other": "Teslimat adresi ekle"
+      },
+      "useForBilling": {
+        "other": "Bunu faturalar ve makbuzlar için kullanacağız."
+      },
+      "useForShipping": {
+        "other": "Bunu teslimatlar ve teslim almalar için kullanacağız."
+      },
+      "addAnotherBilling": {
+        "other": "Başka bir fatura adresi ekle"
+      },
+      "addAnotherShipping": {
+        "other": "Başka bir teslimat adresi ekle"
+      },
+      "atCompany": {
+        "other": "{company} şirketinde"
+      },
+      "setAsDefault": {
+        "other": "Varsayılan olarak ayarla"
+      },
+      "removeDefault": {
+        "other": "Varsayılanı kaldır"
+      },
+      "deleteAddress": {
+        "other": "Adresi sil"
+      },
+      "newBillingAddress": {
+        "other": "Yeni fatura adresi"
+      },
+      "newShippingAddress": {
+        "other": "Yeni teslimat adresi"
+      },
+      "searchPrompt": {
+        "other": "Adresinizi yazmaya başlayın"
+      },
+      "searchPlaceholder": {
+        "other": "221B Baker Street, Londra."
+      },
+      "searchError": {
+        "other": "Aranamadı: {error}"
+      },
+      "noMatchesKeepTyping": {
+        "other": "Henüz eşleşme yok. Yazmaya devam edin."
+      },
+      "aptFloorEyebrow": {
+        "other": "Daire, kat, suite"
+      },
+      "aptFloorTitle": {
+        "other": "Daire, suite veya kat?"
+      },
+      "aptFloorBodyBilling": {
+        "other": "Haritalar nadiren daire numaralarını yakalar. Adrese ikinci bir satır ekler."
+      },
+      "aptFloorBodyShipping": {
+        "other": "Kargo şirketleri daire bilgisi olmadan yanlış yönlendirir. Gerekli değilse atlayın."
+      },
+      "line2Label": {
+        "other": "Adres satırı 2 (isteğe bağlı)"
+      },
+      "line2Placeholder": {
+        "other": "Daire 4B, 3. kat, Suite 200."
+      },
+      "step2of3": {
+        "other": "3 adımdan 2."
+      },
+      "recipientTitleBilling": {
+        "other": "Bu fatura adresi kimin için?"
+      },
+      "recipientTitleShipping": {
+        "other": "Bu teslimat adresi kimin için?"
+      },
+      "recipientSubtitleBilling": {
+        "other": "Faturadaki ad."
+      },
+      "recipientSubtitleShipping": {
+        "other": "Paketteki ad."
+      },
+      "someoneElseSubtitleBilling": {
+        "other": "Fatura için farklı bir ad"
+      },
+      "someoneElseSubtitleShipping": {
+        "other": "Başka birine gönderim"
+      },
+      "businessSubtitleBilling": {
+        "other": "Şirkete fatura kes (B2B)"
+      },
+      "businessSubtitleShipping": {
+        "other": "Bir şirkete veya iş yerine gönder"
+      },
+      "saveError": {
+        "other": "Kaydedilemedi: {error}"
+      },
+      "recipientCustomTitle": {
+        "other": "Alıcı kim?"
+      },
+      "recipientCustomSubtitleBilling": {
+        "other": "Faturada görünecek ad."
+      },
+      "recipientCustomSubtitleShipping": {
+        "other": "Pakette görünecek ad."
+      },
+      "recipientPlaceholder": {
+        "other": "Ayşe Yılmaz"
+      },
+      "businessStep1of2": {
+        "other": "İşletme, 2 adımdan 1."
+      },
+      "companyNameTitle": {
+        "other": "Şirket adı nedir?"
+      },
+      "companyNameBodyBilling": {
+        "other": "Faturada görünür. Daha sonra B2B vergi işlemleri için gereklidir."
+      },
+      "companyNameBodyShipping": {
+        "other": "Paketi alacak şirket."
+      },
+      "companyNamePlaceholder": {
+        "other": "Edvone"
+      },
+      "businessStep2of2": {
+        "other": "İşletme, 2 adımdan 2."
+      },
+      "contactAtCompanyTitle": {
+        "other": "{company} şirketinde özellikle biri var mı?"
+      },
+      "attnBodyInvoice": {
+        "other": "Faturaya bir \"Dikkatine:\" satırı ekler. Şirkete hitaben yapmak için atlayın."
+      },
+      "attnBodyPackage": {
+        "other": "Pakete bir \"Dikkatine:\" satırı ekler. Şirkete hitaben yapmak için atlayın."
+      },
+      "contactPersonOptional": {
+        "other": "İletişim kişisi (isteğe bağlı)"
+      },
+      "skip": {
+        "other": "Atla"
+      },
+      "noteChoiceTitle": {
+        "other": "Bir teslimat notu eklemek ister misiniz?"
+      },
+      "noteChoiceBodyBilling": {
+        "other": "Faturalama ekibinin bilmesi gereken her şey. Dikkatine satırı, sipariş numarası, biri aracılığıyla."
+      },
+      "noteChoiceBodyShipping": {
+        "other": "Kuryeye yönelik her şey. Zil, kapı kodu, kapıya bırakma."
+      },
+      "noteYesTitle": {
+        "other": "Evet, bir not ekle"
+      },
+      "noteYesSubtitle": {
+        "other": "Kısa bir talimat yazın"
+      },
+      "noteNoTitle": {
+        "other": "Hayır, atla"
+      },
+      "noteNoSubtitle": {
+        "other": "Adresi olduğu gibi kaydet"
+      },
+      "noteLastStep": {
+        "other": "Not, son adım"
+      },
+      "noteInputTitle": {
+        "other": "Ne diyelim?"
+      },
+      "noteInputBodyBilling": {
+        "other": "Faturada veya faturalama kaydında görünür."
+      },
+      "noteInputBodyShipping": {
+        "other": "Teslimat kuryesine iletilir."
+      },
+      "billingNote": {
+        "other": "Faturalama notu"
+      },
+      "deliveryNote": {
+        "other": "Teslimat notu"
+      },
+      "notePlaceholderBilling": {
+        "other": "Dikkatine: Finans, Sipariş No #ABC-1234."
+      },
+      "notePlaceholderShipping": {
+        "other": "3 numaralı zile basın, evde yoksa kapıcıya bırakın."
+      },
+      "backToList": {
+        "other": "Listeye dön"
+      },
+      "billingAddressLabel": {
+        "other": "fatura adresi"
+      },
+      "shippingAddressLabel": {
+        "other": "teslimat adresi"
+      },
+      "sectionWho": {
+        "other": "Kim"
+      },
+      "sectionWhere": {
+        "other": "Nerede"
+      },
+      "sectionNotesMeta": {
+        "other": "Notlar ve meta"
+      },
+      "fieldRecipient": {
+        "other": "Alıcı"
+      },
+      "fieldCompany": {
+        "other": "Şirket"
+      },
+      "addCompanyPlaceholder": {
+        "other": "Bir şirket ekle"
+      },
+      "fieldStreet": {
+        "other": "Sokak"
+      },
+      "fieldAptFloor": {
+        "other": "Daire veya kat"
+      },
+      "addUnitPlaceholder": {
+        "other": "Bir daire ekle"
+      },
+      "fieldCity": {
+        "other": "Şehir"
+      },
+      "fieldPostalCode": {
+        "other": "Posta kodu"
+      },
+      "fieldRegion": {
+        "other": "Bölge"
+      },
+      "fieldCountry": {
+        "other": "Ülke"
+      },
+      "fieldDeliveryNotes": {
+        "other": "Teslimat notları"
+      },
+      "addNotePlaceholder": {
+        "other": "Bir not ekle"
+      },
+      "fieldTimezone": {
+        "other": "Saat dilimi"
+      },
+      "fieldVenue": {
+        "other": "Mekan veya bina"
+      },
+      "nothingToChange": {
+        "other": "Değiştirilecek bir şey yok"
+      },
+      "setDefaultTitle": {
+        "other": "Bu sizin varsayılanınız olarak ayarlansın mı?"
+      },
+      "removeDefaultTitle": {
+        "other": "Bu adresten varsayılan kaldırılsın mı?"
+      },
+      "setDefaultSubtitle": {
+        "other": "Ödeme veya fatura sırasında otomatik seçim olacak."
+      },
+      "removeDefaultSubtitle": {
+        "other": "Ödeme veya fatura sırasında önceden hiçbir şey seçilmeyecek."
+      },
+      "crossAppHeadsUp": {
+        "other": "Dikkat. Bu, elvix ile kullandığınız her uygulamayı etkiler."
+      },
+      "crossAppDefaultBodySetting": {
+        "other": "Varsayılan {kind} adresiniz oturum açtığınız her uygulama arasında paylaşılır. Burada değiştirmek otomatik seçimi her yerde aynı anda günceller."
+      },
+      "crossAppDefaultBodyClearing": {
+        "other": "Varsayılan {kind} adresiniz oturum açtığınız her uygulama arasında paylaşılır. Bunu kaldırmak hiçbir yerde önceden adres seçilmeyeceği anlamına gelir; ödeme veya fatura sırasında her seferinde birini seçersiniz."
+      },
+      "nothingToDelete": {
+        "other": "Silinecek bir şey yok"
+      },
+      "deleteBillingHeader": {
+        "other": "Fatura adresini sil"
+      },
+      "deleteShippingHeader": {
+        "other": "Teslimat adresini sil"
+      },
+      "deleteConfirmTitle": {
+        "other": "Bu adres silinsin mi?"
+      },
+      "cantBeUndone": {
+        "other": "Bu geri alınamaz."
+      },
+      "crossAppDeleteBodyBilling": {
+        "other": "Fatura adresiniz elvix profilinizde bir kez saklanır ve oturum açtığınız uygulamalarla paylaşılır. Silme onu her yerden kaldırır. Bu adrese atıfta bulunan herhangi bir ödeme, fatura veya teslimat akışı yeni birine ihtiyaç duyacak."
+      },
+      "crossAppDeleteBodyShipping": {
+        "other": "Teslimat adresiniz elvix profilinizde bir kez saklanır ve oturum açtığınız uygulamalarla paylaşılır. Silme onu her yerden kaldırır. Bu adrese atıfta bulunan herhangi bir ödeme, fatura veya teslimat akışı yeni birine ihtiyaç duyacak."
+      },
+      "deleteError": {
+        "other": "Silinemedi: {error}"
+      },
+      "yesDelete": {
+        "other": "Evet, sil"
+      },
+      "pickAddressFirst": {
+        "other": "Önce bir adres seçin"
+      },
+      "changeAddress": {
+        "other": "Adresi değiştir"
+      },
+      "reviewBilling": {
+        "other": "Fatura adresini gözden geçir"
+      },
+      "reviewShipping": {
+        "other": "Teslimat adresini gözden geçir"
+      },
+      "notRight": {
+        "other": "Doğru değil"
+      },
+      "looksRight": {
+        "other": "Doğru görünüyor"
+      },
+      "missingFieldsHint": {
+        "other": "{fields} eksik. Teslim edilebilir bir adres kaydedebilmemiz için (sokak numarası dahil) daha spesifik bir öneri seçin."
+      }
+    },
+    "legalEntities": {
+      "title": {
+        "other": "Tüzel kişiler"
+      },
+      "addCta": {
+        "other": "Bir tüzel kişi ekle"
+      },
+      "companyName": {
+        "other": "Şirket adı"
+      },
+      "vatId": {
+        "other": "KDV Kimlik Numarası"
+      },
+      "taxCountry": {
+        "other": "Vergi ülkesi"
+      },
+      "verifyVat": {
+        "other": "KDV doğrula"
+      },
+      "verifying": {
+        "other": "Kontrol ediliyor"
+      },
+      "verifiedBadge": {
+        "other": "Doğrulandı"
+      },
+      "notRegistered": {
+        "other": "Kayıtlı değil"
+      },
+      "unreachable": {
+        "other": "Ulaşılamıyor"
+      },
+      "addCtaSubtitle": {
+        "other": "Faturalar, sözleşmeler ve vergi beyannameleri için."
+      },
+      "addAnotherCta": {
+        "other": "Başka bir tüzel kişi ekle"
+      },
+      "kindIndividual": {
+        "other": "Birey"
+      },
+      "kindSoleProp": {
+        "other": "Şahıs şirketi"
+      },
+      "kindCompany": {
+        "other": "Şirket"
+      },
+      "removeDefaultAria": {
+        "other": "Varsayılanı kaldır"
+      },
+      "setDefaultAria": {
+        "other": "Varsayılan olarak ayarla"
+      },
+      "deleteAria": {
+        "other": "Tüzel kişiyi sil"
+      },
+      "typeChoiceTitle": {
+        "other": "Bu ne tür bir tüzel kişi?"
+      },
+      "typeChoiceSubtitle": {
+        "other": "Bir sonraki adımda sorulacak soruları belirler."
+      },
+      "step1of3": {
+        "other": "3 adımdan 1."
+      },
+      "individualSubtitle": {
+        "other": "Sadece siz, işletme yok. Faturalar kişisel adınızla kesilir."
+      },
+      "soleProprietorshipSubtitle": {
+        "other": "Siz artı bir ticari ad (Einzelunternehmen, serbest meslek, vb.)."
+      },
+      "companySubtitle": {
+        "other": "Tescilli bir tüzel kişi (GmbH, Ltd, S.r.l. vb.)."
+      },
+      "legalNameTitleIndividual": {
+        "other": "Yasal adınız"
+      },
+      "legalNameTitleSoleProp": {
+        "other": "Yasal adınız (sahip)"
+      },
+      "legalNameTitleCompany": {
+        "other": "Şirketin yasal adı"
+      },
+      "legalNameSubtitleIndividual": {
+        "other": "Kimliğinizde göründüğü gibi."
+      },
+      "legalNameSubtitleSoleProp": {
+        "other": "İşi yürüten gerçek kişi."
+      },
+      "legalNameSubtitleCompany": {
+        "other": "Şirketin tescilli adı."
+      },
+      "legalNameLabel": {
+        "other": "Yasal ad"
+      },
+      "legalNamePlaceholderCompany": {
+        "other": "ACME GmbH"
+      },
+      "legalNamePlaceholderPerson": {
+        "other": "Ayşe Yılmaz"
+      },
+      "legalNameInvalidCompany": {
+        "other": "En az bir harf içeren en az 2 karakter girin."
+      },
+      "legalNameInvalidPerson": {
+        "other": "Hem ad hem soyadı girin."
+      },
+      "tradingNameTitle": {
+        "other": "Ticari ad (isteğe bağlı)"
+      },
+      "tradingNameSubtitle": {
+        "other": "Geschaeftsbezeichnung, DBA, iş yapma adı. Tüzel kişinin ticaret yaptığı marka."
+      },
+      "tradingNameLabel": {
+        "other": "Ticari ad"
+      },
+      "tradingNamePlaceholder": {
+        "other": "ACME Markaları"
+      },
+      "dobTitle": {
+        "other": "Doğum tarihi"
+      },
+      "dobSubtitle": {
+        "other": "Adınıza fatura kesmek ve müşteri daha sonra isterse KYC için gereklidir."
+      },
+      "dobAgeError": {
+        "other": "Bir tüzel kişi tescil ettirmek için 18 yaşında veya daha büyük olmalısınız."
+      },
+      "dobOutOfRange": {
+        "other": "Bu tarih aralık dışında."
+      },
+      "placeOfBirthTitle": {
+        "other": "Doğum yeri"
+      },
+      "placeOfBirthSubtitle": {
+        "other": "Kimliğinizde göründüğü gibi şehir. Faturalama ve KYC için gereklidir."
+      },
+      "placeOfBirthCityLabel": {
+        "other": "Şehir"
+      },
+      "placeOfBirthCityPlaceholder": {
+        "other": "Bir şehir yazmaya başlayın."
+      },
+      "placeChangeCta": {
+        "other": "Değiştir"
+      },
+      "placeSearchError": {
+        "other": "Aranamadı: {error}"
+      },
+      "nationalityTitle": {
+        "other": "Uyruk"
+      },
+      "nationalitySubtitle": {
+        "other": "Bir veya daha fazla seçin (en fazla {max}). İlki birincil olarak kabul edilir."
+      },
+      "nationalityPrimaryBadge": {
+        "other": "Birincil"
+      },
+      "nationalityCapReached": {
+        "other": "En fazla {max} uyruk sınırına ulaşıldı. Başka birini eklemek için birini kaldırın."
+      },
+      "removeCountryAria": {
+        "other": "{name} kaldır"
+      },
+      "taxCountryTitle": {
+        "other": "Vergi mukimliği"
+      },
+      "taxCountrySubtitle": {
+        "other": "Tüzel kişinin vergi beyannamesi verdiği yer. Sadece vergi kimliğini canlı doğrulayabildiğimiz ülkeler listelenir."
+      },
+      "taxIdsTitle": {
+        "other": "Vergi kimlikleri"
+      },
+      "taxIdsSubtitleIndividual": {
+        "other": "{country} ülkesinden yerel vergi numaranız. Olduğu gibi saklanır."
+      },
+      "taxIdsSubtitleIndividualFallback": {
+        "other": "vergi makamınız"
+      },
+      "taxIdsSubtitleCompany": {
+        "other": "KDV, {authority} kaynağına karşı canlı olarak doğrulanır. Yerel vergi numarası isteğe bağlıdır."
+      },
+      "taxIdsSubtitleCompanyFallback": {
+        "other": "yetkili makam"
+      },
+      "taxIdsSubtitleSoleProp": {
+        "other": "Her ikisi de isteğe bağlıdır. Faturalarda görünmesini istiyorsanız yerel vergi numarasını ekleyin; KDV yalnızca KDV mükellefiyseniz. İşletme tescili sonraki adımda alınır."
+      },
+      "localTaxNumberLabel": {
+        "other": "Yerel vergi numarası"
+      },
+      "vatCompanyIdLabel": {
+        "other": "KDV / şirket kimliği"
+      },
+      "blockReasonTaxIdRequired": {
+        "other": "Devam etmek için yerel vergi numarasını girin."
+      },
+      "blockReasonTaxIdFormat": {
+        "other": "Yerel vergi numarası {country} biçimine uymuyor. {hint}"
+      },
+      "blockReasonVatRequired": {
+        "other": "Devam etmek için bir KDV / şirket kimliği girin."
+      },
+      "blockReasonVatFormat": {
+        "other": "Bu KDV kimliği ülkenin biçimine uymuyor."
+      },
+      "taxIdFormatHint": {
+        "other": "Beklenen: {placeholder}."
+      },
+      "verifyHeadingChecking": {
+        "other": "Yetkili makam ile doğrulanıyor."
+      },
+      "verifyHeadingLive": {
+        "other": "Doğrulandı."
+      },
+      "verifyHeadingInvalid": {
+        "other": "Doğrulanamadı."
+      },
+      "verifyHeadingFormat": {
+        "other": "Yetkili makama ulaşılamıyor."
+      },
+      "verifySubtitleChecking": {
+        "other": "{vatId}, {country} sicilinde kontrol ediliyor."
+      },
+      "verifySubtitleLiveNamed": {
+        "other": "{authority}, bu KDV numarasını {name} olarak tanıdı."
+      },
+      "verifySubtitleLive": {
+        "other": "{authority} bu KDV numarasını tanıdı."
+      },
+      "verifySubtitleInvalid": {
+        "other": "{authority}, {vatId} numarasını kayıtlı olarak listelemiyor. Düzeltmek için geri dönün."
+      },
+      "verifySubtitleFormat": {
+        "other": "Şu anda {authority} kuruluşuna ulaşamadık. Kaydınız olduğu gibi saklanır ve otomatik olarak yeniden doğrulanır."
+      },
+      "authorityFallback": {
+        "other": "vergi makamı"
+      },
+      "editTaxIdsBackLabel": {
+        "other": "Vergi kimliklerini düzenle"
+      },
+      "fixVatCta": {
+        "other": "KDV'yi düzelt"
+      },
+      "continueAnywayCta": {
+        "other": "Yine de devam et"
+      },
+      "registrationTitle": {
+        "other": "Tescil"
+      },
+      "registrationSubtitle": {
+        "other": "Handelsregister, Companies House, KvK. Bu tüzel kişinin kayıtlı olduğu resmi sicil."
+      },
+      "registrationNumberLabel": {
+        "other": "Tescil numarası"
+      },
+      "issuingAuthorityLabel": {
+        "other": "Veren makam"
+      },
+      "issuingAuthorityPlaceholder": {
+        "other": "Yerel mahkeme / ticaret sicili"
+      },
+      "registeredSinceLabel": {
+        "other": "Tescil tarihi (isteğe bağlı)"
+      },
+      "registeredSinceRangeError": {
+        "other": "1900 ile bugün arasında bir tarih seçin."
+      },
+      "regNumberFormatHint": {
+        "other": "Beklenen biçime uymuyor. Deneyin: {placeholder}."
+      },
+      "addressSearchTitle": {
+        "other": "Tescil adresi"
+      },
+      "addressSearchSubtitle": {
+        "other": "Tüzel kişinin yetkili makamla tescil edildiği yer. Yazmaya başlayın."
+      },
+      "addressLabel": {
+        "other": "Adres"
+      },
+      "addressSearchPlaceholder": {
+        "other": "Sokak, şehir."
+      },
+      "addressPickFirst": {
+        "other": "Önce bir adres seçin"
+      },
+      "addressReviewTitle": {
+        "other": "Doğru görünüyor mu?"
+      },
+      "addressReviewSubtitle": {
+        "other": "Tescilli merkezin resmi sicile uyduğundan emin olun."
+      },
+      "addressMissing": {
+        "other": "{fields} eksik. Daha spesifik bir öneri seçin."
+      },
+      "addressFieldStreet": {
+        "other": "Sokak"
+      },
+      "addressFieldCity": {
+        "other": "Şehir"
+      },
+      "addressFieldPostalCode": {
+        "other": "Posta kodu"
+      },
+      "addressFieldRegion": {
+        "other": "Bölge"
+      },
+      "addressFieldCountry": {
+        "other": "Ülke"
+      },
+      "addressChangeBackLabel": {
+        "other": "Adresi değiştir"
+      },
+      "addressNotRightCta": {
+        "other": "Doğru değil"
+      },
+      "addressLooksRightCta": {
+        "other": "Doğru görünüyor"
+      },
+      "addressAptTitle": {
+        "other": "Daire, suite veya kat?"
+      },
+      "addressAptSubtitle": {
+        "other": "Tescil adresine ikinci bir satır ekler. Gerekli değilse atlayın."
+      },
+      "addressAptLabel": {
+        "other": "Adres satırı 2 (isteğe bağlı)"
+      },
+      "addressAptPlaceholder": {
+        "other": "Daire 4B, 3. kat, Suite 200."
+      },
+      "contactChoiceTitle": {
+        "other": "İletişim bilgisi eklemek ister misiniz?"
+      },
+      "contactChoiceSubtitle": {
+        "other": "Bu tüzel kişi için isteğe bağlı e-posta ve telefon. Ana hesap iletişiminizden ayrıdır."
+      },
+      "contactYesCta": {
+        "other": "Evet, iletişim ekle"
+      },
+      "contactNoCta": {
+        "other": "Hayır, eklemeden kaydet"
+      },
+      "yesNoYesSubtitle": {
+        "other": "Bir sonraki adımı ekler"
+      },
+      "yesNoNoSubtitle": {
+        "other": "Tüzel kişiyi olduğu gibi kaydet"
+      },
+      "saveError": {
+        "other": "Kaydedilemedi: {error}"
+      },
+      "contactInputTitle": {
+        "other": "Bu tüzel kişi için iletişim"
+      },
+      "contactInputSubtitle": {
+        "other": "Fatura ve sözleşmelerde gösterilen e-posta ve telefon."
+      },
+      "contactEmailLabel": {
+        "other": "E-posta (isteğe bağlı)"
+      },
+      "contactEmailPlaceholder": {
+        "other": "faturalar@ornek.com"
+      },
+      "contactEmailInvalid": {
+        "other": "Geçerli bir e-posta girin veya boş bırakın."
+      },
+      "contactPhoneLabel": {
+        "other": "Telefon (isteğe bağlı)"
+      },
+      "contactPhonePlaceholder": {
+        "other": "+49 ."
+      },
+      "contactPhoneInvalid": {
+        "other": "İsteğe bağlı başında + ile rakamlar kullanın (6 ile 20 rakam arası)."
+      },
+      "saveEntityCta": {
+        "other": "Tüzel kişiyi kaydet"
+      },
+      "saveChangesCta": {
+        "other": "Değişiklikleri kaydet"
+      },
+      "savingEntityLabel": {
+        "other": "Tüzel kişi kaydediliyor."
+      },
+      "deletingEntityLabel": {
+        "other": "Tüzel kişi siliniyor."
+      },
+      "backToList": {
+        "other": "Listeye dön"
+      },
+      "detailSectionIdentity": {
+        "other": "Kimlik"
+      },
+      "detailSectionTax": {
+        "other": "Vergi"
+      },
+      "detailSectionRegistration": {
+        "other": "Tescil"
+      },
+      "detailSectionAddress": {
+        "other": "Adres"
+      },
+      "detailSectionContact": {
+        "other": "İletişim"
+      },
+      "detailLegalName": {
+        "other": "Yasal ad"
+      },
+      "detailTradingName": {
+        "other": "Ticari ad"
+      },
+      "detailTradingNamePlaceholder": {
+        "other": "Bir ticari ad ekle"
+      },
+      "detailDob": {
+        "other": "Doğum tarihi"
+      },
+      "detailPlaceOfBirth": {
+        "other": "Doğum yeri"
+      },
+      "detailPlaceOfBirthPlaceholder": {
+        "other": "Doğum yeri ekle"
+      },
+      "detailNationality": {
+        "other": "Uyruk"
+      },
+      "detailTaxResidence": {
+        "other": "Vergi mukimliği"
+      },
+      "detailVatId": {
+        "other": "KDV / şirket kimliği"
+      },
+      "detailVatIdPlaceholder": {
+        "other": "KDV Kimlik Numarası ekle"
+      },
+      "detailLocalTaxNumber": {
+        "other": "Yerel vergi numarası"
+      },
+      "detailLocalTaxNumberPlaceholder": {
+        "other": "Vergi numarası ekle"
+      },
+      "detailRegistrationNumber": {
+        "other": "Tescil #"
+      },
+      "detailIssuingAuthority": {
+        "other": "Veren makam"
+      },
+      "detailRegisteredSince": {
+        "other": "Tescil tarihi"
+      },
+      "detailStreet": {
+        "other": "Sokak"
+      },
+      "detailAptFloor": {
+        "other": "Daire / kat"
+      },
+      "detailCity": {
+        "other": "Şehir"
+      },
+      "detailPostalCode": {
+        "other": "Posta kodu"
+      },
+      "detailCountry": {
+        "other": "Ülke"
+      },
+      "detailEmail": {
+        "other": "E-posta"
+      },
+      "detailEmailPlaceholder": {
+        "other": "E-posta ekle"
+      },
+      "detailPhone": {
+        "other": "Telefon"
+      },
+      "detailPhonePlaceholder": {
+        "other": "Telefon ekle"
+      },
+      "removeDefault": {
+        "other": "Varsayılanı kaldır"
+      },
+      "setDefault": {
+        "other": "Varsayılan olarak ayarla"
+      },
+      "deleteConfirmTitle": {
+        "other": "Bu tüzel kişi silinsin mi?"
+      },
+      "deleteConfirmBody": {
+        "other": "Bu geri alınamaz."
+      },
+      "deleteEmpty": {
+        "other": "Silinecek bir şey yok"
+      },
+      "sharedAcrossAppsHeading": {
+        "other": "Dikkat. Bu, elvix ile kullandığınız her uygulamayı etkiler."
+      },
+      "deleteSharedAcrossAppsBody": {
+        "other": "Tüzel kişiler, oturum açtığınız uygulamalar arasında paylaşılır. Silme kaydı her yerden kaldırır; ona atıfta bulunan herhangi bir fatura şablonu yeni birine ihtiyaç duyacak."
+      },
+      "deleteError": {
+        "other": "Silinemedi: {error}"
+      },
+      "yesDelete": {
+        "other": "Evet, sil"
+      },
+      "nothingToChange": {
+        "other": "Değiştirilecek bir şey yok"
+      },
+      "defaultConfirmTitleSet": {
+        "other": "Bu varsayılan tüzel kişiniz olarak ayarlansın mı?"
+      },
+      "defaultConfirmTitleUnset": {
+        "other": "Bu tüzel kişiden varsayılan kaldırılsın mı?"
+      },
+      "defaultConfirmBodySet": {
+        "other": "Varsayılan tüzel kişi, faturaları ve sözleşme şablonlarını otomatik olarak doldurur."
+      },
+      "defaultConfirmBodyUnset": {
+        "other": "Fatura veya sözleşme oluşturduğunuzda önceden hiçbir şey seçilmeyecek."
+      },
+      "defaultSharedAcrossAppsBodySet": {
+        "other": "Varsayılan tüzel kişi, oturum açtığınız her uygulama arasında paylaşılır. Burada değiştirmek otomatik seçimi her yerde aynı anda günceller."
+      },
+      "defaultSharedAcrossAppsBodyUnset": {
+        "other": "Varsayılan tüzel kişi, oturum açtığınız her uygulama arasında paylaşılır. Kaldırmak, hiçbir yerde önceden tüzel kişi seçilmeyeceği anlamına gelir."
+      }
+    },
+    "entityKind": {
+      "title": {
+        "other": "Bu kimin için?"
+      },
+      "me": {
+        "other": "Ben"
+      },
+      "someoneElse": {
+        "other": "Başka biri"
+      },
+      "business": {
+        "other": "Bir işletme"
+      }
+    },
+    "export": {
+      "title": {
+        "other": "Verilerinizi indirin"
+      },
+      "body": {
+        "other": "Hakkınızda tuttuğumuz her şeyin bir kopyasını alın. GDPR Madde 15. Size 24 saat geçerli, tek kullanımlık bir indirme bağlantısı e-posta ile gönderiyoruz."
+      },
+      "sendCodeCta": {
+        "other": "Doğrulama kodu gönder"
+      },
+      "downloadCta": {
+        "other": "Bağlantıyı bana e-postayla gönder"
+      },
+      "doneTitle": {
+        "other": "Gelen kutunuzu kontrol edin"
+      },
+      "doneBody": {
+        "other": "{email} adresine bir indirme bağlantısı gönderdik. 24 saat içinde sona erer."
+      },
+      "previewLoadFailed": {
+        "other": "Önizleme yüklenemedi. Tekrar deneyin."
+      },
+      "whatYouReceive": {
+        "other": "Ne alacaksınız"
+      },
+      "archiveBlurbIdentity": {
+        "other": "Arşiviniz aşağıdaki her şeyi içeren tek bir JSON dosyası, yüklediğiniz avatar ve afiş görsellerini (varsa), her bölümü sade bir dille açıklayan ve GDPR Madde 15(1) açıklamalarını içeren bir README içerecektir."
+      },
+      "archiveBlurbApp": {
+        "other": "Arşiviniz {label} kapsamında tek bir JSON dosyası, her bölümü açıklayan ve GDPR Madde 15(1) açıklamalarını içeren bir README içerecektir."
+      },
+      "notIncluded": {
+        "other": "Dahil değildir: geçiş anahtarlarınızdaki kriptografik anahtar materyali, OAuth tokenları, OTP kodları ve kullandığınız uygulamaların elvix dışında sizin hakkınızda tuttuğu veriler. Bunlar için her uygulama ile iletişime geçin."
+      },
+      "sendToHeading": {
+        "other": "Verilerinizi birincil e-postanıza göndereceğiz"
+      },
+      "sendToBody": {
+        "other": "Arşiviniz {email} adresine .zip eki olarak ulaşır. Bu gelen kutusuna sahip olmak kimlik kanıtıdır, bu yüzden dosya hiçbir zaman herkese açık bir URL'de bulunmaz."
+      },
+      "sendToNotice": {
+        "other": "Önce birincil gelen kutunuza 6 haneli bir kod gönderiyoruz. Sonraki ekranda girdikten sonra arşivinizi oluşturup size .zip eki olarak e-postayla gönderiyoruz."
+      },
+      "sendingCode": {
+        "other": "Kod gönderiliyor"
+      },
+      "sendToCta": {
+        "other": "Bana 6 haneli bir kod e-postala"
+      },
+      "otpHeading": {
+        "other": "Kodunuzla onaylayın"
+      },
+      "otpBody": {
+        "other": "{email} adresine 6 haneli bir kod gönderdik. 10 dakika içinde sona erer. Girdiğinizde arşivinizi oluşturup aynı gelen kutusuna .zip eki olarak e-postalayacağız."
+      },
+      "confirmCta": {
+        "other": "Onayla ve verilerimi bana e-postala"
+      },
+      "workingLabel": {
+        "other": "Çalışıyor"
+      },
+      "resendIn": {
+        "other": "{seconds}sn içinde tekrar gönder"
+      },
+      "noPendingCode": {
+        "other": "Bekleyen kod yok. Yenisini gönderin."
+      },
+      "networkError": {
+        "other": "Ağ hatası. Tekrar deneyin."
+      },
+      "doneHeading": {
+        "other": "Gönderildi."
+      },
+      "doneInboxBody": {
+        "other": "Birkaç dakika içinde birincil gelen kutunuzu ({email}) kontrol edin. Arşiviniz e-postaya .zip dosyası olarak eklenmiştir. 24 saat içinde aynı hedef için başka bir dışa aktarma talep edebilirsiniz."
+      },
+      "backToExports": {
+        "other": "Dışa aktarmalara dön"
+      },
+      "errorChallengeGeneric": {
+        "other": "Kod gönderilemedi. Tekrar deneyin."
+      },
+      "errorChallengeTooRecent": {
+        "other": "Tekrar istemeden önce {seconds}sn bekleyin."
+      },
+      "errorChallengeTooMany": {
+        "other": "Bu saatte çok fazla istek var. Daha sonra deneyin."
+      },
+      "errorChallengeSendFailed": {
+        "other": "Kod e-postayla gönderilemedi. Tekrar deneyin."
+      },
+      "errorChallengeRateLimit": {
+        "other": "Bunu son 24 saat içinde zaten dışa aktardınız. Yaklaşık {hours}sa içinde tekrar kullanılabilir."
+      },
+      "errorChallengeNotMember": {
+        "other": "Artık bu uygulamanın üyesi değilsiniz."
+      },
+      "errorChallengeAppNotFound": {
+        "other": "Bu uygulama kullanılamıyor."
+      },
+      "errorApplyGeneric": {
+        "other": "Dışa aktarmanız oluşturulamadı. Tekrar deneyin."
+      },
+      "errorApplyWrongCode": {
+        "one": "Yanlış kod. {count} hak kaldı.",
+        "other": "Yanlış kod. {count} hak kaldı."
+      },
+      "errorApplyLocked": {
+        "other": "Çok fazla yanlış deneme. Yeni bir kod gönderin."
+      },
+      "errorApplyExpired": {
+        "other": "Bu kodun süresi doldu. Yeni bir kod gönderin."
+      },
+      "errorApplyGenerateFailed": {
+        "other": "Dışa aktarmanızı oluşturamadık. Tekrar deneyin."
+      },
+      "errorApplyStorageFailed": {
+        "other": "Dışa aktarmanızı saklayamadık. Tekrar deneyin."
+      },
+      "errorApplyEmailFailed": {
+        "other": "Arşiviniz oluşturuldu ancak e-posta başarısız oldu. Bağlantıyı kurtarmak için {email} ile iletişime geçin."
+      }
+    },
+    "deactivate": {
+      "title": {
+        "other": "Bir mola verin"
+      },
+      "body": {
+        "other": "Devre dışı bırakmak hesabınızı bu uygulamadan gizler. elvix hesabınızdan istediğiniz zaman tekrar etkinleştirebilirsiniz."
+      },
+      "confirmCta": {
+        "other": "Devre dışı bırak"
+      },
+      "doneTitle": {
+        "other": "Hesabınız duraklatıldı"
+      },
+      "reactivateCta": {
+        "other": "Tekrar etkinleştir"
+      },
+      "errorTooMany": {
+        "other": "Çok fazla kod istendi. Daha sonra tekrar deneyin."
+      },
+      "errorTooRecent": {
+        "other": "Tekrar istemeden önce {seconds}sn bekleyin."
+      },
+      "errorSendFailed": {
+        "other": "Kod e-postayla gönderilemedi. Tekrar deneyin."
+      },
+      "errorRequestFailed": {
+        "other": "Kod istenemedi. Tekrar deneyin."
+      },
+      "errorWrongCode": {
+        "one": "Yanlış kod. {count} hak kaldı.",
+        "other": "Yanlış kod. {count} hak kaldı."
+      },
+      "errorChallengeLocked": {
+        "other": "Çok fazla yanlış deneme. Yeni bir kod isteyin."
+      },
+      "errorChallengeExpired": {
+        "other": "Bu kodun süresi doldu. Yeni bir tane isteyin."
+      },
+      "errorAlreadyLeft": {
+        "other": "Bu uygulamadan zaten ayrıldınız. Önce üyeliğinizi geri yükleyin."
+      },
+      "appNameFallback": {
+        "other": "uygulamanız"
+      },
+      "warn1Title": {
+        "other": "{app} uygulamasından bir mola verin"
+      },
+      "warn1Body": {
+        "other": "Profiliniz sessizce bir mola verir. {app} üzerindeki insanlar sizi görmeyi bırakır ama oluşturduğunuz her şey olduğu gibi kalır. Hazır olduğunuzda buraya gelip tekrar oturum açın."
+      },
+      "soundGood": {
+        "other": "Kulağa hoş geliyor mu?"
+      },
+      "warn1Cta": {
+        "other": "Anladım"
+      },
+      "warn2Title": {
+        "other": "Bilmeniz gereken birkaç şey"
+      },
+      "warn2Bullet1": {
+        "other": "Bu uygulamadaki açık oturumlar hemen kapatılır."
+      },
+      "warn2Bullet2": {
+        "other": "Kullanıcı adınız ve tanımlayıcınız sizinkidir. Siz uzaktayken kimse onları alamaz."
+      },
+      "warn2Bullet3": {
+        "other": "Aynı yüzeyden istediğiniz zaman geri dönebilirsiniz."
+      },
+      "warn2Bullet4": {
+        "other": "Onaylamak için size 6 haneli bir kod e-postalayacağız. Hem kemer hem askı, böylece değişiklik yalnızca gelen kutunuza da sahip olduğunuzda gerçekleşir."
+      },
+      "warn2Cta": {
+        "other": "Anladım. Bana bir kod e-postala"
+      },
+      "sendingLabel": {
+        "other": "Gönderiliyor"
+      },
+      "reactivateTitle": {
+        "other": "{app} uygulamasına tekrar hoş geldiniz"
+      },
+      "reactivateBody": {
+        "other": "Şu anda bir moladasınız. {app} üzerinde tekrar görünmek için yeniden etkinleştirin."
+      },
+      "reactivateBodyByOwner": {
+        "other": "Şu anda bir moladasınız (bir yönetici bunu sizin adınıza yaptı). {app} üzerinde tekrar görünmek için yeniden etkinleştirin."
+      },
+      "doneDeactivatedTitle": {
+        "other": "{app} uygulamasından moladasınız."
+      },
+      "doneReactivatedTitle": {
+        "other": "{app} üzerinde geri döndünüz."
+      },
+      "doneDeactivatedBody": {
+        "other": "Uygulamaya bildirdik. Yeniden etkinleştirmek için istediğiniz zaman buraya gelin."
+      },
+      "doneReactivatedBody": {
+        "other": "Üyeliğiniz tekrar aktif. Uygulama tarafındaki açık oturumların yenilenmesi biraz zaman alabilir."
+      },
+      "reactivateAgain": {
+        "other": "Tekrar etkinleştir"
+      },
+      "deactivateAgain": {
+        "other": "Tekrar devre dışı bırak"
+      },
+      "otpTitle": {
+        "other": "Onay kodunuzu girin"
+      },
+      "otpDelivered": {
+        "other": "{email} adresine 6 haneli bir kod gönderdik. 10 dakika içinde sona erer."
+      },
+      "otpSending": {
+        "other": "Size 6 haneli bir kod gönderiyoruz."
+      },
+      "otpPending": {
+        "other": "E-postanıza 6 haneli bir kod gönderiyoruz."
+      },
+      "resendIn": {
+        "other": "{seconds}sn içinde tekrar gönder"
+      }
+    },
+    "leave": {
+      "title": {
+        "other": "{app} uygulamasından ayrılınsın mı?"
+      },
+      "body": {
+        "other": "Üyeliğinizi kaldırır. Bu kesindir: sahip onu geri getiremez. elvix hesabınız açık kalır."
+      },
+      "confirmCta": {
+        "other": "Sonsuza dek ayrıl"
+      },
+      "doneTitle": {
+        "other": "{app} uygulamasından ayrıldınız."
+      },
+      "errorTooManyCodes": {
+        "other": "Çok fazla kod istendi. Daha sonra tekrar deneyin."
+      },
+      "errorTooRecent": {
+        "other": "Tekrar istemeden önce {seconds}sn bekleyin."
+      },
+      "errorSendFailed": {
+        "other": "Kod e-postayla gönderilemedi. Tekrar deneyin."
+      },
+      "errorRequestFailed": {
+        "other": "Kod istenemedi. Tekrar deneyin."
+      },
+      "errorWrongCode": {
+        "one": "Yanlış kod. {count} hak kaldı.",
+        "other": "Yanlış kod. {count} hak kaldı."
+      },
+      "errorChallengeLocked": {
+        "other": "Çok fazla yanlış deneme. Yeni bir kod isteyin."
+      },
+      "errorChallengeExpired": {
+        "other": "Bu kodun süresi doldu. Yeni bir tane isteyin."
+      },
+      "errorOwnerInitiated": {
+        "other": "Bir yönetici sizi kaldırdı. Bunu Konsollarından geri almak zorundalar."
+      },
+      "errorGraceExpired": {
+        "other": "Bu üyeliği geri yüklemek için 90 günlük süre kapandı."
+      },
+      "errorRestoreFailed": {
+        "other": "Geri yüklenemedi. Tekrar deneyin."
+      },
+      "otpActionLabel": {
+        "other": "{app} uygulamasından ayrıl"
+      },
+      "warn1Heading": {
+        "other": "{app} uygulamasından ayrıl"
+      },
+      "warn1Body": {
+        "other": "Üyeliğiniz hemen gizlenir. Fikrinizi değiştirmek ve aynı yüzeyden geri yüklemek için 90 gününüz var. Bundan sonra uygulama listenizde görünmeyi bırakır. Uygulama tarafındaki verileriniz, onların kendi politikalarına tabi olmaya devam eder."
+      },
+      "understandPrompt": {
+        "other": "Anladınız mı?"
+      },
+      "iUnderstandCta": {
+        "other": "Anladım"
+      },
+      "dataHeading": {
+        "other": "{app} üzerindeki verileriniz hakkında"
+      },
+      "warn2Body": {
+        "other": "elvix, {app} uygulamasının sizin hakkınızda tuttuklarını ne saklar ne de siler. Uygulama sahibi bundan kendi gizlilik politikası ve hizmet şartları kapsamında sorumludur. Ayrıldığınız anda uygulamaya bildiriyoruz, böylece bu şartlara göre hareket edebilirler. Onaylamadan önce onları okuyun."
+      },
+      "privacyPolicy": {
+        "other": "Gizlilik politikası"
+      },
+      "termsOfService": {
+        "other": "Hizmet şartları"
+      },
+      "warn2EmailPrompt": {
+        "other": "Onaylamak için size bir kod e-postalayacağız. Anladınız mı?"
+      },
+      "warn2Cta": {
+        "other": "Anladım. Bana bir kod e-postala"
+      },
+      "restoreHeading": {
+        "other": "{app} üzerindeki üyeliğinizi geri yükleyin"
+      },
+      "restoreBody": {
+        "one": "Geri yükleme süresinde {count} gün kaldı. Şimdi geri yükleyin ve uygulama sizi tam olarak öncekiyle aynı şekilde görsün: aynı kullanıcı adı, aynı roller, aynı geçmiş.",
+        "other": "Geri yükleme süresinde {count} gün kaldı. Şimdi geri yükleyin ve uygulama sizi tam olarak öncekiyle aynı şekilde görsün: aynı kullanıcı adı, aynı roller, aynı geçmiş."
+      },
+      "restoreCta": {
+        "other": "Üyeliği geri yükle"
+      },
+      "ownerLockedHeading": {
+        "other": "Bir yönetici sizi {app} uygulamasından kaldırdı"
+      },
+      "ownerLockedBody": {
+        "one": "{date} tarihinde kaldırıldı. Uygulama sahibinin kendi tarafından iptal etmek için {count} günü kaldı. Bundan sonra uygulama burada görünmez.",
+        "other": "{date} tarihinde kaldırıldı. Uygulama sahibinin kendi tarafından iptal etmek için {count} günü kaldı. Bundan sonra uygulama burada görünmez."
+      },
+      "ownerLockedReachOut": {
+        "other": "Kaldırmayı onlar başlattığı için bunu yalnızca onlar geri alabilir. Bu konuda onlarla konuşmak istiyorsanız destek kanallarından ulaşın."
+      },
+      "doneLeftTitle": {
+        "other": "{app} uygulamasından ayrıldınız."
+      },
+      "doneRestoredTitle": {
+        "other": "{app} üzerinde geri döndünüz."
+      },
+      "doneLeftBody": {
+        "other": "Uygulamaya bildirdik. Geri dönmek ve aynı yüzeyden geri yüklemek için 90 gününüz var. Bundan sonra uygulama listenizde görünmeyi bırakır."
+      },
+      "doneRestoredBody": {
+        "other": "Üyeliğiniz tekrar aktif. Uygulama tarafının yenilenmesi biraz zaman alabilir."
+      }
+    },
+    "lifecycle": {
+      "bannedTitle": {
+        "other": "Erişiminiz iptal edildi."
+      },
+      "bannedBody": {
+        "other": "Bir yönetici bu uygulama için hesabınızı yasakladı. Oturumunuz kapatılacak ve tekrar oturum açamayacaksınız. Bunun bir hata olduğunu düşünüyorsanız sahip ile iletişime geçin."
+      },
+      "pausedTitle": {
+        "other": "Erişiminiz duraklatıldı."
+      },
+      "pausedBody": {
+        "other": "Bir yönetici bu uygulama için hesabınızı geçici olarak duraklattı. Kısa süre içinde oturumunuz kapatılacak; erişimi geri yüklemek için sahibe ulaşın."
+      },
+      "deletedTitle": {
+        "other": "Hesabınız kaldırıldı."
+      },
+      "deletedBody": {
+        "other": "Bir yönetici bu uygulama için üyeliğinizi sildi. Oturumunuz kapatılacak ve depolanan verileriniz geri yüklenmediği takdirde 90 gün içinde temizlenmek üzere sıraya alındı."
+      },
+      "inactiveTitle": {
+        "other": "Bu uygulamadan bir mola veriyorsunuz."
+      },
+      "inactiveBody": {
+        "other": "Üyeliğiniz devre dışı bırakıldı, bu yüzden burada oturumunuzu kapatacağız. elvix hesabınızdan istediğiniz zaman yeniden etkinleştirip hemen geri dönebilirsiniz."
+      },
+      "countdown": {
+        "other": "{seconds}sn içinde oturumunuz kapatılıyor"
+      },
+      "recoverRestoredTitle": {
+        "other": "{app} üzerinde geri döndünüz."
+      },
+      "recoverRestoredBody": {
+        "other": "Üyeliğiniz tekrar aktif. Hazır olduğunuzda uygulamaya devam edin."
+      },
+      "recoverSignedOutTitle": {
+        "other": "Oturumunuz kapatıldı."
+      },
+      "recoverSignedOutBody": {
+        "other": "{app} uygulamasından uzak kaldınız. İstediğiniz zaman geri dönün."
+      },
+      "recoverWelcomeBack": {
+        "other": "{app} uygulamasına tekrar hoş geldiniz"
+      },
+      "recoverDeletedIntro": {
+        "other": "Daha önce {app} uygulamasından ayrıldınız."
+      },
+      "recoverDeletedDaysLeft": {
+        "one": "Geri dönmek için {count} gününüz kaldı.",
+        "other": "Geri dönmek için {count} gününüz kaldı."
+      },
+      "recoverDeletedNoCountdown": {
+        "other": "Hala geri yükleme süresi içindesiniz."
+      },
+      "recoverDeletedOutro": {
+        "other": "Yerinizi şimdi geri yükleyin veya tekrar çıkış yapın."
+      },
+      "recoverPausedBody": {
+        "other": "{app} üzerindeki üyeliğiniz şu anda duraklatılmış durumda. Kaldığınız yerden devam etmek için geri yükleyin veya tekrar çıkış yapıp uzak kalın."
+      },
+      "recoverRestoringLabel": {
+        "other": "Geri yükleniyor"
+      },
+      "recoverRestoreDeletedCta": {
+        "other": "{app} üzerindeki yerimi geri yükle"
+      },
+      "recoverRestorePausedCta": {
+        "other": "Beni {app} uygulamasına geri getir"
+      },
+      "recoverSigningOutLabel": {
+        "other": "Oturumunuz kapatılıyor"
+      },
+      "recoverDeclineCta": {
+        "other": "Şimdi değil, oturumumu kapat"
+      }
+    }
+  }
+}

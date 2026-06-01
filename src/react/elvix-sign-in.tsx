@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "../locale/use-t";
 import { type FormEvent, useState } from "react";
 import { type ElvixCopy, fillCopy, resolveCopy } from "./copy";
 import { useElvixApp, useElvixContext } from "./elvix-provider";
@@ -7,6 +8,16 @@ import { runPasskeySignIn } from "./passkey";
 import { isSameOrigin, setElvixToken } from "./session";
 import { type ElvixSizeProps, sizeStyle } from "./size";
 import type { ElvixSignInResult } from "./types";
+
+/** Local helper: drop `undefined` fields so they don't shadow lower-precedence layers. */
+function stripUndefinedCopy(o?: Partial<ElvixCopy> | null): Partial<ElvixCopy> {
+  if (!o) return {};
+  const out: Partial<ElvixCopy> = {};
+  for (const [k, v] of Object.entries(o)) {
+    if (v !== undefined) (out as Record<string, unknown>)[k] = v;
+  }
+  return out;
+}
 
 /**
  * `<ElvixSignIn>` — drop-in sign-in surface.
@@ -51,7 +62,37 @@ export function ElvixSignIn({
   const sized = sizeStyle({ width, height, minWidth, maxWidth, minHeight, maxHeight });
   const ctx = useElvixContext();
   const app = useElvixApp();
-  const copy = resolveCopy(app?.strings, copyProp);
+  const t = useT();
+  // useT() forms the BOTTOM of the copy-precedence chain: catalog-driven
+  // defaults that honour the host's <ElvixProvider locale="..."> setting.
+  // Console-configured `strings` and the per-embed `copy` prop still win
+  // on top, in that order. We layer ABOVE `resolveCopy` (which seeds the
+  // built-in English defaults) so the active-locale catalog can replace
+  // an English default when no Console / prop value is set, but neither
+  // Console nor prop overrides are clobbered.
+  const consoleStrings = stripUndefinedCopy(app?.strings);
+  const propStrings = stripUndefinedCopy(copyProp);
+  const baseCopy = resolveCopy(app?.strings, copyProp);
+  const tDefaults: Partial<ElvixCopy> = {
+    googleButton: t("signin.googleButton"),
+    passkeyButton: t("signin.passkeyButton"),
+    emailPlaceholder: t("signin.emailPlaceholder"),
+    sendCodeButton: t("signin.sendCodeButton"),
+    sendingLabel: t("signin.sendingLabel"),
+    codeSentSubtitle: t("signin.codeSentSubtitle"),
+    codePlaceholder: t("signin.codePlaceholder"),
+    verifyingLabel: t("signin.verifyingLabel"),
+  };
+  const copy: ElvixCopy = {
+    ...baseCopy,
+    // For every catalog-backed key, the t() value wins over the built-in
+    // English default, but Console and prop overrides still win over t().
+    ...Object.fromEntries(
+      (Object.keys(tDefaults) as (keyof ElvixCopy)[])
+        .filter((k) => consoleStrings[k] === undefined && propStrings[k] === undefined)
+        .map((k) => [k, tDefaults[k]]),
+    ),
+  };
   // Bootstrap failures bubble through context as `appError`. Without an
   // explicit error pane the form just renders empty (no buttons, no
   // copy) because `app` is null — the worst possible DX. Surface a
@@ -64,8 +105,13 @@ export function ElvixSignIn({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const verb = app?.signInVerb === "login" ? "Log in" : "Sign in";
-  const defaultTitle = app?.appName ? `${verb} to ${app.appName}` : verb;
+  const verb =
+    app?.signInVerb === "login" ? t("signin.verbLogin") : t("signin.titleDefault");
+  const defaultTitle = app?.appName
+    ? app?.signInVerb === "login"
+      ? t("signin.titleLogin", { app: app.appName })
+      : t("signin.title", { app: app.appName })
+    : verb;
   const title = copy.title ? fillCopy(copy.title, { app: app?.appName ?? "" }) : defaultTitle;
   const submitLabel = copy.submitButton ?? verb;
 
@@ -195,7 +241,12 @@ export function ElvixSignIn({
   if (bootstrapError) {
     return (
       <div className={card} style={sized} data-elvix-pane="error" role="alert">
-        <h2 className="elvix-h">Couldn't load sign-in</h2>
+        <h2 className="elvix-h">{t("signin.bootstrapErrorTitle")}</h2>
+        {/* TODO: i18n: signin.bootstrapErrorBody — catalog key exists but is a
+            flat string with a {clientIdToken} placeholder; the source uses
+            inline <code> styling and arrow glyphs which a flat t() call can't
+            reproduce. Leave the rich English source until the key is
+            restructured for rich-text rendering. */}
         <p className="elvix-muted elvix-subtitle">
           Invalid <code>clientId</code> or origin not allowed for this domain. Open Console &rarr;
           your Application &rarr; Credentials to confirm the <code>clientId</code>, then add this

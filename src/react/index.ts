@@ -50,6 +50,15 @@ export { ElvixSecuredBadge } from "./elvix-secured-badge";
 export { DEFAULT_COPY } from "./copy";
 export type { ElvixCopy } from "./copy";
 
+/**
+ * i18n hooks. Drop-in from `@021.is/spine-i18n/react` so callers can write:
+ *   const t = useT();   t("signin.googleButton")
+ * `<ElvixProvider locale="de">` already mounts the LocaleProvider; consumers
+ * only see these hooks and the canonical English string keys.
+ */
+export { useT } from "../locale/use-t";
+export { useLocale, useFmt, switchLocale } from "@021.is/spine-i18n/react";
+
 // Cross-origin session token (stored by ElvixSignIn, sent as a bearer by every
 // SDK call when the app is embedded on its own origin).
 // `consumeElvixReturnToken` picks up the token elvix's Google redirect-callback

@@ -1,0 +1,2276 @@
+{
+  "$comment": "Canonical English catalog for @elvix.is/sdk. Every key here must exist in every other locale. Bulk translation lifts from this file via the DC translate engine.",
+  "locale": "el",
+  "namespaces": {
+    "common": {
+      "ok": {
+        "other": "Εντάξει"
+      },
+      "cancel": {
+        "other": "Ακύρωση"
+      },
+      "back": {
+        "other": "Πίσω"
+      },
+      "next": {
+        "other": "Επόμενο"
+      },
+      "continue": {
+        "other": "Συνέχεια"
+      },
+      "save": {
+        "other": "Αποθήκευση"
+      },
+      "saving": {
+        "other": "Αποθήκευση"
+      },
+      "delete": {
+        "other": "Διαγραφή"
+      },
+      "remove": {
+        "other": "Αφαίρεση"
+      },
+      "edit": {
+        "other": "Επεξεργασία"
+      },
+      "close": {
+        "other": "Κλείσιμο"
+      },
+      "done": {
+        "other": "Έτοιμο"
+      },
+      "retry": {
+        "other": "Δοκιμάστε ξανά"
+      },
+      "loading": {
+        "other": "Φόρτωση"
+      },
+      "search": {
+        "other": "Αναζήτηση"
+      },
+      "noMatches": {
+        "other": "Χωρίς αποτελέσματα"
+      },
+      "lastStep": {
+        "other": "Τελευταίο βήμα"
+      },
+      "skip": {
+        "other": "Παράλειψη"
+      },
+      "durationSeconds": {
+        "other": "{seconds}δ"
+      },
+      "durationOneMinute": {
+        "other": "1 λεπτό"
+      },
+      "durationMinutes": {
+        "one": "{minutes} λεπτό",
+        "other": "{minutes} λεπτά"
+      },
+      "somethingWentWrong": {
+        "other": "Κάτι πήγε στραβά. Δοκιμάστε ξανά."
+      },
+      "errorNetwork": {
+        "other": "Πρόβλημα δικτύου. Δοκιμάστε ξανά."
+      },
+      "errorSaveFailed": {
+        "other": "Δεν ήταν δυνατή η αποθήκευση. Δοκιμάστε ξανά."
+      },
+      "hintEnter": {
+        "other": "Enter"
+      },
+      "enterHint": {
+        "other": "Enter"
+      },
+      "sendingLabel": {
+        "other": "Αποστολή"
+      },
+      "saved": {
+        "other": "Αποθηκεύτηκε"
+      },
+      "optionalSuffix": {
+        "other": " (προαιρετικό)"
+      },
+      "savingDots": {
+        "other": "Αποθήκευση."
+      }
+    },
+    "signin": {
+      "title": {
+        "other": "Σύνδεση στο {app}"
+      },
+      "titleDefault": {
+        "other": "Σύνδεση"
+      },
+      "subtitle": {
+        "other": ""
+      },
+      "googleButton": {
+        "other": "Συνέχεια με Google"
+      },
+      "passkeyButton": {
+        "other": "Συνέχεια με passkey"
+      },
+      "emailPlaceholder": {
+        "other": "Email"
+      },
+      "sendCodeButton": {
+        "other": "Συνέχεια"
+      },
+      "sendingLabel": {
+        "other": "Αποστολή"
+      },
+      "codeSentSubtitle": {
+        "other": "Στείλαμε έναν κωδικό στο {email}"
+      },
+      "codePlaceholder": {
+        "other": "Κωδικός επαλήθευσης"
+      },
+      "submitButton": {
+        "other": "Σύνδεση"
+      },
+      "verifyingLabel": {
+        "other": "Επαλήθευση"
+      },
+      "or": {
+        "other": "ή"
+      },
+      "resendCode": {
+        "other": "Επαναποστολή κωδικού"
+      },
+      "resentLabel": {
+        "other": "Στάλθηκε ξανά"
+      },
+      "errorGeneric": {
+        "other": "Κάτι πήγε στραβά. Δοκιμάστε ξανά."
+      },
+      "errorBadCode": {
+        "other": "Ο κωδικός δεν ταιριάζει."
+      },
+      "errorRateLimited": {
+        "other": "Πάρα πολλές προσπάθειες. Περιμένετε μια στιγμή."
+      },
+      "securedBy": {
+        "other": "Ασφαλίζεται από "
+      },
+      "verbLogin": {
+        "other": "Είσοδος"
+      },
+      "titleLogin": {
+        "other": "Είσοδος στο {app}"
+      },
+      "bootstrapErrorTitle": {
+        "other": "Δεν ήταν δυνατή η φόρτωση της σύνδεσης"
+      },
+      "bootstrapErrorBody": {
+        "other": "Μη έγκυρο {clientIdToken} ή η προέλευση δεν επιτρέπεται για αυτόν τον τομέα. Ανοίξτε το Console, την Εφαρμογή σας, τα Credentials για να επιβεβαιώσετε το {clientIdToken}, μετά προσθέστε αυτήν την προέλευση στις Επιτρεπόμενες προελεύσεις."
+      },
+      "identifierPlaceholderEmailOrUsername": {
+        "other": "Email ή όνομα χρήστη"
+      },
+      "identifierPlaceholderUsername": {
+        "other": "Όνομα χρήστη"
+      },
+      "identifierPlaceholderEmail": {
+        "other": "Εισαγάγετε το email σας"
+      },
+      "errorNetwork": {
+        "other": "Πρόβλημα δικτύου. Δοκιμάστε ξανά."
+      },
+      "errorPasskeyVerify": {
+        "other": "Η επαλήθευση του passkey απέτυχε."
+      },
+      "errorPasskeyAdd": {
+        "other": "Δεν ήταν δυνατή η προσθήκη του passkey. Δοκιμάστε ξανά ή παραλείψτε για τώρα."
+      },
+      "visitAppWebsite": {
+        "other": "Επισκεφθείτε τον ιστότοπο του {app}"
+      },
+      "passkeyOnboardingTitleSignin": {
+        "other": "Συνδεθείτε πιο γρήγορα την επόμενη φορά"
+      },
+      "passkeyOnboardingTitleLogin": {
+        "other": "Μπείτε πιο γρήγορα την επόμενη φορά"
+      },
+      "recoverTitle": {
+        "other": "Καλώς ήρθατε ξανά στο {app}"
+      },
+      "appNameFallback": {
+        "other": "την εφαρμογή σας"
+      },
+      "legalAppFallback": {
+        "other": "την εφαρμογή"
+      },
+      "passkeyOnboardingSubtitle": {
+        "other": "Touch ID, Face ID ή το κλειδί ασφαλείας σας. Όχι άλλους κωδικούς μέσω email."
+      },
+      "recoverSubtitle": {
+        "other": "Επιλέξτε αν θα επιστρέψετε ή θα παραμείνετε εκτός."
+      },
+      "identifierSubtitle": {
+        "other": "Επιλέξτε πώς θέλετε να συνεχίσετε."
+      },
+      "verifyButton": {
+        "other": "Επαλήθευση"
+      },
+      "useDifferentEmail": {
+        "other": "Χρήση διαφορετικού email"
+      },
+      "resendInSeconds": {
+        "other": "Επαναποστολή σε {seconds}δ"
+      },
+      "passkeyBullet1": {
+        "other": "Όχι άλλους κωδικούς πρόσβασης ή κωδικούς email"
+      },
+      "passkeyBullet2": {
+        "other": "Αντι-phishing. Λειτουργεί μόνο σε αυτόν τον ιστότοπο."
+      },
+      "passkeyBullet3": {
+        "other": "Συγχρονίζεται μεταξύ των συσκευών σας μέσω iCloud, Google ή 1Password"
+      },
+      "addPasskeyCta": {
+        "other": "Προσθήκη passkey"
+      },
+      "skipForNow": {
+        "other": "Παράλειψη για τώρα"
+      },
+      "previewEmptyMethods": {
+        "other": "Ενεργοποιήστε τουλάχιστον μία μέθοδο για προεπισκόπηση της σύνδεσης."
+      },
+      "googleButtonShort": {
+        "other": "Google"
+      },
+      "passkeyButtonShort": {
+        "other": "Passkey"
+      },
+      "legalIntro": {
+        "other": "Συνεχίζοντας, συμφωνείτε με τους"
+      },
+      "termsOfService": {
+        "other": "Όρους Παροχής Υπηρεσιών"
+      },
+      "privacyPolicy": {
+        "other": "Πολιτική Απορρήτου"
+      },
+      "framedPreviewLabel": {
+        "other": "Αυτή είναι μια προεπισκόπηση"
+      },
+      "errorTooRecentWithSeconds": {
+        "other": "Περιμένετε {seconds}δ πριν ζητήσετε νέο κωδικό."
+      },
+      "errorTooRecent": {
+        "other": "Περιμένετε μια στιγμή πριν ζητήσετε νέο κωδικό."
+      },
+      "errorTooManyWithRetry": {
+        "other": "Πάρα πολλοί κωδικοί στάλθηκαν σε αυτό το email. Δοκιμάστε ξανά σε {retry}."
+      },
+      "errorTooMany": {
+        "other": "Πάρα πολλοί κωδικοί στάλθηκαν σε αυτό το email. Δοκιμάστε ξανά αργότερα."
+      },
+      "errorInvalidCode": {
+        "other": "Ο κωδικός δεν λειτούργησε. Δοκιμάστε ξανά."
+      },
+      "errorExpired": {
+        "other": "Ο κωδικός έληξε. Στείλτε έναν νέο."
+      },
+      "errorSendFailed": {
+        "other": "Δεν ήταν δυνατή η αποστολή του email. Ελέγξτε τη διεύθυνση."
+      },
+      "errorUserPaused": {
+        "other": "Η πρόσβασή σας έχει ανασταλεί. Επικοινωνήστε με την υποστήριξη."
+      },
+      "errorUserBanned": {
+        "other": "Η πρόσβαση απορρίφθηκε."
+      },
+      "errorUsernameNotFound": {
+        "other": "Δεν υπάρχει λογαριασμός με αυτό το όνομα χρήστη εδώ."
+      },
+      "errorMethodDisabled": {
+        "other": "Αυτή η μέθοδος σύνδεσης δεν είναι ενεργοποιημένη για αυτήν την εφαρμογή."
+      },
+      "errorGraceExpired": {
+        "other": "Το διάστημα 90 ημερών για επαναφορά έχει λήξει."
+      },
+      "errorSessionEnded": {
+        "other": "Η συνεδρία σας έληξε. Συνδεθείτε ξανά."
+      }
+    },
+    "sessions": {
+      "title": {
+        "other": "Οι συνεδρίες σας"
+      },
+      "empty": {
+        "other": "Δεν υπάρχουν ενεργές συνεδρίες εδώ."
+      },
+      "currentBadge": {
+        "other": "Διατήρηση αυτής συνδεδεμένης"
+      },
+      "revokeOne": {
+        "other": "Αποσύνδεση"
+      },
+      "revokeOthersCta": {
+        "other": "Αποσύνδεση άλλων συσκευών"
+      },
+      "revokeAllCta": {
+        "other": "Αποσύνδεση παντού"
+      },
+      "confirmOthersTitle": {
+        "other": "Αποσύνδεση από άλλες συσκευές;"
+      },
+      "confirmOthersBody": {
+        "other": "Επιλέξτε ποιες συνεδρίες θα τερματιστούν. Καθεμία ανακαλείται τη στιγμή που πατάτε, και κάθε καρτέλα σε εκείνη τη συσκευή αποσυνδέεται μέσα σε δευτερόλεπτα."
+      },
+      "confirmAllTitle": {
+        "other": "Αποσύνδεση παντού;"
+      },
+      "confirmAllBody": {
+        "other": "Περιλαμβάνει αυτήν τη συσκευή. Θα ανακατευθυνθείτε για να συνδεθείτε ξανά μετά."
+      },
+      "doneTitle": {
+        "other": "Αποσυνδεθήκατε"
+      },
+      "doneCount": {
+        "one": "{count} συσκευή αποσυνδέθηκε.",
+        "other": "{count} συσκευές αποσυνδέθηκαν."
+      },
+      "errorLoad": {
+        "other": "Δεν ήταν δυνατή η φόρτωση των συνεδριών."
+      },
+      "errorRevoke": {
+        "other": "Δεν ήταν δυνατή η ανάκληση. Δοκιμάστε ξανά."
+      },
+      "errorMassRevoke": {
+        "other": "Δεν ήταν δυνατή η αποσύνδεση. Δοκιμάστε ξανά."
+      },
+      "thisDeviceBadge": {
+        "other": "αυτή η συσκευή"
+      },
+      "deviceLine": {
+        "other": "{browser} σε {os}"
+      },
+      "massRevokeCtaSelf": {
+        "other": "Αποσύνδεσέ με από αυτή τη συσκευή"
+      },
+      "massRevokeCtaOpen": {
+        "other": "Αποσύνδεση από συσκευές..."
+      },
+      "confirmChooserTitle": {
+        "other": "Αποσύνδεση από πού;"
+      },
+      "confirmChooserBody": {
+        "other": "Επιλέξτε ποιες συνεδρίες θα τερματιστούν. Καθεμία ανακαλείται τη στιγμή που πατάτε, και κάθε καρτέλα σε εκείνη τη συσκευή αποσυνδέεται στο επόμενο αίτημά της."
+      },
+      "signOutOtherDevicesCount": {
+        "one": "Αποσύνδεση από την άλλη {count} συσκευή",
+        "other": "Αποσύνδεση από τις άλλες {count} συσκευές"
+      },
+      "signOutAllCtaSelf": {
+        "other": "Αποσύνδεσέ με από αυτήν τη συσκευή"
+      },
+      "signOutAllCtaIncludingThis": {
+        "other": "Αποσύνδεση παντού, και από αυτή τη συσκευή"
+      },
+      "signOutAllRedirectHint": {
+        "other": "Θα προσγειωθείτε στη σελίδα σύνδεσης αμέσως μετά"
+      },
+      "confirmTokensFootnote": {
+        "other": "Τα ήδη εκδοθέντα tokens παραμένουν απορριμμένα. Δεν υπάρχει αναίρεση, αλλά η επανασύνδεση σε οποιαδήποτε συσκευή λειτουργεί ξανά."
+      },
+      "doneAlreadyAlone": {
+        "other": "Ήδη μόνο αυτή."
+      },
+      "doneFootnote": {
+        "other": "Η τρέχουσα συσκευή σας παραμένει συνδεδεμένη. Οι άλλες καρτέλες θα αποσυνδεθούν στο επόμενο αίτημά τους."
+      },
+      "backToList": {
+        "other": "Πίσω στις συνεδρίες μου"
+      },
+      "methodSignIn": {
+        "other": "Σύνδεση"
+      },
+      "methodEmailCode": {
+        "other": "Κωδικός email"
+      },
+      "methodPasskey": {
+        "other": "Passkey"
+      },
+      "relativeJustNow": {
+        "other": "μόλις τώρα"
+      },
+      "relativeMinutesAgo": {
+        "other": "πριν {count}λ"
+      },
+      "relativeHoursAgo": {
+        "other": "πριν {count}ω"
+      },
+      "relativeDaysAgo": {
+        "other": "πριν {count}η"
+      }
+    },
+    "avatar": {
+      "replace": {
+        "other": "Αντικατάσταση"
+      },
+      "removePhoto": {
+        "other": "Αφαίρεση φωτογραφίας"
+      },
+      "removeConfirmTitle": {
+        "other": "Αφαίρεση της φωτογραφίας σας;"
+      },
+      "removeConfirmBody": {
+        "other": "Επιστρέφει στα αρχικά σας."
+      },
+      "uploading": {
+        "other": "Μεταφόρτωση"
+      },
+      "cropTitle": {
+        "other": "Περικοπή"
+      },
+      "cropApply": {
+        "other": "Εφαρμογή"
+      },
+      "errorTooLarge": {
+        "other": "Η εικόνα είναι πολύ μεγάλη. Επιλέξτε κάτω από {limitMb} MB."
+      },
+      "errorBadType": {
+        "other": "Επιλέξτε εικόνα PNG, JPG ή WebP."
+      },
+      "uploadFailed": {
+        "other": "Δεν ήταν δυνατή η μεταφόρτωση της φωτογραφίας. Δοκιμάστε διαφορετική εικόνα."
+      },
+      "removeFailed": {
+        "other": "Δεν ήταν δυνατή η αφαίρεση της φωτογραφίας."
+      },
+      "editPhotoAria": {
+        "other": "Επεξεργασία της φωτογραφίας σας"
+      },
+      "addPhotoAria": {
+        "other": "Προσθήκη φωτογραφίας"
+      },
+      "confirmRemoveAria": {
+        "other": "Επιβεβαίωση αφαίρεσης"
+      },
+      "replacePhotoAria": {
+        "other": "Αντικατάσταση φωτογραφίας"
+      },
+      "uploadPhotoAria": {
+        "other": "Μεταφόρτωση φωτογραφίας"
+      },
+      "useThisCropAria": {
+        "other": "Χρήση αυτής της περικοπής"
+      }
+    },
+    "banner": {
+      "replace": {
+        "other": "Αντικατάσταση"
+      },
+      "removeBanner": {
+        "other": "Αφαίρεση banner"
+      },
+      "removeConfirmTitle": {
+        "other": "Αφαίρεση του banner σας;"
+      },
+      "removeConfirmBody": {
+        "other": "Επιστρέφει στο placeholder με ντεγκραντέ."
+      },
+      "uploading": {
+        "other": "Μεταφόρτωση"
+      },
+      "cropTitle": {
+        "other": "Περικοπή banner"
+      },
+      "cropApply": {
+        "other": "Εφαρμογή"
+      },
+      "errorUpload": {
+        "other": "Δεν ήταν δυνατή η μεταφόρτωση του banner. Δοκιμάστε διαφορετική εικόνα."
+      },
+      "errorRemove": {
+        "other": "Δεν ήταν δυνατή η αφαίρεση του banner."
+      },
+      "previewAlt": {
+        "other": "Προεπισκόπηση banner"
+      },
+      "cropUse": {
+        "other": "Χρήση"
+      },
+      "cropUseAria": {
+        "other": "Χρήση αυτής της περικοπής"
+      },
+      "editAria": {
+        "other": "Επεξεργασία banner"
+      },
+      "addAria": {
+        "other": "Προσθήκη banner"
+      },
+      "uploadAria": {
+        "other": "Μεταφόρτωση banner"
+      },
+      "confirmRemoveAria": {
+        "other": "Επιβεβαίωση αφαίρεσης"
+      },
+      "confirmRemoveHint": {
+        "other": "Πατήστε ξανά για επιβεβαίωση"
+      }
+    },
+    "username": {
+      "title": {
+        "other": "Επιλέξτε όνομα χρήστη"
+      },
+      "placeholder": {
+        "other": "όνομα χρήστη"
+      },
+      "checking": {
+        "other": "Έλεγχος"
+      },
+      "available": {
+        "other": "Διαθέσιμο"
+      },
+      "taken": {
+        "other": "Πιασμένο"
+      },
+      "tooShort": {
+        "other": "Πολύ σύντομο"
+      },
+      "tooLong": {
+        "other": "Πολύ μακρύ"
+      },
+      "badChars": {
+        "other": "Μόνο γράμματα, αριθμοί, παύλες"
+      },
+      "reserved": {
+        "other": "Δεσμευμένο"
+      },
+      "subtitle": {
+        "other": "Έτσι σας βλέπουν οι άλλοι στο {app}."
+      },
+      "subtitleNoApp": {
+        "other": "Έτσι σας βλέπουν οι άλλοι."
+      },
+      "label": {
+        "other": "Όνομα χρήστη"
+      },
+      "exampleHandle": {
+        "other": "tonomasou"
+      },
+      "rulesHint": {
+        "other": "4 έως 30 χαρακτήρες, a έως z, 0 έως 9, τελεία, κάτω παύλα. Πρέπει να ξεκινά με γράμμα."
+      },
+      "availableHint": {
+        "other": "Φαίνεται καλό. Αυτό είναι δικό σας."
+      },
+      "suggestionsHeading": {
+        "other": "Προτάσεις"
+      },
+      "claimCta": {
+        "other": "Διεκδικήστε το @{handle}"
+      },
+      "yournameFallback": {
+        "other": "tonomasou"
+      },
+      "reasonBlank": {
+        "other": "Επιλέξτε όνομα χρήστη."
+      },
+      "reasonTooShort": {
+        "other": "Ελάχιστο 4 χαρακτήρες."
+      },
+      "reasonTooLong": {
+        "other": "Μέγιστο 30 χαρακτήρες."
+      },
+      "reasonOnlyNumbers": {
+        "other": "Δεν μπορεί να αποτελείται μόνο από αριθμούς."
+      },
+      "reasonBadStart": {
+        "other": "Πρέπει να ξεκινά με γράμμα."
+      },
+      "reasonBadChars": {
+        "other": "Μόνο a έως z, 0 έως 9, τελεία, κάτω παύλα."
+      },
+      "reasonConsecutiveSpecial": {
+        "other": "Όχι δύο τελείες ή κάτω παύλες στη σειρά."
+      },
+      "reasonTrailingSpecial": {
+        "other": "Δεν μπορεί να τελειώνει με τελεία ή κάτω παύλα."
+      },
+      "reasonTaken": {
+        "other": "Αυτό είναι πιασμένο."
+      },
+      "reasonInvalid": {
+        "other": "Αυτό το όνομα χρήστη δεν είναι έγκυρο."
+      },
+      "errorJustTaken": {
+        "other": "Αυτό το όνομα χρήστη μόλις πιάστηκε. Επιλέξτε άλλο."
+      },
+      "errorFormat": {
+        "other": "Αυτό το όνομα χρήστη δεν ταιριάζει με τους κανόνες."
+      },
+      "errorSaveFailed": {
+        "other": "Δεν ήταν δυνατή η αποθήκευση. Δοκιμάστε ξανά."
+      },
+      "errorNetwork": {
+        "other": "Πρόβλημα δικτύου. Δοκιμάστε ξανά."
+      },
+      "ruleLength": {
+        "other": "{min} έως {max} χαρακτήρες"
+      },
+      "ruleChars": {
+        "other": "πεζά γράμματα, ψηφία, τελεία, κάτω παύλα"
+      },
+      "ruleStartEnd": {
+        "other": "ξεκινήστε με γράμμα, τελειώστε με γράμμα ή ψηφίο"
+      },
+      "ruleNoDoubles": {
+        "other": "όχι δύο ειδικοί χαρακτήρες στη σειρά, όχι δεσμευμένες λέξεις"
+      },
+      "confirmHeading": {
+        "other": "Επιβεβαίωση αλλαγής"
+      },
+      "notSet": {
+        "other": "Δεν έχει οριστεί"
+      },
+      "confirmBody": {
+        "other": "Όποιος συνδέεται σε αυτήν την εφαρμογή με αυτό το όνομα χρήστη θα είστε εσείς. Μπορείτε να το αλλάξετε ξανά οποτεδήποτε."
+      },
+      "confirmCta": {
+        "other": "Επιβεβαίωση αλλαγής"
+      },
+      "doneTitle": {
+        "other": "Είστε @{username} στο {appName}."
+      },
+      "doneBody": {
+        "other": "Το αποθηκεύσαμε. Μπορείτε να συνεχίσετε να χρησιμοποιείτε αυτήν την επιφάνεια ή να επιστρέψετε όταν είστε έτοιμοι."
+      },
+      "changeAgain": {
+        "other": "Αλλαγή ξανά"
+      },
+      "disabledMailSubject": {
+        "other": "Επανενεργοποίηση σύνδεσης με όνομα χρήστη στο {appName}"
+      },
+      "disabledContactSupport": {
+        "other": "Επικοινωνία με υποστήριξη {appName}"
+      },
+      "disabledEmailSupport": {
+        "other": "Email στο {appName}"
+      },
+      "disabledTitle": {
+        "other": "Τα ονόματα χρηστών είναι ανενεργά στο {appName}."
+      },
+      "disabledBody": {
+        "other": "Ο ιδιοκτήτης της εφαρμογής έχει επί του παρόντος απενεργοποιημένη τη σύνδεση με όνομα χρήστη, οπότε δεν μπορούμε να σας επιτρέψουμε να ορίσετε ή να αλλάξετε το όνομα χρήστη σας εδώ."
+      },
+      "disabledStillHave": {
+        "other": "Έχετε ακόμη το @{current} από πριν. Παραμένει στη συμμετοχή σας μέχρι ο ιδιοκτήτης της εφαρμογής να ενεργοποιήσει ξανά τη λειτουργία."
+      },
+      "disabledNoSupport": {
+        "other": "Η εφαρμογή δεν έχει δημοσιεύσει ακόμη επαφή υποστήριξης. Επικοινωνήστε μέσω όποιου καναλιού χρησιμοποιείτε συνήθως με αυτούς."
+      },
+      "disabledHint": {
+        "other": "Ζητήστε τους να ενεργοποιήσουν ξανά τη Σύνδεση με όνομα χρήστη στο Console, Μέθοδοι σύνδεσης. Όταν το κάνουν, μπορείτε να επιστρέψετε εδώ και να επιλέξετε όνομα χρήστη."
+      },
+      "idleCurrent": {
+        "other": "Επί του παρόντος @{current}. Πληκτρολογήστε κάτι διαφορετικό για να το αλλάξετε."
+      },
+      "idleEmpty": {
+        "other": "Επιλέξτε ένα όνομα που άλλοι άνθρωποι σε αυτήν την εφαρμογή μπορούν να χρησιμοποιήσουν για να σας βρουν."
+      },
+      "formatGeneric": {
+        "other": "Δεν ταιριάζει με τους κανόνες παρακάτω."
+      },
+      "takenLine": {
+        "other": "Κάποιος άλλος σε αυτήν την εφαρμογή έχει ήδη το @{username}."
+      },
+      "currentLine": {
+        "other": "Αυτό είναι το όνομα χρήστη που έχετε ήδη εδώ."
+      },
+      "availableLine": {
+        "other": "Το @{username} είναι διαθέσιμο."
+      },
+      "reasonMustStartLetter": {
+        "other": "Πρέπει να ξεκινά με γράμμα."
+      },
+      "reasonMustEndAlnum": {
+        "other": "Πρέπει να τελειώνει με γράμμα ή ψηφίο."
+      },
+      "reasonNoDoubleSpecial": {
+        "other": "Δεν μπορεί να έχει δύο τελείες ή κάτω παύλες στη σειρά."
+      },
+      "reasonReserved": {
+        "other": "Αυτό το όνομα χρήστη είναι δεσμευμένο. Επιλέξτε άλλο."
+      },
+      "appNameFallback": {
+        "other": "την εφαρμογή σας"
+      }
+    },
+    "identity": {
+      "title": {
+        "other": "Το προφίλ σας"
+      },
+      "fullName": {
+        "other": "Πλήρες όνομα"
+      },
+      "birthdate": {
+        "other": "Ημερομηνία γέννησης"
+      },
+      "gender": {
+        "other": "Φύλο"
+      },
+      "pronouns": {
+        "other": "Αντωνυμίες"
+      },
+      "save": {
+        "other": "Αποθήκευση προφίλ"
+      },
+      "saved": {
+        "other": "Αποθηκεύτηκε"
+      },
+      "genderMale": {
+        "other": "Άνδρας"
+      },
+      "genderFemale": {
+        "other": "Γυναίκα"
+      },
+      "genderNonBinary": {
+        "other": "Μη δυαδικό"
+      },
+      "genderPreferNotToSay": {
+        "other": "Προτιμώ να μην πω"
+      },
+      "pronounSheHer": {
+        "other": "Αυτή / της"
+      },
+      "pronounHeHim": {
+        "other": "Αυτός / του"
+      },
+      "pronounTheyThem": {
+        "other": "Αυτοί / τους"
+      },
+      "pronounOther": {
+        "other": "Άλλο"
+      },
+      "pronounPreferNotToSay": {
+        "other": "Προτιμώ να μην πω"
+      },
+      "errorSaveFailed": {
+        "other": "Δεν ήταν δυνατή η αποθήκευση."
+      },
+      "givenName": {
+        "other": "Όνομα"
+      },
+      "givenNamePlaceholder": {
+        "other": "Ιωάννα"
+      },
+      "familyName": {
+        "other": "Επώνυμο"
+      },
+      "familyNamePlaceholder": {
+        "other": "Παπαδοπούλου"
+      },
+      "pronounsOptional": {
+        "other": "Αντωνυμίες (προαιρετικό)"
+      }
+    },
+    "region": {
+      "title": {
+        "other": "Επιλέξτε την περιοχή σας"
+      },
+      "yourRegion": {
+        "other": "Η περιοχή σας"
+      },
+      "country": {
+        "other": "Χώρα"
+      },
+      "uiLocale": {
+        "other": "Γλώσσα"
+      },
+      "currency": {
+        "other": "Νόμισμα"
+      },
+      "firstDayOfWeek": {
+        "other": "Πρώτη ημέρα της εβδομάδας"
+      },
+      "timeZone": {
+        "other": "Ζώνη ώρας"
+      },
+      "save": {
+        "other": "Αποθήκευση περιοχής"
+      },
+      "confirmTitle": {
+        "other": "Αλλαγή περιοχής;"
+      },
+      "confirmBody": {
+        "other": "Η αλλαγή χώρας επηρεάζει το νόμισμα και την πρώτη ημέρα της εβδομάδας."
+      },
+      "errorSaveFailed": {
+        "other": "Δεν ήταν δυνατή η αποθήκευση της περιοχής."
+      },
+      "emptyHint": {
+        "other": "Η γλώσσα διεπαφής, η ζώνη ώρας, το νόμισμα και η μορφή ημερομηνίας ακολουθούν τη χώρα σας."
+      },
+      "whereDoYouLive": {
+        "other": "Πού ζείτε;"
+      },
+      "cascadeHint": {
+        "other": "Θα ορίσουμε τη γλώσσα διεπαφής, τη ζώνη ώρας, το νόμισμα και τη μορφή ημερομηνίας σας από αυτό. Μπορείτε να παρακάμψετε καθένα από αυτά αργότερα."
+      },
+      "cascadeResetTitle": {
+        "other": "Επαναφορά όλων στο {country};"
+      },
+      "cascadeResetBody": {
+        "other": "Μετακινείστε από {currentFlag} {currentName} σε {nextFlag} {nextName}. Η γλώσσα διεπαφής, η ζώνη ώρας, το νόμισμα, η μορφή ημερομηνίας και οι μονάδες θα επαναφερθούν όλα στις προεπιλογές για {nextName}. Οι προσαρμοσμένες αλλαγές σας (αν υπάρχουν) θα αντικατασταθούν."
+      },
+      "cascadeFallbackCountry": {
+        "other": "τη νέα χώρα"
+      },
+      "uiLanguageLabel": {
+        "other": "Γλώσσα διεπαφής"
+      },
+      "dateLabel": {
+        "other": "Ημερομηνία"
+      },
+      "timeLabel": {
+        "other": "Ώρα"
+      },
+      "unitsLabel": {
+        "other": "Μονάδες"
+      },
+      "resetDefaults": {
+        "other": "Επαναφορά προεπιλογών"
+      },
+      "savedLabel": {
+        "other": "Αποθηκεύτηκε"
+      },
+      "changeCountryAria": {
+        "other": "Αλλαγή χώρας"
+      },
+      "setTimeZonePlaceholder": {
+        "other": "Ορισμός ζώνης ώρας"
+      },
+      "timeFormat": {
+        "other": "Μορφή ώρας"
+      },
+      "dateFormat": {
+        "other": "Μορφή ημερομηνίας"
+      },
+      "numberFormat": {
+        "other": "Μορφή αριθμών"
+      },
+      "numbersLabel": {
+        "other": "Αριθμοί"
+      },
+      "weekStartsLabel": {
+        "other": "Η εβδομάδα ξεκινά"
+      },
+      "weekStartsOnTitle": {
+        "other": "Η εβδομάδα ξεκινά"
+      },
+      "weekStartsHint": {
+        "other": "Επηρεάζει ημερολόγια, επιλογείς εβδομάδας και εβδομαδιαίες αναφορές."
+      },
+      "pickOneHint": {
+        "other": "Επιλέξτε αυτό που σας ταιριάζει."
+      },
+      "uiLanguageTitle": {
+        "other": "Γλώσσα διεπαφής"
+      },
+      "uiLanguageHint": {
+        "other": "Σε ποια γλώσσα θα μιλούν οι εφαρμογές που υποστηρίζονται από elvix σε εσάς."
+      },
+      "languageSearchPlaceholder": {
+        "other": "English, Deutsch, fa..."
+      },
+      "currencyHint": {
+        "other": "Προεπιλογή για τιμές, τιμολόγια και πληρωμές σε εφαρμογές που υποστηρίζονται από elvix."
+      },
+      "currencySearchPlaceholder": {
+        "other": "EUR, dollar, real..."
+      },
+      "timeZoneHint": {
+        "other": "Χρησιμοποιείται για προγραμματισμό, \"9πμ ώρα σας\" και εβδομαδιαίες αναφορές."
+      },
+      "timeZoneSearchPlaceholder": {
+        "other": "Berlin, Tehran, Pacific..."
+      }
+    },
+    "languages": {
+      "title": {
+        "other": "Γλώσσες που μιλάτε"
+      },
+      "addLanguage": {
+        "other": "Προσθήκη γλώσσας"
+      },
+      "limitReached": {
+        "other": "Μπορείτε να καταχωρίσετε έως {limit} γλώσσες."
+      },
+      "level": {
+        "other": "Επίπεδο"
+      },
+      "remove": {
+        "other": "Αφαίρεση"
+      },
+      "saveLevel": {
+        "other": "Αποθήκευση επιπέδου"
+      },
+      "updatingLevel": {
+        "other": "Ενημέρωση επιπέδου"
+      },
+      "addingLanguage": {
+        "other": "Προσθήκη γλώσσας"
+      },
+      "removing": {
+        "other": "Αφαίρεση"
+      },
+      "emptyHint": {
+        "other": "Για προεπιλογές διεπαφής, δουλειές και εξερχόμενα μηνύματα."
+      },
+      "searchHint": {
+        "other": "Αναζήτηση με αγγλικό όνομα, μητρική ονομασία ή κωδικό ISO."
+      },
+      "searchPlaceholder": {
+        "other": "English, Deutsch, fa"
+      },
+      "takenBadge": {
+        "other": "προστέθηκε"
+      },
+      "levelPickTitle": {
+        "other": "Πόσο καλά μιλάτε {language};"
+      },
+      "thisLanguageFallback": {
+        "other": "αυτή τη γλώσσα"
+      },
+      "levelPickSubtitle": {
+        "other": "Επιλέξτε το επίπεδο που σας ταιριάζει. Μπορείτε να το αλλάξετε αργότερα."
+      },
+      "errorAlreadyAdded": {
+        "other": "Έχετε ήδη προσθέσει αυτή τη γλώσσα. Επεξεργαστείτε το επίπεδό της από τη λίστα."
+      },
+      "removeConfirmTitle": {
+        "other": "Αφαίρεση {language};"
+      },
+      "removeConfirmBody": {
+        "other": "Οι εφαρμογές που στοχεύουν στη {language} δεν θα σας φτάνουν πλέον σε αυτήν. Μπορείτε να την προσθέσετε ξανά οποτεδήποτε."
+      },
+      "keepCta": {
+        "other": "Διατήρηση"
+      },
+      "addAnother": {
+        "other": "Προσθήκη άλλης γλώσσας"
+      }
+    },
+    "addressBook": {
+      "title": {
+        "other": "Οι διευθύνσεις σας"
+      },
+      "empty": {
+        "other": "Δεν υπάρχουν διευθύνσεις ακόμη."
+      },
+      "addCta": {
+        "other": "Προσθήκη διεύθυνσης"
+      },
+      "makeDefault": {
+        "other": "Ορισμός ως προεπιλογή"
+      },
+      "defaultBadge": {
+        "other": "Προεπιλογή"
+      },
+      "remove": {
+        "other": "Αφαίρεση"
+      },
+      "removeConfirmTitle": {
+        "other": "Αφαίρεση αυτής της διεύθυνσης;"
+      },
+      "savingLabel": {
+        "other": "Αποθήκευση διεύθυνσης."
+      },
+      "deletingLabel": {
+        "other": "Διαγραφή διεύθυνσης."
+      },
+      "addBilling": {
+        "other": "Προσθήκη διεύθυνσης χρέωσης"
+      },
+      "addShipping": {
+        "other": "Προσθήκη διεύθυνσης αποστολής"
+      },
+      "useForBilling": {
+        "other": "Θα τη χρησιμοποιήσουμε για τιμολόγια και αποδείξεις."
+      },
+      "useForShipping": {
+        "other": "Θα τη χρησιμοποιήσουμε για παραδόσεις και παραλαβές."
+      },
+      "addAnotherBilling": {
+        "other": "Προσθήκη άλλης διεύθυνσης χρέωσης"
+      },
+      "addAnotherShipping": {
+        "other": "Προσθήκη άλλης διεύθυνσης αποστολής"
+      },
+      "atCompany": {
+        "other": "στην {company}"
+      },
+      "setAsDefault": {
+        "other": "Ορισμός ως προεπιλογή"
+      },
+      "removeDefault": {
+        "other": "Αφαίρεση προεπιλογής"
+      },
+      "deleteAddress": {
+        "other": "Διαγραφή διεύθυνσης"
+      },
+      "newBillingAddress": {
+        "other": "Νέα διεύθυνση χρέωσης"
+      },
+      "newShippingAddress": {
+        "other": "Νέα διεύθυνση αποστολής"
+      },
+      "searchPrompt": {
+        "other": "Ξεκινήστε να πληκτρολογείτε τη διεύθυνσή σας"
+      },
+      "searchPlaceholder": {
+        "other": "221B Baker Street, London."
+      },
+      "searchError": {
+        "other": "Δεν ήταν δυνατή η αναζήτηση: {error}"
+      },
+      "noMatchesKeepTyping": {
+        "other": "Χωρίς αποτελέσματα ακόμη. Συνεχίστε να πληκτρολογείτε."
+      },
+      "aptFloorEyebrow": {
+        "other": "Διαμέρισμα, όροφος, σουίτα"
+      },
+      "aptFloorTitle": {
+        "other": "Διαμέρισμα, σουίτα ή όροφος;"
+      },
+      "aptFloorBodyBilling": {
+        "other": "Οι χάρτες σπάνια καταγράφουν αριθμούς μονάδας. Προσθέτει μια δεύτερη γραμμή στη διεύθυνση."
+      },
+      "aptFloorBodyShipping": {
+        "other": "Οι μεταφορείς λάθος δρομολογούν χωρίς πληροφορίες μονάδας. Παραλείψτε αν δεν το χρειάζεστε."
+      },
+      "line2Label": {
+        "other": "Γραμμή διεύθυνσης 2 (προαιρετικό)"
+      },
+      "line2Placeholder": {
+        "other": "Διαμ. 4B, 3ος όροφος, Σουίτα 200."
+      },
+      "step2of3": {
+        "other": "Βήμα 2 από 3"
+      },
+      "recipientTitleBilling": {
+        "other": "Για ποιον είναι αυτή η διεύθυνση χρέωσης;"
+      },
+      "recipientTitleShipping": {
+        "other": "Για ποιον είναι αυτή η διεύθυνση αποστολής;"
+      },
+      "recipientSubtitleBilling": {
+        "other": "Όνομα στο τιμολόγιο."
+      },
+      "recipientSubtitleShipping": {
+        "other": "Όνομα στο δέμα."
+      },
+      "someoneElseSubtitleBilling": {
+        "other": "Διαφορετικό όνομα για το τιμολόγιο"
+      },
+      "someoneElseSubtitleShipping": {
+        "other": "Αποστολή σε κάποιον άλλο"
+      },
+      "businessSubtitleBilling": {
+        "other": "Τιμολόγηση στην εταιρεία (B2B)"
+      },
+      "businessSubtitleShipping": {
+        "other": "Αποστολή σε εταιρεία ή χώρο εργασίας"
+      },
+      "saveError": {
+        "other": "Δεν ήταν δυνατή η αποθήκευση: {error}"
+      },
+      "recipientCustomTitle": {
+        "other": "Ποιος είναι ο παραλήπτης;"
+      },
+      "recipientCustomSubtitleBilling": {
+        "other": "Το όνομα που θα εμφανιστεί στο τιμολόγιο."
+      },
+      "recipientCustomSubtitleShipping": {
+        "other": "Το όνομα που θα εμφανιστεί στο δέμα."
+      },
+      "recipientPlaceholder": {
+        "other": "Ιωάννα Παπαδοπούλου"
+      },
+      "businessStep1of2": {
+        "other": "Επιχείρηση, βήμα 1 από 2"
+      },
+      "companyNameTitle": {
+        "other": "Ποιο είναι το όνομα της εταιρείας;"
+      },
+      "companyNameBodyBilling": {
+        "other": "Εμφανίζεται στο τιμολόγιο. Απαιτείται για χειρισμό φόρου B2B αργότερα."
+      },
+      "companyNameBodyShipping": {
+        "other": "Εταιρεία που παραλαμβάνει το δέμα."
+      },
+      "companyNamePlaceholder": {
+        "other": "Edvone"
+      },
+      "businessStep2of2": {
+        "other": "Επιχείρηση, βήμα 2 από 2"
+      },
+      "contactAtCompanyTitle": {
+        "other": "Κάποιος συγκεκριμένος στην {company};"
+      },
+      "attnBodyInvoice": {
+        "other": "Προσθέτει μια γραμμή \"Υπόψιν:\" στο τιμολόγιο. Παραλείψτε για να απευθύνεται στην εταιρεία."
+      },
+      "attnBodyPackage": {
+        "other": "Προσθέτει μια γραμμή \"Υπόψιν:\" στο δέμα. Παραλείψτε για να απευθύνεται στην εταιρεία."
+      },
+      "contactPersonOptional": {
+        "other": "Άτομο επικοινωνίας (προαιρετικό)"
+      },
+      "skip": {
+        "other": "Παράλειψη"
+      },
+      "noteChoiceTitle": {
+        "other": "Θέλετε να προσθέσετε σημείωση παράδοσης;"
+      },
+      "noteChoiceBodyBilling": {
+        "other": "Οτιδήποτε πρέπει να γνωρίζει η ομάδα χρέωσης. Γραμμή ΥΠΟΨΙΝ, αριθμός PO, c/o κάποιος."
+      },
+      "noteChoiceBodyShipping": {
+        "other": "Οτιδήποτε για τον διανομέα. Κουδούνι, κωδικός πύλης, παράδοση στην πόρτα."
+      },
+      "noteYesTitle": {
+        "other": "Ναι, προσθήκη σημείωσης"
+      },
+      "noteYesSubtitle": {
+        "other": "Γράψτε μια σύντομη οδηγία"
+      },
+      "noteNoTitle": {
+        "other": "Όχι, παράλειψη"
+      },
+      "noteNoSubtitle": {
+        "other": "Αποθήκευση της διεύθυνσης ως έχει"
+      },
+      "noteLastStep": {
+        "other": "Σημείωση, τελευταίο βήμα"
+      },
+      "noteInputTitle": {
+        "other": "Τι να πούμε;"
+      },
+      "noteInputBodyBilling": {
+        "other": "Εμφανίζεται στο τιμολόγιο ή στο αρχείο χρέωσης."
+      },
+      "noteInputBodyShipping": {
+        "other": "Παραδίδεται στον μεταφορέα παράδοσης."
+      },
+      "billingNote": {
+        "other": "Σημείωση χρέωσης"
+      },
+      "deliveryNote": {
+        "other": "Σημείωση παράδοσης"
+      },
+      "notePlaceholderBilling": {
+        "other": "Χρέωση Υπόψιν: Λογιστήριο, PO #ABC-1234."
+      },
+      "notePlaceholderShipping": {
+        "other": "Κουδούνι 3, αφήστε στον θυρωρό αν λείπω."
+      },
+      "backToList": {
+        "other": "Πίσω στη λίστα"
+      },
+      "billingAddressLabel": {
+        "other": "διεύθυνση χρέωσης"
+      },
+      "shippingAddressLabel": {
+        "other": "διεύθυνση αποστολής"
+      },
+      "sectionWho": {
+        "other": "Ποιος"
+      },
+      "sectionWhere": {
+        "other": "Πού"
+      },
+      "sectionNotesMeta": {
+        "other": "Σημειώσεις και μετα"
+      },
+      "fieldRecipient": {
+        "other": "Παραλήπτης"
+      },
+      "fieldCompany": {
+        "other": "Εταιρεία"
+      },
+      "addCompanyPlaceholder": {
+        "other": "Προσθήκη εταιρείας"
+      },
+      "fieldStreet": {
+        "other": "Οδός"
+      },
+      "fieldAptFloor": {
+        "other": "Διαμ. ή όροφος"
+      },
+      "addUnitPlaceholder": {
+        "other": "Προσθήκη μονάδας"
+      },
+      "fieldCity": {
+        "other": "Πόλη"
+      },
+      "fieldPostalCode": {
+        "other": "Ταχυδρομικός κώδικας"
+      },
+      "fieldRegion": {
+        "other": "Περιφέρεια"
+      },
+      "fieldCountry": {
+        "other": "Χώρα"
+      },
+      "fieldDeliveryNotes": {
+        "other": "Σημειώσεις παράδοσης"
+      },
+      "addNotePlaceholder": {
+        "other": "Προσθήκη σημείωσης"
+      },
+      "fieldTimezone": {
+        "other": "Ζώνη ώρας"
+      },
+      "fieldVenue": {
+        "other": "Χώρος ή κτίριο"
+      },
+      "nothingToChange": {
+        "other": "Τίποτα προς αλλαγή"
+      },
+      "setDefaultTitle": {
+        "other": "Ορισμός αυτής ως προεπιλογή;"
+      },
+      "removeDefaultTitle": {
+        "other": "Αφαίρεση προεπιλογής από αυτή τη διεύθυνση;"
+      },
+      "setDefaultSubtitle": {
+        "other": "Θα είναι η αυτόματη επιλογή στο checkout ή στο τιμολόγιο."
+      },
+      "removeDefaultSubtitle": {
+        "other": "Τίποτα δεν θα είναι προεπιλεγμένο στο checkout ή στο τιμολόγιο."
+      },
+      "crossAppHeadsUp": {
+        "other": "Προσοχή. Αυτό επηρεάζει κάθε εφαρμογή που χρησιμοποιείτε με elvix."
+      },
+      "crossAppDefaultBodySetting": {
+        "other": "Η προεπιλεγμένη διεύθυνση {kind} σας μοιράζεται σε κάθε εφαρμογή στην οποία συνδέεστε. Η αλλαγή εδώ ενημερώνει την αυτόματη επιλογή παντού ταυτόχρονα."
+      },
+      "crossAppDefaultBodyClearing": {
+        "other": "Η προεπιλεγμένη διεύθυνση {kind} σας μοιράζεται σε κάθε εφαρμογή στην οποία συνδέεστε. Η αφαίρεσή της σημαίνει ότι καμία διεύθυνση δεν είναι προεπιλεγμένη πουθενά. Θα επιλέγετε μία κάθε φορά στο checkout ή στο τιμολόγιο."
+      },
+      "nothingToDelete": {
+        "other": "Τίποτα προς διαγραφή"
+      },
+      "deleteBillingHeader": {
+        "other": "Διαγραφή διεύθυνσης χρέωσης"
+      },
+      "deleteShippingHeader": {
+        "other": "Διαγραφή διεύθυνσης αποστολής"
+      },
+      "deleteConfirmTitle": {
+        "other": "Διαγραφή αυτής της διεύθυνσης;"
+      },
+      "cantBeUndone": {
+        "other": "Αυτό δεν μπορεί να αναιρεθεί."
+      },
+      "crossAppDeleteBodyBilling": {
+        "other": "Η διεύθυνση χρέωσής σας αποθηκεύεται μία φορά στο προφίλ elvix σας και μοιράζεται με τις εφαρμογές στις οποίες συνδέεστε. Η διαγραφή την αφαιρεί παντού. Κάθε ροή checkout, τιμολογίου ή αποστολής που αναφερόταν σε αυτή τη διεύθυνση θα χρειαστεί καινούργια."
+      },
+      "crossAppDeleteBodyShipping": {
+        "other": "Η διεύθυνση αποστολής σας αποθηκεύεται μία φορά στο προφίλ elvix σας και μοιράζεται με τις εφαρμογές στις οποίες συνδέεστε. Η διαγραφή την αφαιρεί παντού. Κάθε ροή checkout, τιμολογίου ή αποστολής που αναφερόταν σε αυτή τη διεύθυνση θα χρειαστεί καινούργια."
+      },
+      "deleteError": {
+        "other": "Δεν ήταν δυνατή η διαγραφή: {error}"
+      },
+      "yesDelete": {
+        "other": "Ναι, διαγραφή"
+      },
+      "pickAddressFirst": {
+        "other": "Επιλέξτε πρώτα μια διεύθυνση"
+      },
+      "changeAddress": {
+        "other": "Αλλαγή διεύθυνσης"
+      },
+      "reviewBilling": {
+        "other": "Επανεξέταση διεύθυνσης χρέωσης"
+      },
+      "reviewShipping": {
+        "other": "Επανεξέταση διεύθυνσης αποστολής"
+      },
+      "notRight": {
+        "other": "Λάθος"
+      },
+      "looksRight": {
+        "other": "Φαίνεται σωστό"
+      },
+      "missingFieldsHint": {
+        "other": "Λείπουν τα {fields}. Επιλέξτε μια πιο συγκεκριμένη πρόταση (με αριθμό οδού) ώστε να αποθηκεύσουμε μια διεύθυνση παραδόσιμη."
+      }
+    },
+    "legalEntities": {
+      "title": {
+        "other": "Νομικά πρόσωπα"
+      },
+      "addCta": {
+        "other": "Προσθήκη νομικού προσώπου"
+      },
+      "companyName": {
+        "other": "Επωνυμία εταιρείας"
+      },
+      "vatId": {
+        "other": "ΑΦΜ"
+      },
+      "taxCountry": {
+        "other": "Χώρα φορολογίας"
+      },
+      "verifyVat": {
+        "other": "Επαλήθευση ΑΦΜ"
+      },
+      "verifying": {
+        "other": "Έλεγχος"
+      },
+      "verifiedBadge": {
+        "other": "Επαληθεύτηκε"
+      },
+      "notRegistered": {
+        "other": "Δεν είναι εγγεγραμμένο"
+      },
+      "unreachable": {
+        "other": "Μη προσβάσιμο"
+      },
+      "addCtaSubtitle": {
+        "other": "Για τιμολόγια, συμβάσεις και φορολογικές δηλώσεις."
+      },
+      "addAnotherCta": {
+        "other": "Προσθήκη άλλου νομικού προσώπου"
+      },
+      "kindIndividual": {
+        "other": "Φυσικό πρόσωπο"
+      },
+      "kindSoleProp": {
+        "other": "Ατομική επιχείρηση"
+      },
+      "kindCompany": {
+        "other": "Εταιρεία"
+      },
+      "removeDefaultAria": {
+        "other": "Αφαίρεση προεπιλογής"
+      },
+      "setDefaultAria": {
+        "other": "Ορισμός ως προεπιλογή"
+      },
+      "deleteAria": {
+        "other": "Διαγραφή προσώπου"
+      },
+      "typeChoiceTitle": {
+        "other": "Τι είδους πρόσωπο είναι αυτό;"
+      },
+      "typeChoiceSubtitle": {
+        "other": "Καθορίζει τις ερωτήσεις που θα ακολουθήσουν."
+      },
+      "step1of3": {
+        "other": "Βήμα 1 από 3"
+      },
+      "individualSubtitle": {
+        "other": "Μόνο εσείς, χωρίς επιχείρηση. Τα τιμολόγια εκδίδονται στο προσωπικό σας όνομα."
+      },
+      "soleProprietorshipSubtitle": {
+        "other": "Εσείς συν μια εμπορική επωνυμία (Einzelunternehmen, freelancer, κλπ.)."
+      },
+      "companySubtitle": {
+        "other": "Εγγεγραμμένο νομικό πρόσωπο (GmbH, Ltd, S.r.l., κλπ.)."
+      },
+      "legalNameTitleIndividual": {
+        "other": "Το νομικό σας όνομα"
+      },
+      "legalNameTitleSoleProp": {
+        "other": "Το νομικό σας όνομα (ο ιδιοκτήτης)"
+      },
+      "legalNameTitleCompany": {
+        "other": "Νομική επωνυμία της εταιρείας"
+      },
+      "legalNameSubtitleIndividual": {
+        "other": "Όπως εμφανίζεται στην ταυτότητά σας."
+      },
+      "legalNameSubtitleSoleProp": {
+        "other": "Το φυσικό πρόσωπο που λειτουργεί την επιχείρηση."
+      },
+      "legalNameSubtitleCompany": {
+        "other": "Η εγγεγραμμένη επωνυμία της εταιρείας."
+      },
+      "legalNameLabel": {
+        "other": "Νομικό όνομα"
+      },
+      "legalNamePlaceholderCompany": {
+        "other": "ACME GmbH"
+      },
+      "legalNamePlaceholderPerson": {
+        "other": "Ιωάννα Παπαδοπούλου"
+      },
+      "legalNameInvalidCompany": {
+        "other": "Εισαγάγετε τουλάχιστον 2 χαρακτήρες με τουλάχιστον ένα γράμμα."
+      },
+      "legalNameInvalidPerson": {
+        "other": "Εισαγάγετε όνομα και επώνυμο."
+      },
+      "tradingNameTitle": {
+        "other": "Εμπορική επωνυμία (προαιρετικό)"
+      },
+      "tradingNameSubtitle": {
+        "other": "Geschaeftsbezeichnung, DBA, doing-business-as. Η μάρκα υπό την οποία λειτουργεί το πρόσωπο."
+      },
+      "tradingNameLabel": {
+        "other": "Εμπορική επωνυμία"
+      },
+      "tradingNamePlaceholder": {
+        "other": "ACME Brands"
+      },
+      "dobTitle": {
+        "other": "Ημερομηνία γέννησης"
+      },
+      "dobSubtitle": {
+        "other": "Απαιτείται για τιμολόγηση στο όνομά σας και KYC αν ένας πελάτης το ζητήσει αργότερα."
+      },
+      "dobAgeError": {
+        "other": "Πρέπει να είστε 18 ετών ή άνω για να εγγράψετε ένα πρόσωπο."
+      },
+      "dobOutOfRange": {
+        "other": "Αυτή η ημερομηνία είναι εκτός εύρους."
+      },
+      "placeOfBirthTitle": {
+        "other": "Τόπος γέννησης"
+      },
+      "placeOfBirthSubtitle": {
+        "other": "Πόλη όπως εμφανίζεται στην ταυτότητά σας. Απαιτείται για τιμολόγηση και KYC."
+      },
+      "placeOfBirthCityLabel": {
+        "other": "Πόλη"
+      },
+      "placeOfBirthCityPlaceholder": {
+        "other": "Ξεκινήστε να πληκτρολογείτε μια πόλη."
+      },
+      "placeChangeCta": {
+        "other": "Αλλαγή"
+      },
+      "placeSearchError": {
+        "other": "Δεν ήταν δυνατή η αναζήτηση: {error}"
+      },
+      "nationalityTitle": {
+        "other": "Εθνικότητα"
+      },
+      "nationalitySubtitle": {
+        "other": "Επιλέξτε μία ή περισσότερες (έως {max}). Η πρώτη θεωρείται κύρια."
+      },
+      "nationalityPrimaryBadge": {
+        "other": "Κύρια"
+      },
+      "nationalityCapReached": {
+        "other": "Επιτεύχθηκε το μέγιστο των {max} εθνικοτήτων. Αφαιρέστε μία για να προσθέσετε άλλη."
+      },
+      "removeCountryAria": {
+        "other": "Αφαίρεση {name}"
+      },
+      "taxCountryTitle": {
+        "other": "Φορολογική κατοικία"
+      },
+      "taxCountrySubtitle": {
+        "other": "Όπου το πρόσωπο υποβάλλει φόρους. Παρατίθενται μόνο χώρες όπου μπορούμε να επαληθεύσουμε ζωντανά τον φορολογικό αριθμό."
+      },
+      "taxIdsTitle": {
+        "other": "Φορολογικά αναγνωριστικά"
+      },
+      "taxIdsSubtitleIndividual": {
+        "other": "Ο τοπικός φορολογικός αριθμός σας από {country}. Αποθηκεύεται ως έχει."
+      },
+      "taxIdsSubtitleIndividualFallback": {
+        "other": "η φορολογική σας αρχή"
+      },
+      "taxIdsSubtitleCompany": {
+        "other": "Ο ΑΦΜ επαληθεύεται ζωντανά έναντι της {authority}. Ο τοπικός φορολογικός αριθμός είναι προαιρετικός."
+      },
+      "taxIdsSubtitleCompanyFallback": {
+        "other": "η εκδοτική αρχή"
+      },
+      "taxIdsSubtitleSoleProp": {
+        "other": "Και τα δύο είναι προαιρετικά. Προσθέστε τον τοπικό φορολογικό αριθμό αν τον θέλετε στα τιμολόγια. Τον ΑΦΜ μόνο αν είστε εγγεγραμμένος στο ΦΠΑ. Η επιχειρηματική εγγραφή καταχωρείται στο επόμενο βήμα."
+      },
+      "localTaxNumberLabel": {
+        "other": "Τοπικός φορολογικός αριθμός"
+      },
+      "vatCompanyIdLabel": {
+        "other": "ΑΦΜ / αριθμός εταιρείας"
+      },
+      "blockReasonTaxIdRequired": {
+        "other": "Εισαγάγετε τον τοπικό φορολογικό αριθμό για να συνεχίσετε."
+      },
+      "blockReasonTaxIdFormat": {
+        "other": "Ο τοπικός φορολογικός αριθμός δεν ταιριάζει με τη μορφή {country}. {hint}"
+      },
+      "blockReasonVatRequired": {
+        "other": "Εισαγάγετε ΑΦΜ / αριθμό εταιρείας για να συνεχίσετε."
+      },
+      "blockReasonVatFormat": {
+        "other": "Αυτός ο ΑΦΜ δεν ταιριάζει με τη μορφή της χώρας."
+      },
+      "taxIdFormatHint": {
+        "other": "Αναμενόμενο: {placeholder}."
+      },
+      "verifyHeadingChecking": {
+        "other": "Επαλήθευση με την αρχή."
+      },
+      "verifyHeadingLive": {
+        "other": "Επαληθεύτηκε."
+      },
+      "verifyHeadingInvalid": {
+        "other": "Δεν ήταν δυνατή η επαλήθευση."
+      },
+      "verifyHeadingFormat": {
+        "other": "Η αρχή δεν είναι προσβάσιμη."
+      },
+      "verifySubtitleChecking": {
+        "other": "Έλεγχος του {vatId} έναντι του μητρώου της {country}."
+      },
+      "verifySubtitleLiveNamed": {
+        "other": "Η {authority} αναγνώρισε αυτόν τον ΑΦΜ ως {name}."
+      },
+      "verifySubtitleLive": {
+        "other": "Η {authority} αναγνώρισε αυτόν τον ΑΦΜ."
+      },
+      "verifySubtitleInvalid": {
+        "other": "Η {authority} δεν παραθέτει τον {vatId} ως εγγεγραμμένο. Επιστρέψτε για διόρθωση."
+      },
+      "verifySubtitleFormat": {
+        "other": "Δεν μπορέσαμε να επικοινωνήσουμε με την {authority} αυτή τη στιγμή. Η καταχώρισή σας αποθηκεύεται ως έχει και θα επανεπαληθεύσει αυτόματα."
+      },
+      "authorityFallback": {
+        "other": "η φορολογική αρχή"
+      },
+      "editTaxIdsBackLabel": {
+        "other": "Επεξεργασία φορολογικών αναγνωριστικών"
+      },
+      "fixVatCta": {
+        "other": "Διόρθωση ΑΦΜ"
+      },
+      "continueAnywayCta": {
+        "other": "Συνέχεια έτσι κι αλλιώς"
+      },
+      "registrationTitle": {
+        "other": "Εγγραφή"
+      },
+      "registrationSubtitle": {
+        "other": "Handelsregister, Companies House, KvK. Το επίσημο μητρώο όπου είναι καταχωρημένο αυτό το πρόσωπο."
+      },
+      "registrationNumberLabel": {
+        "other": "Αριθμός εγγραφής"
+      },
+      "issuingAuthorityLabel": {
+        "other": "Εκδοτική αρχή"
+      },
+      "issuingAuthorityPlaceholder": {
+        "other": "Τοπικό δικαστήριο / εμπορικό μητρώο"
+      },
+      "registeredSinceLabel": {
+        "other": "Εγγεγραμμένο από (προαιρετικό)"
+      },
+      "registeredSinceRangeError": {
+        "other": "Επιλέξτε ημερομηνία μεταξύ 1900 και σήμερα."
+      },
+      "regNumberFormatHint": {
+        "other": "Δεν ταιριάζει με την αναμενόμενη μορφή. Δοκιμάστε: {placeholder}."
+      },
+      "addressSearchTitle": {
+        "other": "Εγγεγραμμένη διεύθυνση"
+      },
+      "addressSearchSubtitle": {
+        "other": "Όπου το πρόσωπο είναι εγγεγραμμένο στην αρχή. Ξεκινήστε να πληκτρολογείτε."
+      },
+      "addressLabel": {
+        "other": "Διεύθυνση"
+      },
+      "addressSearchPlaceholder": {
+        "other": "Οδός, πόλη."
+      },
+      "addressPickFirst": {
+        "other": "Επιλέξτε πρώτα μια διεύθυνση"
+      },
+      "addressReviewTitle": {
+        "other": "Φαίνεται σωστό;"
+      },
+      "addressReviewSubtitle": {
+        "other": "Βεβαιωθείτε ότι η εγγεγραμμένη έδρα ταιριάζει με το επίσημο μητρώο."
+      },
+      "addressMissing": {
+        "other": "Λείπουν τα {fields}. Επιλέξτε μια πιο συγκεκριμένη πρόταση."
+      },
+      "addressFieldStreet": {
+        "other": "Οδός"
+      },
+      "addressFieldCity": {
+        "other": "Πόλη"
+      },
+      "addressFieldPostalCode": {
+        "other": "Ταχυδρομικός κώδικας"
+      },
+      "addressFieldRegion": {
+        "other": "Περιφέρεια"
+      },
+      "addressFieldCountry": {
+        "other": "Χώρα"
+      },
+      "addressChangeBackLabel": {
+        "other": "Αλλαγή διεύθυνσης"
+      },
+      "addressNotRightCta": {
+        "other": "Λάθος"
+      },
+      "addressLooksRightCta": {
+        "other": "Φαίνεται σωστό"
+      },
+      "addressAptTitle": {
+        "other": "Διαμέρισμα, σουίτα ή όροφος;"
+      },
+      "addressAptSubtitle": {
+        "other": "Προσθέτει μια δεύτερη γραμμή στην εγγεγραμμένη διεύθυνση. Παραλείψτε αν δεν χρειάζεται."
+      },
+      "addressAptLabel": {
+        "other": "Γραμμή διεύθυνσης 2 (προαιρετικό)"
+      },
+      "addressAptPlaceholder": {
+        "other": "Διαμ. 4B, 3ος όροφος, Σουίτα 200."
+      },
+      "contactChoiceTitle": {
+        "other": "Θέλετε να προσθέσετε στοιχεία επικοινωνίας;"
+      },
+      "contactChoiceSubtitle": {
+        "other": "Προαιρετικό email συν τηλέφωνο για αυτό το πρόσωπο. Ξεχωριστά από την κύρια επαφή του λογαριασμού σας."
+      },
+      "contactYesCta": {
+        "other": "Ναι, προσθήκη επικοινωνίας"
+      },
+      "contactNoCta": {
+        "other": "Όχι, αποθήκευση χωρίς"
+      },
+      "yesNoYesSubtitle": {
+        "other": "Προσθέτει το επόμενο βήμα"
+      },
+      "yesNoNoSubtitle": {
+        "other": "Αποθηκεύστε το πρόσωπο ως έχει"
+      },
+      "saveError": {
+        "other": "Δεν ήταν δυνατή η αποθήκευση: {error}"
+      },
+      "contactInputTitle": {
+        "other": "Επικοινωνία για αυτό το πρόσωπο"
+      },
+      "contactInputSubtitle": {
+        "other": "Email συν τηλέφωνο που εμφανίζονται σε τιμολόγια και συμβάσεις."
+      },
+      "contactEmailLabel": {
+        "other": "Email (προαιρετικό)"
+      },
+      "contactEmailPlaceholder": {
+        "other": "invoices@example.com"
+      },
+      "contactEmailInvalid": {
+        "other": "Εισαγάγετε ένα έγκυρο email ή αφήστε κενό."
+      },
+      "contactPhoneLabel": {
+        "other": "Τηλέφωνο (προαιρετικό)"
+      },
+      "contactPhonePlaceholder": {
+        "other": "+49 ."
+      },
+      "contactPhoneInvalid": {
+        "other": "Χρησιμοποιήστε ψηφία με προαιρετικό + στην αρχή (6 έως 20 ψηφία)."
+      },
+      "saveEntityCta": {
+        "other": "Αποθήκευση προσώπου"
+      },
+      "saveChangesCta": {
+        "other": "Αποθήκευση αλλαγών"
+      },
+      "savingEntityLabel": {
+        "other": "Αποθήκευση προσώπου."
+      },
+      "deletingEntityLabel": {
+        "other": "Διαγραφή προσώπου."
+      },
+      "backToList": {
+        "other": "Πίσω στη λίστα"
+      },
+      "detailSectionIdentity": {
+        "other": "Ταυτότητα"
+      },
+      "detailSectionTax": {
+        "other": "Φόρος"
+      },
+      "detailSectionRegistration": {
+        "other": "Εγγραφή"
+      },
+      "detailSectionAddress": {
+        "other": "Διεύθυνση"
+      },
+      "detailSectionContact": {
+        "other": "Επικοινωνία"
+      },
+      "detailLegalName": {
+        "other": "Νομικό όνομα"
+      },
+      "detailTradingName": {
+        "other": "Εμπορική επωνυμία"
+      },
+      "detailTradingNamePlaceholder": {
+        "other": "Προσθήκη εμπορικής επωνυμίας"
+      },
+      "detailDob": {
+        "other": "Ημερομηνία γέννησης"
+      },
+      "detailPlaceOfBirth": {
+        "other": "Τόπος γέννησης"
+      },
+      "detailPlaceOfBirthPlaceholder": {
+        "other": "Προσθήκη τόπου γέννησης"
+      },
+      "detailNationality": {
+        "other": "Εθνικότητα"
+      },
+      "detailTaxResidence": {
+        "other": "Φορολογική κατοικία"
+      },
+      "detailVatId": {
+        "other": "ΑΦΜ / αριθμός εταιρείας"
+      },
+      "detailVatIdPlaceholder": {
+        "other": "Προσθήκη ΑΦΜ"
+      },
+      "detailLocalTaxNumber": {
+        "other": "Τοπικός φορολογικός αριθμός"
+      },
+      "detailLocalTaxNumberPlaceholder": {
+        "other": "Προσθήκη φορολογικού αριθμού"
+      },
+      "detailRegistrationNumber": {
+        "other": "Αρ. εγγραφής"
+      },
+      "detailIssuingAuthority": {
+        "other": "Εκδοτική αρχή"
+      },
+      "detailRegisteredSince": {
+        "other": "Εγγεγραμμένο από"
+      },
+      "detailStreet": {
+        "other": "Οδός"
+      },
+      "detailAptFloor": {
+        "other": "Διαμ. / όροφος"
+      },
+      "detailCity": {
+        "other": "Πόλη"
+      },
+      "detailPostalCode": {
+        "other": "Ταχυδρομικός κώδικας"
+      },
+      "detailCountry": {
+        "other": "Χώρα"
+      },
+      "detailEmail": {
+        "other": "Email"
+      },
+      "detailEmailPlaceholder": {
+        "other": "Προσθήκη email"
+      },
+      "detailPhone": {
+        "other": "Τηλέφωνο"
+      },
+      "detailPhonePlaceholder": {
+        "other": "Προσθήκη τηλεφώνου"
+      },
+      "removeDefault": {
+        "other": "Αφαίρεση προεπιλογής"
+      },
+      "setDefault": {
+        "other": "Ορισμός ως προεπιλογή"
+      },
+      "deleteConfirmTitle": {
+        "other": "Διαγραφή αυτού του προσώπου;"
+      },
+      "deleteConfirmBody": {
+        "other": "Αυτό δεν μπορεί να αναιρεθεί."
+      },
+      "deleteEmpty": {
+        "other": "Τίποτα προς διαγραφή"
+      },
+      "sharedAcrossAppsHeading": {
+        "other": "Προσοχή. Αυτό επηρεάζει κάθε εφαρμογή που χρησιμοποιείτε με elvix."
+      },
+      "deleteSharedAcrossAppsBody": {
+        "other": "Τα νομικά πρόσωπα μοιράζονται σε όλες τις εφαρμογές στις οποίες συνδέεστε. Η διαγραφή αφαιρεί την εγγραφή παντού. Κάθε πρότυπο τιμολογίου που αναφερόταν σε αυτό θα χρειαστεί νέο."
+      },
+      "deleteError": {
+        "other": "Δεν ήταν δυνατή η διαγραφή: {error}"
+      },
+      "yesDelete": {
+        "other": "Ναι, διαγραφή"
+      },
+      "nothingToChange": {
+        "other": "Τίποτα προς αλλαγή"
+      },
+      "defaultConfirmTitleSet": {
+        "other": "Ορισμός αυτού ως προεπιλεγμένο πρόσωπο;"
+      },
+      "defaultConfirmTitleUnset": {
+        "other": "Αφαίρεση προεπιλογής από αυτό το πρόσωπο;"
+      },
+      "defaultConfirmBodySet": {
+        "other": "Το προεπιλεγμένο πρόσωπο συμπληρώνει αυτόματα τιμολόγια και πρότυπα συμβάσεων."
+      },
+      "defaultConfirmBodyUnset": {
+        "other": "Τίποτα δεν θα είναι προεπιλεγμένο όταν δημιουργείτε τιμολόγια ή συμβάσεις."
+      },
+      "defaultSharedAcrossAppsBodySet": {
+        "other": "Το προεπιλεγμένο πρόσωπο μοιράζεται σε κάθε εφαρμογή στην οποία συνδέεστε. Η αλλαγή εδώ ενημερώνει την αυτόματη επιλογή παντού ταυτόχρονα."
+      },
+      "defaultSharedAcrossAppsBodyUnset": {
+        "other": "Το προεπιλεγμένο πρόσωπο μοιράζεται σε κάθε εφαρμογή στην οποία συνδέεστε. Η αφαίρεσή του σημαίνει ότι κανένα πρόσωπο δεν είναι προεπιλεγμένο πουθενά."
+      }
+    },
+    "entityKind": {
+      "title": {
+        "other": "Για ποιον είναι αυτό;"
+      },
+      "me": {
+        "other": "Εμένα"
+      },
+      "someoneElse": {
+        "other": "Κάποιον άλλο"
+      },
+      "business": {
+        "other": "Μια επιχείρηση"
+      }
+    },
+    "export": {
+      "title": {
+        "other": "Κατεβάστε τα δεδομένα σας"
+      },
+      "body": {
+        "other": "Λάβετε αντίγραφο όλων όσων διατηρούμε για εσάς. GDPR Άρθρο 15. Στέλνουμε με email έναν σύνδεσμο λήψης μίας χρήσης, έγκυρο για 24 ώρες."
+      },
+      "sendCodeCta": {
+        "other": "Αποστολή κωδικού επαλήθευσης"
+      },
+      "downloadCta": {
+        "other": "Στείλτε μου τον σύνδεσμο με email"
+      },
+      "doneTitle": {
+        "other": "Ελέγξτε τα εισερχόμενά σας"
+      },
+      "doneBody": {
+        "other": "Στείλαμε έναν σύνδεσμο λήψης στο {email}. Λήγει σε 24 ώρες."
+      },
+      "previewLoadFailed": {
+        "other": "Δεν ήταν δυνατή η φόρτωση της προεπισκόπησης. Δοκιμάστε ξανά."
+      },
+      "whatYouReceive": {
+        "other": "Τι θα λάβετε"
+      },
+      "archiveBlurbIdentity": {
+        "other": "Το αρχείο σας θα περιέχει ένα μοναδικό αρχείο JSON με όλα τα παρακάτω, συν την εικόνα avatar και banner αν έχετε ανεβάσει, συν ένα README που εξηγεί κάθε ενότητα σε απλή γλώσσα και περιλαμβάνει τις γνωστοποιήσεις GDPR Άρθρ. 15(1)."
+      },
+      "archiveBlurbApp": {
+        "other": "Το αρχείο σας θα περιέχει ένα μοναδικό αρχείο JSON περιορισμένο στο {label}, συν ένα README που εξηγεί κάθε ενότητα και περιλαμβάνει τις γνωστοποιήσεις GDPR Άρθρ. 15(1)."
+      },
+      "notIncluded": {
+        "other": "Δεν περιλαμβάνονται: κρυπτογραφικό υλικό κλειδιών στα passkeys σας, OAuth tokens, κωδικοί OTP και δεδομένα που οι εφαρμογές που χρησιμοποιείτε διατηρούν για εσάς εκτός elvix. Επικοινωνήστε με κάθε εφαρμογή για τα τελευταία."
+      },
+      "sendToHeading": {
+        "other": "Θα στείλουμε τα δεδομένα σας στο κύριο email σας"
+      },
+      "sendToBody": {
+        "other": "Το αρχείο σας θα φτάσει στο {email} ως συνημμένο .zip. Η κατοχή αυτού του inbox είναι η απόδειξη ταυτότητας, οπότε το αρχείο δεν βρίσκεται ποτέ σε δημόσιο URL."
+      },
+      "sendToNotice": {
+        "other": "Στέλνουμε πρώτα έναν 6ψήφιο κωδικό στο κύριο inbox σας. Αφού τον εισαγάγετε στην επόμενη οθόνη, δημιουργούμε το αρχείο σας και σας το στέλνουμε με email ως συνημμένο .zip."
+      },
+      "sendingCode": {
+        "other": "Αποστολή κωδικού"
+      },
+      "sendToCta": {
+        "other": "Στείλτε μου με email έναν 6ψήφιο κωδικό"
+      },
+      "otpHeading": {
+        "other": "Επιβεβαιώστε με τον κωδικό σας"
+      },
+      "otpBody": {
+        "other": "Στείλαμε έναν 6ψήφιο κωδικό στο {email}. Λήγει σε 10 λεπτά. Μόλις τον εισαγάγετε, θα δημιουργήσουμε το αρχείο σας και θα σας το στείλουμε με email στο ίδιο inbox ως συνημμένο .zip."
+      },
+      "confirmCta": {
+        "other": "Επιβεβαίωση και αποστολή των δεδομένων μου με email"
+      },
+      "workingLabel": {
+        "other": "Επεξεργασία"
+      },
+      "resendIn": {
+        "other": "Επαναποστολή σε {seconds}δ"
+      },
+      "noPendingCode": {
+        "other": "Κανένας εκκρεμής κωδικός. Στείλτε νέο."
+      },
+      "networkError": {
+        "other": "Σφάλμα δικτύου. Δοκιμάστε ξανά."
+      },
+      "doneHeading": {
+        "other": "Στάλθηκε."
+      },
+      "doneInboxBody": {
+        "other": "Ελέγξτε το κύριο inbox σας ({email}) σε ένα λεπτό. Το αρχείο σας είναι συνημμένο στο email ως αρχείο .zip. Μπορείτε να ζητήσετε άλλη εξαγωγή του ίδιου στόχου σε 24 ώρες."
+      },
+      "backToExports": {
+        "other": "Πίσω στις εξαγωγές"
+      },
+      "errorChallengeGeneric": {
+        "other": "Δεν ήταν δυνατή η αποστολή κωδικού. Δοκιμάστε ξανά."
+      },
+      "errorChallengeTooRecent": {
+        "other": "Περιμένετε {seconds}δ πριν ζητήσετε ξανά."
+      },
+      "errorChallengeTooMany": {
+        "other": "Πάρα πολλά αιτήματα αυτήν την ώρα. Δοκιμάστε αργότερα."
+      },
+      "errorChallengeSendFailed": {
+        "other": "Δεν ήταν δυνατή η αποστολή του κωδικού με email. Δοκιμάστε ξανά."
+      },
+      "errorChallengeRateLimit": {
+        "other": "Έχετε ήδη εξαγάγει αυτό τις τελευταίες 24 ώρες. Διαθέσιμο ξανά σε ~{hours}ω."
+      },
+      "errorChallengeNotMember": {
+        "other": "Δεν είστε πλέον μέλος αυτής της εφαρμογής."
+      },
+      "errorChallengeAppNotFound": {
+        "other": "Αυτή η εφαρμογή δεν είναι διαθέσιμη."
+      },
+      "errorApplyGeneric": {
+        "other": "Δεν ήταν δυνατή η δημιουργία της εξαγωγής σας. Δοκιμάστε ξανά."
+      },
+      "errorApplyWrongCode": {
+        "one": "Λάθος κωδικός. Απομένει {count} προσπάθεια.",
+        "other": "Λάθος κωδικός. Απομένουν {count} προσπάθειες."
+      },
+      "errorApplyLocked": {
+        "other": "Πάρα πολλές λάθος προσπάθειες. Στείλτε νέο κωδικό."
+      },
+      "errorApplyExpired": {
+        "other": "Ο κωδικός έληξε. Στείλτε νέο."
+      },
+      "errorApplyGenerateFailed": {
+        "other": "Δεν μπορέσαμε να δημιουργήσουμε την εξαγωγή σας. Δοκιμάστε ξανά."
+      },
+      "errorApplyStorageFailed": {
+        "other": "Δεν μπορέσαμε να αποθηκεύσουμε την εξαγωγή σας. Δοκιμάστε ξανά."
+      },
+      "errorApplyEmailFailed": {
+        "other": "Το αρχείο σας δημιουργήθηκε αλλά το email απέτυχε. Επικοινωνήστε με το {email} για ανάκτηση του συνδέσμου."
+      }
+    },
+    "deactivate": {
+      "title": {
+        "other": "Κάντε ένα διάλειμμα"
+      },
+      "body": {
+        "other": "Η απενεργοποίηση κρύβει τον λογαριασμό σας από αυτήν την εφαρμογή. Επανενεργοποιήστε οποτεδήποτε από τον λογαριασμό elvix σας."
+      },
+      "confirmCta": {
+        "other": "Απενεργοποίηση"
+      },
+      "doneTitle": {
+        "other": "Ο λογαριασμός σας είναι σε παύση"
+      },
+      "reactivateCta": {
+        "other": "Επανενεργοποίηση"
+      },
+      "errorTooMany": {
+        "other": "Πάρα πολλοί κωδικοί ζητήθηκαν. Δοκιμάστε ξανά αργότερα."
+      },
+      "errorTooRecent": {
+        "other": "Περιμένετε {seconds}δ πριν ζητήσετε ξανά."
+      },
+      "errorSendFailed": {
+        "other": "Δεν ήταν δυνατή η αποστολή του κωδικού με email. Δοκιμάστε ξανά."
+      },
+      "errorRequestFailed": {
+        "other": "Δεν ήταν δυνατό το αίτημα κωδικού. Δοκιμάστε ξανά."
+      },
+      "errorWrongCode": {
+        "one": "Λάθος κωδικός. Απομένει {count} προσπάθεια.",
+        "other": "Λάθος κωδικός. Απομένουν {count} προσπάθειες."
+      },
+      "errorChallengeLocked": {
+        "other": "Πάρα πολλές λάθος προσπάθειες. Ζητήστε νέο κωδικό."
+      },
+      "errorChallengeExpired": {
+        "other": "Ο κωδικός έληξε. Ζητήστε νέο."
+      },
+      "errorAlreadyLeft": {
+        "other": "Έχετε ήδη φύγει από αυτήν την εφαρμογή. Επαναφέρετε πρώτα τη συμμετοχή σας."
+      },
+      "appNameFallback": {
+        "other": "την εφαρμογή σας"
+      },
+      "warn1Title": {
+        "other": "Κάντε ένα διάλειμμα από {app}"
+      },
+      "warn1Body": {
+        "other": "Το προφίλ σας κάνει ένα ήσυχο διάλειμμα. Οι άνθρωποι στο {app} σταματούν να σας βλέπουν, αλλά όλα όσα έχετε χτίσει παραμένουν ακριβώς όπως είναι. Όποτε είστε έτοιμοι, επιστρέψτε εδώ και συνδεθείτε ξανά."
+      },
+      "soundGood": {
+        "other": "Σας ακούγεται καλό;"
+      },
+      "warn1Cta": {
+        "other": "Κατανοώ"
+      },
+      "warn2Title": {
+        "other": "Μερικά πράγματα να ξέρετε"
+      },
+      "warn2Bullet1": {
+        "other": "Οι ανοιχτές συνεδρίες σε αυτήν την εφαρμογή αποσυνδέονται αμέσως."
+      },
+      "warn2Bullet2": {
+        "other": "Το όνομα χρήστη και το αναγνωριστικό σας παραμένουν δικά σας. Κανείς άλλος δεν μπορεί να τα πάρει όσο είστε μακριά."
+      },
+      "warn2Bullet3": {
+        "other": "Μπορείτε να επιστρέψετε οποτεδήποτε από αυτήν την ίδια επιφάνεια."
+      },
+      "warn2Bullet4": {
+        "other": "Θα σας στείλουμε με email έναν 6ψήφιο κωδικό για επιβεβαίωση. Με ζώνη και τιράντες, ώστε η αλλαγή να γίνεται μόνο αν έχετε επίσης πρόσβαση στο inbox σας."
+      },
+      "warn2Cta": {
+        "other": "Κατανοώ. Στείλτε μου έναν κωδικό με email"
+      },
+      "sendingLabel": {
+        "other": "Αποστολή"
+      },
+      "reactivateTitle": {
+        "other": "Καλώς ήρθατε ξανά στο {app}"
+      },
+      "reactivateBody": {
+        "other": "Είστε σε διάλειμμα αυτή τη στιγμή. Επανενεργοποιήστε για να εμφανιστείτε ξανά στο {app}."
+      },
+      "reactivateBodyByOwner": {
+        "other": "Είστε σε διάλειμμα αυτή τη στιγμή (ένας διαχειριστής το έκανε για λογαριασμό σας). Επανενεργοποιήστε για να εμφανιστείτε ξανά στο {app}."
+      },
+      "doneDeactivatedTitle": {
+        "other": "Είστε σε διάλειμμα από το {app}."
+      },
+      "doneReactivatedTitle": {
+        "other": "Είστε ξανά στο {app}."
+      },
+      "doneDeactivatedBody": {
+        "other": "Ενημερώσαμε την εφαρμογή. Επιστρέψτε εδώ οποτεδήποτε για επανενεργοποίηση."
+      },
+      "doneReactivatedBody": {
+        "other": "Η συμμετοχή σας είναι ξανά ενεργή. Οι ανοιχτές συνεδρίες από την πλευρά της εφαρμογής ίσως χρειαστούν μια στιγμή για να ανανεωθούν."
+      },
+      "reactivateAgain": {
+        "other": "Επανενεργοποίηση ξανά"
+      },
+      "deactivateAgain": {
+        "other": "Απενεργοποίηση ξανά"
+      },
+      "otpTitle": {
+        "other": "Εισαγάγετε τον κωδικό επιβεβαίωσής σας"
+      },
+      "otpDelivered": {
+        "other": "Στείλαμε με email έναν 6ψήφιο κωδικό στο {email}. Λήγει σε 10 λεπτά."
+      },
+      "otpSending": {
+        "other": "Σας στέλνουμε έναν 6ψήφιο κωδικό."
+      },
+      "otpPending": {
+        "other": "Στέλνουμε έναν 6ψήφιο κωδικό στο email σας."
+      },
+      "resendIn": {
+        "other": "Επαναποστολή σε {seconds}δ"
+      }
+    },
+    "leave": {
+      "title": {
+        "other": "Αποχώρηση από {app};"
+      },
+      "body": {
+        "other": "Αφαιρεί τη συμμετοχή σας. Αυτό είναι οριστικό: ο ιδιοκτήτης δεν μπορεί να το επαναφέρει. Ο λογαριασμός elvix σας παραμένει ανοιχτός."
+      },
+      "confirmCta": {
+        "other": "Αποχώρηση οριστικά"
+      },
+      "doneTitle": {
+        "other": "Έχετε αποχωρήσει από το {app}."
+      },
+      "errorTooManyCodes": {
+        "other": "Πάρα πολλοί κωδικοί ζητήθηκαν. Δοκιμάστε ξανά αργότερα."
+      },
+      "errorTooRecent": {
+        "other": "Περιμένετε {seconds}δ πριν ζητήσετε ξανά."
+      },
+      "errorSendFailed": {
+        "other": "Δεν ήταν δυνατή η αποστολή του κωδικού με email. Δοκιμάστε ξανά."
+      },
+      "errorRequestFailed": {
+        "other": "Δεν ήταν δυνατό το αίτημα κωδικού. Δοκιμάστε ξανά."
+      },
+      "errorWrongCode": {
+        "one": "Λάθος κωδικός. Απομένει {count} προσπάθεια.",
+        "other": "Λάθος κωδικός. Απομένουν {count} προσπάθειες."
+      },
+      "errorChallengeLocked": {
+        "other": "Πάρα πολλές λάθος προσπάθειες. Ζητήστε νέο κωδικό."
+      },
+      "errorChallengeExpired": {
+        "other": "Ο κωδικός έληξε. Ζητήστε νέο."
+      },
+      "errorOwnerInitiated": {
+        "other": "Ένας διαχειριστής σας αφαίρεσε. Πρέπει να το αναιρέσει από το Console του."
+      },
+      "errorGraceExpired": {
+        "other": "Το διάστημα 90 ημερών για επαναφορά αυτής της συμμετοχής έχει λήξει."
+      },
+      "errorRestoreFailed": {
+        "other": "Δεν ήταν δυνατή η επαναφορά. Δοκιμάστε ξανά."
+      },
+      "otpActionLabel": {
+        "other": "Αποχώρηση από {app}"
+      },
+      "warn1Heading": {
+        "other": "Αποχώρηση από {app}"
+      },
+      "warn1Body": {
+        "other": "Η συμμετοχή σας κρύβεται αμέσως. Έχετε 90 ημέρες για να αλλάξετε γνώμη και να επαναφέρετε από αυτήν την ίδια επιφάνεια. Μετά από αυτό, η εφαρμογή σταματά να εμφανίζεται στη λίστα σας. Τα δεδομένα σας από την πλευρά της εφαρμογής παραμένουν υπό τις δικές τους πολιτικές."
+      },
+      "understandPrompt": {
+        "other": "Κατανοείτε;"
+      },
+      "iUnderstandCta": {
+        "other": "Κατανοώ"
+      },
+      "dataHeading": {
+        "other": "Σχετικά με τα δεδομένα σας στο {app}"
+      },
+      "warn2Body": {
+        "other": "Η elvix δεν αποθηκεύει ούτε διαγράφει ό,τι κρατάει το {app} για εσάς. Ο ιδιοκτήτης της εφαρμογής είναι υπεύθυνος γι' αυτό υπό τη δική του πολιτική απορρήτου και όρους χρήσης. Ειδοποιούμε την εφαρμογή τη στιγμή που αποχωρείτε ώστε να ενεργήσει σύμφωνα με αυτούς τους όρους. Διαβάστε τους πριν επιβεβαιώσετε."
+      },
+      "privacyPolicy": {
+        "other": "Πολιτική απορρήτου"
+      },
+      "termsOfService": {
+        "other": "Όροι χρήσης"
+      },
+      "warn2EmailPrompt": {
+        "other": "Θα σας στείλουμε με email έναν κωδικό για επιβεβαίωση. Κατανοείτε;"
+      },
+      "warn2Cta": {
+        "other": "Κατανοώ. Στείλτε μου έναν κωδικό με email"
+      },
+      "restoreHeading": {
+        "other": "Επαναφέρετε τη συμμετοχή σας στο {app}"
+      },
+      "restoreBody": {
+        "one": "Έχετε {count} ημέρα ακόμη στο διάστημα χάριτος. Επαναφέρετε τώρα και η εφαρμογή σας βλέπει ακριβώς όπως πριν: ίδιο όνομα χρήστη, ίδιοι ρόλοι, ίδιο ιστορικό.",
+        "other": "Έχετε {count} ημέρες ακόμη στο διάστημα χάριτος. Επαναφέρετε τώρα και η εφαρμογή σας βλέπει ακριβώς όπως πριν: ίδιο όνομα χρήστη, ίδιοι ρόλοι, ίδιο ιστορικό."
+      },
+      "restoreCta": {
+        "other": "Επαναφορά συμμετοχής"
+      },
+      "ownerLockedHeading": {
+        "other": "Ένας διαχειριστής σας αφαίρεσε από το {app}"
+      },
+      "ownerLockedBody": {
+        "one": "Αφαιρέθηκε {date}. Ο ιδιοκτήτης της εφαρμογής έχει {count} ημέρα ακόμη για να ακυρώσει από τη δική του πλευρά. Μετά από αυτό η εφαρμογή δεν εμφανίζεται πλέον εδώ.",
+        "other": "Αφαιρέθηκε {date}. Ο ιδιοκτήτης της εφαρμογής έχει {count} ημέρες ακόμη για να ακυρώσει από τη δική του πλευρά. Μετά από αυτό η εφαρμογή δεν εμφανίζεται πλέον εδώ."
+      },
+      "ownerLockedReachOut": {
+        "other": "Επειδή αυτοί ξεκίνησαν την αφαίρεση, μόνο αυτοί μπορούν να την αναιρέσουν. Επικοινωνήστε μέσω του καναλιού υποστήριξής τους αν θέλετε να τους μιλήσετε γι' αυτό."
+      },
+      "doneLeftTitle": {
+        "other": "Φύγατε από το {app}."
+      },
+      "doneRestoredTitle": {
+        "other": "Είστε ξανά στο {app}."
+      },
+      "doneLeftBody": {
+        "other": "Ειδοποιήσαμε την εφαρμογή. Έχετε 90 ημέρες για να επιστρέψετε και να επαναφέρετε από αυτήν την ίδια επιφάνεια. Μετά από αυτό, η εφαρμογή σταματά να εμφανίζεται στη λίστα σας."
+      },
+      "doneRestoredBody": {
+        "other": "Η συμμετοχή σας είναι ξανά ενεργή. Η πλευρά της εφαρμογής ίσως χρειαστεί μια στιγμή για να ανανεωθεί."
+      }
+    },
+    "lifecycle": {
+      "bannedTitle": {
+        "other": "Η πρόσβασή σας ανακλήθηκε."
+      },
+      "bannedBody": {
+        "other": "Ένας διαχειριστής απαγόρευσε τον λογαριασμό σας για αυτήν την εφαρμογή. Θα αποσυνδεθείτε και δεν θα μπορείτε να συνδεθείτε ξανά. Επικοινωνήστε με τον ιδιοκτήτη αν πιστεύετε ότι αυτό ήταν λάθος."
+      },
+      "pausedTitle": {
+        "other": "Η πρόσβασή σας ανεστάλη."
+      },
+      "pausedBody": {
+        "other": "Ένας διαχειριστής ανέστειλε προσωρινά τον λογαριασμό σας για αυτήν την εφαρμογή. Θα αποσυνδεθείτε σε λίγο. Επικοινωνήστε με τον ιδιοκτήτη για να αποκαταστήσετε την πρόσβαση."
+      },
+      "deletedTitle": {
+        "other": "Ο λογαριασμός σας αφαιρέθηκε."
+      },
+      "deletedBody": {
+        "other": "Ένας διαχειριστής διέγραψε τη συμμετοχή σας για αυτήν την εφαρμογή. Θα αποσυνδεθείτε και τα αποθηκευμένα δεδομένα σας τίθενται σε ουρά για εκκαθάριση σε 90 ημέρες εκτός αν αποκατασταθούν."
+      },
+      "inactiveTitle": {
+        "other": "Κάνετε ένα διάλειμμα από αυτήν την εφαρμογή."
+      },
+      "inactiveBody": {
+        "other": "Η συμμετοχή σας είναι απενεργοποιημένη, οπότε θα σας αποσυνδέσουμε εδώ. Μπορείτε να επανενεργοποιήσετε από τον λογαριασμό elvix σας οποτεδήποτε και να επιστρέψετε αμέσως."
+      },
+      "countdown": {
+        "other": "Αποσύνδεση σε {seconds}δ"
+      },
+      "recoverRestoredTitle": {
+        "other": "Είστε ξανά στο {app}."
+      },
+      "recoverRestoredBody": {
+        "other": "Η συμμετοχή σας είναι ξανά ενεργή. Συνεχίστε στην εφαρμογή όποτε είστε έτοιμοι."
+      },
+      "recoverSignedOutTitle": {
+        "other": "Έχετε αποσυνδεθεί."
+      },
+      "recoverSignedOutBody": {
+        "other": "Παραμείνατε εκτός {app}. Επιστρέψτε οποτεδήποτε."
+      },
+      "recoverWelcomeBack": {
+        "other": "Καλώς ήρθατε ξανά στο {app}"
+      },
+      "recoverDeletedIntro": {
+        "other": "Φύγατε από το {app} νωρίτερα."
+      },
+      "recoverDeletedDaysLeft": {
+        "one": "Έχετε {count} ημέρα ακόμη για να επιστρέψετε.",
+        "other": "Έχετε {count} ημέρες ακόμη για να επιστρέψετε."
+      },
+      "recoverDeletedNoCountdown": {
+        "other": "Βρίσκεστε ακόμη εντός του διαστήματος επαναφοράς."
+      },
+      "recoverDeletedOutro": {
+        "other": "Επαναφέρετε τη θέση σας τώρα ή αποσυνδεθείτε ξανά."
+      },
+      "recoverPausedBody": {
+        "other": "Η συμμετοχή σας στο {app} είναι σε παύση αυτή τη στιγμή. Επαναφέρετε για να συνεχίσετε από εκεί που σταματήσατε, ή αποσυνδεθείτε ξανά και παραμείνετε μακριά."
+      },
+      "recoverRestoringLabel": {
+        "other": "Επαναφορά"
+      },
+      "recoverRestoreDeletedCta": {
+        "other": "Επαναφορά της θέσης μου στο {app}"
+      },
+      "recoverRestorePausedCta": {
+        "other": "Φέρτε με πίσω στο {app}"
+      },
+      "recoverSigningOutLabel": {
+        "other": "Αποσύνδεση"
+      },
+      "recoverDeclineCta": {
+        "other": "Όχι τώρα, αποσυνδεθείτε με"
+      }
+    }
+  }
+}

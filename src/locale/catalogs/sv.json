@@ -1,0 +1,2276 @@
+{
+  "$comment": "Canonical English catalog for @elvix.is/sdk. Every key here must exist in every other locale. Bulk translation lifts from this file via the DC translate engine.",
+  "locale": "sv",
+  "namespaces": {
+    "common": {
+      "ok": {
+        "other": "OK"
+      },
+      "cancel": {
+        "other": "Avbryt"
+      },
+      "back": {
+        "other": "Tillbaka"
+      },
+      "next": {
+        "other": "Nästa"
+      },
+      "continue": {
+        "other": "Fortsätt"
+      },
+      "save": {
+        "other": "Spara"
+      },
+      "saving": {
+        "other": "Sparar"
+      },
+      "delete": {
+        "other": "Ta bort"
+      },
+      "remove": {
+        "other": "Ta bort"
+      },
+      "edit": {
+        "other": "Redigera"
+      },
+      "close": {
+        "other": "Stäng"
+      },
+      "done": {
+        "other": "Klart"
+      },
+      "retry": {
+        "other": "Försök igen"
+      },
+      "loading": {
+        "other": "Laddar"
+      },
+      "search": {
+        "other": "Sök"
+      },
+      "noMatches": {
+        "other": "Inga träffar"
+      },
+      "lastStep": {
+        "other": "Sista steget"
+      },
+      "skip": {
+        "other": "Hoppa över"
+      },
+      "durationSeconds": {
+        "other": "{seconds}s"
+      },
+      "durationOneMinute": {
+        "other": "1 minut"
+      },
+      "durationMinutes": {
+        "one": "{minutes} minut",
+        "other": "{minutes} minuter"
+      },
+      "somethingWentWrong": {
+        "other": "Något gick fel. Försök igen."
+      },
+      "errorNetwork": {
+        "other": "Tillfälligt nätverksfel. Försök igen."
+      },
+      "errorSaveFailed": {
+        "other": "Kunde inte spara. Försök igen."
+      },
+      "hintEnter": {
+        "other": "Retur"
+      },
+      "enterHint": {
+        "other": "Retur"
+      },
+      "sendingLabel": {
+        "other": "Skickar"
+      },
+      "saved": {
+        "other": "Sparat"
+      },
+      "optionalSuffix": {
+        "other": " (valfritt)"
+      },
+      "savingDots": {
+        "other": "Sparar."
+      }
+    },
+    "signin": {
+      "title": {
+        "other": "Logga in på {app}"
+      },
+      "titleDefault": {
+        "other": "Logga in"
+      },
+      "subtitle": {
+        "other": ""
+      },
+      "googleButton": {
+        "other": "Fortsätt med Google"
+      },
+      "passkeyButton": {
+        "other": "Fortsätt med passkey"
+      },
+      "emailPlaceholder": {
+        "other": "E-post"
+      },
+      "sendCodeButton": {
+        "other": "Fortsätt"
+      },
+      "sendingLabel": {
+        "other": "Skickar"
+      },
+      "codeSentSubtitle": {
+        "other": "Vi skickade en kod till {email}"
+      },
+      "codePlaceholder": {
+        "other": "Verifieringskod"
+      },
+      "submitButton": {
+        "other": "Logga in"
+      },
+      "verifyingLabel": {
+        "other": "Verifierar"
+      },
+      "or": {
+        "other": "eller"
+      },
+      "resendCode": {
+        "other": "Skicka koden igen"
+      },
+      "resentLabel": {
+        "other": "Skickad igen"
+      },
+      "errorGeneric": {
+        "other": "Något gick fel. Försök igen."
+      },
+      "errorBadCode": {
+        "other": "Koden stämde inte."
+      },
+      "errorRateLimited": {
+        "other": "För många försök. Vänta en stund."
+      },
+      "securedBy": {
+        "other": "Säkrad av "
+      },
+      "verbLogin": {
+        "other": "Logga in"
+      },
+      "titleLogin": {
+        "other": "Logga in på {app}"
+      },
+      "bootstrapErrorTitle": {
+        "other": "Kunde inte ladda inloggningen"
+      },
+      "bootstrapErrorBody": {
+        "other": "Ogiltigt {clientIdToken} eller ursprung tillåts inte för den här domänen. Öppna Console, din applikation, Credentials för att bekräfta {clientIdToken}, och lägg sedan till det här ursprunget i Allowed origins."
+      },
+      "identifierPlaceholderEmailOrUsername": {
+        "other": "E-post eller användarnamn"
+      },
+      "identifierPlaceholderUsername": {
+        "other": "Användarnamn"
+      },
+      "identifierPlaceholderEmail": {
+        "other": "Ange din e-post"
+      },
+      "errorNetwork": {
+        "other": "Tillfälligt nätverksfel. Försök igen."
+      },
+      "errorPasskeyVerify": {
+        "other": "Verifiering av passkey misslyckades."
+      },
+      "errorPasskeyAdd": {
+        "other": "Passkey kunde inte läggas till. Försök igen eller hoppa över för stunden."
+      },
+      "visitAppWebsite": {
+        "other": "Besök {app} webbplats"
+      },
+      "passkeyOnboardingTitleSignin": {
+        "other": "Logga in snabbare nästa gång"
+      },
+      "passkeyOnboardingTitleLogin": {
+        "other": "Logga in snabbare nästa gång"
+      },
+      "recoverTitle": {
+        "other": "Välkommen tillbaka till {app}"
+      },
+      "appNameFallback": {
+        "other": "din app"
+      },
+      "legalAppFallback": {
+        "other": "appen"
+      },
+      "passkeyOnboardingSubtitle": {
+        "other": "Touch ID, Face ID eller din säkerhetsnyckel. Inga fler e-postkoder."
+      },
+      "recoverSubtitle": {
+        "other": "Välj om du vill komma tillbaka eller stanna borta."
+      },
+      "identifierSubtitle": {
+        "other": "Välj hur du vill fortsätta."
+      },
+      "verifyButton": {
+        "other": "Verifiera"
+      },
+      "useDifferentEmail": {
+        "other": "Använd en annan e-post"
+      },
+      "resendInSeconds": {
+        "other": "Skicka igen om {seconds}s"
+      },
+      "passkeyBullet1": {
+        "other": "Inga fler lösenord eller e-postkoder"
+      },
+      "passkeyBullet2": {
+        "other": "Skyddar mot nätfiske. Fungerar bara på den här webbplatsen."
+      },
+      "passkeyBullet3": {
+        "other": "Synkroniseras mellan dina enheter via iCloud, Google eller 1Password"
+      },
+      "addPasskeyCta": {
+        "other": "Lägg till en passkey"
+      },
+      "skipForNow": {
+        "other": "Hoppa över för nu"
+      },
+      "previewEmptyMethods": {
+        "other": "Aktivera minst en metod för att förhandsgranska inloggningen."
+      },
+      "googleButtonShort": {
+        "other": "Google"
+      },
+      "passkeyButtonShort": {
+        "other": "Passkey"
+      },
+      "legalIntro": {
+        "other": "Genom att fortsätta godkänner du {app}s"
+      },
+      "termsOfService": {
+        "other": "Användarvillkor"
+      },
+      "privacyPolicy": {
+        "other": "Integritetspolicy"
+      },
+      "framedPreviewLabel": {
+        "other": "Detta är en förhandsvisning"
+      },
+      "errorTooRecentWithSeconds": {
+        "other": "Vänta {seconds}s innan du begär en ny kod."
+      },
+      "errorTooRecent": {
+        "other": "Vänta en stund innan du begär en ny kod."
+      },
+      "errorTooManyWithRetry": {
+        "other": "För många koder har skickats till den här e-posten. Försök igen om {retry}."
+      },
+      "errorTooMany": {
+        "other": "För många koder har skickats till den här e-posten. Försök igen senare."
+      },
+      "errorInvalidCode": {
+        "other": "Den koden fungerade inte. Försök igen."
+      },
+      "errorExpired": {
+        "other": "Den koden har gått ut. Skicka en ny."
+      },
+      "errorSendFailed": {
+        "other": "Kunde inte skicka e-posten. Kontrollera adressen."
+      },
+      "errorUserPaused": {
+        "other": "Din åtkomst har pausats. Kontakta supporten."
+      },
+      "errorUserBanned": {
+        "other": "Åtkomst nekad."
+      },
+      "errorUsernameNotFound": {
+        "other": "Inget konto med det användarnamnet här."
+      },
+      "errorMethodDisabled": {
+        "other": "Den inloggningsmetoden är inte aktiverad för den här appen."
+      },
+      "errorGraceExpired": {
+        "other": "90-dagarsfönstret för att återställa har stängts."
+      },
+      "errorSessionEnded": {
+        "other": "Din session avslutades. Logga in igen."
+      }
+    },
+    "sessions": {
+      "title": {
+        "other": "Dina sessioner"
+      },
+      "empty": {
+        "other": "Inga aktiva sessioner här."
+      },
+      "currentBadge": {
+        "other": "Håll den här inloggad"
+      },
+      "revokeOne": {
+        "other": "Logga ut"
+      },
+      "revokeOthersCta": {
+        "other": "Logga ut andra enheter"
+      },
+      "revokeAllCta": {
+        "other": "Logga ut överallt"
+      },
+      "confirmOthersTitle": {
+        "other": "Logga ut från andra enheter?"
+      },
+      "confirmOthersBody": {
+        "other": "Välj vilka sessioner som ska avslutas. Var och en återkallas direkt när du trycker, och varje flik på den enheten loggas ut inom några sekunder."
+      },
+      "confirmAllTitle": {
+        "other": "Logga ut överallt?"
+      },
+      "confirmAllBody": {
+        "other": "Inkluderar den här enheten. Du omdirigeras för att logga in igen efteråt."
+      },
+      "doneTitle": {
+        "other": "Utloggad"
+      },
+      "doneCount": {
+        "one": "{count} enhet utloggad.",
+        "other": "{count} enheter utloggade."
+      },
+      "errorLoad": {
+        "other": "Kunde inte ladda sessioner."
+      },
+      "errorRevoke": {
+        "other": "Kunde inte återkalla. Försök igen."
+      },
+      "errorMassRevoke": {
+        "other": "Kunde inte logga ut. Försök igen."
+      },
+      "thisDeviceBadge": {
+        "other": "den här enheten"
+      },
+      "deviceLine": {
+        "other": "{browser} på {os}"
+      },
+      "massRevokeCtaSelf": {
+        "other": "Logga ut mig från den här enheten"
+      },
+      "massRevokeCtaOpen": {
+        "other": "Logga ut från enheter..."
+      },
+      "confirmChooserTitle": {
+        "other": "Logga ut från var?"
+      },
+      "confirmChooserBody": {
+        "other": "Välj vilka sessioner som ska avslutas. Var och en återkallas direkt när du trycker, och varje flik på den enheten loggas ut vid nästa begäran."
+      },
+      "signOutOtherDevicesCount": {
+        "one": "Logga ut från den andra {count} enheten",
+        "other": "Logga ut från de andra {count} enheterna"
+      },
+      "signOutAllCtaSelf": {
+        "other": "Logga ut mig från den här enheten"
+      },
+      "signOutAllCtaIncludingThis": {
+        "other": "Logga ut överallt, även den här enheten"
+      },
+      "signOutAllRedirectHint": {
+        "other": "Du landar på inloggningssidan direkt efter"
+      },
+      "confirmTokensFootnote": {
+        "other": "Redan utfärdade tokens förblir avvisade. Det går inte att ångra, men att logga in igen på vilken enhet som helst fungerar utan problem."
+      },
+      "doneAlreadyAlone": {
+        "other": "Redan bara den här."
+      },
+      "doneFootnote": {
+        "other": "Din nuvarande enhet är fortfarande inloggad. De andra flikarna kastas ut vid nästa begäran."
+      },
+      "backToList": {
+        "other": "Tillbaka till mina sessioner"
+      },
+      "methodSignIn": {
+        "other": "Inloggning"
+      },
+      "methodEmailCode": {
+        "other": "E-postkod"
+      },
+      "methodPasskey": {
+        "other": "Passkey"
+      },
+      "relativeJustNow": {
+        "other": "just nu"
+      },
+      "relativeMinutesAgo": {
+        "other": "{count}m sedan"
+      },
+      "relativeHoursAgo": {
+        "other": "{count}h sedan"
+      },
+      "relativeDaysAgo": {
+        "other": "{count}d sedan"
+      }
+    },
+    "avatar": {
+      "replace": {
+        "other": "Byt ut"
+      },
+      "removePhoto": {
+        "other": "Ta bort foto"
+      },
+      "removeConfirmTitle": {
+        "other": "Ta bort ditt foto?"
+      },
+      "removeConfirmBody": {
+        "other": "Återgår till dina initialer."
+      },
+      "uploading": {
+        "other": "Laddar upp"
+      },
+      "cropTitle": {
+        "other": "Beskär"
+      },
+      "cropApply": {
+        "other": "Tillämpa"
+      },
+      "errorTooLarge": {
+        "other": "Bilden är för stor. Välj under {limitMb} MB."
+      },
+      "errorBadType": {
+        "other": "Välj en PNG-, JPG- eller WebP-bild."
+      },
+      "uploadFailed": {
+        "other": "Kunde inte ladda upp foto. Försök med en annan bild."
+      },
+      "removeFailed": {
+        "other": "Kunde inte ta bort foto."
+      },
+      "editPhotoAria": {
+        "other": "Redigera ditt foto"
+      },
+      "addPhotoAria": {
+        "other": "Lägg till ett foto"
+      },
+      "confirmRemoveAria": {
+        "other": "Bekräfta borttagning"
+      },
+      "replacePhotoAria": {
+        "other": "Byt ut foto"
+      },
+      "uploadPhotoAria": {
+        "other": "Ladda upp foto"
+      },
+      "useThisCropAria": {
+        "other": "Använd den här beskärningen"
+      }
+    },
+    "banner": {
+      "replace": {
+        "other": "Byt ut"
+      },
+      "removeBanner": {
+        "other": "Ta bort banner"
+      },
+      "removeConfirmTitle": {
+        "other": "Ta bort din banner?"
+      },
+      "removeConfirmBody": {
+        "other": "Återgår till gradient-platshållaren."
+      },
+      "uploading": {
+        "other": "Laddar upp"
+      },
+      "cropTitle": {
+        "other": "Beskär banner"
+      },
+      "cropApply": {
+        "other": "Tillämpa"
+      },
+      "errorUpload": {
+        "other": "Kunde inte ladda upp banner. Försök med en annan bild."
+      },
+      "errorRemove": {
+        "other": "Kunde inte ta bort banner."
+      },
+      "previewAlt": {
+        "other": "Förhandsgranska banner"
+      },
+      "cropUse": {
+        "other": "Använd"
+      },
+      "cropUseAria": {
+        "other": "Använd den här beskärningen"
+      },
+      "editAria": {
+        "other": "Redigera banner"
+      },
+      "addAria": {
+        "other": "Lägg till banner"
+      },
+      "uploadAria": {
+        "other": "Ladda upp banner"
+      },
+      "confirmRemoveAria": {
+        "other": "Bekräfta borttagning"
+      },
+      "confirmRemoveHint": {
+        "other": "Klicka igen för att bekräfta"
+      }
+    },
+    "username": {
+      "title": {
+        "other": "Välj ett användarnamn"
+      },
+      "placeholder": {
+        "other": "användarnamn"
+      },
+      "checking": {
+        "other": "Kontrollerar"
+      },
+      "available": {
+        "other": "Tillgängligt"
+      },
+      "taken": {
+        "other": "Upptaget"
+      },
+      "tooShort": {
+        "other": "För kort"
+      },
+      "tooLong": {
+        "other": "För långt"
+      },
+      "badChars": {
+        "other": "Endast bokstäver, siffror och bindestreck"
+      },
+      "reserved": {
+        "other": "Reserverat"
+      },
+      "subtitle": {
+        "other": "Så här ser folk dig på {app}."
+      },
+      "subtitleNoApp": {
+        "other": "Så här ser folk dig."
+      },
+      "label": {
+        "other": "Användarnamn"
+      },
+      "exampleHandle": {
+        "other": "dittnamn"
+      },
+      "rulesHint": {
+        "other": "4 till 30 tecken, a till z, 0 till 9, punkt, understreck. Måste börja med en bokstav."
+      },
+      "availableHint": {
+        "other": "Ser bra ut. Det här är ditt."
+      },
+      "suggestionsHeading": {
+        "other": "Förslag"
+      },
+      "claimCta": {
+        "other": "Ta @{handle}"
+      },
+      "yournameFallback": {
+        "other": "dittnamn"
+      },
+      "reasonBlank": {
+        "other": "Välj ett användarnamn."
+      },
+      "reasonTooShort": {
+        "other": "Minst 4 tecken."
+      },
+      "reasonTooLong": {
+        "other": "Max 30 tecken."
+      },
+      "reasonOnlyNumbers": {
+        "other": "Kan inte bara vara siffror."
+      },
+      "reasonBadStart": {
+        "other": "Måste börja med en bokstav."
+      },
+      "reasonBadChars": {
+        "other": "Endast a till z, 0 till 9, punkt, understreck."
+      },
+      "reasonConsecutiveSpecial": {
+        "other": "Inte två punkter eller understreck i rad."
+      },
+      "reasonTrailingSpecial": {
+        "other": "Kan inte sluta med en punkt eller ett understreck."
+      },
+      "reasonTaken": {
+        "other": "Det är upptaget."
+      },
+      "reasonInvalid": {
+        "other": "Det användarnamnet är inte giltigt."
+      },
+      "errorJustTaken": {
+        "other": "Det användarnamnet togs precis. Välj ett annat."
+      },
+      "errorFormat": {
+        "other": "Det användarnamnet matchar inte reglerna."
+      },
+      "errorSaveFailed": {
+        "other": "Kunde inte spara. Försök igen."
+      },
+      "errorNetwork": {
+        "other": "Tillfälligt nätverksfel. Försök igen."
+      },
+      "ruleLength": {
+        "other": "{min} till {max} tecken"
+      },
+      "ruleChars": {
+        "other": "små bokstäver, siffror, punkt, understreck"
+      },
+      "ruleStartEnd": {
+        "other": "börja med en bokstav, sluta med en bokstav eller siffra"
+      },
+      "ruleNoDoubles": {
+        "other": "inte två specialtecken i rad, inga reserverade ord"
+      },
+      "confirmHeading": {
+        "other": "Bekräfta ändring"
+      },
+      "notSet": {
+        "other": "Inte angivet"
+      },
+      "confirmBody": {
+        "other": "Alla som loggar in på den här appen med det här användarnamnet kommer att vara du. Du kan ändra det igen när som helst."
+      },
+      "confirmCta": {
+        "other": "Bekräfta ändring"
+      },
+      "doneTitle": {
+        "other": "Du är @{username} på {appName}."
+      },
+      "doneBody": {
+        "other": "Vi sparade det. Du kan fortsätta använda den här ytan eller gå tillbaka när du är redo."
+      },
+      "changeAgain": {
+        "other": "Ändra igen"
+      },
+      "disabledMailSubject": {
+        "other": "Återaktivera inloggning med användarnamn på {appName}"
+      },
+      "disabledContactSupport": {
+        "other": "Kontakta {appName} support"
+      },
+      "disabledEmailSupport": {
+        "other": "Mejla {appName}"
+      },
+      "disabledTitle": {
+        "other": "Användarnamn är avstängt på {appName}."
+      },
+      "disabledBody": {
+        "other": "Appägaren har för närvarande inloggning med användarnamn inaktiverad, så vi kan inte låta dig ange eller ändra ditt användarnamn här."
+      },
+      "disabledStillHave": {
+        "other": "Du har fortfarande @{current} från tidigare. Det ligger kvar på ditt medlemskap tills appägaren slår på funktionen igen."
+      },
+      "disabledNoSupport": {
+        "other": "Appen har inte publicerat någon supportkontakt ännu. Hör av dig genom den kanal du vanligen använder med dem."
+      },
+      "disabledHint": {
+        "other": "Be dem aktivera inloggning med användarnamn igen i Console, Sign-in methods. När de gör det kan du komma tillbaka hit och välja ett användarnamn."
+      },
+      "idleCurrent": {
+        "other": "För närvarande @{current}. Skriv något annat för att ändra."
+      },
+      "idleEmpty": {
+        "other": "Välj ett namn som andra personer på den här appen kan använda för att hitta dig."
+      },
+      "formatGeneric": {
+        "other": "Matchar inte reglerna nedan."
+      },
+      "takenLine": {
+        "other": "Någon annan på den här appen har redan @{username}."
+      },
+      "currentLine": {
+        "other": "Det är användarnamnet du redan har här."
+      },
+      "availableLine": {
+        "other": "@{username} är tillgängligt."
+      },
+      "reasonMustStartLetter": {
+        "other": "Måste börja med en bokstav."
+      },
+      "reasonMustEndAlnum": {
+        "other": "Måste sluta med en bokstav eller siffra."
+      },
+      "reasonNoDoubleSpecial": {
+        "other": "Kan inte ha två punkter eller understreck i rad."
+      },
+      "reasonReserved": {
+        "other": "Det användarnamnet är reserverat. Välj ett annat."
+      },
+      "appNameFallback": {
+        "other": "din app"
+      }
+    },
+    "identity": {
+      "title": {
+        "other": "Din profil"
+      },
+      "fullName": {
+        "other": "Fullständigt namn"
+      },
+      "birthdate": {
+        "other": "Födelsedatum"
+      },
+      "gender": {
+        "other": "Kön"
+      },
+      "pronouns": {
+        "other": "Pronomen"
+      },
+      "save": {
+        "other": "Spara profil"
+      },
+      "saved": {
+        "other": "Sparat"
+      },
+      "genderMale": {
+        "other": "Man"
+      },
+      "genderFemale": {
+        "other": "Kvinna"
+      },
+      "genderNonBinary": {
+        "other": "Icke-binär"
+      },
+      "genderPreferNotToSay": {
+        "other": "Vill inte uppge"
+      },
+      "pronounSheHer": {
+        "other": "Hon / henne"
+      },
+      "pronounHeHim": {
+        "other": "Han / honom"
+      },
+      "pronounTheyThem": {
+        "other": "Hen / den"
+      },
+      "pronounOther": {
+        "other": "Annat"
+      },
+      "pronounPreferNotToSay": {
+        "other": "Vill inte uppge"
+      },
+      "errorSaveFailed": {
+        "other": "Kunde inte spara."
+      },
+      "givenName": {
+        "other": "Förnamn"
+      },
+      "givenNamePlaceholder": {
+        "other": "Jane"
+      },
+      "familyName": {
+        "other": "Efternamn"
+      },
+      "familyNamePlaceholder": {
+        "other": "Doe"
+      },
+      "pronounsOptional": {
+        "other": "Pronomen (valfritt)"
+      }
+    },
+    "region": {
+      "title": {
+        "other": "Välj din region"
+      },
+      "yourRegion": {
+        "other": "Din region"
+      },
+      "country": {
+        "other": "Land"
+      },
+      "uiLocale": {
+        "other": "Språk"
+      },
+      "currency": {
+        "other": "Valuta"
+      },
+      "firstDayOfWeek": {
+        "other": "Veckans första dag"
+      },
+      "timeZone": {
+        "other": "Tidszon"
+      },
+      "save": {
+        "other": "Spara region"
+      },
+      "confirmTitle": {
+        "other": "Ändra region?"
+      },
+      "confirmBody": {
+        "other": "Att ändra land kaskaderar valuta och veckans första dag."
+      },
+      "errorSaveFailed": {
+        "other": "Kunde inte spara region."
+      },
+      "emptyHint": {
+        "other": "UI-språk, tidszon, valuta och datumformat följer ditt land."
+      },
+      "whereDoYouLive": {
+        "other": "Var bor du?"
+      },
+      "cascadeHint": {
+        "other": "Vi ställer in ditt UI-språk, din tidszon, valuta och ditt datumformat utifrån detta. Du kan åsidosätta varje senare."
+      },
+      "cascadeResetTitle": {
+        "other": "Återställ allt till {country}?"
+      },
+      "cascadeResetBody": {
+        "other": "Du flyttar från {currentFlag} {currentName} till {nextFlag} {nextName}. UI-språk, tidszon, valuta, datumformat och enheter återställs alla till standardvärden för {nextName}. Dina anpassade ändringar (om några) skrivs över."
+      },
+      "cascadeFallbackCountry": {
+        "other": "det nya landet"
+      },
+      "uiLanguageLabel": {
+        "other": "UI-språk"
+      },
+      "dateLabel": {
+        "other": "Datum"
+      },
+      "timeLabel": {
+        "other": "Tid"
+      },
+      "unitsLabel": {
+        "other": "Enheter"
+      },
+      "resetDefaults": {
+        "other": "Återställ standard"
+      },
+      "savedLabel": {
+        "other": "Sparat"
+      },
+      "changeCountryAria": {
+        "other": "Ändra land"
+      },
+      "setTimeZonePlaceholder": {
+        "other": "Ställ in tidszon"
+      },
+      "timeFormat": {
+        "other": "Tidsformat"
+      },
+      "dateFormat": {
+        "other": "Datumformat"
+      },
+      "numberFormat": {
+        "other": "Talformat"
+      },
+      "numbersLabel": {
+        "other": "Tal"
+      },
+      "weekStartsLabel": {
+        "other": "Veckan börjar"
+      },
+      "weekStartsOnTitle": {
+        "other": "Veckan börjar på"
+      },
+      "weekStartsHint": {
+        "other": "Påverkar kalendrar, veckoväljare och veckorapporter."
+      },
+      "pickOneHint": {
+        "other": "Välj det som känns rätt."
+      },
+      "uiLanguageTitle": {
+        "other": "UI-språk"
+      },
+      "uiLanguageHint": {
+        "other": "Vilket språk elvix-drivna appar ska prata med dig på."
+      },
+      "languageSearchPlaceholder": {
+        "other": "English, Deutsch, fa..."
+      },
+      "currencyHint": {
+        "other": "Standard för priser, fakturor och utbetalningar i elvix-drivna appar."
+      },
+      "currencySearchPlaceholder": {
+        "other": "EUR, dollar, real..."
+      },
+      "timeZoneHint": {
+        "other": "Används för schemaläggning, \"kl 9 din tid\" och veckorapporter."
+      },
+      "timeZoneSearchPlaceholder": {
+        "other": "Berlin, Tehran, Pacific..."
+      }
+    },
+    "languages": {
+      "title": {
+        "other": "Språk du talar"
+      },
+      "addLanguage": {
+        "other": "Lägg till ett språk"
+      },
+      "limitReached": {
+        "other": "Du kan lista upp till {limit} språk."
+      },
+      "level": {
+        "other": "Nivå"
+      },
+      "remove": {
+        "other": "Ta bort"
+      },
+      "saveLevel": {
+        "other": "Spara nivå"
+      },
+      "updatingLevel": {
+        "other": "Uppdaterar nivå"
+      },
+      "addingLanguage": {
+        "other": "Lägger till språk"
+      },
+      "removing": {
+        "other": "Tar bort"
+      },
+      "emptyHint": {
+        "other": "För UI-standardvärden, jobb och utgående meddelanden."
+      },
+      "searchHint": {
+        "other": "Sök efter engelskt namn, namn på modersmål eller ISO-kod."
+      },
+      "searchPlaceholder": {
+        "other": "English, Deutsch, fa"
+      },
+      "takenBadge": {
+        "other": "tillagt"
+      },
+      "levelPickTitle": {
+        "other": "Hur väl talar du {language}?"
+      },
+      "thisLanguageFallback": {
+        "other": "det här språket"
+      },
+      "levelPickSubtitle": {
+        "other": "Välj den nivå som låter rätt. Du kan ändra den senare."
+      },
+      "errorAlreadyAdded": {
+        "other": "Du har redan lagt till det här språket. Redigera dess nivå från listan."
+      },
+      "removeConfirmTitle": {
+        "other": "Ta bort {language}?"
+      },
+      "removeConfirmBody": {
+        "other": "Appar som riktar sig till {language} kommer inte längre att nå dig på det språket. Du kan lägga till det igen när som helst."
+      },
+      "keepCta": {
+        "other": "Behåll"
+      },
+      "addAnother": {
+        "other": "Lägg till ett språk till"
+      }
+    },
+    "addressBook": {
+      "title": {
+        "other": "Dina adresser"
+      },
+      "empty": {
+        "other": "Inga adresser ännu."
+      },
+      "addCta": {
+        "other": "Lägg till en adress"
+      },
+      "makeDefault": {
+        "other": "Gör till standard"
+      },
+      "defaultBadge": {
+        "other": "Standard"
+      },
+      "remove": {
+        "other": "Ta bort"
+      },
+      "removeConfirmTitle": {
+        "other": "Ta bort den här adressen?"
+      },
+      "savingLabel": {
+        "other": "Sparar adress."
+      },
+      "deletingLabel": {
+        "other": "Tar bort adress."
+      },
+      "addBilling": {
+        "other": "Lägg till faktureringsadress"
+      },
+      "addShipping": {
+        "other": "Lägg till leveransadress"
+      },
+      "useForBilling": {
+        "other": "Vi använder den här för fakturor och kvitton."
+      },
+      "useForShipping": {
+        "other": "Vi använder den här för leveranser och upphämtningar."
+      },
+      "addAnotherBilling": {
+        "other": "Lägg till en annan faktureringsadress"
+      },
+      "addAnotherShipping": {
+        "other": "Lägg till en annan leveransadress"
+      },
+      "atCompany": {
+        "other": "på {company}"
+      },
+      "setAsDefault": {
+        "other": "Ange som standard"
+      },
+      "removeDefault": {
+        "other": "Ta bort standard"
+      },
+      "deleteAddress": {
+        "other": "Radera adress"
+      },
+      "newBillingAddress": {
+        "other": "Ny faktureringsadress"
+      },
+      "newShippingAddress": {
+        "other": "Ny leveransadress"
+      },
+      "searchPrompt": {
+        "other": "Börja skriva din adress"
+      },
+      "searchPlaceholder": {
+        "other": "221B Baker Street, London."
+      },
+      "searchError": {
+        "other": "Kunde inte söka: {error}"
+      },
+      "noMatchesKeepTyping": {
+        "other": "Inga träffar ännu. Fortsätt skriva."
+      },
+      "aptFloorEyebrow": {
+        "other": "Lägenhet, våning, svit"
+      },
+      "aptFloorTitle": {
+        "other": "Lägenhet, svit eller våning?"
+      },
+      "aptFloorBodyBilling": {
+        "other": "Kartor fångar sällan upp lägenhetsnummer. Lägger till en andra rad i adressen."
+      },
+      "aptFloorBodyShipping": {
+        "other": "Transportörer feldirigerar utan enhetsinformation. Hoppa över om du inte behöver det."
+      },
+      "line2Label": {
+        "other": "Adressrad 2 (valfritt)"
+      },
+      "line2Placeholder": {
+        "other": "Lgh 4B, 3:e våningen, svit 200."
+      },
+      "step2of3": {
+        "other": "Steg 2 av 3"
+      },
+      "recipientTitleBilling": {
+        "other": "Vem är den här faktureringsadressen för?"
+      },
+      "recipientTitleShipping": {
+        "other": "Vem är den här leveransadressen för?"
+      },
+      "recipientSubtitleBilling": {
+        "other": "Namn på fakturan."
+      },
+      "recipientSubtitleShipping": {
+        "other": "Namn på paketet."
+      },
+      "someoneElseSubtitleBilling": {
+        "other": "Ett annat namn på fakturan"
+      },
+      "someoneElseSubtitleShipping": {
+        "other": "Skicka till någon annan"
+      },
+      "businessSubtitleBilling": {
+        "other": "Fakturera företaget (B2B)"
+      },
+      "businessSubtitleShipping": {
+        "other": "Skicka till ett företag eller en arbetsplats"
+      },
+      "saveError": {
+        "other": "Kunde inte spara: {error}"
+      },
+      "recipientCustomTitle": {
+        "other": "Vem är mottagaren?"
+      },
+      "recipientCustomSubtitleBilling": {
+        "other": "Namnet som visas på fakturan."
+      },
+      "recipientCustomSubtitleShipping": {
+        "other": "Namnet som visas på paketet."
+      },
+      "recipientPlaceholder": {
+        "other": "Jane Doe"
+      },
+      "businessStep1of2": {
+        "other": "Företag, steg 1 av 2"
+      },
+      "companyNameTitle": {
+        "other": "Vad heter företaget?"
+      },
+      "companyNameBodyBilling": {
+        "other": "Visas på fakturan. Krävs för B2B-skattehantering senare."
+      },
+      "companyNameBodyShipping": {
+        "other": "Företaget som tar emot paketet."
+      },
+      "companyNamePlaceholder": {
+        "other": "Edvone"
+      },
+      "businessStep2of2": {
+        "other": "Företag, steg 2 av 2"
+      },
+      "contactAtCompanyTitle": {
+        "other": "Någon särskild person på {company}?"
+      },
+      "attnBodyInvoice": {
+        "other": "Lägger till en \"Attn:\"-rad på fakturan. Hoppa över för att adressera den till företaget."
+      },
+      "attnBodyPackage": {
+        "other": "Lägger till en \"Attn:\"-rad på paketet. Hoppa över för att adressera det till företaget."
+      },
+      "contactPersonOptional": {
+        "other": "Kontaktperson (valfritt)"
+      },
+      "skip": {
+        "other": "Hoppa över"
+      },
+      "noteChoiceTitle": {
+        "other": "Vill du lägga till en leveransanteckning?"
+      },
+      "noteChoiceBodyBilling": {
+        "other": "Allt som faktureringsteamet bör veta. ATTN-rad, PO-nummer, c/o någon."
+      },
+      "noteChoiceBodyShipping": {
+        "other": "Allt för budet. Portkod, grindkod, lämna vid dörren."
+      },
+      "noteYesTitle": {
+        "other": "Ja, lägg till en anteckning"
+      },
+      "noteYesSubtitle": {
+        "other": "Skriv en kort instruktion"
+      },
+      "noteNoTitle": {
+        "other": "Nej, hoppa över"
+      },
+      "noteNoSubtitle": {
+        "other": "Spara adressen som den är"
+      },
+      "noteLastStep": {
+        "other": "Anteckning, sista steget"
+      },
+      "noteInputTitle": {
+        "other": "Vad ska vi säga?"
+      },
+      "noteInputBodyBilling": {
+        "other": "Visas på fakturan eller faktureringsposten."
+      },
+      "noteInputBodyShipping": {
+        "other": "Lämnas över till budfirman."
+      },
+      "billingNote": {
+        "other": "Faktureringsanteckning"
+      },
+      "deliveryNote": {
+        "other": "Leveransanteckning"
+      },
+      "notePlaceholderBilling": {
+        "other": "Fakturera till ATTN: Ekonomi, PO #ABC-1234."
+      },
+      "notePlaceholderShipping": {
+        "other": "Ring porttelefon 3, lämna hos vaktmästaren om jag inte är hemma."
+      },
+      "backToList": {
+        "other": "Tillbaka till listan"
+      },
+      "billingAddressLabel": {
+        "other": "faktureringsadress"
+      },
+      "shippingAddressLabel": {
+        "other": "leveransadress"
+      },
+      "sectionWho": {
+        "other": "Vem"
+      },
+      "sectionWhere": {
+        "other": "Var"
+      },
+      "sectionNotesMeta": {
+        "other": "Anteckningar och metadata"
+      },
+      "fieldRecipient": {
+        "other": "Mottagare"
+      },
+      "fieldCompany": {
+        "other": "Företag"
+      },
+      "addCompanyPlaceholder": {
+        "other": "Lägg till ett företag"
+      },
+      "fieldStreet": {
+        "other": "Gata"
+      },
+      "fieldAptFloor": {
+        "other": "Lgh eller våning"
+      },
+      "addUnitPlaceholder": {
+        "other": "Lägg till en enhet"
+      },
+      "fieldCity": {
+        "other": "Stad"
+      },
+      "fieldPostalCode": {
+        "other": "Postnummer"
+      },
+      "fieldRegion": {
+        "other": "Region"
+      },
+      "fieldCountry": {
+        "other": "Land"
+      },
+      "fieldDeliveryNotes": {
+        "other": "Leveransanteckningar"
+      },
+      "addNotePlaceholder": {
+        "other": "Lägg till en anteckning"
+      },
+      "fieldTimezone": {
+        "other": "Tidszon"
+      },
+      "fieldVenue": {
+        "other": "Lokal eller byggnad"
+      },
+      "nothingToChange": {
+        "other": "Inget att ändra"
+      },
+      "setDefaultTitle": {
+        "other": "Ange den här som din standard?"
+      },
+      "removeDefaultTitle": {
+        "other": "Ta bort standard från den här adressen?"
+      },
+      "setDefaultSubtitle": {
+        "other": "Det blir det automatiska valet vid kassan eller fakturering."
+      },
+      "removeDefaultSubtitle": {
+        "other": "Inget förvalt vid kassan eller fakturering."
+      },
+      "crossAppHeadsUp": {
+        "other": "Observera. Detta påverkar varje app du använder med elvix."
+      },
+      "crossAppDefaultBodySetting": {
+        "other": "Din standard {kind}-adress delas mellan varje app du loggar in på. Att byta den här uppdaterar det automatiska valet överallt på en gång."
+      },
+      "crossAppDefaultBodyClearing": {
+        "other": "Din standard {kind}-adress delas mellan varje app du loggar in på. Att ta bort den innebär att ingen adress är förvald någonstans; du väljer en varje gång i kassan eller fakturan."
+      },
+      "nothingToDelete": {
+        "other": "Inget att ta bort"
+      },
+      "deleteBillingHeader": {
+        "other": "Radera faktureringsadress"
+      },
+      "deleteShippingHeader": {
+        "other": "Radera leveransadress"
+      },
+      "deleteConfirmTitle": {
+        "other": "Radera den här adressen?"
+      },
+      "cantBeUndone": {
+        "other": "Detta kan inte ångras."
+      },
+      "crossAppDeleteBodyBilling": {
+        "other": "Din faktureringsadress lagras en gång på din elvix-profil och delas med apparna du loggar in på. Borttagning tar bort den överallt. Alla kassor, fakturor eller leveransflöden som refererade till adressen behöver en ny."
+      },
+      "crossAppDeleteBodyShipping": {
+        "other": "Din leveransadress lagras en gång på din elvix-profil och delas med apparna du loggar in på. Borttagning tar bort den överallt. Alla kassor, fakturor eller leveransflöden som refererade till adressen behöver en ny."
+      },
+      "deleteError": {
+        "other": "Kunde inte radera: {error}"
+      },
+      "yesDelete": {
+        "other": "Ja, radera"
+      },
+      "pickAddressFirst": {
+        "other": "Välj en adress först"
+      },
+      "changeAddress": {
+        "other": "Ändra adress"
+      },
+      "reviewBilling": {
+        "other": "Granska faktureringsadress"
+      },
+      "reviewShipping": {
+        "other": "Granska leveransadress"
+      },
+      "notRight": {
+        "other": "Inte rätt"
+      },
+      "looksRight": {
+        "other": "Ser rätt ut"
+      },
+      "missingFieldsHint": {
+        "other": "Vi saknar {fields}. Välj ett mer specifikt förslag (med ett gatunummer) så vi kan spara en leveransbar adress."
+      }
+    },
+    "legalEntities": {
+      "title": {
+        "other": "Juridiska personer"
+      },
+      "addCta": {
+        "other": "Lägg till en juridisk person"
+      },
+      "companyName": {
+        "other": "Företagsnamn"
+      },
+      "vatId": {
+        "other": "Momsregistreringsnummer"
+      },
+      "taxCountry": {
+        "other": "Skatteland"
+      },
+      "verifyVat": {
+        "other": "Verifiera moms"
+      },
+      "verifying": {
+        "other": "Kontrollerar"
+      },
+      "verifiedBadge": {
+        "other": "Verifierat"
+      },
+      "notRegistered": {
+        "other": "Inte registrerat"
+      },
+      "unreachable": {
+        "other": "Onåbart"
+      },
+      "addCtaSubtitle": {
+        "other": "För fakturor, kontrakt och skattedeklarationer."
+      },
+      "addAnotherCta": {
+        "other": "Lägg till en annan juridisk person"
+      },
+      "kindIndividual": {
+        "other": "Privatperson"
+      },
+      "kindSoleProp": {
+        "other": "Enskild firma"
+      },
+      "kindCompany": {
+        "other": "Företag"
+      },
+      "removeDefaultAria": {
+        "other": "Ta bort standard"
+      },
+      "setDefaultAria": {
+        "other": "Ange som standard"
+      },
+      "deleteAria": {
+        "other": "Radera juridisk person"
+      },
+      "typeChoiceTitle": {
+        "other": "Vilken typ av juridisk person är detta?"
+      },
+      "typeChoiceSubtitle": {
+        "other": "Avgör frågorna vi ställer härnäst."
+      },
+      "step1of3": {
+        "other": "Steg 1 av 3"
+      },
+      "individualSubtitle": {
+        "other": "Bara du, inget företag. Fakturor utfärdas i ditt personliga namn."
+      },
+      "soleProprietorshipSubtitle": {
+        "other": "Du plus ett firmanamn (Einzelunternehmen, frilansare osv.)."
+      },
+      "companySubtitle": {
+        "other": "En registrerad juridisk person (GmbH, Ltd, S.r.l. osv.)."
+      },
+      "legalNameTitleIndividual": {
+        "other": "Ditt juridiska namn"
+      },
+      "legalNameTitleSoleProp": {
+        "other": "Ditt juridiska namn (ägaren)"
+      },
+      "legalNameTitleCompany": {
+        "other": "Företagets juridiska namn"
+      },
+      "legalNameSubtitleIndividual": {
+        "other": "Som det står på din ID-handling."
+      },
+      "legalNameSubtitleSoleProp": {
+        "other": "Den fysiska person som driver verksamheten."
+      },
+      "legalNameSubtitleCompany": {
+        "other": "Företagets registrerade namn."
+      },
+      "legalNameLabel": {
+        "other": "Juridiskt namn"
+      },
+      "legalNamePlaceholderCompany": {
+        "other": "ACME GmbH"
+      },
+      "legalNamePlaceholderPerson": {
+        "other": "Jane Doe"
+      },
+      "legalNameInvalidCompany": {
+        "other": "Ange minst 2 tecken med minst en bokstav."
+      },
+      "legalNameInvalidPerson": {
+        "other": "Ange både förnamn och efternamn."
+      },
+      "tradingNameTitle": {
+        "other": "Firmanamn (valfritt)"
+      },
+      "tradingNameSubtitle": {
+        "other": "Geschaeftsbezeichnung, DBA, doing-business-as. Varumärket som den juridiska personen handlar under."
+      },
+      "tradingNameLabel": {
+        "other": "Firmanamn"
+      },
+      "tradingNamePlaceholder": {
+        "other": "ACME Brands"
+      },
+      "dobTitle": {
+        "other": "Födelsedatum"
+      },
+      "dobSubtitle": {
+        "other": "Krävs för fakturering i ditt namn och KYC om en kund frågar senare."
+      },
+      "dobAgeError": {
+        "other": "Du måste vara 18 år eller äldre för att registrera en juridisk person."
+      },
+      "dobOutOfRange": {
+        "other": "Det datumet är utanför intervallet."
+      },
+      "placeOfBirthTitle": {
+        "other": "Födelseort"
+      },
+      "placeOfBirthSubtitle": {
+        "other": "Stad som den står på din ID-handling. Krävs för fakturering och KYC."
+      },
+      "placeOfBirthCityLabel": {
+        "other": "Stad"
+      },
+      "placeOfBirthCityPlaceholder": {
+        "other": "Börja skriva en stad."
+      },
+      "placeChangeCta": {
+        "other": "Ändra"
+      },
+      "placeSearchError": {
+        "other": "Kunde inte söka: {error}"
+      },
+      "nationalityTitle": {
+        "other": "Medborgarskap"
+      },
+      "nationalitySubtitle": {
+        "other": "Välj ett eller flera (upp till {max}). Det första behandlas som primärt."
+      },
+      "nationalityPrimaryBadge": {
+        "other": "Primärt"
+      },
+      "nationalityCapReached": {
+        "other": "Maxgränsen på {max} medborgarskap nådd. Ta bort ett för att lägga till ett nytt."
+      },
+      "removeCountryAria": {
+        "other": "Ta bort {name}"
+      },
+      "taxCountryTitle": {
+        "other": "Skattehemvist"
+      },
+      "taxCountrySubtitle": {
+        "other": "Där den juridiska personen deklarerar skatt. Endast länder där vi kan verifiera skatte-ID i realtid listas."
+      },
+      "taxIdsTitle": {
+        "other": "Skatteidentifikatorer"
+      },
+      "taxIdsSubtitleIndividual": {
+        "other": "Ditt lokala skattenummer från {country}. Lagras som det är."
+      },
+      "taxIdsSubtitleIndividualFallback": {
+        "other": "din skattemyndighet"
+      },
+      "taxIdsSubtitleCompany": {
+        "other": "Moms valideras i realtid mot {authority}. Lokalt skattenummer är valfritt."
+      },
+      "taxIdsSubtitleCompanyFallback": {
+        "other": "den utfärdande myndigheten"
+      },
+      "taxIdsSubtitleSoleProp": {
+        "other": "Båda är valfria. Lägg till det lokala skattenumret om du vill ha det på fakturor; moms endast om du är momsregistrerad. Företagsregistreringen fångas i nästa steg."
+      },
+      "localTaxNumberLabel": {
+        "other": "Lokalt skattenummer"
+      },
+      "vatCompanyIdLabel": {
+        "other": "Moms / företags-ID"
+      },
+      "blockReasonTaxIdRequired": {
+        "other": "Ange det lokala skattenumret för att fortsätta."
+      },
+      "blockReasonTaxIdFormat": {
+        "other": "Lokalt skattenummer matchar inte formatet för {country}. {hint}"
+      },
+      "blockReasonVatRequired": {
+        "other": "Ange ett moms- / företags-ID för att fortsätta."
+      },
+      "blockReasonVatFormat": {
+        "other": "Det här momsregistreringsnumret matchar inte landets format."
+      },
+      "taxIdFormatHint": {
+        "other": "Förväntat: {placeholder}."
+      },
+      "verifyHeadingChecking": {
+        "other": "Verifierar med myndigheten."
+      },
+      "verifyHeadingLive": {
+        "other": "Verifierat."
+      },
+      "verifyHeadingInvalid": {
+        "other": "Kunde inte verifiera."
+      },
+      "verifyHeadingFormat": {
+        "other": "Myndigheten onåbar."
+      },
+      "verifySubtitleChecking": {
+        "other": "Kontrollerar {vatId} mot {country}s register."
+      },
+      "verifySubtitleLiveNamed": {
+        "other": "{authority} kände igen detta momsnummer som {name}."
+      },
+      "verifySubtitleLive": {
+        "other": "{authority} kände igen detta momsnummer."
+      },
+      "verifySubtitleInvalid": {
+        "other": "{authority} listar inte {vatId} som registrerat. Gå tillbaka för att åtgärda det."
+      },
+      "verifySubtitleFormat": {
+        "other": "Vi kunde inte nå {authority} just nu. Din uppgift sparas som den är och kommer att verifieras igen automatiskt."
+      },
+      "authorityFallback": {
+        "other": "skattemyndigheten"
+      },
+      "editTaxIdsBackLabel": {
+        "other": "Redigera skatte-ID:n"
+      },
+      "fixVatCta": {
+        "other": "Åtgärda moms"
+      },
+      "continueAnywayCta": {
+        "other": "Fortsätt ändå"
+      },
+      "registrationTitle": {
+        "other": "Registrering"
+      },
+      "registrationSubtitle": {
+        "other": "Handelsregister, Companies House, KvK. Det officiella registret där den här juridiska personen är registrerad."
+      },
+      "registrationNumberLabel": {
+        "other": "Registreringsnummer"
+      },
+      "issuingAuthorityLabel": {
+        "other": "Utfärdande myndighet"
+      },
+      "issuingAuthorityPlaceholder": {
+        "other": "Lokal domstol / handelsregister"
+      },
+      "registeredSinceLabel": {
+        "other": "Registrerad sedan (valfritt)"
+      },
+      "registeredSinceRangeError": {
+        "other": "Välj ett datum mellan 1900 och idag."
+      },
+      "regNumberFormatHint": {
+        "other": "Matchar inte förväntat format. Försök: {placeholder}."
+      },
+      "addressSearchTitle": {
+        "other": "Registrerad adress"
+      },
+      "addressSearchSubtitle": {
+        "other": "Där den juridiska personen är registrerad hos myndigheten. Börja skriva."
+      },
+      "addressLabel": {
+        "other": "Adress"
+      },
+      "addressSearchPlaceholder": {
+        "other": "Gata, stad."
+      },
+      "addressPickFirst": {
+        "other": "Välj en adress först"
+      },
+      "addressReviewTitle": {
+        "other": "Ser det rätt ut?"
+      },
+      "addressReviewSubtitle": {
+        "other": "Se till att det registrerade sätet matchar det officiella registret."
+      },
+      "addressMissing": {
+        "other": "Vi saknar {fields}. Välj ett mer specifikt förslag."
+      },
+      "addressFieldStreet": {
+        "other": "Gata"
+      },
+      "addressFieldCity": {
+        "other": "Stad"
+      },
+      "addressFieldPostalCode": {
+        "other": "Postnummer"
+      },
+      "addressFieldRegion": {
+        "other": "Region"
+      },
+      "addressFieldCountry": {
+        "other": "Land"
+      },
+      "addressChangeBackLabel": {
+        "other": "Ändra adress"
+      },
+      "addressNotRightCta": {
+        "other": "Inte rätt"
+      },
+      "addressLooksRightCta": {
+        "other": "Ser rätt ut"
+      },
+      "addressAptTitle": {
+        "other": "Lägenhet, svit eller våning?"
+      },
+      "addressAptSubtitle": {
+        "other": "Lägger till en andra rad till den registrerade adressen. Hoppa över om det inte behövs."
+      },
+      "addressAptLabel": {
+        "other": "Adressrad 2 (valfritt)"
+      },
+      "addressAptPlaceholder": {
+        "other": "Lgh 4B, 3:e våningen, svit 200."
+      },
+      "contactChoiceTitle": {
+        "other": "Vill du lägga till kontaktinformation?"
+      },
+      "contactChoiceSubtitle": {
+        "other": "Valfri e-post plus telefon för den här juridiska personen. Separat från din huvudsakliga kontoinformation."
+      },
+      "contactYesCta": {
+        "other": "Ja, lägg till kontakt"
+      },
+      "contactNoCta": {
+        "other": "Nej, spara utan"
+      },
+      "yesNoYesSubtitle": {
+        "other": "Lägger till nästa steg"
+      },
+      "yesNoNoSubtitle": {
+        "other": "Spara den juridiska personen som den är"
+      },
+      "saveError": {
+        "other": "Kunde inte spara: {error}"
+      },
+      "contactInputTitle": {
+        "other": "Kontakt för den här juridiska personen"
+      },
+      "contactInputSubtitle": {
+        "other": "E-post plus telefon som visas på fakturor och kontrakt."
+      },
+      "contactEmailLabel": {
+        "other": "E-post (valfritt)"
+      },
+      "contactEmailPlaceholder": {
+        "other": "invoices@example.com"
+      },
+      "contactEmailInvalid": {
+        "other": "Ange en giltig e-post eller lämna tomt."
+      },
+      "contactPhoneLabel": {
+        "other": "Telefon (valfritt)"
+      },
+      "contactPhonePlaceholder": {
+        "other": "+49 ."
+      },
+      "contactPhoneInvalid": {
+        "other": "Använd siffror med ett valfritt inledande + (6 till 20 siffror)."
+      },
+      "saveEntityCta": {
+        "other": "Spara juridisk person"
+      },
+      "saveChangesCta": {
+        "other": "Spara ändringar"
+      },
+      "savingEntityLabel": {
+        "other": "Sparar juridisk person."
+      },
+      "deletingEntityLabel": {
+        "other": "Tar bort juridisk person."
+      },
+      "backToList": {
+        "other": "Tillbaka till listan"
+      },
+      "detailSectionIdentity": {
+        "other": "Identitet"
+      },
+      "detailSectionTax": {
+        "other": "Skatt"
+      },
+      "detailSectionRegistration": {
+        "other": "Registrering"
+      },
+      "detailSectionAddress": {
+        "other": "Adress"
+      },
+      "detailSectionContact": {
+        "other": "Kontakt"
+      },
+      "detailLegalName": {
+        "other": "Juridiskt namn"
+      },
+      "detailTradingName": {
+        "other": "Firmanamn"
+      },
+      "detailTradingNamePlaceholder": {
+        "other": "Lägg till ett firmanamn"
+      },
+      "detailDob": {
+        "other": "Födelsedatum"
+      },
+      "detailPlaceOfBirth": {
+        "other": "Födelseort"
+      },
+      "detailPlaceOfBirthPlaceholder": {
+        "other": "Lägg till födelseort"
+      },
+      "detailNationality": {
+        "other": "Medborgarskap"
+      },
+      "detailTaxResidence": {
+        "other": "Skattehemvist"
+      },
+      "detailVatId": {
+        "other": "Moms / företags-ID"
+      },
+      "detailVatIdPlaceholder": {
+        "other": "Lägg till momsnummer"
+      },
+      "detailLocalTaxNumber": {
+        "other": "Lokalt skattenummer"
+      },
+      "detailLocalTaxNumberPlaceholder": {
+        "other": "Lägg till skattenummer"
+      },
+      "detailRegistrationNumber": {
+        "other": "Registreringsnummer"
+      },
+      "detailIssuingAuthority": {
+        "other": "Utfärdande myndighet"
+      },
+      "detailRegisteredSince": {
+        "other": "Registrerad sedan"
+      },
+      "detailStreet": {
+        "other": "Gata"
+      },
+      "detailAptFloor": {
+        "other": "Lgh / våning"
+      },
+      "detailCity": {
+        "other": "Stad"
+      },
+      "detailPostalCode": {
+        "other": "Postnummer"
+      },
+      "detailCountry": {
+        "other": "Land"
+      },
+      "detailEmail": {
+        "other": "E-post"
+      },
+      "detailEmailPlaceholder": {
+        "other": "Lägg till e-post"
+      },
+      "detailPhone": {
+        "other": "Telefon"
+      },
+      "detailPhonePlaceholder": {
+        "other": "Lägg till telefon"
+      },
+      "removeDefault": {
+        "other": "Ta bort standard"
+      },
+      "setDefault": {
+        "other": "Ange som standard"
+      },
+      "deleteConfirmTitle": {
+        "other": "Radera den här juridiska personen?"
+      },
+      "deleteConfirmBody": {
+        "other": "Detta kan inte ångras."
+      },
+      "deleteEmpty": {
+        "other": "Inget att ta bort"
+      },
+      "sharedAcrossAppsHeading": {
+        "other": "Observera. Detta påverkar varje app du använder med elvix."
+      },
+      "deleteSharedAcrossAppsBody": {
+        "other": "Juridiska personer delas mellan appar du loggar in på. Borttagning raderar posten överallt; alla fakturamallar som refererade till den behöver en ny."
+      },
+      "deleteError": {
+        "other": "Kunde inte radera: {error}"
+      },
+      "yesDelete": {
+        "other": "Ja, radera"
+      },
+      "nothingToChange": {
+        "other": "Inget att ändra"
+      },
+      "defaultConfirmTitleSet": {
+        "other": "Ange den här som din standardperson?"
+      },
+      "defaultConfirmTitleUnset": {
+        "other": "Ta bort standard från den här juridiska personen?"
+      },
+      "defaultConfirmBodySet": {
+        "other": "Standardpersonen fyller automatiskt i fakturor och kontraktmallar."
+      },
+      "defaultConfirmBodyUnset": {
+        "other": "Inget förvalt när du genererar fakturor eller kontrakt."
+      },
+      "defaultSharedAcrossAppsBodySet": {
+        "other": "Standardpersonen delas mellan varje app du loggar in på. Att byta den här uppdaterar det automatiska valet överallt på en gång."
+      },
+      "defaultSharedAcrossAppsBodyUnset": {
+        "other": "Standardpersonen delas mellan varje app du loggar in på. Att ta bort den innebär att ingen juridisk person är förvald någonstans."
+      }
+    },
+    "entityKind": {
+      "title": {
+        "other": "Vem är detta för?"
+      },
+      "me": {
+        "other": "Mig"
+      },
+      "someoneElse": {
+        "other": "Någon annan"
+      },
+      "business": {
+        "other": "Ett företag"
+      }
+    },
+    "export": {
+      "title": {
+        "other": "Ladda ner dina data"
+      },
+      "body": {
+        "other": "Få en kopia av allt vi har om dig. GDPR artikel 15. Vi mejlar en engångsnedladdningslänk, giltig i 24 timmar."
+      },
+      "sendCodeCta": {
+        "other": "Skicka verifieringskod"
+      },
+      "downloadCta": {
+        "other": "Mejla mig länken"
+      },
+      "doneTitle": {
+        "other": "Kolla din inkorg"
+      },
+      "doneBody": {
+        "other": "Vi skickade en nedladdningslänk till {email}. Den går ut om 24 timmar."
+      },
+      "previewLoadFailed": {
+        "other": "Kunde inte ladda förhandsvisningen. Försök igen."
+      },
+      "whatYouReceive": {
+        "other": "Vad du får"
+      },
+      "archiveBlurbIdentity": {
+        "other": "Ditt arkiv kommer att innehålla en enda JSON-fil med allt nedan, plus din avatar- och bannerbild om du har laddat upp några, plus en README som förklarar varje avsnitt på vanlig svenska och innehåller GDPR Art. 15(1)-upplysningarna."
+      },
+      "archiveBlurbApp": {
+        "other": "Ditt arkiv kommer att innehålla en enda JSON-fil avgränsad till {label}, plus en README som förklarar varje avsnitt och innehåller GDPR Art. 15(1)-upplysningarna."
+      },
+      "notIncluded": {
+        "other": "Ingår inte: kryptografiskt nyckelmaterial på dina passkeys, OAuth-tokens, OTP-koder och alla data som apparna du använder har om dig utanför elvix. Kontakta varje app för det senare."
+      },
+      "sendToHeading": {
+        "other": "Vi skickar dina data till din primära e-post"
+      },
+      "sendToBody": {
+        "other": "Ditt arkiv landar i {email} som en .zip-bilaga. Tillgång till den här inkorgen är identitetsbeviset, så filen ligger aldrig på en publik URL."
+      },
+      "sendToNotice": {
+        "other": "Vi skickar en 6-siffrig kod till din primära inkorg först. När du anger den på nästa skärm genererar vi ditt arkiv och mejlar det till dig som en .zip-bilaga."
+      },
+      "sendingCode": {
+        "other": "Skickar kod"
+      },
+      "sendToCta": {
+        "other": "Mejla mig en 6-siffrig kod"
+      },
+      "otpHeading": {
+        "other": "Bekräfta med din kod"
+      },
+      "otpBody": {
+        "other": "Vi skickade en 6-siffrig kod till {email}. Den går ut om 10 minuter. När du anger den genererar vi ditt arkiv och mejlar det till samma inkorg som en .zip-bilaga."
+      },
+      "confirmCta": {
+        "other": "Bekräfta och mejla mig mina data"
+      },
+      "workingLabel": {
+        "other": "Arbetar"
+      },
+      "resendIn": {
+        "other": "Skicka igen om {seconds}s"
+      },
+      "noPendingCode": {
+        "other": "Ingen väntande kod. Skicka en ny."
+      },
+      "networkError": {
+        "other": "Nätverksfel. Försök igen."
+      },
+      "doneHeading": {
+        "other": "Skickat."
+      },
+      "doneInboxBody": {
+        "other": "Kolla din primära inkorg ({email}) om en minut. Ditt arkiv är bifogat e-postmeddelandet som en .zip-fil. Du kan begära en ny export av samma mål om 24 timmar."
+      },
+      "backToExports": {
+        "other": "Tillbaka till exporter"
+      },
+      "errorChallengeGeneric": {
+        "other": "Kunde inte skicka en kod. Försök igen."
+      },
+      "errorChallengeTooRecent": {
+        "other": "Vänta {seconds}s innan du begär igen."
+      },
+      "errorChallengeTooMany": {
+        "other": "För många förfrågningar den här timmen. Försök senare."
+      },
+      "errorChallengeSendFailed": {
+        "other": "Kunde inte mejla koden. Försök igen."
+      },
+      "errorChallengeRateLimit": {
+        "other": "Du har redan exporterat detta de senaste 24 timmarna. Tillgängligt igen om ~{hours}h."
+      },
+      "errorChallengeNotMember": {
+        "other": "Du är inte längre medlem i den här appen."
+      },
+      "errorChallengeAppNotFound": {
+        "other": "Den appen är inte tillgänglig."
+      },
+      "errorApplyGeneric": {
+        "other": "Kunde inte generera din export. Försök igen."
+      },
+      "errorApplyWrongCode": {
+        "one": "Fel kod. {count} försök kvar.",
+        "other": "Fel kod. {count} försök kvar."
+      },
+      "errorApplyLocked": {
+        "other": "För många felaktiga försök. Skicka en ny kod."
+      },
+      "errorApplyExpired": {
+        "other": "Den koden har gått ut. Skicka en ny."
+      },
+      "errorApplyGenerateFailed": {
+        "other": "Vi kunde inte bygga din export. Försök igen."
+      },
+      "errorApplyStorageFailed": {
+        "other": "Vi kunde inte lagra din export. Försök igen."
+      },
+      "errorApplyEmailFailed": {
+        "other": "Ditt arkiv genererades men e-postmeddelandet misslyckades. Kontakta {email} för att återställa länken."
+      }
+    },
+    "deactivate": {
+      "title": {
+        "other": "Ta en paus"
+      },
+      "body": {
+        "other": "Avaktivering döljer ditt konto från den här appen. Återaktivera när som helst från ditt elvix-konto."
+      },
+      "confirmCta": {
+        "other": "Avaktivera"
+      },
+      "doneTitle": {
+        "other": "Ditt konto är pausat"
+      },
+      "reactivateCta": {
+        "other": "Återaktivera"
+      },
+      "errorTooMany": {
+        "other": "För många koder begärda. Försök igen senare."
+      },
+      "errorTooRecent": {
+        "other": "Vänta {seconds}s innan du begär igen."
+      },
+      "errorSendFailed": {
+        "other": "Kunde inte mejla koden. Försök igen."
+      },
+      "errorRequestFailed": {
+        "other": "Kunde inte begära en kod. Försök igen."
+      },
+      "errorWrongCode": {
+        "one": "Fel kod. {count} försök kvar.",
+        "other": "Fel kod. {count} försök kvar."
+      },
+      "errorChallengeLocked": {
+        "other": "För många felaktiga försök. Begär en ny kod."
+      },
+      "errorChallengeExpired": {
+        "other": "Den koden har gått ut. Begär en ny."
+      },
+      "errorAlreadyLeft": {
+        "other": "Du har redan lämnat den här appen. Återställ ditt medlemskap först."
+      },
+      "appNameFallback": {
+        "other": "din app"
+      },
+      "warn1Title": {
+        "other": "Ta en paus från {app}"
+      },
+      "warn1Body": {
+        "other": "Din profil tar en lugn paus. Folk på {app} slutar se dig, men allt du byggt upp förblir precis som det är. När du är redo, kom tillbaka hit och logga in igen."
+      },
+      "soundGood": {
+        "other": "Låter det bra?"
+      },
+      "warn1Cta": {
+        "other": "Jag förstår"
+      },
+      "warn2Title": {
+        "other": "Några saker att veta"
+      },
+      "warn2Bullet1": {
+        "other": "Öppna sessioner på den här appen loggas ut direkt."
+      },
+      "warn2Bullet2": {
+        "other": "Ditt användarnamn och din identifierare förblir dina. Ingen annan kan ta dem medan du är borta."
+      },
+      "warn2Bullet3": {
+        "other": "Du kan komma tillbaka när som helst från den här ytan."
+      },
+      "warn2Bullet4": {
+        "other": "Vi mejlar dig en 6-siffrig kod för att bekräfta. Hängslen och livrem, så ändringen bara går igenom om du också har din inkorg."
+      },
+      "warn2Cta": {
+        "other": "Jag förstår. Mejla mig en kod"
+      },
+      "sendingLabel": {
+        "other": "Skickar"
+      },
+      "reactivateTitle": {
+        "other": "Välkommen tillbaka till {app}"
+      },
+      "reactivateBody": {
+        "other": "Du är på paus just nu. Återaktivera för att synas igen på {app}."
+      },
+      "reactivateBodyByOwner": {
+        "other": "Du är på paus just nu (en administratör gjorde detta åt dig). Återaktivera för att synas igen på {app}."
+      },
+      "doneDeactivatedTitle": {
+        "other": "Du är på paus från {app}."
+      },
+      "doneReactivatedTitle": {
+        "other": "Du är tillbaka på {app}."
+      },
+      "doneDeactivatedBody": {
+        "other": "Vi meddelade appen. Kom tillbaka hit när som helst för att återaktivera."
+      },
+      "doneReactivatedBody": {
+        "other": "Ditt medlemskap är aktivt igen. Öppna sessioner på appsidan kan ta en stund att uppdatera."
+      },
+      "reactivateAgain": {
+        "other": "Återaktivera igen"
+      },
+      "deactivateAgain": {
+        "other": "Avaktivera igen"
+      },
+      "otpTitle": {
+        "other": "Ange din bekräftelsekod"
+      },
+      "otpDelivered": {
+        "other": "Vi mejlade en 6-siffrig kod till {email}. Den går ut om 10 minuter."
+      },
+      "otpSending": {
+        "other": "Skickar dig en 6-siffrig kod."
+      },
+      "otpPending": {
+        "other": "Vi skickar en 6-siffrig kod till din e-post."
+      },
+      "resendIn": {
+        "other": "Skicka igen om {seconds}s"
+      }
+    },
+    "leave": {
+      "title": {
+        "other": "Lämna {app}?"
+      },
+      "body": {
+        "other": "Tar bort ditt medlemskap. Detta är slutgiltigt: ägaren kan inte återställa det. Ditt elvix-konto förblir öppet."
+      },
+      "confirmCta": {
+        "other": "Lämna för alltid"
+      },
+      "doneTitle": {
+        "other": "Du har lämnat {app}."
+      },
+      "errorTooManyCodes": {
+        "other": "För många koder begärda. Försök igen senare."
+      },
+      "errorTooRecent": {
+        "other": "Vänta {seconds}s innan du begär igen."
+      },
+      "errorSendFailed": {
+        "other": "Kunde inte mejla koden. Försök igen."
+      },
+      "errorRequestFailed": {
+        "other": "Kunde inte begära en kod. Försök igen."
+      },
+      "errorWrongCode": {
+        "one": "Fel kod. {count} försök kvar.",
+        "other": "Fel kod. {count} försök kvar."
+      },
+      "errorChallengeLocked": {
+        "other": "För många felaktiga försök. Begär en ny kod."
+      },
+      "errorChallengeExpired": {
+        "other": "Den koden har gått ut. Begär en ny."
+      },
+      "errorOwnerInitiated": {
+        "other": "En administratör tog bort dig. De måste ångra detta från sin Console."
+      },
+      "errorGraceExpired": {
+        "other": "90-dagarsfönstret för att återställa det här medlemskapet har stängts."
+      },
+      "errorRestoreFailed": {
+        "other": "Kunde inte återställa. Försök igen."
+      },
+      "otpActionLabel": {
+        "other": "Lämna {app}"
+      },
+      "warn1Heading": {
+        "other": "Lämna {app}"
+      },
+      "warn1Body": {
+        "other": "Ditt medlemskap döljs direkt. Du har 90 dagar på dig att ändra dig och återställa från den här ytan. Efter det slutar appen visas i din lista. Dina data på appens sida styrs fortfarande av deras egna policyer."
+      },
+      "understandPrompt": {
+        "other": "Förstår du?"
+      },
+      "iUnderstandCta": {
+        "other": "Jag förstår"
+      },
+      "dataHeading": {
+        "other": "Om dina data på {app}"
+      },
+      "warn2Body": {
+        "other": "elvix lagrar eller raderar inte det {app} har om dig. Appägaren ansvarar för det enligt sin egen integritetspolicy och användarvillkor. Vi meddelar appen så fort du lämnar så att de kan agera enligt dessa villkor. Läs dem innan du bekräftar."
+      },
+      "privacyPolicy": {
+        "other": "Integritetspolicy"
+      },
+      "termsOfService": {
+        "other": "Användarvillkor"
+      },
+      "warn2EmailPrompt": {
+        "other": "Vi mejlar dig en kod för att bekräfta. Förstår du?"
+      },
+      "warn2Cta": {
+        "other": "Jag förstår. Mejla mig en kod"
+      },
+      "restoreHeading": {
+        "other": "Återställ ditt medlemskap på {app}"
+      },
+      "restoreBody": {
+        "one": "Du har {count} dag kvar i nådatidsfönstret. Återställ nu så ser appen dig precis som förut: samma användarnamn, samma roller, samma historik.",
+        "other": "Du har {count} dagar kvar i nådatidsfönstret. Återställ nu så ser appen dig precis som förut: samma användarnamn, samma roller, samma historik."
+      },
+      "restoreCta": {
+        "other": "Återställ medlemskap"
+      },
+      "ownerLockedHeading": {
+        "other": "En administratör tog bort dig från {app}"
+      },
+      "ownerLockedBody": {
+        "one": "Borttagen {date}. Appägaren har {count} dag kvar att avbryta från sin sida. Efter det visas appen inte längre här.",
+        "other": "Borttagen {date}. Appägaren har {count} dagar kvar att avbryta från sin sida. Efter det visas appen inte längre här."
+      },
+      "ownerLockedReachOut": {
+        "other": "Eftersom de initierade borttagningen är det bara de som kan ångra den. Hör av dig via deras supportkanal om du vill prata med dem om det."
+      },
+      "doneLeftTitle": {
+        "other": "Du lämnade {app}."
+      },
+      "doneRestoredTitle": {
+        "other": "Du är tillbaka på {app}."
+      },
+      "doneLeftBody": {
+        "other": "Vi meddelade appen. Du har 90 dagar på dig att komma tillbaka och återställa från den här ytan. Efter det slutar appen visas i din lista."
+      },
+      "doneRestoredBody": {
+        "other": "Ditt medlemskap är aktivt igen. Appsidan kan ta en stund att uppdatera."
+      }
+    },
+    "lifecycle": {
+      "bannedTitle": {
+        "other": "Din åtkomst har återkallats."
+      },
+      "bannedBody": {
+        "other": "En administratör bannade ditt konto för den här appen. Du loggas ut och kommer inte att kunna logga in igen. Kontakta ägaren om du tror att detta är ett misstag."
+      },
+      "pausedTitle": {
+        "other": "Din åtkomst har pausats."
+      },
+      "pausedBody": {
+        "other": "En administratör pausade tillfälligt ditt konto för den här appen. Du loggas ut inom kort; kontakta ägaren för att återställa åtkomsten."
+      },
+      "deletedTitle": {
+        "other": "Ditt konto togs bort."
+      },
+      "deletedBody": {
+        "other": "En administratör raderade ditt medlemskap för den här appen. Du loggas ut och dina lagrade data köas för rensning om 90 dagar om de inte återställs."
+      },
+      "inactiveTitle": {
+        "other": "Du tar en paus från den här appen."
+      },
+      "inactiveBody": {
+        "other": "Ditt medlemskap är avaktiverat, så vi loggar ut dig här. Du kan återaktivera från ditt elvix-konto när som helst och komma direkt tillbaka."
+      },
+      "countdown": {
+        "other": "Loggar ut dig om {seconds}s"
+      },
+      "recoverRestoredTitle": {
+        "other": "Du är tillbaka på {app}."
+      },
+      "recoverRestoredBody": {
+        "other": "Ditt medlemskap är aktivt igen. Fortsätt till appen när du är redo."
+      },
+      "recoverSignedOutTitle": {
+        "other": "Du är utloggad."
+      },
+      "recoverSignedOutBody": {
+        "other": "Du höll dig borta från {app}. Kom tillbaka när som helst."
+      },
+      "recoverWelcomeBack": {
+        "other": "Välkommen tillbaka till {app}"
+      },
+      "recoverDeletedIntro": {
+        "other": "Du lämnade {app} tidigare."
+      },
+      "recoverDeletedDaysLeft": {
+        "one": "Du har {count} dag kvar att komma tillbaka.",
+        "other": "Du har {count} dagar kvar att komma tillbaka."
+      },
+      "recoverDeletedNoCountdown": {
+        "other": "Du är fortfarande inom återställningsfönstret."
+      },
+      "recoverDeletedOutro": {
+        "other": "Återställ din plats nu eller logga ut igen."
+      },
+      "recoverPausedBody": {
+        "other": "Ditt medlemskap på {app} är på paus just nu. Återställ för att fortsätta där du slutade, eller logga ut igen och stanna borta."
+      },
+      "recoverRestoringLabel": {
+        "other": "Återställer"
+      },
+      "recoverRestoreDeletedCta": {
+        "other": "Återställ min plats på {app}"
+      },
+      "recoverRestorePausedCta": {
+        "other": "Ta tillbaka mig på {app}"
+      },
+      "recoverSigningOutLabel": {
+        "other": "Loggar ut dig"
+      },
+      "recoverDeclineCta": {
+        "other": "Inte nu, logga ut mig"
+      }
+    }
+  }
+}

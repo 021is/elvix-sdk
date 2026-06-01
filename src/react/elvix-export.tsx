@@ -21,6 +21,7 @@ import { ElvixSaveButton } from "./elvix-save-button";
 import { useElvixAppContext, useElvixContext } from "./elvix-provider";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
+import { useT } from "../locale/use-t";
 
 /** elvix privacy contact surfaced on the export email-failure path. In the
  *  monorepo this is `PRIVACY_EMAIL` (NEXT_PUBLIC_PRIVACY_EMAIL); here it's the
@@ -179,6 +180,7 @@ function PreviewPane({
   go: (p: Pane, d?: 1 | -1) => void;
 }) {
   const ctx = useElvixContext();
+  const t = useT();
   const [loading, setLoading] = useState(true);
   const [sections, setSections] = useState<string[]>([]);
   const [label, setLabel] = useState<string>("");
@@ -195,13 +197,13 @@ function PreviewPane({
         const body = unwrapEnvelope(await res.json());
         if (cancelled) return;
         if (!res.ok || !body.ok) {
-          setErr("Couldn't load the preview. Try again.");
+          setErr(t("export.previewLoadFailed"));
           return;
         }
         setSections(body.sections ?? []);
         setLabel(body.label ?? "");
       } catch {
-        if (!cancelled) setErr("Couldn't load the preview. Try again.");
+        if (!cancelled) setErr(t("export.previewLoadFailed"));
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -235,18 +237,18 @@ function PreviewPane({
       >
         <div>
           <div className="text-[15px] font-semibold tracking-tight text-fg-1">
-            What you'll receive
+            {t("export.whatYouReceive")}
           </div>
           <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-1">
             {target.kind === "identity"
-              ? "Your archive will contain a single JSON file with everything below, plus your avatar and banner images if you've uploaded any, plus a README that explains each section in plain language and includes the GDPR Art. 15(1) disclosures."
-              : `Your archive will contain a single JSON file scoped to ${label || target.appName}, plus a README that explains each section and includes the GDPR Art. 15(1) disclosures.`}
+              ? t("export.archiveBlurbIdentity")
+              : t("export.archiveBlurbApp", { label: label || target.appName })}
           </p>
         </div>
 
         {loading ? (
           <div className="flex items-center gap-2 text-[12.5px] text-fg-3">
-            <Loader2 className="size-3.5 animate-spin" /> Loading…
+            <Loader2 className="size-3.5 animate-spin" /> {t("common.loading")}
           </div>
         ) : err ? (
           <p className="text-[12px] text-red-500 leading-tight">{err}</p>
@@ -266,10 +268,7 @@ function PreviewPane({
         )}
 
         <div className="rounded-[10px] bg-canvas dark:bg-[#101013] border border-dashed border-fg-3/25 px-4 py-3">
-          <p className="text-[11.5px] text-fg-3 leading-[1.55]">
-            Not included: cryptographic key material on your passkeys, OAuth tokens, OTP codes, and
-            any data the apps you use hold about you outside elvix. Contact each app for the latter.
-          </p>
+          <p className="text-[11.5px] text-fg-3 leading-[1.55]">{t("export.notIncluded")}</p>
         </div>
       </div>
 
@@ -285,7 +284,7 @@ function PreviewPane({
             "linear-gradient(to bottom, rgba(255,255,255,0.12), rgba(255,255,255,0) 40%)",
         }}
       >
-        <ChevronRight className="size-3.5" /> Continue
+        <ChevronRight className="size-3.5" /> {t("common.continue")}
       </button>
     </div>
   );
@@ -305,6 +304,7 @@ function SendToPane({
   go: (p: Pane, d?: 1 | -1) => void;
 }) {
   const ctx = useElvixContext();
+  const t = useT();
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -324,7 +324,7 @@ function SendToPane({
       });
       const body = unwrapEnvelope(await res.json());
       if (!res.ok || !body.ok) {
-        setErr(challengeErrorCopy(body.error, body.retryAfterSeconds));
+        setErr(challengeErrorCopy(t, body.error, body.retryAfterSeconds));
         return;
       }
       sessionStorage.setItem(
@@ -344,7 +344,7 @@ function SendToPane({
 
   return (
     <div className="space-y-4">
-      <BackBar label="Back" onClick={() => go("preview", -1)} />
+      <BackBar label={t("common.back")} onClick={() => go("preview", -1)} />
       <div className="flex items-start gap-3">
         <span
           className="size-10 rounded-full inline-flex items-center justify-center shrink-0"
@@ -358,22 +358,21 @@ function SendToPane({
         </span>
         <div className="min-w-0">
           <div className="text-[15px] font-semibold tracking-tight text-fg-1 leading-tight">
-            We'll send your data to your primary email
+            {t("export.sendToHeading")}
           </div>
+          {/* NOTE: catalog stores the full sentence as one string, so the bold
+              emphasis around the email is lost vs the original JSX. The
+              `<span className="font-medium text-fg-1">` wrap is dropped on
+              purpose — translation correctness beats one inline bold. */}
           <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-1">
-            Your archive will land in <span className="font-medium text-fg-1">{primaryEmail}</span>{" "}
-            as a .zip attachment. Possession of this inbox is the proof of identity, so the file
-            never lives at a public URL.
+            {t("export.sendToBody", { email: primaryEmail })}
           </p>
         </div>
       </div>
 
       <div className="rounded-[10px] bg-canvas dark:bg-[#101013] border border-[var(--elvix-primary-12)] px-4 py-3 flex items-start gap-3">
         <Shield className="size-4 text-fg-3 shrink-0 mt-0.5" />
-        <div className="text-[11.5px] text-fg-3 leading-[1.55]">
-          We send a 6-digit code to your primary inbox first. After you enter it on the next screen,
-          we generate your archive and email it to you as a .zip attachment.
-        </div>
+        <div className="text-[11.5px] text-fg-3 leading-[1.55]">{t("export.sendToNotice")}</div>
       </div>
 
       {err && <p className="text-[12px] text-red-500 leading-tight">{err}</p>}
@@ -391,7 +390,7 @@ function SendToPane({
         }}
       >
         {busy ? <Loader2 className="size-3.5 animate-spin" /> : <Mail className="size-3.5" />}
-        {busy ? "Sending code…" : "Email me a 6-digit code"}
+        {busy ? t("export.sendingCode") : t("export.sendToCta")}
       </button>
     </div>
   );
@@ -413,6 +412,7 @@ function OtpPane({
   onFail?: (error: string) => void;
 }) {
   const ctx = useElvixContext();
+  const t = useT();
   const stash = readStash<{
     challengeId: string;
     deliveredTo: string;
@@ -449,7 +449,7 @@ function OtpPane({
       if (!res.ok || !body.ok) {
         // LEGACY: spine-lint-disable-next-line spine/enum-over-string
         if (body.error === "too_recent") setResendIn(body.retryAfterSeconds ?? 30);
-        setErr(challengeErrorCopy(body.error, body.retryAfterSeconds));
+        setErr(challengeErrorCopy(t, body.error, body.retryAfterSeconds));
         return;
       }
       sessionStorage.setItem(
@@ -486,7 +486,7 @@ function OtpPane({
       });
       const body = unwrapEnvelope(await res.json());
       if (!res.ok || !body.ok) {
-        setErr(applyErrorCopy(body.error, body.attemptsLeft));
+        setErr(applyErrorCopy(t, body.error, body.attemptsLeft));
         // LEGACY: spine-lint-disable-next-line spine/enum-over-string
         if (body.error === "wrong_code") setCode("");
         onFail?.(body.error ?? "unknown");
@@ -496,7 +496,7 @@ function OtpPane({
       onSuccess?.(body.downloadId, body.deliveredTo ?? stash.deliveredTo);
       go("done", 1);
     } catch {
-      setErr("Network error. Try again.");
+      setErr(t("export.networkError"));
       onFail?.("network");
     } finally {
       setBusy(false);
@@ -506,21 +506,20 @@ function OtpPane({
   if (!stash) {
     return (
       <div className="space-y-3">
-        <BackBar label="Back" onClick={() => go("send-to", -1)} />
-        <p className="text-[12px] text-fg-3">No pending code. Send a fresh one.</p>
+        <BackBar label={t("common.back")} onClick={() => go("send-to", -1)} />
+        <p className="text-[12px] text-fg-3">{t("export.noPendingCode")}</p>
       </div>
     );
   }
   return (
     <form className="space-y-4" onSubmit={submit}>
-      <BackBar label="Back" onClick={() => go("send-to", -1)} />
+      <BackBar label={t("common.back")} onClick={() => go("send-to", -1)} />
       <div>
         <div className="text-[15px] font-semibold tracking-tight text-fg-1">
-          Confirm with your code
+          {t("export.otpHeading")}
         </div>
         <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-1">
-          We sent a 6-digit code to {stash.deliveredTo}. It expires in 10 minutes. Once you enter it
-          we'll generate your archive and email it to the same inbox as a .zip attachment.
+          {t("export.otpBody", { email: stash.deliveredTo })}
         </p>
       </div>
       <OtpInput value={code} onChange={setCode} disabled={busy} autoFocus />
@@ -528,8 +527,8 @@ function OtpPane({
       <ElvixSaveButton
         state={busy ? "saving" : "idle"}
         disabled={busy || code.length !== 6}
-        label="Confirm and email me my data"
-        savedLabel="Working…"
+        label={t("export.confirmCta")}
+        savedLabel={t("export.workingLabel")}
         hint={null}
       />
       <button
@@ -543,7 +542,7 @@ function OtpPane({
         ) : (
           <RefreshCw className="size-3.5" />
         )}
-        {resendIn > 0 ? `Resend in ${resendIn}s` : "Resend code"}
+        {resendIn > 0 ? t("export.resendIn", { seconds: resendIn }) : t("signin.resendCode")}
       </button>
     </form>
   );
@@ -554,6 +553,7 @@ function OtpPane({
 // ─────────────────────────────────────────────────────────────────
 
 function DonePane({ deliveredTo }: { deliveredTo: string }) {
+  const t = useT();
   return (
     <div className="flex flex-col items-center text-center gap-4 py-2">
       <motion.span
@@ -570,17 +570,18 @@ function DonePane({ deliveredTo }: { deliveredTo: string }) {
         />
       </motion.span>
       <div className="space-y-1 max-w-[340px]">
-        <div className="text-[15px] font-semibold tracking-tight text-fg-1">Sent.</div>
+        <div className="text-[15px] font-semibold tracking-tight text-fg-1">
+          {t("export.doneHeading")}
+        </div>
         <div className="text-[12.5px] text-fg-3 leading-[1.55]">
-          Check your primary inbox ({deliveredTo}) in a minute. Your archive is attached to the
-          email as a .zip file. You can request another export of the same target in 24 hours.
+          {t("export.doneInboxBody", { email: deliveredTo })}
         </div>
       </div>
       <a
         href="/account/export"
         className="text-[12.5px] font-medium text-fg-2 hover:text-fg-1 underline underline-offset-4 cursor-pointer"
       >
-        Back to exports
+        {t("export.backToExports")}
       </a>
     </div>
   );
@@ -613,30 +614,34 @@ function readStash<T>(key: string): T | null {
   }
 }
 
-function challengeErrorCopy(error: string | undefined, retryAfter?: number): string {
-  if (!error) return "Couldn't send a code. Try again.";
-  if (error === "too_recent") return `Wait ${retryAfter ?? 30}s before requesting again.`;
-  if (error === "too_many") return "Too many requests this hour. Try later.";
-  if (error === "send_failed") return "Couldn't email the code. Try again.";
+type TFn = (key: string, params?: Record<string, string | number>) => string;
+
+/** `t` is passed in because module-level helpers can't call `useT()`. The
+ *  caller (always inside a React component) forwards the hook's `t`. */
+function challengeErrorCopy(t: TFn, error: string | undefined, retryAfter?: number): string {
+  if (!error) return t("export.errorChallengeGeneric");
+  if (error === "too_recent") return t("export.errorChallengeTooRecent", { seconds: retryAfter ?? 30 });
+  if (error === "too_many") return t("export.errorChallengeTooMany");
+  if (error === "send_failed") return t("export.errorChallengeSendFailed");
   if (error === "export_rate_limit") {
     const h = retryAfter ? Math.ceil(retryAfter / 3600) : 24;
-    return `You already exported this in the last 24 hours. Available again in ~${h}h.`;
+    return t("export.errorChallengeRateLimit", { hours: h });
   }
-  if (error === "not_a_member") return "You're not a member of this app any more.";
-  if (error === "app_not_found") return "That app isn't available.";
-  return "Couldn't send a code. Try again.";
+  if (error === "not_a_member") return t("export.errorChallengeNotMember");
+  if (error === "app_not_found") return t("export.errorChallengeAppNotFound");
+  return t("export.errorChallengeGeneric");
 }
 
-function applyErrorCopy(error: string | undefined, attemptsLeft?: number): string {
-  if (!error) return "Couldn't generate your export. Try again.";
+function applyErrorCopy(t: TFn, error: string | undefined, attemptsLeft?: number): string {
+  if (!error) return t("export.errorApplyGeneric");
   if (error === "wrong_code") {
-    return `Wrong code. ${attemptsLeft ?? 0} ${(attemptsLeft ?? 0) === 1 ? "try" : "tries"} left.`;
+    return t("export.errorApplyWrongCode", { count: attemptsLeft ?? 0 });
   }
-  if (error === "challenge_locked") return "Too many wrong attempts. Send a fresh code.";
-  if (error === "challenge_expired") return "That code expired. Send a fresh one.";
-  if (error === "generate_failed") return "We couldn't build your export. Try again.";
-  if (error === "storage_failed") return "We couldn't store your export. Try again.";
+  if (error === "challenge_locked") return t("export.errorApplyLocked");
+  if (error === "challenge_expired") return t("export.errorApplyExpired");
+  if (error === "generate_failed") return t("export.errorApplyGenerateFailed");
+  if (error === "storage_failed") return t("export.errorApplyStorageFailed");
   if (error === "email_delivery_failed")
-    return `Your archive was generated but the email failed. Contact ${PRIVACY_EMAIL} to recover the link.`;
-  return "Something went wrong. Try again.";
+    return t("export.errorApplyEmailFailed", { email: PRIVACY_EMAIL });
+  return t("common.somethingWentWrong");
 }

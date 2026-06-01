@@ -1,0 +1,2276 @@
+{
+  "$comment": "Canonical English catalog for @elvix.is/sdk. Every key here must exist in every other locale. Bulk translation lifts from this file via the DC translate engine.",
+  "locale": "en",
+  "namespaces": {
+    "common": {
+      "ok": {
+        "other": "OK"
+      },
+      "cancel": {
+        "other": "Cancel"
+      },
+      "back": {
+        "other": "Back"
+      },
+      "next": {
+        "other": "Next"
+      },
+      "continue": {
+        "other": "Continue"
+      },
+      "save": {
+        "other": "Save"
+      },
+      "saving": {
+        "other": "Saving"
+      },
+      "delete": {
+        "other": "Delete"
+      },
+      "remove": {
+        "other": "Remove"
+      },
+      "edit": {
+        "other": "Edit"
+      },
+      "close": {
+        "other": "Close"
+      },
+      "done": {
+        "other": "Done"
+      },
+      "retry": {
+        "other": "Try again"
+      },
+      "loading": {
+        "other": "Loading"
+      },
+      "search": {
+        "other": "Search"
+      },
+      "noMatches": {
+        "other": "No matches"
+      },
+      "lastStep": {
+        "other": "Last step"
+      },
+      "skip": {
+        "other": "Skip"
+      },
+      "durationSeconds": {
+        "other": "{seconds}s"
+      },
+      "durationOneMinute": {
+        "other": "1 minute"
+      },
+      "durationMinutes": {
+        "one": "{minutes} minute",
+        "other": "{minutes} minutes"
+      },
+      "somethingWentWrong": {
+        "other": "Something went wrong. Try again."
+      },
+      "errorNetwork": {
+        "other": "Network hiccup. Try again."
+      },
+      "errorSaveFailed": {
+        "other": "Couldn't save. Try again."
+      },
+      "hintEnter": {
+        "other": "Enter"
+      },
+      "enterHint": {
+        "other": "Enter"
+      },
+      "sendingLabel": {
+        "other": "Sending"
+      },
+      "saved": {
+        "other": "Saved"
+      },
+      "optionalSuffix": {
+        "other": " (optional)"
+      },
+      "savingDots": {
+        "other": "Saving."
+      }
+    },
+    "signin": {
+      "title": {
+        "other": "Sign in to {app}"
+      },
+      "titleDefault": {
+        "other": "Sign in"
+      },
+      "subtitle": {
+        "other": ""
+      },
+      "googleButton": {
+        "other": "Continue with Google"
+      },
+      "passkeyButton": {
+        "other": "Continue with passkey"
+      },
+      "emailPlaceholder": {
+        "other": "Email"
+      },
+      "sendCodeButton": {
+        "other": "Continue"
+      },
+      "sendingLabel": {
+        "other": "Sending"
+      },
+      "codeSentSubtitle": {
+        "other": "We sent a code to {email}"
+      },
+      "codePlaceholder": {
+        "other": "Verification code"
+      },
+      "submitButton": {
+        "other": "Sign in"
+      },
+      "verifyingLabel": {
+        "other": "Verifying"
+      },
+      "or": {
+        "other": "or"
+      },
+      "resendCode": {
+        "other": "Resend code"
+      },
+      "resentLabel": {
+        "other": "Sent again"
+      },
+      "errorGeneric": {
+        "other": "Something went wrong. Try again."
+      },
+      "errorBadCode": {
+        "other": "That code didn't match."
+      },
+      "errorRateLimited": {
+        "other": "Too many attempts. Wait a moment."
+      },
+      "securedBy": {
+        "other": "Secured by "
+      },
+      "verbLogin": {
+        "other": "Log in"
+      },
+      "titleLogin": {
+        "other": "Log in to {app}"
+      },
+      "bootstrapErrorTitle": {
+        "other": "Couldn't load sign-in"
+      },
+      "bootstrapErrorBody": {
+        "other": "Invalid {clientIdToken} or origin not allowed for this domain. Open Console, your Application, Credentials to confirm the {clientIdToken}, then add this origin to Allowed origins."
+      },
+      "identifierPlaceholderEmailOrUsername": {
+        "other": "Email or username"
+      },
+      "identifierPlaceholderUsername": {
+        "other": "Username"
+      },
+      "identifierPlaceholderEmail": {
+        "other": "Enter your email"
+      },
+      "errorNetwork": {
+        "other": "Network hiccup. Try again."
+      },
+      "errorPasskeyVerify": {
+        "other": "Passkey verification failed."
+      },
+      "errorPasskeyAdd": {
+        "other": "Passkey couldn't be added. Try again or skip for now."
+      },
+      "visitAppWebsite": {
+        "other": "Visit {app} website"
+      },
+      "passkeyOnboardingTitleSignin": {
+        "other": "Sign in faster next time"
+      },
+      "passkeyOnboardingTitleLogin": {
+        "other": "Log in faster next time"
+      },
+      "recoverTitle": {
+        "other": "Welcome back to {app}"
+      },
+      "appNameFallback": {
+        "other": "your app"
+      },
+      "legalAppFallback": {
+        "other": "the app"
+      },
+      "passkeyOnboardingSubtitle": {
+        "other": "Touch ID, Face ID, or your security key. No more email codes."
+      },
+      "recoverSubtitle": {
+        "other": "Pick whether to come back or stay away."
+      },
+      "identifierSubtitle": {
+        "other": "Pick how you want to continue."
+      },
+      "verifyButton": {
+        "other": "Verify"
+      },
+      "useDifferentEmail": {
+        "other": "Use a different email"
+      },
+      "resendInSeconds": {
+        "other": "Resend in {seconds}s"
+      },
+      "passkeyBullet1": {
+        "other": "No more password or email codes"
+      },
+      "passkeyBullet2": {
+        "other": "Phish-proof. Works only on this site."
+      },
+      "passkeyBullet3": {
+        "other": "Syncs across your devices via iCloud, Google, or 1Password"
+      },
+      "addPasskeyCta": {
+        "other": "Add a passkey"
+      },
+      "skipForNow": {
+        "other": "Skip for now"
+      },
+      "previewEmptyMethods": {
+        "other": "Enable at least one method to preview the sign-in."
+      },
+      "googleButtonShort": {
+        "other": "Google"
+      },
+      "passkeyButtonShort": {
+        "other": "Passkey"
+      },
+      "legalIntro": {
+        "other": "By continuing, you agree to {app}'s"
+      },
+      "termsOfService": {
+        "other": "Terms of Service"
+      },
+      "privacyPolicy": {
+        "other": "Privacy Policy"
+      },
+      "framedPreviewLabel": {
+        "other": "This is a preview"
+      },
+      "errorTooRecentWithSeconds": {
+        "other": "Wait {seconds}s before requesting another code."
+      },
+      "errorTooRecent": {
+        "other": "Wait a moment before requesting another code."
+      },
+      "errorTooManyWithRetry": {
+        "other": "Too many codes sent to this email. Try again in {retry}."
+      },
+      "errorTooMany": {
+        "other": "Too many codes sent to this email. Try again later."
+      },
+      "errorInvalidCode": {
+        "other": "That code didn't work. Try again."
+      },
+      "errorExpired": {
+        "other": "That code expired. Send a new one."
+      },
+      "errorSendFailed": {
+        "other": "Couldn't send the email. Check the address."
+      },
+      "errorUserPaused": {
+        "other": "Your access has been paused. Contact support."
+      },
+      "errorUserBanned": {
+        "other": "Access denied."
+      },
+      "errorUsernameNotFound": {
+        "other": "No account with that username here."
+      },
+      "errorMethodDisabled": {
+        "other": "That sign-in method isn't enabled for this app."
+      },
+      "errorGraceExpired": {
+        "other": "The 90-day window to restore has closed."
+      },
+      "errorSessionEnded": {
+        "other": "Your session ended. Sign in again."
+      }
+    },
+    "sessions": {
+      "title": {
+        "other": "Your sessions"
+      },
+      "empty": {
+        "other": "No live sessions here."
+      },
+      "currentBadge": {
+        "other": "Keep this one signed in"
+      },
+      "revokeOne": {
+        "other": "Sign out"
+      },
+      "revokeOthersCta": {
+        "other": "Sign out other devices"
+      },
+      "revokeAllCta": {
+        "other": "Sign out everywhere"
+      },
+      "confirmOthersTitle": {
+        "other": "Sign out of other devices?"
+      },
+      "confirmOthersBody": {
+        "other": "Pick which sessions to end. Each one is revoked the moment you tap, and every tab on that device falls back to signed out within seconds."
+      },
+      "confirmAllTitle": {
+        "other": "Sign out everywhere?"
+      },
+      "confirmAllBody": {
+        "other": "Includes this device. You'll be redirected to sign in again afterwards."
+      },
+      "doneTitle": {
+        "other": "Signed out"
+      },
+      "doneCount": {
+        "one": "{count} device signed out.",
+        "other": "{count} devices signed out."
+      },
+      "errorLoad": {
+        "other": "Couldn't load sessions."
+      },
+      "errorRevoke": {
+        "other": "Couldn't revoke. Try again."
+      },
+      "errorMassRevoke": {
+        "other": "Couldn't sign out. Try again."
+      },
+      "thisDeviceBadge": {
+        "other": "this device"
+      },
+      "deviceLine": {
+        "other": "{browser} on {os}"
+      },
+      "massRevokeCtaSelf": {
+        "other": "Sign me out of this device"
+      },
+      "massRevokeCtaOpen": {
+        "other": "Sign out of devices..."
+      },
+      "confirmChooserTitle": {
+        "other": "Sign out of where?"
+      },
+      "confirmChooserBody": {
+        "other": "Pick which sessions to end. Each one is revoked the moment you tap, and every tab on that device is signed out on its next request."
+      },
+      "signOutOtherDevicesCount": {
+        "one": "Sign out of the other {count} device",
+        "other": "Sign out of the other {count} devices"
+      },
+      "signOutAllCtaSelf": {
+        "other": "Sign me out of this device"
+      },
+      "signOutAllCtaIncludingThis": {
+        "other": "Sign out everywhere, this device too"
+      },
+      "signOutAllRedirectHint": {
+        "other": "You'll land on the sign-in page right after"
+      },
+      "confirmTokensFootnote": {
+        "other": "Already-issued tokens stay rejected. There's no undo, but signing back in on any device just works again."
+      },
+      "doneAlreadyAlone": {
+        "other": "Already only this one."
+      },
+      "doneFootnote": {
+        "other": "Your current device is still signed in. Those other tabs will be kicked out on their next request."
+      },
+      "backToList": {
+        "other": "Back to my sessions"
+      },
+      "methodSignIn": {
+        "other": "Sign-in"
+      },
+      "methodEmailCode": {
+        "other": "Email code"
+      },
+      "methodPasskey": {
+        "other": "Passkey"
+      },
+      "relativeJustNow": {
+        "other": "just now"
+      },
+      "relativeMinutesAgo": {
+        "other": "{count}m ago"
+      },
+      "relativeHoursAgo": {
+        "other": "{count}h ago"
+      },
+      "relativeDaysAgo": {
+        "other": "{count}d ago"
+      }
+    },
+    "avatar": {
+      "replace": {
+        "other": "Replace"
+      },
+      "removePhoto": {
+        "other": "Remove photo"
+      },
+      "removeConfirmTitle": {
+        "other": "Remove your photo?"
+      },
+      "removeConfirmBody": {
+        "other": "Falls back to your initials."
+      },
+      "uploading": {
+        "other": "Uploading"
+      },
+      "cropTitle": {
+        "other": "Crop"
+      },
+      "cropApply": {
+        "other": "Apply"
+      },
+      "errorTooLarge": {
+        "other": "Image too large. Pick under {limitMb} MB."
+      },
+      "errorBadType": {
+        "other": "Pick a PNG, JPG, or WebP image."
+      },
+      "uploadFailed": {
+        "other": "Couldn't upload photo. Try a different image."
+      },
+      "removeFailed": {
+        "other": "Couldn't remove photo."
+      },
+      "editPhotoAria": {
+        "other": "Edit your photo"
+      },
+      "addPhotoAria": {
+        "other": "Add a photo"
+      },
+      "confirmRemoveAria": {
+        "other": "Confirm remove"
+      },
+      "replacePhotoAria": {
+        "other": "Replace photo"
+      },
+      "uploadPhotoAria": {
+        "other": "Upload photo"
+      },
+      "useThisCropAria": {
+        "other": "Use this crop"
+      }
+    },
+    "banner": {
+      "replace": {
+        "other": "Replace"
+      },
+      "removeBanner": {
+        "other": "Remove banner"
+      },
+      "removeConfirmTitle": {
+        "other": "Remove your banner?"
+      },
+      "removeConfirmBody": {
+        "other": "Falls back to the gradient placeholder."
+      },
+      "uploading": {
+        "other": "Uploading"
+      },
+      "cropTitle": {
+        "other": "Crop banner"
+      },
+      "cropApply": {
+        "other": "Apply"
+      },
+      "errorUpload": {
+        "other": "Couldn't upload banner. Try a different image."
+      },
+      "errorRemove": {
+        "other": "Couldn't remove banner."
+      },
+      "previewAlt": {
+        "other": "Preview banner"
+      },
+      "cropUse": {
+        "other": "Use"
+      },
+      "cropUseAria": {
+        "other": "Use this crop"
+      },
+      "editAria": {
+        "other": "Edit banner"
+      },
+      "addAria": {
+        "other": "Add banner"
+      },
+      "uploadAria": {
+        "other": "Upload banner"
+      },
+      "confirmRemoveAria": {
+        "other": "Confirm remove"
+      },
+      "confirmRemoveHint": {
+        "other": "Click again to confirm"
+      }
+    },
+    "username": {
+      "title": {
+        "other": "Pick a username"
+      },
+      "placeholder": {
+        "other": "username"
+      },
+      "checking": {
+        "other": "Checking"
+      },
+      "available": {
+        "other": "Available"
+      },
+      "taken": {
+        "other": "Taken"
+      },
+      "tooShort": {
+        "other": "Too short"
+      },
+      "tooLong": {
+        "other": "Too long"
+      },
+      "badChars": {
+        "other": "Letters, numbers, dashes only"
+      },
+      "reserved": {
+        "other": "Reserved"
+      },
+      "subtitle": {
+        "other": "This is how people see you on {app}."
+      },
+      "subtitleNoApp": {
+        "other": "This is how people see you."
+      },
+      "label": {
+        "other": "Username"
+      },
+      "exampleHandle": {
+        "other": "yourname"
+      },
+      "rulesHint": {
+        "other": "4 to 30 chars, a to z, 0 to 9, dot, underscore. Must start with a letter."
+      },
+      "availableHint": {
+        "other": "Looks good. This one's yours."
+      },
+      "suggestionsHeading": {
+        "other": "Suggestions"
+      },
+      "claimCta": {
+        "other": "Claim @{handle}"
+      },
+      "yournameFallback": {
+        "other": "yourname"
+      },
+      "reasonBlank": {
+        "other": "Pick a username."
+      },
+      "reasonTooShort": {
+        "other": "Min 4 characters."
+      },
+      "reasonTooLong": {
+        "other": "Max 30 characters."
+      },
+      "reasonOnlyNumbers": {
+        "other": "Cannot be all numbers."
+      },
+      "reasonBadStart": {
+        "other": "Must start with a letter."
+      },
+      "reasonBadChars": {
+        "other": "Only a to z, 0 to 9, dot, underscore."
+      },
+      "reasonConsecutiveSpecial": {
+        "other": "No two dots or underscores in a row."
+      },
+      "reasonTrailingSpecial": {
+        "other": "Cannot end with a dot or underscore."
+      },
+      "reasonTaken": {
+        "other": "That one's taken."
+      },
+      "reasonInvalid": {
+        "other": "That username isn't valid."
+      },
+      "errorJustTaken": {
+        "other": "That username was just taken. Pick another."
+      },
+      "errorFormat": {
+        "other": "That username doesn't match the rules."
+      },
+      "errorSaveFailed": {
+        "other": "Couldn't save. Try again."
+      },
+      "errorNetwork": {
+        "other": "Network hiccup. Try again."
+      },
+      "ruleLength": {
+        "other": "{min} to {max} characters"
+      },
+      "ruleChars": {
+        "other": "lowercase letters, digits, dot, underscore"
+      },
+      "ruleStartEnd": {
+        "other": "start with a letter, end with a letter or digit"
+      },
+      "ruleNoDoubles": {
+        "other": "no two specials in a row, no reserved words"
+      },
+      "confirmHeading": {
+        "other": "Confirm change"
+      },
+      "notSet": {
+        "other": "Not set"
+      },
+      "confirmBody": {
+        "other": "Anyone signing into this app with this username will be you. You can change it again any time."
+      },
+      "confirmCta": {
+        "other": "Confirm change"
+      },
+      "doneTitle": {
+        "other": "You're @{username} on {appName}."
+      },
+      "doneBody": {
+        "other": "We saved it. You can keep using this surface, or head back when you're ready."
+      },
+      "changeAgain": {
+        "other": "Change it again"
+      },
+      "disabledMailSubject": {
+        "other": "Re-enable username sign-in on {appName}"
+      },
+      "disabledContactSupport": {
+        "other": "Contact {appName} support"
+      },
+      "disabledEmailSupport": {
+        "other": "Email {appName}"
+      },
+      "disabledTitle": {
+        "other": "Usernames are off on {appName}."
+      },
+      "disabledBody": {
+        "other": "The app owner currently has username sign-in disabled, so we can't let you set or change your username here."
+      },
+      "disabledStillHave": {
+        "other": "You still have @{current} from before. It stays on your membership until the app owner turns the feature back on."
+      },
+      "disabledNoSupport": {
+        "other": "The app hasn't published a support contact yet. Reach out through whatever channel you usually use with them."
+      },
+      "disabledHint": {
+        "other": "Ask them to flip Username sign-in back on in Console, Sign-in methods. Once they do, you can come back here and pick a username."
+      },
+      "idleCurrent": {
+        "other": "Currently @{current}. Type something different to change it."
+      },
+      "idleEmpty": {
+        "other": "Pick a name other people on this app can use to find you."
+      },
+      "formatGeneric": {
+        "other": "Doesn't match the rules below."
+      },
+      "takenLine": {
+        "other": "Someone else on this app already has @{username}."
+      },
+      "currentLine": {
+        "other": "That's the username you already have here."
+      },
+      "availableLine": {
+        "other": "@{username} is available."
+      },
+      "reasonMustStartLetter": {
+        "other": "Must start with a letter."
+      },
+      "reasonMustEndAlnum": {
+        "other": "Must end with a letter or digit."
+      },
+      "reasonNoDoubleSpecial": {
+        "other": "Can't have two dots or underscores in a row."
+      },
+      "reasonReserved": {
+        "other": "That username is reserved. Pick another."
+      },
+      "appNameFallback": {
+        "other": "your app"
+      }
+    },
+    "identity": {
+      "title": {
+        "other": "Your profile"
+      },
+      "fullName": {
+        "other": "Full name"
+      },
+      "birthdate": {
+        "other": "Birthdate"
+      },
+      "gender": {
+        "other": "Gender"
+      },
+      "pronouns": {
+        "other": "Pronouns"
+      },
+      "save": {
+        "other": "Save profile"
+      },
+      "saved": {
+        "other": "Saved"
+      },
+      "genderMale": {
+        "other": "Male"
+      },
+      "genderFemale": {
+        "other": "Female"
+      },
+      "genderNonBinary": {
+        "other": "Non-binary"
+      },
+      "genderPreferNotToSay": {
+        "other": "Prefer not to say"
+      },
+      "pronounSheHer": {
+        "other": "She / her"
+      },
+      "pronounHeHim": {
+        "other": "He / him"
+      },
+      "pronounTheyThem": {
+        "other": "They / them"
+      },
+      "pronounOther": {
+        "other": "Other"
+      },
+      "pronounPreferNotToSay": {
+        "other": "Prefer not to say"
+      },
+      "errorSaveFailed": {
+        "other": "Could not save."
+      },
+      "givenName": {
+        "other": "Given name"
+      },
+      "givenNamePlaceholder": {
+        "other": "Jane"
+      },
+      "familyName": {
+        "other": "Family name"
+      },
+      "familyNamePlaceholder": {
+        "other": "Doe"
+      },
+      "pronounsOptional": {
+        "other": "Pronouns (optional)"
+      }
+    },
+    "region": {
+      "title": {
+        "other": "Pick your region"
+      },
+      "yourRegion": {
+        "other": "Your region"
+      },
+      "country": {
+        "other": "Country"
+      },
+      "uiLocale": {
+        "other": "Language"
+      },
+      "currency": {
+        "other": "Currency"
+      },
+      "firstDayOfWeek": {
+        "other": "First day of week"
+      },
+      "timeZone": {
+        "other": "Time zone"
+      },
+      "save": {
+        "other": "Save region"
+      },
+      "confirmTitle": {
+        "other": "Change region?"
+      },
+      "confirmBody": {
+        "other": "Changing country cascades currency and first day of week."
+      },
+      "errorSaveFailed": {
+        "other": "Couldn't save region."
+      },
+      "emptyHint": {
+        "other": "UI language, time zone, currency, and date format follow your country."
+      },
+      "whereDoYouLive": {
+        "other": "Where do you live?"
+      },
+      "cascadeHint": {
+        "other": "We'll set your UI language, time zone, currency, and date format from this. You can override each one later."
+      },
+      "cascadeResetTitle": {
+        "other": "Reset everything to {country}?"
+      },
+      "cascadeResetBody": {
+        "other": "You're moving from {currentFlag} {currentName} to {nextFlag} {nextName}. UI language, time zone, currency, date format, and units will all reset to the defaults for {nextName}. Your custom edits (if any) will be overwritten."
+      },
+      "cascadeFallbackCountry": {
+        "other": "the new country"
+      },
+      "uiLanguageLabel": {
+        "other": "UI language"
+      },
+      "dateLabel": {
+        "other": "Date"
+      },
+      "timeLabel": {
+        "other": "Time"
+      },
+      "unitsLabel": {
+        "other": "Units"
+      },
+      "resetDefaults": {
+        "other": "Reset defaults"
+      },
+      "savedLabel": {
+        "other": "Saved"
+      },
+      "changeCountryAria": {
+        "other": "Change country"
+      },
+      "setTimeZonePlaceholder": {
+        "other": "Set time zone"
+      },
+      "timeFormat": {
+        "other": "Time format"
+      },
+      "dateFormat": {
+        "other": "Date format"
+      },
+      "numberFormat": {
+        "other": "Number format"
+      },
+      "numbersLabel": {
+        "other": "Numbers"
+      },
+      "weekStartsLabel": {
+        "other": "Week starts"
+      },
+      "weekStartsOnTitle": {
+        "other": "Week starts on"
+      },
+      "weekStartsHint": {
+        "other": "Affects calendars, week pickers, and weekly reports."
+      },
+      "pickOneHint": {
+        "other": "Pick the one that feels right."
+      },
+      "uiLanguageTitle": {
+        "other": "UI language"
+      },
+      "uiLanguageHint": {
+        "other": "What language elvix-powered apps should speak to you in."
+      },
+      "languageSearchPlaceholder": {
+        "other": "English, Deutsch, fa..."
+      },
+      "currencyHint": {
+        "other": "Default for prices, invoices, and payouts in elvix-powered apps."
+      },
+      "currencySearchPlaceholder": {
+        "other": "EUR, dollar, real..."
+      },
+      "timeZoneHint": {
+        "other": "Used for scheduling, \"9am your time\", and weekly reports."
+      },
+      "timeZoneSearchPlaceholder": {
+        "other": "Berlin, Tehran, Pacific..."
+      }
+    },
+    "languages": {
+      "title": {
+        "other": "Languages you speak"
+      },
+      "addLanguage": {
+        "other": "Add a language"
+      },
+      "limitReached": {
+        "other": "You can list up to {limit} languages."
+      },
+      "level": {
+        "other": "Level"
+      },
+      "remove": {
+        "other": "Remove"
+      },
+      "saveLevel": {
+        "other": "Save level"
+      },
+      "updatingLevel": {
+        "other": "Updating level"
+      },
+      "addingLanguage": {
+        "other": "Adding language"
+      },
+      "removing": {
+        "other": "Removing"
+      },
+      "emptyHint": {
+        "other": "For UI defaults, jobs, and outbound messages."
+      },
+      "searchHint": {
+        "other": "Search by English name, native name, or ISO code."
+      },
+      "searchPlaceholder": {
+        "other": "English, Deutsch, fa"
+      },
+      "takenBadge": {
+        "other": "added"
+      },
+      "levelPickTitle": {
+        "other": "How well do you speak {language}?"
+      },
+      "thisLanguageFallback": {
+        "other": "this language"
+      },
+      "levelPickSubtitle": {
+        "other": "Pick the level that sounds right. You can change it later."
+      },
+      "errorAlreadyAdded": {
+        "other": "You've already added this language. Edit its level from the list."
+      },
+      "removeConfirmTitle": {
+        "other": "Remove {language}?"
+      },
+      "removeConfirmBody": {
+        "other": "Apps that target {language} won't reach you in it anymore. You can re-add it any time."
+      },
+      "keepCta": {
+        "other": "Keep"
+      },
+      "addAnother": {
+        "other": "Add another language"
+      }
+    },
+    "addressBook": {
+      "title": {
+        "other": "Your addresses"
+      },
+      "empty": {
+        "other": "No addresses yet."
+      },
+      "addCta": {
+        "other": "Add an address"
+      },
+      "makeDefault": {
+        "other": "Make default"
+      },
+      "defaultBadge": {
+        "other": "Default"
+      },
+      "remove": {
+        "other": "Remove"
+      },
+      "removeConfirmTitle": {
+        "other": "Remove this address?"
+      },
+      "savingLabel": {
+        "other": "Saving address."
+      },
+      "deletingLabel": {
+        "other": "Deleting address."
+      },
+      "addBilling": {
+        "other": "Add billing address"
+      },
+      "addShipping": {
+        "other": "Add shipping address"
+      },
+      "useForBilling": {
+        "other": "We'll use this for invoices and receipts."
+      },
+      "useForShipping": {
+        "other": "We'll use this for deliveries and pickups."
+      },
+      "addAnotherBilling": {
+        "other": "Add another billing address"
+      },
+      "addAnotherShipping": {
+        "other": "Add another shipping address"
+      },
+      "atCompany": {
+        "other": "at {company}"
+      },
+      "setAsDefault": {
+        "other": "Set as default"
+      },
+      "removeDefault": {
+        "other": "Remove default"
+      },
+      "deleteAddress": {
+        "other": "Delete address"
+      },
+      "newBillingAddress": {
+        "other": "New billing address"
+      },
+      "newShippingAddress": {
+        "other": "New shipping address"
+      },
+      "searchPrompt": {
+        "other": "Start typing your address"
+      },
+      "searchPlaceholder": {
+        "other": "221B Baker Street, London."
+      },
+      "searchError": {
+        "other": "Couldn't search: {error}"
+      },
+      "noMatchesKeepTyping": {
+        "other": "No matches yet. Keep typing."
+      },
+      "aptFloorEyebrow": {
+        "other": "Apartment, floor, suite"
+      },
+      "aptFloorTitle": {
+        "other": "Apartment, suite, or floor?"
+      },
+      "aptFloorBodyBilling": {
+        "other": "Maps rarely captures unit numbers. Adds a second line to the address."
+      },
+      "aptFloorBodyShipping": {
+        "other": "Carriers misroute without unit info. Skip if you don't need it."
+      },
+      "line2Label": {
+        "other": "Address line 2 (optional)"
+      },
+      "line2Placeholder": {
+        "other": "Apt 4B, 3rd floor, Suite 200."
+      },
+      "step2of3": {
+        "other": "Step 2 of 3"
+      },
+      "recipientTitleBilling": {
+        "other": "Who is this billing address for?"
+      },
+      "recipientTitleShipping": {
+        "other": "Who is this shipping address for?"
+      },
+      "recipientSubtitleBilling": {
+        "other": "Name on the invoice."
+      },
+      "recipientSubtitleShipping": {
+        "other": "Name on the package."
+      },
+      "someoneElseSubtitleBilling": {
+        "other": "A different name for the invoice"
+      },
+      "someoneElseSubtitleShipping": {
+        "other": "Sending to someone else"
+      },
+      "businessSubtitleBilling": {
+        "other": "Invoice the company (B2B)"
+      },
+      "businessSubtitleShipping": {
+        "other": "Ship to a company or workplace"
+      },
+      "saveError": {
+        "other": "Couldn't save: {error}"
+      },
+      "recipientCustomTitle": {
+        "other": "Who's the recipient?"
+      },
+      "recipientCustomSubtitleBilling": {
+        "other": "The name that will appear on the invoice."
+      },
+      "recipientCustomSubtitleShipping": {
+        "other": "The name that will appear on the package."
+      },
+      "recipientPlaceholder": {
+        "other": "Jane Doe"
+      },
+      "businessStep1of2": {
+        "other": "Business, step 1 of 2"
+      },
+      "companyNameTitle": {
+        "other": "What's the company name?"
+      },
+      "companyNameBodyBilling": {
+        "other": "Appears on the invoice. Required for B2B tax handling later."
+      },
+      "companyNameBodyShipping": {
+        "other": "Company that receives the package."
+      },
+      "companyNamePlaceholder": {
+        "other": "Edvone"
+      },
+      "businessStep2of2": {
+        "other": "Business, step 2 of 2"
+      },
+      "contactAtCompanyTitle": {
+        "other": "Anyone in particular at {company}?"
+      },
+      "attnBodyInvoice": {
+        "other": "Adds an \"Attn:\" line to the invoice. Skip to address it to the company."
+      },
+      "attnBodyPackage": {
+        "other": "Adds an \"Attn:\" line to the package. Skip to address it to the company."
+      },
+      "contactPersonOptional": {
+        "other": "Contact person (optional)"
+      },
+      "skip": {
+        "other": "Skip"
+      },
+      "noteChoiceTitle": {
+        "other": "Want to add a delivery note?"
+      },
+      "noteChoiceBodyBilling": {
+        "other": "Anything the billing team should know. ATTN line, PO number, c/o someone."
+      },
+      "noteChoiceBodyShipping": {
+        "other": "Anything for the delivery person. Buzzer, gate code, leave-at-door."
+      },
+      "noteYesTitle": {
+        "other": "Yes, add a note"
+      },
+      "noteYesSubtitle": {
+        "other": "Write a short instruction"
+      },
+      "noteNoTitle": {
+        "other": "No, skip"
+      },
+      "noteNoSubtitle": {
+        "other": "Save the address as-is"
+      },
+      "noteLastStep": {
+        "other": "Note, last step"
+      },
+      "noteInputTitle": {
+        "other": "What should we say?"
+      },
+      "noteInputBodyBilling": {
+        "other": "Appears on the invoice or billing record."
+      },
+      "noteInputBodyShipping": {
+        "other": "Hands off to the delivery carrier."
+      },
+      "billingNote": {
+        "other": "Billing note"
+      },
+      "deliveryNote": {
+        "other": "Delivery note"
+      },
+      "notePlaceholderBilling": {
+        "other": "Bill to ATTN: Finance, PO #ABC-1234."
+      },
+      "notePlaceholderShipping": {
+        "other": "Ring buzzer 3, leave with concierge if not home."
+      },
+      "backToList": {
+        "other": "Back to list"
+      },
+      "billingAddressLabel": {
+        "other": "billing address"
+      },
+      "shippingAddressLabel": {
+        "other": "shipping address"
+      },
+      "sectionWho": {
+        "other": "Who"
+      },
+      "sectionWhere": {
+        "other": "Where"
+      },
+      "sectionNotesMeta": {
+        "other": "Notes and meta"
+      },
+      "fieldRecipient": {
+        "other": "Recipient"
+      },
+      "fieldCompany": {
+        "other": "Company"
+      },
+      "addCompanyPlaceholder": {
+        "other": "Add a company"
+      },
+      "fieldStreet": {
+        "other": "Street"
+      },
+      "fieldAptFloor": {
+        "other": "Apt or floor"
+      },
+      "addUnitPlaceholder": {
+        "other": "Add a unit"
+      },
+      "fieldCity": {
+        "other": "City"
+      },
+      "fieldPostalCode": {
+        "other": "Postal code"
+      },
+      "fieldRegion": {
+        "other": "Region"
+      },
+      "fieldCountry": {
+        "other": "Country"
+      },
+      "fieldDeliveryNotes": {
+        "other": "Delivery notes"
+      },
+      "addNotePlaceholder": {
+        "other": "Add a note"
+      },
+      "fieldTimezone": {
+        "other": "Timezone"
+      },
+      "fieldVenue": {
+        "other": "Venue or building"
+      },
+      "nothingToChange": {
+        "other": "Nothing to change"
+      },
+      "setDefaultTitle": {
+        "other": "Set this as your default?"
+      },
+      "removeDefaultTitle": {
+        "other": "Remove default from this address?"
+      },
+      "setDefaultSubtitle": {
+        "other": "It'll be the auto-pick at checkout or invoice time."
+      },
+      "removeDefaultSubtitle": {
+        "other": "Nothing will be pre-selected at checkout or invoice time."
+      },
+      "crossAppHeadsUp": {
+        "other": "Heads up. This affects every app you use with elvix."
+      },
+      "crossAppDefaultBodySetting": {
+        "other": "Your default {kind} address is shared across every app you sign in to. Switching it here updates the auto-pick everywhere at once."
+      },
+      "crossAppDefaultBodyClearing": {
+        "other": "Your default {kind} address is shared across every app you sign in to. Removing it means no address is pre-selected anywhere; you'll pick one each time at checkout or invoice."
+      },
+      "nothingToDelete": {
+        "other": "Nothing to delete"
+      },
+      "deleteBillingHeader": {
+        "other": "Delete billing address"
+      },
+      "deleteShippingHeader": {
+        "other": "Delete shipping address"
+      },
+      "deleteConfirmTitle": {
+        "other": "Delete this address?"
+      },
+      "cantBeUndone": {
+        "other": "This can't be undone."
+      },
+      "crossAppDeleteBodyBilling": {
+        "other": "Your billing address is stored once on your elvix profile and shared with the apps you sign in to. Deleting removes it everywhere. Any checkout, invoice, or shipping flow that referenced this address will need a fresh one."
+      },
+      "crossAppDeleteBodyShipping": {
+        "other": "Your shipping address is stored once on your elvix profile and shared with the apps you sign in to. Deleting removes it everywhere. Any checkout, invoice, or shipping flow that referenced this address will need a fresh one."
+      },
+      "deleteError": {
+        "other": "Couldn't delete: {error}"
+      },
+      "yesDelete": {
+        "other": "Yes, delete"
+      },
+      "pickAddressFirst": {
+        "other": "Pick an address first"
+      },
+      "changeAddress": {
+        "other": "Change address"
+      },
+      "reviewBilling": {
+        "other": "Review billing address"
+      },
+      "reviewShipping": {
+        "other": "Review shipping address"
+      },
+      "notRight": {
+        "other": "Not right"
+      },
+      "looksRight": {
+        "other": "Looks right"
+      },
+      "missingFieldsHint": {
+        "other": "We're missing the {fields}. Pick a more specific suggestion (with a street number) so we can save a deliverable address."
+      }
+    },
+    "legalEntities": {
+      "title": {
+        "other": "Legal entities"
+      },
+      "addCta": {
+        "other": "Add a legal entity"
+      },
+      "companyName": {
+        "other": "Company name"
+      },
+      "vatId": {
+        "other": "VAT ID"
+      },
+      "taxCountry": {
+        "other": "Tax country"
+      },
+      "verifyVat": {
+        "other": "Verify VAT"
+      },
+      "verifying": {
+        "other": "Checking"
+      },
+      "verifiedBadge": {
+        "other": "Verified"
+      },
+      "notRegistered": {
+        "other": "Not registered"
+      },
+      "unreachable": {
+        "other": "Unreachable"
+      },
+      "addCtaSubtitle": {
+        "other": "For invoices, contracts, and tax filings."
+      },
+      "addAnotherCta": {
+        "other": "Add another legal entity"
+      },
+      "kindIndividual": {
+        "other": "Individual"
+      },
+      "kindSoleProp": {
+        "other": "Sole proprietorship"
+      },
+      "kindCompany": {
+        "other": "Company"
+      },
+      "removeDefaultAria": {
+        "other": "Remove default"
+      },
+      "setDefaultAria": {
+        "other": "Set as default"
+      },
+      "deleteAria": {
+        "other": "Delete entity"
+      },
+      "typeChoiceTitle": {
+        "other": "What kind of entity is this?"
+      },
+      "typeChoiceSubtitle": {
+        "other": "Drives the questions we'll ask next."
+      },
+      "step1of3": {
+        "other": "Step 1 of 3"
+      },
+      "individualSubtitle": {
+        "other": "Just you, no business. Invoices go in your personal name."
+      },
+      "soleProprietorshipSubtitle": {
+        "other": "You plus a trading name (Einzelunternehmen, freelancer, etc.)."
+      },
+      "companySubtitle": {
+        "other": "A registered legal entity (GmbH, Ltd, S.r.l., etc.)."
+      },
+      "legalNameTitleIndividual": {
+        "other": "Your legal name"
+      },
+      "legalNameTitleSoleProp": {
+        "other": "Your legal name (the owner)"
+      },
+      "legalNameTitleCompany": {
+        "other": "Company's legal name"
+      },
+      "legalNameSubtitleIndividual": {
+        "other": "As it appears on your ID."
+      },
+      "legalNameSubtitleSoleProp": {
+        "other": "The natural person operating the business."
+      },
+      "legalNameSubtitleCompany": {
+        "other": "The company's registered name."
+      },
+      "legalNameLabel": {
+        "other": "Legal name"
+      },
+      "legalNamePlaceholderCompany": {
+        "other": "ACME GmbH"
+      },
+      "legalNamePlaceholderPerson": {
+        "other": "Jane Doe"
+      },
+      "legalNameInvalidCompany": {
+        "other": "Enter at least 2 characters with at least one letter."
+      },
+      "legalNameInvalidPerson": {
+        "other": "Enter both given name and family name."
+      },
+      "tradingNameTitle": {
+        "other": "Trading name (optional)"
+      },
+      "tradingNameSubtitle": {
+        "other": "Geschaeftsbezeichnung, DBA, doing-business-as. The brand the entity trades under."
+      },
+      "tradingNameLabel": {
+        "other": "Trading name"
+      },
+      "tradingNamePlaceholder": {
+        "other": "ACME Brands"
+      },
+      "dobTitle": {
+        "other": "Date of birth"
+      },
+      "dobSubtitle": {
+        "other": "Required for invoicing under your name and KYC if a customer asks later."
+      },
+      "dobAgeError": {
+        "other": "You must be 18 or older to register an entity."
+      },
+      "dobOutOfRange": {
+        "other": "That date is out of range."
+      },
+      "placeOfBirthTitle": {
+        "other": "Place of birth"
+      },
+      "placeOfBirthSubtitle": {
+        "other": "City as it appears on your ID. Required for invoicing and KYC."
+      },
+      "placeOfBirthCityLabel": {
+        "other": "City"
+      },
+      "placeOfBirthCityPlaceholder": {
+        "other": "Start typing a city."
+      },
+      "placeChangeCta": {
+        "other": "Change"
+      },
+      "placeSearchError": {
+        "other": "Couldn't search: {error}"
+      },
+      "nationalityTitle": {
+        "other": "Nationality"
+      },
+      "nationalitySubtitle": {
+        "other": "Pick one or more (up to {max}). The first one is treated as primary."
+      },
+      "nationalityPrimaryBadge": {
+        "other": "Primary"
+      },
+      "nationalityCapReached": {
+        "other": "Maximum of {max} nationalities reached. Remove one to add another."
+      },
+      "removeCountryAria": {
+        "other": "Remove {name}"
+      },
+      "taxCountryTitle": {
+        "other": "Tax residence"
+      },
+      "taxCountrySubtitle": {
+        "other": "Where the entity files taxes. Only countries where we can verify the tax ID live are listed."
+      },
+      "taxIdsTitle": {
+        "other": "Tax identifiers"
+      },
+      "taxIdsSubtitleIndividual": {
+        "other": "Your local tax number from {country}. Stored as-is."
+      },
+      "taxIdsSubtitleIndividualFallback": {
+        "other": "your tax authority"
+      },
+      "taxIdsSubtitleCompany": {
+        "other": "VAT is validated live against {authority}. Local tax number is optional."
+      },
+      "taxIdsSubtitleCompanyFallback": {
+        "other": "the issuing authority"
+      },
+      "taxIdsSubtitleSoleProp": {
+        "other": "Both are optional. Add the local tax number if you want it on invoices; VAT only if you're VAT-registered. The business registration is captured in the next step."
+      },
+      "localTaxNumberLabel": {
+        "other": "Local tax number"
+      },
+      "vatCompanyIdLabel": {
+        "other": "VAT / company ID"
+      },
+      "blockReasonTaxIdRequired": {
+        "other": "Enter the local tax number to continue."
+      },
+      "blockReasonTaxIdFormat": {
+        "other": "Local tax number doesn't match {country} format. {hint}"
+      },
+      "blockReasonVatRequired": {
+        "other": "Enter a VAT / company ID to continue."
+      },
+      "blockReasonVatFormat": {
+        "other": "This VAT ID doesn't match the country's format."
+      },
+      "taxIdFormatHint": {
+        "other": "Expected: {placeholder}."
+      },
+      "verifyHeadingChecking": {
+        "other": "Verifying with the authority."
+      },
+      "verifyHeadingLive": {
+        "other": "Verified."
+      },
+      "verifyHeadingInvalid": {
+        "other": "Couldn't verify."
+      },
+      "verifyHeadingFormat": {
+        "other": "Authority unreachable."
+      },
+      "verifySubtitleChecking": {
+        "other": "Checking {vatId} against {country}'s register."
+      },
+      "verifySubtitleLiveNamed": {
+        "other": "{authority} recognised this VAT as {name}."
+      },
+      "verifySubtitleLive": {
+        "other": "{authority} recognised this VAT."
+      },
+      "verifySubtitleInvalid": {
+        "other": "{authority} doesn't list {vatId} as registered. Go back to fix it."
+      },
+      "verifySubtitleFormat": {
+        "other": "We couldn't reach {authority} right now. Your entry is saved as-is and will re-verify automatically."
+      },
+      "authorityFallback": {
+        "other": "the tax authority"
+      },
+      "editTaxIdsBackLabel": {
+        "other": "Edit tax IDs"
+      },
+      "fixVatCta": {
+        "other": "Fix VAT"
+      },
+      "continueAnywayCta": {
+        "other": "Continue anyway"
+      },
+      "registrationTitle": {
+        "other": "Registration"
+      },
+      "registrationSubtitle": {
+        "other": "Handelsregister, Companies House, KvK. The official register where this entity is recorded."
+      },
+      "registrationNumberLabel": {
+        "other": "Registration number"
+      },
+      "issuingAuthorityLabel": {
+        "other": "Issuing authority"
+      },
+      "issuingAuthorityPlaceholder": {
+        "other": "Local court / commercial register"
+      },
+      "registeredSinceLabel": {
+        "other": "Registered since (optional)"
+      },
+      "registeredSinceRangeError": {
+        "other": "Pick a date between 1900 and today."
+      },
+      "regNumberFormatHint": {
+        "other": "Doesn't match the expected format. Try: {placeholder}."
+      },
+      "addressSearchTitle": {
+        "other": "Registered address"
+      },
+      "addressSearchSubtitle": {
+        "other": "Where the entity is registered with the authority. Start typing."
+      },
+      "addressLabel": {
+        "other": "Address"
+      },
+      "addressSearchPlaceholder": {
+        "other": "Street, city."
+      },
+      "addressPickFirst": {
+        "other": "Pick an address first"
+      },
+      "addressReviewTitle": {
+        "other": "Looks right?"
+      },
+      "addressReviewSubtitle": {
+        "other": "Make sure the registered seat matches the official register."
+      },
+      "addressMissing": {
+        "other": "We're missing the {fields}. Pick a more specific suggestion."
+      },
+      "addressFieldStreet": {
+        "other": "Street"
+      },
+      "addressFieldCity": {
+        "other": "City"
+      },
+      "addressFieldPostalCode": {
+        "other": "Postal code"
+      },
+      "addressFieldRegion": {
+        "other": "Region"
+      },
+      "addressFieldCountry": {
+        "other": "Country"
+      },
+      "addressChangeBackLabel": {
+        "other": "Change address"
+      },
+      "addressNotRightCta": {
+        "other": "Not right"
+      },
+      "addressLooksRightCta": {
+        "other": "Looks right"
+      },
+      "addressAptTitle": {
+        "other": "Apartment, suite, or floor?"
+      },
+      "addressAptSubtitle": {
+        "other": "Adds a second line to the registered address. Skip if not needed."
+      },
+      "addressAptLabel": {
+        "other": "Address line 2 (optional)"
+      },
+      "addressAptPlaceholder": {
+        "other": "Apt 4B, 3rd floor, Suite 200."
+      },
+      "contactChoiceTitle": {
+        "other": "Want to add contact info?"
+      },
+      "contactChoiceSubtitle": {
+        "other": "Optional email plus phone for this entity. Separate from your main account contact."
+      },
+      "contactYesCta": {
+        "other": "Yes, add contact"
+      },
+      "contactNoCta": {
+        "other": "No, save without"
+      },
+      "yesNoYesSubtitle": {
+        "other": "Adds the next step"
+      },
+      "yesNoNoSubtitle": {
+        "other": "Save the entity as-is"
+      },
+      "saveError": {
+        "other": "Couldn't save: {error}"
+      },
+      "contactInputTitle": {
+        "other": "Contact for this entity"
+      },
+      "contactInputSubtitle": {
+        "other": "Email plus phone shown on invoices and contracts."
+      },
+      "contactEmailLabel": {
+        "other": "Email (optional)"
+      },
+      "contactEmailPlaceholder": {
+        "other": "invoices@example.com"
+      },
+      "contactEmailInvalid": {
+        "other": "Enter a valid email or leave blank."
+      },
+      "contactPhoneLabel": {
+        "other": "Phone (optional)"
+      },
+      "contactPhonePlaceholder": {
+        "other": "+49 ."
+      },
+      "contactPhoneInvalid": {
+        "other": "Use digits with an optional leading + (6 to 20 digits)."
+      },
+      "saveEntityCta": {
+        "other": "Save entity"
+      },
+      "saveChangesCta": {
+        "other": "Save changes"
+      },
+      "savingEntityLabel": {
+        "other": "Saving entity."
+      },
+      "deletingEntityLabel": {
+        "other": "Deleting entity."
+      },
+      "backToList": {
+        "other": "Back to list"
+      },
+      "detailSectionIdentity": {
+        "other": "Identity"
+      },
+      "detailSectionTax": {
+        "other": "Tax"
+      },
+      "detailSectionRegistration": {
+        "other": "Registration"
+      },
+      "detailSectionAddress": {
+        "other": "Address"
+      },
+      "detailSectionContact": {
+        "other": "Contact"
+      },
+      "detailLegalName": {
+        "other": "Legal name"
+      },
+      "detailTradingName": {
+        "other": "Trading name"
+      },
+      "detailTradingNamePlaceholder": {
+        "other": "Add a trading name"
+      },
+      "detailDob": {
+        "other": "Date of birth"
+      },
+      "detailPlaceOfBirth": {
+        "other": "Place of birth"
+      },
+      "detailPlaceOfBirthPlaceholder": {
+        "other": "Add place of birth"
+      },
+      "detailNationality": {
+        "other": "Nationality"
+      },
+      "detailTaxResidence": {
+        "other": "Tax residence"
+      },
+      "detailVatId": {
+        "other": "VAT / company ID"
+      },
+      "detailVatIdPlaceholder": {
+        "other": "Add VAT ID"
+      },
+      "detailLocalTaxNumber": {
+        "other": "Local tax number"
+      },
+      "detailLocalTaxNumberPlaceholder": {
+        "other": "Add tax number"
+      },
+      "detailRegistrationNumber": {
+        "other": "Registration #"
+      },
+      "detailIssuingAuthority": {
+        "other": "Issuing authority"
+      },
+      "detailRegisteredSince": {
+        "other": "Registered since"
+      },
+      "detailStreet": {
+        "other": "Street"
+      },
+      "detailAptFloor": {
+        "other": "Apt / floor"
+      },
+      "detailCity": {
+        "other": "City"
+      },
+      "detailPostalCode": {
+        "other": "Postal code"
+      },
+      "detailCountry": {
+        "other": "Country"
+      },
+      "detailEmail": {
+        "other": "Email"
+      },
+      "detailEmailPlaceholder": {
+        "other": "Add email"
+      },
+      "detailPhone": {
+        "other": "Phone"
+      },
+      "detailPhonePlaceholder": {
+        "other": "Add phone"
+      },
+      "removeDefault": {
+        "other": "Remove default"
+      },
+      "setDefault": {
+        "other": "Set as default"
+      },
+      "deleteConfirmTitle": {
+        "other": "Delete this entity?"
+      },
+      "deleteConfirmBody": {
+        "other": "This can't be undone."
+      },
+      "deleteEmpty": {
+        "other": "Nothing to delete"
+      },
+      "sharedAcrossAppsHeading": {
+        "other": "Heads up. This affects every app you use with elvix."
+      },
+      "deleteSharedAcrossAppsBody": {
+        "other": "Legal entities are shared across apps you sign in to. Deleting removes the record everywhere; any invoice template that referenced it will need a fresh one."
+      },
+      "deleteError": {
+        "other": "Couldn't delete: {error}"
+      },
+      "yesDelete": {
+        "other": "Yes, delete"
+      },
+      "nothingToChange": {
+        "other": "Nothing to change"
+      },
+      "defaultConfirmTitleSet": {
+        "other": "Set this as your default entity?"
+      },
+      "defaultConfirmTitleUnset": {
+        "other": "Remove default from this entity?"
+      },
+      "defaultConfirmBodySet": {
+        "other": "Default entity auto-fills invoices and contract templates."
+      },
+      "defaultConfirmBodyUnset": {
+        "other": "Nothing will be pre-selected when you generate invoices or contracts."
+      },
+      "defaultSharedAcrossAppsBodySet": {
+        "other": "The default entity is shared across every app you sign in to. Switching it here updates the auto-pick everywhere at once."
+      },
+      "defaultSharedAcrossAppsBodyUnset": {
+        "other": "The default entity is shared across every app you sign in to. Removing it means no entity is pre-selected anywhere."
+      }
+    },
+    "entityKind": {
+      "title": {
+        "other": "Who is this for?"
+      },
+      "me": {
+        "other": "Me"
+      },
+      "someoneElse": {
+        "other": "Someone else"
+      },
+      "business": {
+        "other": "A business"
+      }
+    },
+    "export": {
+      "title": {
+        "other": "Download your data"
+      },
+      "body": {
+        "other": "Get a copy of everything we hold on you. GDPR Article 15. We email a single-use download link, valid for 24 hours."
+      },
+      "sendCodeCta": {
+        "other": "Send verification code"
+      },
+      "downloadCta": {
+        "other": "Email me the link"
+      },
+      "doneTitle": {
+        "other": "Check your inbox"
+      },
+      "doneBody": {
+        "other": "We sent a download link to {email}. It expires in 24 hours."
+      },
+      "previewLoadFailed": {
+        "other": "Couldn't load the preview. Try again."
+      },
+      "whatYouReceive": {
+        "other": "What you'll receive"
+      },
+      "archiveBlurbIdentity": {
+        "other": "Your archive will contain a single JSON file with everything below, plus your avatar and banner images if you've uploaded any, plus a README that explains each section in plain language and includes the GDPR Art. 15(1) disclosures."
+      },
+      "archiveBlurbApp": {
+        "other": "Your archive will contain a single JSON file scoped to {label}, plus a README that explains each section and includes the GDPR Art. 15(1) disclosures."
+      },
+      "notIncluded": {
+        "other": "Not included: cryptographic key material on your passkeys, OAuth tokens, OTP codes, and any data the apps you use hold about you outside elvix. Contact each app for the latter."
+      },
+      "sendToHeading": {
+        "other": "We'll send your data to your primary email"
+      },
+      "sendToBody": {
+        "other": "Your archive will land in {email} as a .zip attachment. Possession of this inbox is the proof of identity, so the file never lives at a public URL."
+      },
+      "sendToNotice": {
+        "other": "We send a 6-digit code to your primary inbox first. After you enter it on the next screen, we generate your archive and email it to you as a .zip attachment."
+      },
+      "sendingCode": {
+        "other": "Sending code"
+      },
+      "sendToCta": {
+        "other": "Email me a 6-digit code"
+      },
+      "otpHeading": {
+        "other": "Confirm with your code"
+      },
+      "otpBody": {
+        "other": "We sent a 6-digit code to {email}. It expires in 10 minutes. Once you enter it we'll generate your archive and email it to the same inbox as a .zip attachment."
+      },
+      "confirmCta": {
+        "other": "Confirm and email me my data"
+      },
+      "workingLabel": {
+        "other": "Working"
+      },
+      "resendIn": {
+        "other": "Resend in {seconds}s"
+      },
+      "noPendingCode": {
+        "other": "No pending code. Send a fresh one."
+      },
+      "networkError": {
+        "other": "Network error. Try again."
+      },
+      "doneHeading": {
+        "other": "Sent."
+      },
+      "doneInboxBody": {
+        "other": "Check your primary inbox ({email}) in a minute. Your archive is attached to the email as a .zip file. You can request another export of the same target in 24 hours."
+      },
+      "backToExports": {
+        "other": "Back to exports"
+      },
+      "errorChallengeGeneric": {
+        "other": "Couldn't send a code. Try again."
+      },
+      "errorChallengeTooRecent": {
+        "other": "Wait {seconds}s before requesting again."
+      },
+      "errorChallengeTooMany": {
+        "other": "Too many requests this hour. Try later."
+      },
+      "errorChallengeSendFailed": {
+        "other": "Couldn't email the code. Try again."
+      },
+      "errorChallengeRateLimit": {
+        "other": "You already exported this in the last 24 hours. Available again in ~{hours}h."
+      },
+      "errorChallengeNotMember": {
+        "other": "You're not a member of this app any more."
+      },
+      "errorChallengeAppNotFound": {
+        "other": "That app isn't available."
+      },
+      "errorApplyGeneric": {
+        "other": "Couldn't generate your export. Try again."
+      },
+      "errorApplyWrongCode": {
+        "one": "Wrong code. {count} try left.",
+        "other": "Wrong code. {count} tries left."
+      },
+      "errorApplyLocked": {
+        "other": "Too many wrong attempts. Send a fresh code."
+      },
+      "errorApplyExpired": {
+        "other": "That code expired. Send a fresh one."
+      },
+      "errorApplyGenerateFailed": {
+        "other": "We couldn't build your export. Try again."
+      },
+      "errorApplyStorageFailed": {
+        "other": "We couldn't store your export. Try again."
+      },
+      "errorApplyEmailFailed": {
+        "other": "Your archive was generated but the email failed. Contact {email} to recover the link."
+      }
+    },
+    "deactivate": {
+      "title": {
+        "other": "Take a break"
+      },
+      "body": {
+        "other": "Deactivating hides your account from this app. Reactivate any time from your elvix account."
+      },
+      "confirmCta": {
+        "other": "Deactivate"
+      },
+      "doneTitle": {
+        "other": "Your account is paused"
+      },
+      "reactivateCta": {
+        "other": "Reactivate"
+      },
+      "errorTooMany": {
+        "other": "Too many codes requested. Try again later."
+      },
+      "errorTooRecent": {
+        "other": "Wait {seconds}s before requesting again."
+      },
+      "errorSendFailed": {
+        "other": "Couldn't email the code. Try again."
+      },
+      "errorRequestFailed": {
+        "other": "Couldn't request a code. Try again."
+      },
+      "errorWrongCode": {
+        "one": "Wrong code. {count} try left.",
+        "other": "Wrong code. {count} tries left."
+      },
+      "errorChallengeLocked": {
+        "other": "Too many wrong attempts. Request a new code."
+      },
+      "errorChallengeExpired": {
+        "other": "That code expired. Request a new one."
+      },
+      "errorAlreadyLeft": {
+        "other": "You've already left this app. Restore your membership first."
+      },
+      "appNameFallback": {
+        "other": "your app"
+      },
+      "warn1Title": {
+        "other": "Take a break from {app}"
+      },
+      "warn1Body": {
+        "other": "Your profile takes a quiet break. People on {app} stop seeing you, but everything you've built up stays exactly as it is. Whenever you're ready, come back here and sign back in."
+      },
+      "soundGood": {
+        "other": "Sound good?"
+      },
+      "warn1Cta": {
+        "other": "I understand"
+      },
+      "warn2Title": {
+        "other": "A few things to know"
+      },
+      "warn2Bullet1": {
+        "other": "Open sessions on this app get signed out right away."
+      },
+      "warn2Bullet2": {
+        "other": "Your username and identifier stay yours. No one else can take them while you're away."
+      },
+      "warn2Bullet3": {
+        "other": "You can come back any time from this same surface."
+      },
+      "warn2Bullet4": {
+        "other": "We'll email you a 6-digit code to confirm. Belt and braces, so the change only goes through if you've also got your inbox."
+      },
+      "warn2Cta": {
+        "other": "I understand. Email me a code"
+      },
+      "sendingLabel": {
+        "other": "Sending"
+      },
+      "reactivateTitle": {
+        "other": "Welcome back to {app}"
+      },
+      "reactivateBody": {
+        "other": "You're on a break right now. Reactivate to show up again on {app}."
+      },
+      "reactivateBodyByOwner": {
+        "other": "You're on a break right now (an admin did this on your behalf). Reactivate to show up again on {app}."
+      },
+      "doneDeactivatedTitle": {
+        "other": "You're on a break from {app}."
+      },
+      "doneReactivatedTitle": {
+        "other": "You're back on {app}."
+      },
+      "doneDeactivatedBody": {
+        "other": "We let the app know. Come back here any time to reactivate."
+      },
+      "doneReactivatedBody": {
+        "other": "Your membership is active again. Open sessions on the app side may take a moment to refresh."
+      },
+      "reactivateAgain": {
+        "other": "Reactivate again"
+      },
+      "deactivateAgain": {
+        "other": "Deactivate again"
+      },
+      "otpTitle": {
+        "other": "Enter your confirmation code"
+      },
+      "otpDelivered": {
+        "other": "We emailed a 6-digit code to {email}. It expires in 10 minutes."
+      },
+      "otpSending": {
+        "other": "Sending you a 6-digit code."
+      },
+      "otpPending": {
+        "other": "We're sending a 6-digit code to your email."
+      },
+      "resendIn": {
+        "other": "Resend in {seconds}s"
+      }
+    },
+    "leave": {
+      "title": {
+        "other": "Leave {app}?"
+      },
+      "body": {
+        "other": "Removes your membership. This is final: the owner cannot bring it back. Your elvix account stays open."
+      },
+      "confirmCta": {
+        "other": "Leave forever"
+      },
+      "doneTitle": {
+        "other": "You've left {app}."
+      },
+      "errorTooManyCodes": {
+        "other": "Too many codes requested. Try again later."
+      },
+      "errorTooRecent": {
+        "other": "Wait {seconds}s before requesting again."
+      },
+      "errorSendFailed": {
+        "other": "Couldn't email the code. Try again."
+      },
+      "errorRequestFailed": {
+        "other": "Couldn't request a code. Try again."
+      },
+      "errorWrongCode": {
+        "one": "Wrong code. {count} try left.",
+        "other": "Wrong code. {count} tries left."
+      },
+      "errorChallengeLocked": {
+        "other": "Too many wrong attempts. Request a new code."
+      },
+      "errorChallengeExpired": {
+        "other": "That code expired. Request a new one."
+      },
+      "errorOwnerInitiated": {
+        "other": "An admin removed you. They have to reverse this from their Console."
+      },
+      "errorGraceExpired": {
+        "other": "The 90-day window to restore this membership has closed."
+      },
+      "errorRestoreFailed": {
+        "other": "Couldn't restore. Try again."
+      },
+      "otpActionLabel": {
+        "other": "Leave {app}"
+      },
+      "warn1Heading": {
+        "other": "Leave {app}"
+      },
+      "warn1Body": {
+        "other": "Your membership is hidden right away. You have 90 days to change your mind and restore from this same surface. After that, the app stops showing up in your list. Your data on the app's side stays governed by their own policies."
+      },
+      "understandPrompt": {
+        "other": "Do you understand?"
+      },
+      "iUnderstandCta": {
+        "other": "I understand"
+      },
+      "dataHeading": {
+        "other": "About your data on {app}"
+      },
+      "warn2Body": {
+        "other": "elvix doesn't store or delete what {app} keeps about you. The app owner is responsible for that under their own privacy policy and terms of service. We notify the app the moment you leave so they can act according to those terms. Read them before you confirm."
+      },
+      "privacyPolicy": {
+        "other": "Privacy policy"
+      },
+      "termsOfService": {
+        "other": "Terms of service"
+      },
+      "warn2EmailPrompt": {
+        "other": "We'll email you a code to confirm. Do you understand?"
+      },
+      "warn2Cta": {
+        "other": "I understand. Email me a code"
+      },
+      "restoreHeading": {
+        "other": "Restore your membership on {app}"
+      },
+      "restoreBody": {
+        "one": "You have {count} day left in the grace window. Restore now and the app sees you exactly as before: same username, same roles, same history.",
+        "other": "You have {count} days left in the grace window. Restore now and the app sees you exactly as before: same username, same roles, same history."
+      },
+      "restoreCta": {
+        "other": "Restore membership"
+      },
+      "ownerLockedHeading": {
+        "other": "An admin removed you from {app}"
+      },
+      "ownerLockedBody": {
+        "one": "Removed {date}. The app owner has {count} day left to cancel from their side. After that the app no longer shows up here.",
+        "other": "Removed {date}. The app owner has {count} days left to cancel from their side. After that the app no longer shows up here."
+      },
+      "ownerLockedReachOut": {
+        "other": "Because they initiated the removal, only they can reverse it. Reach out through their support channel if you want to talk to them about it."
+      },
+      "doneLeftTitle": {
+        "other": "You left {app}."
+      },
+      "doneRestoredTitle": {
+        "other": "You're back on {app}."
+      },
+      "doneLeftBody": {
+        "other": "We notified the app. You have 90 days to come back and restore from this same surface. After that, the app stops appearing in your list."
+      },
+      "doneRestoredBody": {
+        "other": "Your membership is active again. The app side may take a moment to refresh."
+      }
+    },
+    "lifecycle": {
+      "bannedTitle": {
+        "other": "Your access has been revoked."
+      },
+      "bannedBody": {
+        "other": "An administrator banned your account for this app. You'll be signed out and won't be able to sign back in. Contact the owner if you think this was a mistake."
+      },
+      "pausedTitle": {
+        "other": "Your access has been paused."
+      },
+      "pausedBody": {
+        "other": "An administrator temporarily paused your account for this app. You'll be signed out shortly; reach out to the owner to restore access."
+      },
+      "deletedTitle": {
+        "other": "Your account was removed."
+      },
+      "deletedBody": {
+        "other": "An administrator deleted your membership for this app. You'll be signed out and your stored data is queued for purge in 90 days unless restored."
+      },
+      "inactiveTitle": {
+        "other": "You're taking a break from this app."
+      },
+      "inactiveBody": {
+        "other": "Your membership is deactivated, so we'll sign you out here. You can reactivate from your elvix account any time and come right back."
+      },
+      "countdown": {
+        "other": "Signing you out in {seconds}s"
+      },
+      "recoverRestoredTitle": {
+        "other": "You're back on {app}."
+      },
+      "recoverRestoredBody": {
+        "other": "Your membership is active again. Continue to the app whenever you're ready."
+      },
+      "recoverSignedOutTitle": {
+        "other": "You're signed out."
+      },
+      "recoverSignedOutBody": {
+        "other": "You stayed off {app}. Come back any time."
+      },
+      "recoverWelcomeBack": {
+        "other": "Welcome back to {app}"
+      },
+      "recoverDeletedIntro": {
+        "other": "You left {app} earlier."
+      },
+      "recoverDeletedDaysLeft": {
+        "one": "You have {count} day left to come back.",
+        "other": "You have {count} days left to come back."
+      },
+      "recoverDeletedNoCountdown": {
+        "other": "You're still inside the restore window."
+      },
+      "recoverDeletedOutro": {
+        "other": "Restore your spot now or sign back out."
+      },
+      "recoverPausedBody": {
+        "other": "Your membership on {app} is on pause right now. Restore to pick up where you left off, or sign back out and stay away."
+      },
+      "recoverRestoringLabel": {
+        "other": "Restoring"
+      },
+      "recoverRestoreDeletedCta": {
+        "other": "Restore my spot on {app}"
+      },
+      "recoverRestorePausedCta": {
+        "other": "Bring me back on {app}"
+      },
+      "recoverSigningOutLabel": {
+        "other": "Signing you out"
+      },
+      "recoverDeclineCta": {
+        "other": "Not now, sign me out"
+      }
+    }
+  }
+}

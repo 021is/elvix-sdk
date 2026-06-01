@@ -1,0 +1,2275 @@
+{
+  "locale": "nl",
+  "namespaces": {
+    "common": {
+      "ok": {
+        "other": "OK"
+      },
+      "cancel": {
+        "other": "Annuleren"
+      },
+      "back": {
+        "other": "Terug"
+      },
+      "next": {
+        "other": "Volgende"
+      },
+      "continue": {
+        "other": "Doorgaan"
+      },
+      "save": {
+        "other": "Opslaan"
+      },
+      "saving": {
+        "other": "Bezig met opslaan"
+      },
+      "delete": {
+        "other": "Verwijderen"
+      },
+      "remove": {
+        "other": "Verwijderen"
+      },
+      "edit": {
+        "other": "Bewerken"
+      },
+      "close": {
+        "other": "Sluiten"
+      },
+      "done": {
+        "other": "Klaar"
+      },
+      "retry": {
+        "other": "Opnieuw proberen"
+      },
+      "loading": {
+        "other": "Bezig met laden"
+      },
+      "search": {
+        "other": "Zoeken"
+      },
+      "noMatches": {
+        "other": "Geen resultaten"
+      },
+      "lastStep": {
+        "other": "Laatste stap"
+      },
+      "skip": {
+        "other": "Overslaan"
+      },
+      "durationSeconds": {
+        "other": "{seconds}s"
+      },
+      "durationOneMinute": {
+        "other": "1 minuut"
+      },
+      "durationMinutes": {
+        "one": "{minutes} minuut",
+        "other": "{minutes} minuten"
+      },
+      "somethingWentWrong": {
+        "other": "Er ging iets mis. Probeer het opnieuw."
+      },
+      "errorNetwork": {
+        "other": "Netwerkprobleem. Probeer het opnieuw."
+      },
+      "errorSaveFailed": {
+        "other": "Opslaan mislukt. Probeer het opnieuw."
+      },
+      "hintEnter": {
+        "other": "Enter"
+      },
+      "enterHint": {
+        "other": "Enter"
+      },
+      "sendingLabel": {
+        "other": "Bezig met verzenden"
+      },
+      "saved": {
+        "other": "Opgeslagen"
+      },
+      "optionalSuffix": {
+        "other": " (optioneel)"
+      },
+      "savingDots": {
+        "other": "Bezig met opslaan."
+      }
+    },
+    "signin": {
+      "title": {
+        "other": "Aanmelden bij {app}"
+      },
+      "titleDefault": {
+        "other": "Aanmelden"
+      },
+      "subtitle": {
+        "other": ""
+      },
+      "googleButton": {
+        "other": "Doorgaan met Google"
+      },
+      "passkeyButton": {
+        "other": "Doorgaan met passkey"
+      },
+      "emailPlaceholder": {
+        "other": "E-mail"
+      },
+      "sendCodeButton": {
+        "other": "Doorgaan"
+      },
+      "sendingLabel": {
+        "other": "Bezig met verzenden"
+      },
+      "codeSentSubtitle": {
+        "other": "We hebben een code gestuurd naar {email}"
+      },
+      "codePlaceholder": {
+        "other": "Verificatiecode"
+      },
+      "submitButton": {
+        "other": "Aanmelden"
+      },
+      "verifyingLabel": {
+        "other": "Bezig met verifiëren"
+      },
+      "or": {
+        "other": "of"
+      },
+      "resendCode": {
+        "other": "Code opnieuw versturen"
+      },
+      "resentLabel": {
+        "other": "Opnieuw verzonden"
+      },
+      "errorGeneric": {
+        "other": "Er ging iets mis. Probeer het opnieuw."
+      },
+      "errorBadCode": {
+        "other": "Die code klopt niet."
+      },
+      "errorRateLimited": {
+        "other": "Te veel pogingen. Wacht even."
+      },
+      "securedBy": {
+        "other": "Beveiligd door "
+      },
+      "verbLogin": {
+        "other": "Inloggen"
+      },
+      "titleLogin": {
+        "other": "Inloggen bij {app}"
+      },
+      "bootstrapErrorTitle": {
+        "other": "Aanmelden kon niet worden geladen"
+      },
+      "bootstrapErrorBody": {
+        "other": "Ongeldige {clientIdToken} of oorsprong niet toegestaan voor dit domein. Open Console, uw Application, Credentials om de {clientIdToken} te bevestigen en voeg deze oorsprong dan toe aan Allowed origins."
+      },
+      "identifierPlaceholderEmailOrUsername": {
+        "other": "E-mail of gebruikersnaam"
+      },
+      "identifierPlaceholderUsername": {
+        "other": "Gebruikersnaam"
+      },
+      "identifierPlaceholderEmail": {
+        "other": "Voer uw e-mail in"
+      },
+      "errorNetwork": {
+        "other": "Netwerkprobleem. Probeer het opnieuw."
+      },
+      "errorPasskeyVerify": {
+        "other": "Verificatie van passkey is mislukt."
+      },
+      "errorPasskeyAdd": {
+        "other": "Passkey kon niet worden toegevoegd. Probeer het opnieuw of sla over."
+      },
+      "visitAppWebsite": {
+        "other": "Website van {app} bezoeken"
+      },
+      "passkeyOnboardingTitleSignin": {
+        "other": "De volgende keer sneller aanmelden"
+      },
+      "passkeyOnboardingTitleLogin": {
+        "other": "De volgende keer sneller inloggen"
+      },
+      "recoverTitle": {
+        "other": "Welkom terug bij {app}"
+      },
+      "appNameFallback": {
+        "other": "uw app"
+      },
+      "legalAppFallback": {
+        "other": "de app"
+      },
+      "passkeyOnboardingSubtitle": {
+        "other": "Touch ID, Face ID of uw beveiligingssleutel. Geen e-mailcodes meer."
+      },
+      "recoverSubtitle": {
+        "other": "Kies of u terugkomt of wegblijft."
+      },
+      "identifierSubtitle": {
+        "other": "Kies hoe u verder wilt gaan."
+      },
+      "verifyButton": {
+        "other": "Verifiëren"
+      },
+      "useDifferentEmail": {
+        "other": "Een ander e-mailadres gebruiken"
+      },
+      "resendInSeconds": {
+        "other": "Opnieuw versturen over {seconds}s"
+      },
+      "passkeyBullet1": {
+        "other": "Geen wachtwoorden of e-mailcodes meer"
+      },
+      "passkeyBullet2": {
+        "other": "Phishing-bestendig. Werkt alleen op deze site."
+      },
+      "passkeyBullet3": {
+        "other": "Synchroniseert tussen uw apparaten via iCloud, Google of 1Password"
+      },
+      "addPasskeyCta": {
+        "other": "Passkey toevoegen"
+      },
+      "skipForNow": {
+        "other": "Voor nu overslaan"
+      },
+      "previewEmptyMethods": {
+        "other": "Schakel ten minste één methode in om de aanmelding te bekijken."
+      },
+      "googleButtonShort": {
+        "other": "Google"
+      },
+      "passkeyButtonShort": {
+        "other": "Passkey"
+      },
+      "legalIntro": {
+        "other": "Door door te gaan, gaat u akkoord met de"
+      },
+      "termsOfService": {
+        "other": "Servicevoorwaarden"
+      },
+      "privacyPolicy": {
+        "other": "Privacybeleid"
+      },
+      "framedPreviewLabel": {
+        "other": "Dit is een voorbeeld"
+      },
+      "errorTooRecentWithSeconds": {
+        "other": "Wacht {seconds}s voordat u een nieuwe code aanvraagt."
+      },
+      "errorTooRecent": {
+        "other": "Wacht even voordat u een nieuwe code aanvraagt."
+      },
+      "errorTooManyWithRetry": {
+        "other": "Te veel codes naar dit e-mailadres gestuurd. Probeer het over {retry} opnieuw."
+      },
+      "errorTooMany": {
+        "other": "Te veel codes naar dit e-mailadres gestuurd. Probeer het later opnieuw."
+      },
+      "errorInvalidCode": {
+        "other": "Die code werkte niet. Probeer het opnieuw."
+      },
+      "errorExpired": {
+        "other": "Die code is verlopen. Verstuur een nieuwe."
+      },
+      "errorSendFailed": {
+        "other": "E-mail kon niet worden verzonden. Controleer het adres."
+      },
+      "errorUserPaused": {
+        "other": "Uw toegang is gepauzeerd. Neem contact op met de ondersteuning."
+      },
+      "errorUserBanned": {
+        "other": "Toegang geweigerd."
+      },
+      "errorUsernameNotFound": {
+        "other": "Geen account met die gebruikersnaam hier."
+      },
+      "errorMethodDisabled": {
+        "other": "Die aanmeldmethode is niet ingeschakeld voor deze app."
+      },
+      "errorGraceExpired": {
+        "other": "Het venster van 90 dagen om te herstellen is gesloten."
+      },
+      "errorSessionEnded": {
+        "other": "Uw sessie is beëindigd. Meld u opnieuw aan."
+      }
+    },
+    "sessions": {
+      "title": {
+        "other": "Uw sessies"
+      },
+      "empty": {
+        "other": "Geen actieve sessies hier."
+      },
+      "currentBadge": {
+        "other": "Deze aangemeld houden"
+      },
+      "revokeOne": {
+        "other": "Afmelden"
+      },
+      "revokeOthersCta": {
+        "other": "Andere apparaten afmelden"
+      },
+      "revokeAllCta": {
+        "other": "Overal afmelden"
+      },
+      "confirmOthersTitle": {
+        "other": "Afmelden op andere apparaten?"
+      },
+      "confirmOthersBody": {
+        "other": "Kies welke sessies u wilt beëindigen. Elke sessie wordt direct ingetrokken zodra u tikt, en elk tabblad op dat apparaat schakelt binnen enkele seconden terug naar afgemeld."
+      },
+      "confirmAllTitle": {
+        "other": "Overal afmelden?"
+      },
+      "confirmAllBody": {
+        "other": "Dit omvat ook dit apparaat. U wordt daarna doorverwezen om opnieuw aan te melden."
+      },
+      "doneTitle": {
+        "other": "Afgemeld"
+      },
+      "doneCount": {
+        "one": "{count} apparaat afgemeld.",
+        "other": "{count} apparaten afgemeld."
+      },
+      "errorLoad": {
+        "other": "Sessies konden niet worden geladen."
+      },
+      "errorRevoke": {
+        "other": "Intrekken is mislukt. Probeer het opnieuw."
+      },
+      "errorMassRevoke": {
+        "other": "Afmelden is mislukt. Probeer het opnieuw."
+      },
+      "thisDeviceBadge": {
+        "other": "dit apparaat"
+      },
+      "deviceLine": {
+        "other": "{browser} op {os}"
+      },
+      "massRevokeCtaSelf": {
+        "other": "Mij afmelden op dit apparaat"
+      },
+      "massRevokeCtaOpen": {
+        "other": "Afmelden van apparaten..."
+      },
+      "confirmChooserTitle": {
+        "other": "Waar afmelden?"
+      },
+      "confirmChooserBody": {
+        "other": "Kies welke sessies u wilt beëindigen. Elke sessie wordt direct ingetrokken zodra u tikt, en elk tabblad op dat apparaat wordt bij het volgende verzoek afgemeld."
+      },
+      "signOutOtherDevicesCount": {
+        "one": "Afmelden van het andere {count} apparaat",
+        "other": "Afmelden van de andere {count} apparaten"
+      },
+      "signOutAllCtaSelf": {
+        "other": "Mij afmelden op dit apparaat"
+      },
+      "signOutAllCtaIncludingThis": {
+        "other": "Overal afmelden, ook dit apparaat"
+      },
+      "signOutAllRedirectHint": {
+        "other": "U komt direct daarna op de aanmeldpagina"
+      },
+      "confirmTokensFootnote": {
+        "other": "Reeds afgegeven tokens blijven afgewezen. Er is geen ongedaan maken, maar opnieuw aanmelden op elk apparaat werkt gewoon weer."
+      },
+      "doneAlreadyAlone": {
+        "other": "Alleen al deze."
+      },
+      "doneFootnote": {
+        "other": "Uw huidige apparaat is nog steeds aangemeld. Die andere tabbladen worden bij hun volgende verzoek uitgeschakeld."
+      },
+      "backToList": {
+        "other": "Terug naar mijn sessies"
+      },
+      "methodSignIn": {
+        "other": "Aanmelding"
+      },
+      "methodEmailCode": {
+        "other": "E-mailcode"
+      },
+      "methodPasskey": {
+        "other": "Passkey"
+      },
+      "relativeJustNow": {
+        "other": "zojuist"
+      },
+      "relativeMinutesAgo": {
+        "other": "{count}m geleden"
+      },
+      "relativeHoursAgo": {
+        "other": "{count}u geleden"
+      },
+      "relativeDaysAgo": {
+        "other": "{count}d geleden"
+      }
+    },
+    "avatar": {
+      "replace": {
+        "other": "Vervangen"
+      },
+      "removePhoto": {
+        "other": "Foto verwijderen"
+      },
+      "removeConfirmTitle": {
+        "other": "Uw foto verwijderen?"
+      },
+      "removeConfirmBody": {
+        "other": "Valt terug op uw initialen."
+      },
+      "uploading": {
+        "other": "Bezig met uploaden"
+      },
+      "cropTitle": {
+        "other": "Bijsnijden"
+      },
+      "cropApply": {
+        "other": "Toepassen"
+      },
+      "errorTooLarge": {
+        "other": "Afbeelding te groot. Kies een afbeelding onder {limitMb} MB."
+      },
+      "errorBadType": {
+        "other": "Kies een PNG-, JPG- of WebP-afbeelding."
+      },
+      "uploadFailed": {
+        "other": "Foto kon niet worden geüpload. Probeer een andere afbeelding."
+      },
+      "removeFailed": {
+        "other": "Foto kon niet worden verwijderd."
+      },
+      "editPhotoAria": {
+        "other": "Uw foto bewerken"
+      },
+      "addPhotoAria": {
+        "other": "Een foto toevoegen"
+      },
+      "confirmRemoveAria": {
+        "other": "Verwijderen bevestigen"
+      },
+      "replacePhotoAria": {
+        "other": "Foto vervangen"
+      },
+      "uploadPhotoAria": {
+        "other": "Foto uploaden"
+      },
+      "useThisCropAria": {
+        "other": "Deze uitsnede gebruiken"
+      }
+    },
+    "banner": {
+      "replace": {
+        "other": "Vervangen"
+      },
+      "removeBanner": {
+        "other": "Banner verwijderen"
+      },
+      "removeConfirmTitle": {
+        "other": "Uw banner verwijderen?"
+      },
+      "removeConfirmBody": {
+        "other": "Valt terug op de gradiëntplaatsvervanger."
+      },
+      "uploading": {
+        "other": "Bezig met uploaden"
+      },
+      "cropTitle": {
+        "other": "Banner bijsnijden"
+      },
+      "cropApply": {
+        "other": "Toepassen"
+      },
+      "errorUpload": {
+        "other": "Banner kon niet worden geüpload. Probeer een andere afbeelding."
+      },
+      "errorRemove": {
+        "other": "Banner kon niet worden verwijderd."
+      },
+      "previewAlt": {
+        "other": "Voorbeeldbanner"
+      },
+      "cropUse": {
+        "other": "Gebruiken"
+      },
+      "cropUseAria": {
+        "other": "Deze uitsnede gebruiken"
+      },
+      "editAria": {
+        "other": "Banner bewerken"
+      },
+      "addAria": {
+        "other": "Banner toevoegen"
+      },
+      "uploadAria": {
+        "other": "Banner uploaden"
+      },
+      "confirmRemoveAria": {
+        "other": "Verwijderen bevestigen"
+      },
+      "confirmRemoveHint": {
+        "other": "Klik opnieuw om te bevestigen"
+      }
+    },
+    "username": {
+      "title": {
+        "other": "Kies een gebruikersnaam"
+      },
+      "placeholder": {
+        "other": "gebruikersnaam"
+      },
+      "checking": {
+        "other": "Bezig met controleren"
+      },
+      "available": {
+        "other": "Beschikbaar"
+      },
+      "taken": {
+        "other": "In gebruik"
+      },
+      "tooShort": {
+        "other": "Te kort"
+      },
+      "tooLong": {
+        "other": "Te lang"
+      },
+      "badChars": {
+        "other": "Alleen letters, cijfers en streepjes"
+      },
+      "reserved": {
+        "other": "Gereserveerd"
+      },
+      "subtitle": {
+        "other": "Zo zien mensen u op {app}."
+      },
+      "subtitleNoApp": {
+        "other": "Zo zien mensen u."
+      },
+      "label": {
+        "other": "Gebruikersnaam"
+      },
+      "exampleHandle": {
+        "other": "uwnaam"
+      },
+      "rulesHint": {
+        "other": "4 tot 30 tekens, a tot z, 0 tot 9, punt, onderstrepingsteken. Moet beginnen met een letter."
+      },
+      "availableHint": {
+        "other": "Ziet er goed uit. Deze is van u."
+      },
+      "suggestionsHeading": {
+        "other": "Suggesties"
+      },
+      "claimCta": {
+        "other": "Claim @{handle}"
+      },
+      "yournameFallback": {
+        "other": "uwnaam"
+      },
+      "reasonBlank": {
+        "other": "Kies een gebruikersnaam."
+      },
+      "reasonTooShort": {
+        "other": "Minimaal 4 tekens."
+      },
+      "reasonTooLong": {
+        "other": "Maximaal 30 tekens."
+      },
+      "reasonOnlyNumbers": {
+        "other": "Mag niet alleen cijfers zijn."
+      },
+      "reasonBadStart": {
+        "other": "Moet beginnen met een letter."
+      },
+      "reasonBadChars": {
+        "other": "Alleen a tot z, 0 tot 9, punt, onderstrepingsteken."
+      },
+      "reasonConsecutiveSpecial": {
+        "other": "Geen twee punten of onderstrepingstekens achter elkaar."
+      },
+      "reasonTrailingSpecial": {
+        "other": "Mag niet eindigen op een punt of onderstrepingsteken."
+      },
+      "reasonTaken": {
+        "other": "Die is al in gebruik."
+      },
+      "reasonInvalid": {
+        "other": "Die gebruikersnaam is niet geldig."
+      },
+      "errorJustTaken": {
+        "other": "Die gebruikersnaam is net geclaimd. Kies een andere."
+      },
+      "errorFormat": {
+        "other": "Die gebruikersnaam voldoet niet aan de regels."
+      },
+      "errorSaveFailed": {
+        "other": "Opslaan mislukt. Probeer het opnieuw."
+      },
+      "errorNetwork": {
+        "other": "Netwerkprobleem. Probeer het opnieuw."
+      },
+      "ruleLength": {
+        "other": "{min} tot {max} tekens"
+      },
+      "ruleChars": {
+        "other": "kleine letters, cijfers, punt, onderstrepingsteken"
+      },
+      "ruleStartEnd": {
+        "other": "begin met een letter, eindig met een letter of cijfer"
+      },
+      "ruleNoDoubles": {
+        "other": "geen twee speciale tekens achter elkaar, geen gereserveerde woorden"
+      },
+      "confirmHeading": {
+        "other": "Wijziging bevestigen"
+      },
+      "notSet": {
+        "other": "Niet ingesteld"
+      },
+      "confirmBody": {
+        "other": "Iedereen die zich met deze gebruikersnaam bij deze app aanmeldt, bent u. U kunt het op elk moment opnieuw wijzigen."
+      },
+      "confirmCta": {
+        "other": "Wijziging bevestigen"
+      },
+      "doneTitle": {
+        "other": "U bent @{username} op {appName}."
+      },
+      "doneBody": {
+        "other": "We hebben het opgeslagen. U kunt deze pagina blijven gebruiken of teruggaan wanneer u klaar bent."
+      },
+      "changeAgain": {
+        "other": "Opnieuw wijzigen"
+      },
+      "disabledMailSubject": {
+        "other": "Aanmelden met gebruikersnaam opnieuw inschakelen op {appName}"
+      },
+      "disabledContactSupport": {
+        "other": "Contact opnemen met de ondersteuning van {appName}"
+      },
+      "disabledEmailSupport": {
+        "other": "{appName} e-mailen"
+      },
+      "disabledTitle": {
+        "other": "Gebruikersnamen staan uit op {appName}."
+      },
+      "disabledBody": {
+        "other": "De app-eigenaar heeft aanmelden met gebruikersnaam momenteel uitgeschakeld, dus u kunt hier geen gebruikersnaam instellen of wijzigen."
+      },
+      "disabledStillHave": {
+        "other": "U heeft nog steeds @{current} van eerder. Die blijft op uw lidmaatschap staan totdat de app-eigenaar de functie weer inschakelt."
+      },
+      "disabledNoSupport": {
+        "other": "De app heeft nog geen contactgegevens voor ondersteuning gepubliceerd. Neem contact met ze op via het kanaal dat u gewoonlijk gebruikt."
+      },
+      "disabledHint": {
+        "other": "Vraag ze om Aanmelden met gebruikersnaam weer in te schakelen in Console, Aanmeldmethoden. Zodra dat gebeurt, kunt u hier terugkomen en een gebruikersnaam kiezen."
+      },
+      "idleCurrent": {
+        "other": "Momenteel @{current}. Typ iets anders om het te wijzigen."
+      },
+      "idleEmpty": {
+        "other": "Kies een naam waarmee andere mensen op deze app u kunnen vinden."
+      },
+      "formatGeneric": {
+        "other": "Voldoet niet aan de onderstaande regels."
+      },
+      "takenLine": {
+        "other": "Iemand anders op deze app heeft al @{username}."
+      },
+      "currentLine": {
+        "other": "Dat is de gebruikersnaam die u hier al heeft."
+      },
+      "availableLine": {
+        "other": "@{username} is beschikbaar."
+      },
+      "reasonMustStartLetter": {
+        "other": "Moet beginnen met een letter."
+      },
+      "reasonMustEndAlnum": {
+        "other": "Moet eindigen op een letter of cijfer."
+      },
+      "reasonNoDoubleSpecial": {
+        "other": "Mag geen twee punten of onderstrepingstekens achter elkaar bevatten."
+      },
+      "reasonReserved": {
+        "other": "Die gebruikersnaam is gereserveerd. Kies een andere."
+      },
+      "appNameFallback": {
+        "other": "uw app"
+      }
+    },
+    "identity": {
+      "title": {
+        "other": "Uw profiel"
+      },
+      "fullName": {
+        "other": "Volledige naam"
+      },
+      "birthdate": {
+        "other": "Geboortedatum"
+      },
+      "gender": {
+        "other": "Geslacht"
+      },
+      "pronouns": {
+        "other": "Voornaamwoorden"
+      },
+      "save": {
+        "other": "Profiel opslaan"
+      },
+      "saved": {
+        "other": "Opgeslagen"
+      },
+      "genderMale": {
+        "other": "Man"
+      },
+      "genderFemale": {
+        "other": "Vrouw"
+      },
+      "genderNonBinary": {
+        "other": "Non-binair"
+      },
+      "genderPreferNotToSay": {
+        "other": "Zeg ik liever niet"
+      },
+      "pronounSheHer": {
+        "other": "Zij / haar"
+      },
+      "pronounHeHim": {
+        "other": "Hij / hem"
+      },
+      "pronounTheyThem": {
+        "other": "Die / hen"
+      },
+      "pronounOther": {
+        "other": "Anders"
+      },
+      "pronounPreferNotToSay": {
+        "other": "Zeg ik liever niet"
+      },
+      "errorSaveFailed": {
+        "other": "Kon niet worden opgeslagen."
+      },
+      "givenName": {
+        "other": "Voornaam"
+      },
+      "givenNamePlaceholder": {
+        "other": "Jane"
+      },
+      "familyName": {
+        "other": "Achternaam"
+      },
+      "familyNamePlaceholder": {
+        "other": "Doe"
+      },
+      "pronounsOptional": {
+        "other": "Voornaamwoorden (optioneel)"
+      }
+    },
+    "region": {
+      "title": {
+        "other": "Kies uw regio"
+      },
+      "yourRegion": {
+        "other": "Uw regio"
+      },
+      "country": {
+        "other": "Land"
+      },
+      "uiLocale": {
+        "other": "Taal"
+      },
+      "currency": {
+        "other": "Valuta"
+      },
+      "firstDayOfWeek": {
+        "other": "Eerste dag van de week"
+      },
+      "timeZone": {
+        "other": "Tijdzone"
+      },
+      "save": {
+        "other": "Regio opslaan"
+      },
+      "confirmTitle": {
+        "other": "Regio wijzigen?"
+      },
+      "confirmBody": {
+        "other": "Bij het wijzigen van het land worden ook de valuta en eerste dag van de week aangepast."
+      },
+      "errorSaveFailed": {
+        "other": "Regio kon niet worden opgeslagen."
+      },
+      "emptyHint": {
+        "other": "UI-taal, tijdzone, valuta en datumformaat volgen uw land."
+      },
+      "whereDoYouLive": {
+        "other": "Waar woont u?"
+      },
+      "cascadeHint": {
+        "other": "We stellen uw UI-taal, tijdzone, valuta en datumformaat hierop in. U kunt elk daarvan later overschrijven."
+      },
+      "cascadeResetTitle": {
+        "other": "Alles opnieuw instellen op {country}?"
+      },
+      "cascadeResetBody": {
+        "other": "U gaat van {currentFlag} {currentName} naar {nextFlag} {nextName}. UI-taal, tijdzone, valuta, datumformaat en eenheden worden allemaal teruggezet op de standaardwaarden voor {nextName}. Uw aangepaste wijzigingen (indien aanwezig) worden overschreven."
+      },
+      "cascadeFallbackCountry": {
+        "other": "het nieuwe land"
+      },
+      "uiLanguageLabel": {
+        "other": "UI-taal"
+      },
+      "dateLabel": {
+        "other": "Datum"
+      },
+      "timeLabel": {
+        "other": "Tijd"
+      },
+      "unitsLabel": {
+        "other": "Eenheden"
+      },
+      "resetDefaults": {
+        "other": "Standaardwaarden herstellen"
+      },
+      "savedLabel": {
+        "other": "Opgeslagen"
+      },
+      "changeCountryAria": {
+        "other": "Land wijzigen"
+      },
+      "setTimeZonePlaceholder": {
+        "other": "Tijdzone instellen"
+      },
+      "timeFormat": {
+        "other": "Tijdformaat"
+      },
+      "dateFormat": {
+        "other": "Datumformaat"
+      },
+      "numberFormat": {
+        "other": "Getalformaat"
+      },
+      "numbersLabel": {
+        "other": "Getallen"
+      },
+      "weekStartsLabel": {
+        "other": "Week begint"
+      },
+      "weekStartsOnTitle": {
+        "other": "Week begint op"
+      },
+      "weekStartsHint": {
+        "other": "Beïnvloedt agenda's, weekkiezers en weekrapporten."
+      },
+      "pickOneHint": {
+        "other": "Kies degene die goed voelt."
+      },
+      "uiLanguageTitle": {
+        "other": "UI-taal"
+      },
+      "uiLanguageHint": {
+        "other": "In welke taal door elvix aangedreven apps tegen u moeten praten."
+      },
+      "languageSearchPlaceholder": {
+        "other": "English, Deutsch, fa..."
+      },
+      "currencyHint": {
+        "other": "Standaard voor prijzen, facturen en uitbetalingen in door elvix aangedreven apps."
+      },
+      "currencySearchPlaceholder": {
+        "other": "EUR, dollar, real..."
+      },
+      "timeZoneHint": {
+        "other": "Gebruikt voor planning, \"9 uur uw tijd\" en weekrapporten."
+      },
+      "timeZoneSearchPlaceholder": {
+        "other": "Berlin, Tehran, Pacific..."
+      }
+    },
+    "languages": {
+      "title": {
+        "other": "Talen die u spreekt"
+      },
+      "addLanguage": {
+        "other": "Een taal toevoegen"
+      },
+      "limitReached": {
+        "other": "U kunt maximaal {limit} talen vermelden."
+      },
+      "level": {
+        "other": "Niveau"
+      },
+      "remove": {
+        "other": "Verwijderen"
+      },
+      "saveLevel": {
+        "other": "Niveau opslaan"
+      },
+      "updatingLevel": {
+        "other": "Niveau bijwerken"
+      },
+      "addingLanguage": {
+        "other": "Taal toevoegen"
+      },
+      "removing": {
+        "other": "Bezig met verwijderen"
+      },
+      "emptyHint": {
+        "other": "Voor UI-standaarden, taken en uitgaande berichten."
+      },
+      "searchHint": {
+        "other": "Zoek op Engelse naam, native naam of ISO-code."
+      },
+      "searchPlaceholder": {
+        "other": "English, Deutsch, fa"
+      },
+      "takenBadge": {
+        "other": "toegevoegd"
+      },
+      "levelPickTitle": {
+        "other": "Hoe goed spreekt u {language}?"
+      },
+      "thisLanguageFallback": {
+        "other": "deze taal"
+      },
+      "levelPickSubtitle": {
+        "other": "Kies het niveau dat klopt. U kunt het later wijzigen."
+      },
+      "errorAlreadyAdded": {
+        "other": "U heeft deze taal al toegevoegd. Bewerk het niveau via de lijst."
+      },
+      "removeConfirmTitle": {
+        "other": "{language} verwijderen?"
+      },
+      "removeConfirmBody": {
+        "other": "Apps die zich op {language} richten, bereiken u daarin niet meer. U kunt het op elk moment opnieuw toevoegen."
+      },
+      "keepCta": {
+        "other": "Behouden"
+      },
+      "addAnother": {
+        "other": "Nog een taal toevoegen"
+      }
+    },
+    "addressBook": {
+      "title": {
+        "other": "Uw adressen"
+      },
+      "empty": {
+        "other": "Nog geen adressen."
+      },
+      "addCta": {
+        "other": "Een adres toevoegen"
+      },
+      "makeDefault": {
+        "other": "Als standaard instellen"
+      },
+      "defaultBadge": {
+        "other": "Standaard"
+      },
+      "remove": {
+        "other": "Verwijderen"
+      },
+      "removeConfirmTitle": {
+        "other": "Dit adres verwijderen?"
+      },
+      "savingLabel": {
+        "other": "Adres opslaan."
+      },
+      "deletingLabel": {
+        "other": "Adres verwijderen."
+      },
+      "addBilling": {
+        "other": "Factuuradres toevoegen"
+      },
+      "addShipping": {
+        "other": "Verzendadres toevoegen"
+      },
+      "useForBilling": {
+        "other": "We gebruiken dit voor facturen en bonnen."
+      },
+      "useForShipping": {
+        "other": "We gebruiken dit voor bezorgingen en afhalingen."
+      },
+      "addAnotherBilling": {
+        "other": "Nog een factuuradres toevoegen"
+      },
+      "addAnotherShipping": {
+        "other": "Nog een verzendadres toevoegen"
+      },
+      "atCompany": {
+        "other": "bij {company}"
+      },
+      "setAsDefault": {
+        "other": "Als standaard instellen"
+      },
+      "removeDefault": {
+        "other": "Standaard verwijderen"
+      },
+      "deleteAddress": {
+        "other": "Adres verwijderen"
+      },
+      "newBillingAddress": {
+        "other": "Nieuw factuuradres"
+      },
+      "newShippingAddress": {
+        "other": "Nieuw verzendadres"
+      },
+      "searchPrompt": {
+        "other": "Begin met het typen van uw adres"
+      },
+      "searchPlaceholder": {
+        "other": "221B Baker Street, London."
+      },
+      "searchError": {
+        "other": "Zoeken mislukt: {error}"
+      },
+      "noMatchesKeepTyping": {
+        "other": "Nog geen resultaten. Blijf typen."
+      },
+      "aptFloorEyebrow": {
+        "other": "Appartement, etage, suite"
+      },
+      "aptFloorTitle": {
+        "other": "Appartement, suite of etage?"
+      },
+      "aptFloorBodyBilling": {
+        "other": "Kaarten leggen zelden de eenheidnummers vast. Voegt een tweede regel toe aan het adres."
+      },
+      "aptFloorBodyShipping": {
+        "other": "Vervoerders sturen pakketten verkeerd zonder eenheidinformatie. Sla over als u het niet nodig heeft."
+      },
+      "line2Label": {
+        "other": "Adresregel 2 (optioneel)"
+      },
+      "line2Placeholder": {
+        "other": "Apt 4B, 3e etage, Suite 200."
+      },
+      "step2of3": {
+        "other": "Stap 2 van 3"
+      },
+      "recipientTitleBilling": {
+        "other": "Voor wie is dit factuuradres?"
+      },
+      "recipientTitleShipping": {
+        "other": "Voor wie is dit verzendadres?"
+      },
+      "recipientSubtitleBilling": {
+        "other": "Naam op de factuur."
+      },
+      "recipientSubtitleShipping": {
+        "other": "Naam op het pakket."
+      },
+      "someoneElseSubtitleBilling": {
+        "other": "Een andere naam op de factuur"
+      },
+      "someoneElseSubtitleShipping": {
+        "other": "Verzenden naar iemand anders"
+      },
+      "businessSubtitleBilling": {
+        "other": "Het bedrijf factureren (B2B)"
+      },
+      "businessSubtitleShipping": {
+        "other": "Verzenden naar een bedrijf of werkplek"
+      },
+      "saveError": {
+        "other": "Opslaan mislukt: {error}"
+      },
+      "recipientCustomTitle": {
+        "other": "Wie is de ontvanger?"
+      },
+      "recipientCustomSubtitleBilling": {
+        "other": "De naam die op de factuur verschijnt."
+      },
+      "recipientCustomSubtitleShipping": {
+        "other": "De naam die op het pakket verschijnt."
+      },
+      "recipientPlaceholder": {
+        "other": "Jane Doe"
+      },
+      "businessStep1of2": {
+        "other": "Bedrijf, stap 1 van 2"
+      },
+      "companyNameTitle": {
+        "other": "Wat is de bedrijfsnaam?"
+      },
+      "companyNameBodyBilling": {
+        "other": "Verschijnt op de factuur. Vereist voor B2B-belastingafhandeling later."
+      },
+      "companyNameBodyShipping": {
+        "other": "Het bedrijf dat het pakket ontvangt."
+      },
+      "companyNamePlaceholder": {
+        "other": "Edvone"
+      },
+      "businessStep2of2": {
+        "other": "Bedrijf, stap 2 van 2"
+      },
+      "contactAtCompanyTitle": {
+        "other": "Iemand in het bijzonder bij {company}?"
+      },
+      "attnBodyInvoice": {
+        "other": "Voegt een \"T.a.v.:\"-regel toe aan de factuur. Sla over om het aan het bedrijf te richten."
+      },
+      "attnBodyPackage": {
+        "other": "Voegt een \"T.a.v.:\"-regel toe aan het pakket. Sla over om het aan het bedrijf te richten."
+      },
+      "contactPersonOptional": {
+        "other": "Contactpersoon (optioneel)"
+      },
+      "skip": {
+        "other": "Overslaan"
+      },
+      "noteChoiceTitle": {
+        "other": "Wilt u een bezorgnotitie toevoegen?"
+      },
+      "noteChoiceBodyBilling": {
+        "other": "Alles wat het factuurteam moet weten. T.a.v.-regel, PO-nummer, p/a iemand."
+      },
+      "noteChoiceBodyShipping": {
+        "other": "Alles voor de bezorger. Bel, hekcode, achterlaten bij de deur."
+      },
+      "noteYesTitle": {
+        "other": "Ja, een notitie toevoegen"
+      },
+      "noteYesSubtitle": {
+        "other": "Schrijf een korte instructie"
+      },
+      "noteNoTitle": {
+        "other": "Nee, overslaan"
+      },
+      "noteNoSubtitle": {
+        "other": "Het adres opslaan zoals het is"
+      },
+      "noteLastStep": {
+        "other": "Notitie, laatste stap"
+      },
+      "noteInputTitle": {
+        "other": "Wat moeten we zeggen?"
+      },
+      "noteInputBodyBilling": {
+        "other": "Verschijnt op de factuur of factuurregistratie."
+      },
+      "noteInputBodyShipping": {
+        "other": "Wordt overgedragen aan de bezorger."
+      },
+      "billingNote": {
+        "other": "Factuurnotitie"
+      },
+      "deliveryNote": {
+        "other": "Bezorgnotitie"
+      },
+      "notePlaceholderBilling": {
+        "other": "Factureer aan T.a.v.: Financiën, PO #ABC-1234."
+      },
+      "notePlaceholderShipping": {
+        "other": "Bel bij 3, achterlaten bij conciërge als niet thuis."
+      },
+      "backToList": {
+        "other": "Terug naar lijst"
+      },
+      "billingAddressLabel": {
+        "other": "factuuradres"
+      },
+      "shippingAddressLabel": {
+        "other": "verzendadres"
+      },
+      "sectionWho": {
+        "other": "Wie"
+      },
+      "sectionWhere": {
+        "other": "Waar"
+      },
+      "sectionNotesMeta": {
+        "other": "Notities en meta"
+      },
+      "fieldRecipient": {
+        "other": "Ontvanger"
+      },
+      "fieldCompany": {
+        "other": "Bedrijf"
+      },
+      "addCompanyPlaceholder": {
+        "other": "Een bedrijf toevoegen"
+      },
+      "fieldStreet": {
+        "other": "Straat"
+      },
+      "fieldAptFloor": {
+        "other": "Apt of etage"
+      },
+      "addUnitPlaceholder": {
+        "other": "Een eenheid toevoegen"
+      },
+      "fieldCity": {
+        "other": "Stad"
+      },
+      "fieldPostalCode": {
+        "other": "Postcode"
+      },
+      "fieldRegion": {
+        "other": "Regio"
+      },
+      "fieldCountry": {
+        "other": "Land"
+      },
+      "fieldDeliveryNotes": {
+        "other": "Bezorgnotities"
+      },
+      "addNotePlaceholder": {
+        "other": "Een notitie toevoegen"
+      },
+      "fieldTimezone": {
+        "other": "Tijdzone"
+      },
+      "fieldVenue": {
+        "other": "Locatie of gebouw"
+      },
+      "nothingToChange": {
+        "other": "Niets te wijzigen"
+      },
+      "setDefaultTitle": {
+        "other": "Dit als uw standaard instellen?"
+      },
+      "removeDefaultTitle": {
+        "other": "Standaard van dit adres verwijderen?"
+      },
+      "setDefaultSubtitle": {
+        "other": "Het wordt de automatische keuze bij afrekenen of factureren."
+      },
+      "removeDefaultSubtitle": {
+        "other": "Er wordt niets vooraf geselecteerd bij afrekenen of factureren."
+      },
+      "crossAppHeadsUp": {
+        "other": "Let op. Dit heeft invloed op elke app die u met elvix gebruikt."
+      },
+      "crossAppDefaultBodySetting": {
+        "other": "Uw standaard {kind}-adres wordt gedeeld met elke app waar u zich bij aanmeldt. Door het hier te wijzigen, wordt de automatische keuze overal tegelijk bijgewerkt."
+      },
+      "crossAppDefaultBodyClearing": {
+        "other": "Uw standaard {kind}-adres wordt gedeeld met elke app waar u zich bij aanmeldt. Door het te verwijderen, wordt nergens een adres vooraf geselecteerd; u kiest er elke keer een bij het afrekenen of factureren."
+      },
+      "nothingToDelete": {
+        "other": "Niets te verwijderen"
+      },
+      "deleteBillingHeader": {
+        "other": "Factuuradres verwijderen"
+      },
+      "deleteShippingHeader": {
+        "other": "Verzendadres verwijderen"
+      },
+      "deleteConfirmTitle": {
+        "other": "Dit adres verwijderen?"
+      },
+      "cantBeUndone": {
+        "other": "Dit kan niet ongedaan worden gemaakt."
+      },
+      "crossAppDeleteBodyBilling": {
+        "other": "Uw factuuradres wordt eenmalig op uw elvix-profiel opgeslagen en gedeeld met de apps waar u zich bij aanmeldt. Verwijderen verwijdert het overal. Elke afreken-, factuur- of verzendstroom die naar dit adres verwees, heeft een nieuwe nodig."
+      },
+      "crossAppDeleteBodyShipping": {
+        "other": "Uw verzendadres wordt eenmalig op uw elvix-profiel opgeslagen en gedeeld met de apps waar u zich bij aanmeldt. Verwijderen verwijdert het overal. Elke afreken-, factuur- of verzendstroom die naar dit adres verwees, heeft een nieuwe nodig."
+      },
+      "deleteError": {
+        "other": "Verwijderen mislukt: {error}"
+      },
+      "yesDelete": {
+        "other": "Ja, verwijderen"
+      },
+      "pickAddressFirst": {
+        "other": "Kies eerst een adres"
+      },
+      "changeAddress": {
+        "other": "Adres wijzigen"
+      },
+      "reviewBilling": {
+        "other": "Factuuradres controleren"
+      },
+      "reviewShipping": {
+        "other": "Verzendadres controleren"
+      },
+      "notRight": {
+        "other": "Niet juist"
+      },
+      "looksRight": {
+        "other": "Ziet er goed uit"
+      },
+      "missingFieldsHint": {
+        "other": "We missen de {fields}. Kies een specifiekere suggestie (met een huisnummer) zodat we een bezorgbaar adres kunnen opslaan."
+      }
+    },
+    "legalEntities": {
+      "title": {
+        "other": "Rechtspersonen"
+      },
+      "addCta": {
+        "other": "Een rechtspersoon toevoegen"
+      },
+      "companyName": {
+        "other": "Bedrijfsnaam"
+      },
+      "vatId": {
+        "other": "Btw-nummer"
+      },
+      "taxCountry": {
+        "other": "Belastingland"
+      },
+      "verifyVat": {
+        "other": "Btw verifiëren"
+      },
+      "verifying": {
+        "other": "Bezig met controleren"
+      },
+      "verifiedBadge": {
+        "other": "Geverifieerd"
+      },
+      "notRegistered": {
+        "other": "Niet geregistreerd"
+      },
+      "unreachable": {
+        "other": "Onbereikbaar"
+      },
+      "addCtaSubtitle": {
+        "other": "Voor facturen, contracten en belastingaangiften."
+      },
+      "addAnotherCta": {
+        "other": "Nog een rechtspersoon toevoegen"
+      },
+      "kindIndividual": {
+        "other": "Particulier"
+      },
+      "kindSoleProp": {
+        "other": "Eenmanszaak"
+      },
+      "kindCompany": {
+        "other": "Bedrijf"
+      },
+      "removeDefaultAria": {
+        "other": "Standaard verwijderen"
+      },
+      "setDefaultAria": {
+        "other": "Als standaard instellen"
+      },
+      "deleteAria": {
+        "other": "Entiteit verwijderen"
+      },
+      "typeChoiceTitle": {
+        "other": "Wat voor soort entiteit is dit?"
+      },
+      "typeChoiceSubtitle": {
+        "other": "Bepaalt welke vragen we hierna stellen."
+      },
+      "step1of3": {
+        "other": "Stap 1 van 3"
+      },
+      "individualSubtitle": {
+        "other": "Alleen u, geen bedrijf. Facturen worden op uw persoonlijke naam gezet."
+      },
+      "soleProprietorshipSubtitle": {
+        "other": "U plus een handelsnaam (Einzelunternehmen, freelancer, enz.)."
+      },
+      "companySubtitle": {
+        "other": "Een geregistreerde rechtspersoon (GmbH, Ltd, S.r.l., enz.)."
+      },
+      "legalNameTitleIndividual": {
+        "other": "Uw juridische naam"
+      },
+      "legalNameTitleSoleProp": {
+        "other": "Uw juridische naam (de eigenaar)"
+      },
+      "legalNameTitleCompany": {
+        "other": "Juridische naam van het bedrijf"
+      },
+      "legalNameSubtitleIndividual": {
+        "other": "Zoals deze op uw ID staat."
+      },
+      "legalNameSubtitleSoleProp": {
+        "other": "De natuurlijke persoon die het bedrijf exploiteert."
+      },
+      "legalNameSubtitleCompany": {
+        "other": "De geregistreerde naam van het bedrijf."
+      },
+      "legalNameLabel": {
+        "other": "Juridische naam"
+      },
+      "legalNamePlaceholderCompany": {
+        "other": "ACME GmbH"
+      },
+      "legalNamePlaceholderPerson": {
+        "other": "Jane Doe"
+      },
+      "legalNameInvalidCompany": {
+        "other": "Voer ten minste 2 tekens in met ten minste één letter."
+      },
+      "legalNameInvalidPerson": {
+        "other": "Voer zowel voornaam als achternaam in."
+      },
+      "tradingNameTitle": {
+        "other": "Handelsnaam (optioneel)"
+      },
+      "tradingNameSubtitle": {
+        "other": "Geschaeftsbezeichnung, DBA, doing-business-as. Het merk waaronder de entiteit handelt."
+      },
+      "tradingNameLabel": {
+        "other": "Handelsnaam"
+      },
+      "tradingNamePlaceholder": {
+        "other": "ACME Brands"
+      },
+      "dobTitle": {
+        "other": "Geboortedatum"
+      },
+      "dobSubtitle": {
+        "other": "Vereist voor facturering onder uw naam en KYC als een klant er later om vraagt."
+      },
+      "dobAgeError": {
+        "other": "U moet 18 jaar of ouder zijn om een entiteit te registreren."
+      },
+      "dobOutOfRange": {
+        "other": "Die datum valt buiten het bereik."
+      },
+      "placeOfBirthTitle": {
+        "other": "Geboorteplaats"
+      },
+      "placeOfBirthSubtitle": {
+        "other": "Stad zoals deze op uw ID staat. Vereist voor facturering en KYC."
+      },
+      "placeOfBirthCityLabel": {
+        "other": "Stad"
+      },
+      "placeOfBirthCityPlaceholder": {
+        "other": "Begin met het typen van een stad."
+      },
+      "placeChangeCta": {
+        "other": "Wijzigen"
+      },
+      "placeSearchError": {
+        "other": "Zoeken mislukt: {error}"
+      },
+      "nationalityTitle": {
+        "other": "Nationaliteit"
+      },
+      "nationalitySubtitle": {
+        "other": "Kies er een of meerdere (maximaal {max}). De eerste wordt als primair behandeld."
+      },
+      "nationalityPrimaryBadge": {
+        "other": "Primair"
+      },
+      "nationalityCapReached": {
+        "other": "Maximum van {max} nationaliteiten bereikt. Verwijder er een om een andere toe te voegen."
+      },
+      "removeCountryAria": {
+        "other": "{name} verwijderen"
+      },
+      "taxCountryTitle": {
+        "other": "Fiscaal woonland"
+      },
+      "taxCountrySubtitle": {
+        "other": "Waar de entiteit belasting afdraagt. Alleen landen waar we het fiscale nummer live kunnen verifiëren worden vermeld."
+      },
+      "taxIdsTitle": {
+        "other": "Fiscale identifiers"
+      },
+      "taxIdsSubtitleIndividual": {
+        "other": "Uw lokale belastingnummer van {country}. Opgeslagen zoals het is."
+      },
+      "taxIdsSubtitleIndividualFallback": {
+        "other": "uw belastingdienst"
+      },
+      "taxIdsSubtitleCompany": {
+        "other": "Btw wordt live gevalideerd bij {authority}. Lokaal belastingnummer is optioneel."
+      },
+      "taxIdsSubtitleCompanyFallback": {
+        "other": "de uitgevende instantie"
+      },
+      "taxIdsSubtitleSoleProp": {
+        "other": "Beide zijn optioneel. Voeg het lokale belastingnummer toe als u dat op facturen wilt; btw alleen als u btw-geregistreerd bent. De bedrijfsregistratie wordt in de volgende stap vastgelegd."
+      },
+      "localTaxNumberLabel": {
+        "other": "Lokaal belastingnummer"
+      },
+      "vatCompanyIdLabel": {
+        "other": "Btw- / bedrijfs-ID"
+      },
+      "blockReasonTaxIdRequired": {
+        "other": "Voer het lokale belastingnummer in om verder te gaan."
+      },
+      "blockReasonTaxIdFormat": {
+        "other": "Lokaal belastingnummer voldoet niet aan {country}-formaat. {hint}"
+      },
+      "blockReasonVatRequired": {
+        "other": "Voer een btw- / bedrijfs-ID in om verder te gaan."
+      },
+      "blockReasonVatFormat": {
+        "other": "Dit btw-nummer voldoet niet aan het landformaat."
+      },
+      "taxIdFormatHint": {
+        "other": "Verwacht: {placeholder}."
+      },
+      "verifyHeadingChecking": {
+        "other": "Bezig met verifiëren bij de instantie."
+      },
+      "verifyHeadingLive": {
+        "other": "Geverifieerd."
+      },
+      "verifyHeadingInvalid": {
+        "other": "Verificatie mislukt."
+      },
+      "verifyHeadingFormat": {
+        "other": "Instantie onbereikbaar."
+      },
+      "verifySubtitleChecking": {
+        "other": "{vatId} controleren bij het register van {country}."
+      },
+      "verifySubtitleLiveNamed": {
+        "other": "{authority} herkende dit btw-nummer als {name}."
+      },
+      "verifySubtitleLive": {
+        "other": "{authority} herkende dit btw-nummer."
+      },
+      "verifySubtitleInvalid": {
+        "other": "{authority} vermeldt {vatId} niet als geregistreerd. Ga terug om het te corrigeren."
+      },
+      "verifySubtitleFormat": {
+        "other": "We konden {authority} momenteel niet bereiken. Uw invoer is opgeslagen zoals deze is en zal automatisch opnieuw worden geverifieerd."
+      },
+      "authorityFallback": {
+        "other": "de belastingdienst"
+      },
+      "editTaxIdsBackLabel": {
+        "other": "Fiscale ID's bewerken"
+      },
+      "fixVatCta": {
+        "other": "Btw corrigeren"
+      },
+      "continueAnywayCta": {
+        "other": "Toch doorgaan"
+      },
+      "registrationTitle": {
+        "other": "Registratie"
+      },
+      "registrationSubtitle": {
+        "other": "Handelsregister, Companies House, KvK. Het officiële register waar deze entiteit is geregistreerd."
+      },
+      "registrationNumberLabel": {
+        "other": "Registratienummer"
+      },
+      "issuingAuthorityLabel": {
+        "other": "Uitgevende instantie"
+      },
+      "issuingAuthorityPlaceholder": {
+        "other": "Lokale rechtbank / handelsregister"
+      },
+      "registeredSinceLabel": {
+        "other": "Geregistreerd sinds (optioneel)"
+      },
+      "registeredSinceRangeError": {
+        "other": "Kies een datum tussen 1900 en vandaag."
+      },
+      "regNumberFormatHint": {
+        "other": "Voldoet niet aan het verwachte formaat. Probeer: {placeholder}."
+      },
+      "addressSearchTitle": {
+        "other": "Geregistreerd adres"
+      },
+      "addressSearchSubtitle": {
+        "other": "Waar de entiteit bij de instantie is geregistreerd. Begin met typen."
+      },
+      "addressLabel": {
+        "other": "Adres"
+      },
+      "addressSearchPlaceholder": {
+        "other": "Straat, stad."
+      },
+      "addressPickFirst": {
+        "other": "Kies eerst een adres"
+      },
+      "addressReviewTitle": {
+        "other": "Ziet er goed uit?"
+      },
+      "addressReviewSubtitle": {
+        "other": "Zorg dat de geregistreerde zetel overeenkomt met het officiële register."
+      },
+      "addressMissing": {
+        "other": "We missen de {fields}. Kies een specifiekere suggestie."
+      },
+      "addressFieldStreet": {
+        "other": "Straat"
+      },
+      "addressFieldCity": {
+        "other": "Stad"
+      },
+      "addressFieldPostalCode": {
+        "other": "Postcode"
+      },
+      "addressFieldRegion": {
+        "other": "Regio"
+      },
+      "addressFieldCountry": {
+        "other": "Land"
+      },
+      "addressChangeBackLabel": {
+        "other": "Adres wijzigen"
+      },
+      "addressNotRightCta": {
+        "other": "Niet juist"
+      },
+      "addressLooksRightCta": {
+        "other": "Ziet er goed uit"
+      },
+      "addressAptTitle": {
+        "other": "Appartement, suite of etage?"
+      },
+      "addressAptSubtitle": {
+        "other": "Voegt een tweede regel toe aan het geregistreerde adres. Sla over indien niet nodig."
+      },
+      "addressAptLabel": {
+        "other": "Adresregel 2 (optioneel)"
+      },
+      "addressAptPlaceholder": {
+        "other": "Apt 4B, 3e etage, Suite 200."
+      },
+      "contactChoiceTitle": {
+        "other": "Wilt u contactgegevens toevoegen?"
+      },
+      "contactChoiceSubtitle": {
+        "other": "Optioneel e-mailadres plus telefoon voor deze entiteit. Apart van uw hoofdcontactgegevens."
+      },
+      "contactYesCta": {
+        "other": "Ja, contact toevoegen"
+      },
+      "contactNoCta": {
+        "other": "Nee, opslaan zonder"
+      },
+      "yesNoYesSubtitle": {
+        "other": "Voegt de volgende stap toe"
+      },
+      "yesNoNoSubtitle": {
+        "other": "De entiteit opslaan zoals deze is"
+      },
+      "saveError": {
+        "other": "Opslaan mislukt: {error}"
+      },
+      "contactInputTitle": {
+        "other": "Contact voor deze entiteit"
+      },
+      "contactInputSubtitle": {
+        "other": "E-mail plus telefoon weergegeven op facturen en contracten."
+      },
+      "contactEmailLabel": {
+        "other": "E-mail (optioneel)"
+      },
+      "contactEmailPlaceholder": {
+        "other": "invoices@example.com"
+      },
+      "contactEmailInvalid": {
+        "other": "Voer een geldig e-mailadres in of laat leeg."
+      },
+      "contactPhoneLabel": {
+        "other": "Telefoon (optioneel)"
+      },
+      "contactPhonePlaceholder": {
+        "other": "+31 ."
+      },
+      "contactPhoneInvalid": {
+        "other": "Gebruik cijfers met een optionele leidende + (6 tot 20 cijfers)."
+      },
+      "saveEntityCta": {
+        "other": "Entiteit opslaan"
+      },
+      "saveChangesCta": {
+        "other": "Wijzigingen opslaan"
+      },
+      "savingEntityLabel": {
+        "other": "Entiteit opslaan."
+      },
+      "deletingEntityLabel": {
+        "other": "Entiteit verwijderen."
+      },
+      "backToList": {
+        "other": "Terug naar lijst"
+      },
+      "detailSectionIdentity": {
+        "other": "Identiteit"
+      },
+      "detailSectionTax": {
+        "other": "Belasting"
+      },
+      "detailSectionRegistration": {
+        "other": "Registratie"
+      },
+      "detailSectionAddress": {
+        "other": "Adres"
+      },
+      "detailSectionContact": {
+        "other": "Contact"
+      },
+      "detailLegalName": {
+        "other": "Juridische naam"
+      },
+      "detailTradingName": {
+        "other": "Handelsnaam"
+      },
+      "detailTradingNamePlaceholder": {
+        "other": "Een handelsnaam toevoegen"
+      },
+      "detailDob": {
+        "other": "Geboortedatum"
+      },
+      "detailPlaceOfBirth": {
+        "other": "Geboorteplaats"
+      },
+      "detailPlaceOfBirthPlaceholder": {
+        "other": "Geboorteplaats toevoegen"
+      },
+      "detailNationality": {
+        "other": "Nationaliteit"
+      },
+      "detailTaxResidence": {
+        "other": "Fiscaal woonland"
+      },
+      "detailVatId": {
+        "other": "Btw- / bedrijfs-ID"
+      },
+      "detailVatIdPlaceholder": {
+        "other": "Btw-nummer toevoegen"
+      },
+      "detailLocalTaxNumber": {
+        "other": "Lokaal belastingnummer"
+      },
+      "detailLocalTaxNumberPlaceholder": {
+        "other": "Belastingnummer toevoegen"
+      },
+      "detailRegistrationNumber": {
+        "other": "Registratie #"
+      },
+      "detailIssuingAuthority": {
+        "other": "Uitgevende instantie"
+      },
+      "detailRegisteredSince": {
+        "other": "Geregistreerd sinds"
+      },
+      "detailStreet": {
+        "other": "Straat"
+      },
+      "detailAptFloor": {
+        "other": "Apt / etage"
+      },
+      "detailCity": {
+        "other": "Stad"
+      },
+      "detailPostalCode": {
+        "other": "Postcode"
+      },
+      "detailCountry": {
+        "other": "Land"
+      },
+      "detailEmail": {
+        "other": "E-mail"
+      },
+      "detailEmailPlaceholder": {
+        "other": "E-mail toevoegen"
+      },
+      "detailPhone": {
+        "other": "Telefoon"
+      },
+      "detailPhonePlaceholder": {
+        "other": "Telefoon toevoegen"
+      },
+      "removeDefault": {
+        "other": "Standaard verwijderen"
+      },
+      "setDefault": {
+        "other": "Als standaard instellen"
+      },
+      "deleteConfirmTitle": {
+        "other": "Deze entiteit verwijderen?"
+      },
+      "deleteConfirmBody": {
+        "other": "Dit kan niet ongedaan worden gemaakt."
+      },
+      "deleteEmpty": {
+        "other": "Niets te verwijderen"
+      },
+      "sharedAcrossAppsHeading": {
+        "other": "Let op. Dit heeft invloed op elke app die u met elvix gebruikt."
+      },
+      "deleteSharedAcrossAppsBody": {
+        "other": "Rechtspersonen worden gedeeld tussen apps waar u zich bij aanmeldt. Verwijderen verwijdert het record overal; elk factuursjabloon dat ernaar verwees, heeft een nieuwe nodig."
+      },
+      "deleteError": {
+        "other": "Verwijderen mislukt: {error}"
+      },
+      "yesDelete": {
+        "other": "Ja, verwijderen"
+      },
+      "nothingToChange": {
+        "other": "Niets te wijzigen"
+      },
+      "defaultConfirmTitleSet": {
+        "other": "Dit als uw standaardentiteit instellen?"
+      },
+      "defaultConfirmTitleUnset": {
+        "other": "Standaard van deze entiteit verwijderen?"
+      },
+      "defaultConfirmBodySet": {
+        "other": "De standaardentiteit vult facturen en contractsjablonen automatisch in."
+      },
+      "defaultConfirmBodyUnset": {
+        "other": "Er wordt niets vooraf geselecteerd wanneer u facturen of contracten genereert."
+      },
+      "defaultSharedAcrossAppsBodySet": {
+        "other": "De standaardentiteit wordt gedeeld met elke app waar u zich bij aanmeldt. Door het hier te wijzigen, wordt de automatische keuze overal tegelijk bijgewerkt."
+      },
+      "defaultSharedAcrossAppsBodyUnset": {
+        "other": "De standaardentiteit wordt gedeeld met elke app waar u zich bij aanmeldt. Door het te verwijderen, wordt nergens een entiteit vooraf geselecteerd."
+      }
+    },
+    "entityKind": {
+      "title": {
+        "other": "Voor wie is dit?"
+      },
+      "me": {
+        "other": "Mij"
+      },
+      "someoneElse": {
+        "other": "Iemand anders"
+      },
+      "business": {
+        "other": "Een bedrijf"
+      }
+    },
+    "export": {
+      "title": {
+        "other": "Uw gegevens downloaden"
+      },
+      "body": {
+        "other": "Krijg een kopie van alles wat we over u bewaren. GDPR artikel 15. We sturen een eenmalige downloadlink per e-mail, geldig gedurende 24 uur."
+      },
+      "sendCodeCta": {
+        "other": "Verificatiecode versturen"
+      },
+      "downloadCta": {
+        "other": "E-mail mij de link"
+      },
+      "doneTitle": {
+        "other": "Controleer uw inbox"
+      },
+      "doneBody": {
+        "other": "We hebben een downloadlink gestuurd naar {email}. Deze verloopt over 24 uur."
+      },
+      "previewLoadFailed": {
+        "other": "Voorbeeld kon niet worden geladen. Probeer het opnieuw."
+      },
+      "whatYouReceive": {
+        "other": "Wat u ontvangt"
+      },
+      "archiveBlurbIdentity": {
+        "other": "Uw archief bevat één JSON-bestand met alles hieronder, plus uw avatar- en bannerafbeeldingen als u die heeft geüpload, plus een README die elke sectie in begrijpelijke taal uitlegt en de GDPR-artikel 15(1)-toelichtingen bevat."
+      },
+      "archiveBlurbApp": {
+        "other": "Uw archief bevat één JSON-bestand met betrekking tot {label}, plus een README die elke sectie uitlegt en de GDPR-artikel 15(1)-toelichtingen bevat."
+      },
+      "notIncluded": {
+        "other": "Niet inbegrepen: cryptografisch sleutelmateriaal op uw passkeys, OAuth-tokens, OTP-codes en gegevens die de apps die u gebruikt buiten elvix over u bewaren. Neem voor dat laatste contact op met elke app."
+      },
+      "sendToHeading": {
+        "other": "We sturen uw gegevens naar uw primaire e-mailadres"
+      },
+      "sendToBody": {
+        "other": "Uw archief komt binnen op {email} als een .zip-bijlage. Bezit van deze inbox is het bewijs van identiteit, dus het bestand staat nooit op een openbare URL."
+      },
+      "sendToNotice": {
+        "other": "We sturen eerst een 6-cijferige code naar uw primaire inbox. Nadat u deze op het volgende scherm invoert, genereren we uw archief en mailen we het naar u als .zip-bijlage."
+      },
+      "sendingCode": {
+        "other": "Code wordt verzonden"
+      },
+      "sendToCta": {
+        "other": "E-mail mij een 6-cijferige code"
+      },
+      "otpHeading": {
+        "other": "Bevestig met uw code"
+      },
+      "otpBody": {
+        "other": "We hebben een 6-cijferige code gestuurd naar {email}. Deze verloopt over 10 minuten. Zodra u deze invoert, genereren we uw archief en mailen we het naar dezelfde inbox als .zip-bijlage."
+      },
+      "confirmCta": {
+        "other": "Bevestigen en mijn gegevens mailen"
+      },
+      "workingLabel": {
+        "other": "Bezig"
+      },
+      "resendIn": {
+        "other": "Opnieuw versturen over {seconds}s"
+      },
+      "noPendingCode": {
+        "other": "Geen lopende code. Verstuur een nieuwe."
+      },
+      "networkError": {
+        "other": "Netwerkfout. Probeer het opnieuw."
+      },
+      "doneHeading": {
+        "other": "Verzonden."
+      },
+      "doneInboxBody": {
+        "other": "Controleer uw primaire inbox ({email}) over een minuut. Uw archief is als .zip-bestand aan de e-mail toegevoegd. U kunt over 24 uur opnieuw een export van hetzelfde doel aanvragen."
+      },
+      "backToExports": {
+        "other": "Terug naar exports"
+      },
+      "errorChallengeGeneric": {
+        "other": "Code kon niet worden verzonden. Probeer het opnieuw."
+      },
+      "errorChallengeTooRecent": {
+        "other": "Wacht {seconds}s voordat u opnieuw aanvraagt."
+      },
+      "errorChallengeTooMany": {
+        "other": "Te veel verzoeken dit uur. Probeer het later opnieuw."
+      },
+      "errorChallengeSendFailed": {
+        "other": "Code kon niet worden gemaild. Probeer het opnieuw."
+      },
+      "errorChallengeRateLimit": {
+        "other": "U heeft dit al geëxporteerd in de afgelopen 24 uur. Weer beschikbaar over ~{hours}u."
+      },
+      "errorChallengeNotMember": {
+        "other": "U bent geen lid meer van deze app."
+      },
+      "errorChallengeAppNotFound": {
+        "other": "Die app is niet beschikbaar."
+      },
+      "errorApplyGeneric": {
+        "other": "Uw export kon niet worden gegenereerd. Probeer het opnieuw."
+      },
+      "errorApplyWrongCode": {
+        "one": "Onjuiste code. Nog {count} poging over.",
+        "other": "Onjuiste code. Nog {count} pogingen over."
+      },
+      "errorApplyLocked": {
+        "other": "Te veel onjuiste pogingen. Verstuur een nieuwe code."
+      },
+      "errorApplyExpired": {
+        "other": "Die code is verlopen. Verstuur een nieuwe."
+      },
+      "errorApplyGenerateFailed": {
+        "other": "We konden uw export niet bouwen. Probeer het opnieuw."
+      },
+      "errorApplyStorageFailed": {
+        "other": "We konden uw export niet opslaan. Probeer het opnieuw."
+      },
+      "errorApplyEmailFailed": {
+        "other": "Uw archief is gegenereerd, maar de e-mail is mislukt. Neem contact op met {email} om de link te herstellen."
+      }
+    },
+    "deactivate": {
+      "title": {
+        "other": "Neem een pauze"
+      },
+      "body": {
+        "other": "Deactiveren verbergt uw account voor deze app. Heractiveer op elk moment vanaf uw elvix-account."
+      },
+      "confirmCta": {
+        "other": "Deactiveren"
+      },
+      "doneTitle": {
+        "other": "Uw account is gepauzeerd"
+      },
+      "reactivateCta": {
+        "other": "Heractiveren"
+      },
+      "errorTooMany": {
+        "other": "Te veel codes aangevraagd. Probeer het later opnieuw."
+      },
+      "errorTooRecent": {
+        "other": "Wacht {seconds}s voordat u opnieuw aanvraagt."
+      },
+      "errorSendFailed": {
+        "other": "Code kon niet worden gemaild. Probeer het opnieuw."
+      },
+      "errorRequestFailed": {
+        "other": "Code kon niet worden aangevraagd. Probeer het opnieuw."
+      },
+      "errorWrongCode": {
+        "one": "Onjuiste code. Nog {count} poging over.",
+        "other": "Onjuiste code. Nog {count} pogingen over."
+      },
+      "errorChallengeLocked": {
+        "other": "Te veel onjuiste pogingen. Vraag een nieuwe code aan."
+      },
+      "errorChallengeExpired": {
+        "other": "Die code is verlopen. Vraag een nieuwe aan."
+      },
+      "errorAlreadyLeft": {
+        "other": "U heeft deze app al verlaten. Herstel eerst uw lidmaatschap."
+      },
+      "appNameFallback": {
+        "other": "uw app"
+      },
+      "warn1Title": {
+        "other": "Neem een pauze van {app}"
+      },
+      "warn1Body": {
+        "other": "Uw profiel neemt een rustige pauze. Mensen op {app} zien u niet meer, maar alles wat u heeft opgebouwd blijft precies zoals het is. Wanneer u klaar bent, komt u hier terug en meldt u zich opnieuw aan."
+      },
+      "soundGood": {
+        "other": "Klinkt goed?"
+      },
+      "warn1Cta": {
+        "other": "Ik begrijp het"
+      },
+      "warn2Title": {
+        "other": "Een paar dingen om te weten"
+      },
+      "warn2Bullet1": {
+        "other": "Open sessies in deze app worden direct afgemeld."
+      },
+      "warn2Bullet2": {
+        "other": "Uw gebruikersnaam en identifier blijven van u. Niemand anders kan ze overnemen terwijl u weg bent."
+      },
+      "warn2Bullet3": {
+        "other": "U kunt op elk moment terugkomen vanaf dezelfde pagina."
+      },
+      "warn2Bullet4": {
+        "other": "We mailen u een 6-cijferige code ter bevestiging. Een dubbele check, zodat de wijziging alleen doorgaat als u ook toegang heeft tot uw inbox."
+      },
+      "warn2Cta": {
+        "other": "Ik begrijp het. Mail mij een code"
+      },
+      "sendingLabel": {
+        "other": "Bezig met verzenden"
+      },
+      "reactivateTitle": {
+        "other": "Welkom terug bij {app}"
+      },
+      "reactivateBody": {
+        "other": "U heeft op dit moment een pauze. Heractiveer om weer op {app} te verschijnen."
+      },
+      "reactivateBodyByOwner": {
+        "other": "U heeft op dit moment een pauze (een beheerder heeft dit namens u gedaan). Heractiveer om weer op {app} te verschijnen."
+      },
+      "doneDeactivatedTitle": {
+        "other": "U heeft een pauze van {app}."
+      },
+      "doneReactivatedTitle": {
+        "other": "U bent terug op {app}."
+      },
+      "doneDeactivatedBody": {
+        "other": "We hebben de app op de hoogte gesteld. Kom hier op elk moment terug om te heractiveren."
+      },
+      "doneReactivatedBody": {
+        "other": "Uw lidmaatschap is weer actief. Open sessies aan de app-kant kunnen even nodig hebben om te vernieuwen."
+      },
+      "reactivateAgain": {
+        "other": "Opnieuw heractiveren"
+      },
+      "deactivateAgain": {
+        "other": "Opnieuw deactiveren"
+      },
+      "otpTitle": {
+        "other": "Voer uw bevestigingscode in"
+      },
+      "otpDelivered": {
+        "other": "We hebben een 6-cijferige code gemaild naar {email}. Deze verloopt over 10 minuten."
+      },
+      "otpSending": {
+        "other": "We sturen u een 6-cijferige code."
+      },
+      "otpPending": {
+        "other": "We sturen een 6-cijferige code naar uw e-mail."
+      },
+      "resendIn": {
+        "other": "Opnieuw versturen over {seconds}s"
+      }
+    },
+    "leave": {
+      "title": {
+        "other": "{app} verlaten?"
+      },
+      "body": {
+        "other": "Verwijdert uw lidmaatschap. Dit is definitief: de eigenaar kan het niet terugzetten. Uw elvix-account blijft open."
+      },
+      "confirmCta": {
+        "other": "Voor altijd verlaten"
+      },
+      "doneTitle": {
+        "other": "U heeft {app} verlaten."
+      },
+      "errorTooManyCodes": {
+        "other": "Te veel codes aangevraagd. Probeer het later opnieuw."
+      },
+      "errorTooRecent": {
+        "other": "Wacht {seconds}s voordat u opnieuw aanvraagt."
+      },
+      "errorSendFailed": {
+        "other": "Code kon niet worden gemaild. Probeer het opnieuw."
+      },
+      "errorRequestFailed": {
+        "other": "Code kon niet worden aangevraagd. Probeer het opnieuw."
+      },
+      "errorWrongCode": {
+        "one": "Onjuiste code. Nog {count} poging over.",
+        "other": "Onjuiste code. Nog {count} pogingen over."
+      },
+      "errorChallengeLocked": {
+        "other": "Te veel onjuiste pogingen. Vraag een nieuwe code aan."
+      },
+      "errorChallengeExpired": {
+        "other": "Die code is verlopen. Vraag een nieuwe aan."
+      },
+      "errorOwnerInitiated": {
+        "other": "Een beheerder heeft u verwijderd. Zij moeten dit vanuit hun Console terugdraaien."
+      },
+      "errorGraceExpired": {
+        "other": "Het venster van 90 dagen om dit lidmaatschap te herstellen is gesloten."
+      },
+      "errorRestoreFailed": {
+        "other": "Herstellen mislukt. Probeer het opnieuw."
+      },
+      "otpActionLabel": {
+        "other": "{app} verlaten"
+      },
+      "warn1Heading": {
+        "other": "{app} verlaten"
+      },
+      "warn1Body": {
+        "other": "Uw lidmaatschap wordt direct verborgen. U heeft 90 dagen om van gedachten te veranderen en te herstellen vanaf dezelfde pagina. Daarna verschijnt de app niet meer in uw lijst. Uw gegevens aan de zijde van de app worden beheerd volgens hun eigen beleid."
+      },
+      "understandPrompt": {
+        "other": "Begrijpt u het?"
+      },
+      "iUnderstandCta": {
+        "other": "Ik begrijp het"
+      },
+      "dataHeading": {
+        "other": "Over uw gegevens op {app}"
+      },
+      "warn2Body": {
+        "other": "elvix bewaart of verwijdert niet wat {app} over u bewaart. De app-eigenaar is daarvoor verantwoordelijk volgens zijn eigen privacybeleid en servicevoorwaarden. We informeren de app op het moment dat u vertrekt, zodat zij kunnen handelen volgens die voorwaarden. Lees ze voordat u bevestigt."
+      },
+      "privacyPolicy": {
+        "other": "Privacybeleid"
+      },
+      "termsOfService": {
+        "other": "Servicevoorwaarden"
+      },
+      "warn2EmailPrompt": {
+        "other": "We mailen u een code ter bevestiging. Begrijpt u het?"
+      },
+      "warn2Cta": {
+        "other": "Ik begrijp het. Mail mij een code"
+      },
+      "restoreHeading": {
+        "other": "Herstel uw lidmaatschap op {app}"
+      },
+      "restoreBody": {
+        "one": "U heeft nog {count} dag binnen het respijtvenster. Herstel nu en de app ziet u precies zoals voorheen: dezelfde gebruikersnaam, dezelfde rollen, dezelfde geschiedenis.",
+        "other": "U heeft nog {count} dagen binnen het respijtvenster. Herstel nu en de app ziet u precies zoals voorheen: dezelfde gebruikersnaam, dezelfde rollen, dezelfde geschiedenis."
+      },
+      "restoreCta": {
+        "other": "Lidmaatschap herstellen"
+      },
+      "ownerLockedHeading": {
+        "other": "Een beheerder heeft u verwijderd van {app}"
+      },
+      "ownerLockedBody": {
+        "one": "Verwijderd op {date}. De app-eigenaar heeft nog {count} dag om het van hun kant te annuleren. Daarna verschijnt de app hier niet meer.",
+        "other": "Verwijderd op {date}. De app-eigenaar heeft nog {count} dagen om het van hun kant te annuleren. Daarna verschijnt de app hier niet meer."
+      },
+      "ownerLockedReachOut": {
+        "other": "Omdat zij de verwijdering hebben geïnitieerd, kunnen alleen zij dit terugdraaien. Neem contact op via hun ondersteuningskanaal als u erover wilt praten."
+      },
+      "doneLeftTitle": {
+        "other": "U heeft {app} verlaten."
+      },
+      "doneRestoredTitle": {
+        "other": "U bent terug op {app}."
+      },
+      "doneLeftBody": {
+        "other": "We hebben de app op de hoogte gesteld. U heeft 90 dagen om terug te komen en te herstellen vanaf dezelfde pagina. Daarna verschijnt de app niet meer in uw lijst."
+      },
+      "doneRestoredBody": {
+        "other": "Uw lidmaatschap is weer actief. De app-kant kan even nodig hebben om te vernieuwen."
+      }
+    },
+    "lifecycle": {
+      "bannedTitle": {
+        "other": "Uw toegang is ingetrokken."
+      },
+      "bannedBody": {
+        "other": "Een beheerder heeft uw account voor deze app verbannen. U wordt afgemeld en kunt zich niet meer aanmelden. Neem contact op met de eigenaar als u denkt dat dit een vergissing is."
+      },
+      "pausedTitle": {
+        "other": "Uw toegang is gepauzeerd."
+      },
+      "pausedBody": {
+        "other": "Een beheerder heeft uw account voor deze app tijdelijk gepauzeerd. U wordt binnenkort afgemeld; neem contact op met de eigenaar om de toegang te herstellen."
+      },
+      "deletedTitle": {
+        "other": "Uw account is verwijderd."
+      },
+      "deletedBody": {
+        "other": "Een beheerder heeft uw lidmaatschap voor deze app verwijderd. U wordt afgemeld en uw opgeslagen gegevens staan in de wachtrij om over 90 dagen te worden gewist, tenzij hersteld."
+      },
+      "inactiveTitle": {
+        "other": "U neemt een pauze van deze app."
+      },
+      "inactiveBody": {
+        "other": "Uw lidmaatschap is gedeactiveerd, dus we melden u hier af. U kunt op elk moment heractiveren vanaf uw elvix-account en direct terugkomen."
+      },
+      "countdown": {
+        "other": "U wordt over {seconds}s afgemeld"
+      },
+      "recoverRestoredTitle": {
+        "other": "U bent terug op {app}."
+      },
+      "recoverRestoredBody": {
+        "other": "Uw lidmaatschap is weer actief. Ga door naar de app wanneer u klaar bent."
+      },
+      "recoverSignedOutTitle": {
+        "other": "U bent afgemeld."
+      },
+      "recoverSignedOutBody": {
+        "other": "U bleef weg van {app}. Kom op elk moment terug."
+      },
+      "recoverWelcomeBack": {
+        "other": "Welkom terug bij {app}"
+      },
+      "recoverDeletedIntro": {
+        "other": "U heeft {app} eerder verlaten."
+      },
+      "recoverDeletedDaysLeft": {
+        "one": "U heeft nog {count} dag om terug te komen.",
+        "other": "U heeft nog {count} dagen om terug te komen."
+      },
+      "recoverDeletedNoCountdown": {
+        "other": "U bent nog steeds binnen het herstelvenster."
+      },
+      "recoverDeletedOutro": {
+        "other": "Herstel nu uw plek of meld u opnieuw af."
+      },
+      "recoverPausedBody": {
+        "other": "Uw lidmaatschap op {app} is op dit moment gepauzeerd. Herstel om verder te gaan waar u was gebleven, of meld u opnieuw af en blijf weg."
+      },
+      "recoverRestoringLabel": {
+        "other": "Bezig met herstellen"
+      },
+      "recoverRestoreDeletedCta": {
+        "other": "Mijn plek op {app} herstellen"
+      },
+      "recoverRestorePausedCta": {
+        "other": "Breng mij terug op {app}"
+      },
+      "recoverSigningOutLabel": {
+        "other": "U wordt afgemeld"
+      },
+      "recoverDeclineCta": {
+        "other": "Niet nu, meld mij af"
+      }
+    }
+  }
+}

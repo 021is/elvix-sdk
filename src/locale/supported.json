@@ -1,0 +1,21 @@
+{
+  "$comment": "Production locales for elvix SDK. Matches DanceClub's 15-locale shipping set.",
+  "fallback": "en",
+  "locales": [
+    { "tag": "en",    "displayName": "English",         "production": true,  "dir": "ltr" },
+    { "tag": "de",    "displayName": "Deutsch",         "production": true,  "dir": "ltr" },
+    { "tag": "es",    "displayName": "Español",         "production": true,  "dir": "ltr" },
+    { "tag": "fr",    "displayName": "Français",        "production": true,  "dir": "ltr" },
+    { "tag": "it",    "displayName": "Italiano",        "production": true,  "dir": "ltr" },
+    { "tag": "nl",    "displayName": "Nederlands",      "production": true,  "dir": "ltr" },
+    { "tag": "pt-BR", "displayName": "Português (BR)",  "production": true,  "dir": "ltr" },
+    { "tag": "pt-PT", "displayName": "Português (PT)",  "production": true,  "dir": "ltr" },
+    { "tag": "tr",    "displayName": "Türkçe",          "production": true,  "dir": "ltr" },
+    { "tag": "pl",    "displayName": "Polski",          "production": true,  "dir": "ltr" },
+    { "tag": "cs",    "displayName": "Čeština",         "production": true,  "dir": "ltr" },
+    { "tag": "sv",    "displayName": "Svenska",         "production": true,  "dir": "ltr" },
+    { "tag": "el",    "displayName": "Ελληνικά",        "production": true,  "dir": "ltr" },
+    { "tag": "ru",    "displayName": "Русский",         "production": true,  "dir": "ltr" },
+    { "tag": "uk",    "displayName": "Українська",      "production": true,  "dir": "ltr" }
+  ]
+}

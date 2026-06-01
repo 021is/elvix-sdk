@@ -37,6 +37,7 @@
  *     `onAuthenticated`. The default `window.location.href` fallback is kept.
  */
 
+import { useT } from "../locale/use-t";
 import { ArrowLeft, Check, Fingerprint, Loader2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ElvixLogo } from "./elvix-logo";
@@ -402,6 +403,7 @@ function ModalPresentation({ children }: { children: React.ReactNode }) {
 }
 
 function AuthCard(props: AuthFormProps) {
+  const t = useT();
   const { transparentBg = false } = props;
   const cardClass = transparentBg
     ? "overflow-hidden"
@@ -431,7 +433,7 @@ function AuthCard(props: AuthFormProps) {
             />
           </span>
           <span className="text-[11px] tracking-tight leading-none">
-            <span className="text-fg-3">Secured by </span>
+            <span className="text-fg-3">{t("signin.securedBy")}</span>
             <span className="font-semibold text-fg-1">elvix</span>
           </span>
         </a>
@@ -472,6 +474,7 @@ function AuthBody({
 }: AuthFormProps) {
   // Cross-origin elvix base URL the SDK talks to (provided by <ElvixProvider>).
   const { baseUrl } = useElvixContext();
+  const t = useT();
   const isPreview = mode === "preview";
   const anyMethod = methodGoogle || methodEmailOtp || methodPasskey || methodUsername;
   const gisEnabled =
@@ -713,10 +716,10 @@ function AuthBody({
   //   - only email → "Enter your email"
   const identifierPlaceholder =
     methodEmailOtp && methodUsername
-      ? "Email or username"
+      ? t("signin.identifierPlaceholderEmailOrUsername")
       : methodUsername
-        ? "Username"
-        : "Enter your email";
+        ? t("signin.identifierPlaceholderUsername")
+        : t("signin.identifierPlaceholderEmail");
 
   /** Continue button styling — Clerk pattern: dark by default, brand color once user changes it. */
   // CTA bg = brandColor (the "primary"), text = onBrandColor (Material's
@@ -776,7 +779,7 @@ function AuthBody({
             if (body.error === "too_recent" || body.error === "too_many") {
               setResendIn(body.retryAfterSeconds ?? 45);
             }
-            reportError(body.error, humanError(body.error, body.retryAfterSeconds));
+            reportError(body.error, humanError(t, body.error, body.retryAfterSeconds));
             return;
           }
           setChallengeId(body.challengeId);
@@ -801,19 +804,19 @@ function AuthBody({
           if (body.error === "too_recent" || body.error === "too_many") {
             setResendIn(body.retryAfterSeconds ?? 30);
           }
-          reportError(body.error, humanError(body.error, body.retryAfterSeconds));
+          reportError(body.error, humanError(t, body.error, body.retryAfterSeconds));
           return;
         }
         setChallengeId(body.challengeId);
         setStep("code");
         setResendIn(45);
       } catch {
-        reportError("network_error", "Network hiccup. Try again.");
+        reportError("network_error", t("signin.errorNetwork"));
       } finally {
         setSendingOtp(false);
       }
     },
-    [identifier, identifierValid, isPreview, sendingOtp, intent, clientId, reportError, baseUrl],
+    [identifier, identifierValid, isPreview, sendingOtp, intent, clientId, reportError, baseUrl, t],
   );
 
   /** Submit the OTP code. Existing route returns { ok, redirect }. */
@@ -840,17 +843,17 @@ function AuthBody({
           error?: string;
         };
         if (!res.ok || !body.ok) {
-          reportError(body.error, humanError(body.error));
+          reportError(body.error, humanError(t, body.error));
           return;
         }
         applyLanding(body);
       } catch {
-        reportError("network_error", "Network hiccup. Try again.");
+        reportError("network_error", t("signin.errorNetwork"));
       } finally {
         setVerifyingOtp(false);
       }
     },
-    [code, challengeId, isPreview, verifyingOtp, applyLanding, reportError, baseUrl],
+    [code, challengeId, isPreview, verifyingOtp, applyLanding, reportError, baseUrl, t],
   );
 
   // Fire onSubmitCode exactly once when the input first reaches 6 chars.
@@ -879,7 +882,7 @@ function AuthBody({
           onResult?.({ ok: false, error: result.error });
           return;
         }
-        reportError(result.error, result.message ?? humanError(result.error) ?? "Passkey verification failed.");
+        reportError(result.error, result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyVerify"));
         return;
       }
       // Passkey sign-in succeeded — applyLanding will run through
@@ -889,7 +892,7 @@ function AuthBody({
     } finally {
       setPasskeyBusy(false);
     }
-  }, [isPreview, passkeyBusy, baseUrl, clientId, applyLanding, reportError, onResult]);
+  }, [isPreview, passkeyBusy, baseUrl, clientId, applyLanding, reportError, onResult, t]);
 
   // Debounced live availability check for the username step. AbortController
   // ensures only the latest keystroke's verdict reaches state.
@@ -957,17 +960,17 @@ function AuthBody({
           error?: string;
         };
         if (!res.ok || !body.ok) {
-          reportError(body.error, humanError(body.error));
+          reportError(body.error, humanError(t, body.error));
           return;
         }
         applyLanding(body);
       } catch {
-        reportError("network_error", "Network hiccup. Try again.");
+        reportError("network_error", t("signin.errorNetwork"));
       } finally {
         setOnboardingBusy(null);
       }
     },
-    [usernameValue, isPreview, onboardingBusy, applyLanding, reportError, baseUrl],
+    [usernameValue, isPreview, onboardingBusy, applyLanding, reportError, baseUrl, t],
   );
 
   /** Onboarding passkey step: register a new passkey for the current session. */
@@ -982,7 +985,7 @@ function AuthBody({
         if (result.error === "passkey_cancelled") return;
         reportError(
           result.error,
-          result.message ?? humanError(result.error) ?? "Passkey couldn't be added. Try again or skip for now.",
+          result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyAdd"),
         );
         return;
       }
@@ -1000,7 +1003,7 @@ function AuthBody({
     } finally {
       setOnboardingBusy(null);
     }
-  }, [intent, isPreview, onboardingBusy, finalRedirect, onAuthenticated, onResult, reportError, baseUrl]);
+  }, [intent, isPreview, onboardingBusy, finalRedirect, onAuthenticated, onResult, reportError, baseUrl, t]);
 
   /**
    * Skip the onboarding "Add a passkey" step. The user is already
@@ -1102,7 +1105,7 @@ function AuthBody({
                 href={websiteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`Visit ${appName} website`}
+                aria-label={t("signin.visitAppWebsite", { app: appName ?? "" })}
                 className="cursor-pointer"
               >
                 {inner}
@@ -1114,26 +1117,32 @@ function AuthBody({
           <div>
             <div className="text-[18px] font-semibold tracking-tight text-fg-1">
               {step === "code"
-                ? "Check your inbox"
+                ? t("export.doneTitle")
                 : step === "username"
-                  ? "Pick a username"
+                  ? t("username.title")
                   : step === "passkey"
-                    ? `${signInVerb === "login" ? "Log in" : "Sign in"} faster next time`
+                    ? signInVerb === "login"
+                      ? t("signin.passkeyOnboardingTitleLogin")
+                      : t("signin.passkeyOnboardingTitleSignin")
                     : step === "recover"
-                      ? `Welcome back to ${recoverState?.appName ?? appName}`
+                      ? t("signin.recoverTitle", { app: recoverState?.appName ?? appName ?? t("signin.appNameFallback") })
                       // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-                      : `${signInVerb === "login" ? "Log in" : "Sign in"} to ${appName || "your app"}`}
+                      : signInVerb === "login"
+                        ? t("signin.titleLogin", { app: appName || t("signin.appNameFallback") })
+                        : t("signin.title", { app: appName || t("signin.appNameFallback") })}
             </div>
             <div className="text-[12.5px] text-fg-3 mt-0.5">
               {step === "code"
-                ? `We sent a code to ${identifier}`
+                ? t("signin.codeSentSubtitle", { email: identifier })
                 : step === "username"
-                  ? `This is how people see you${appName ? ` on ${appName}` : ""}.`
+                  ? appName
+                    ? t("username.subtitle", { app: appName })
+                    : t("username.subtitleNoApp")
                   : step === "passkey"
-                    ? "Touch ID, Face ID, or your security key. No more email codes."
+                    ? t("signin.passkeyOnboardingSubtitle")
                     : step === "recover"
-                      ? "Pick whether to come back or stay away."
-                      : "Pick how you want to continue."}
+                      ? t("signin.recoverSubtitle")
+                      : t("signin.identifierSubtitle")}
             </div>
             {/* Gate-state badge sits inline under the subtitle so the
               user reads consequence + badge as one unit. Only the
@@ -1160,7 +1169,7 @@ function AuthBody({
             style={ctaStyle}
           >
             <span className="inline-flex items-center gap-1.5" style={ctaLabelStyle}>
-              {verifyingOtp ? <Loader2 className="size-4 animate-spin" /> : "Verify"}
+              {verifyingOtp ? <Loader2 className="size-4 animate-spin" /> : t("signin.verifyButton")}
               {!verifyingOtp && (
                 <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden>
                   <path
@@ -1186,7 +1195,7 @@ function AuthBody({
               }}
               className="cursor-pointer inline-flex items-center gap-1 text-[12px] text-fg-2 hover:text-fg-1 hover:bg-surface-hover rounded-md px-2 -mx-2 py-1 transition"
             >
-              <ArrowLeft className="size-3" /> Use a different email
+              <ArrowLeft className="size-3" /> {t("signin.useDifferentEmail")}
             </button>
             <button
               type="button"
@@ -1194,7 +1203,7 @@ function AuthBody({
               onClick={() => onSubmitIdentifier()}
               className="cursor-pointer text-[12px] text-fg-2 hover:text-fg-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:text-fg-3 transition"
             >
-              {resendIn > 0 ? `Resend in ${resendIn}s` : "Resend code"}
+              {resendIn > 0 ? t("signin.resendInSeconds", { seconds: resendIn }) : t("signin.resendCode")}
             </button>
           </div>
           {error && <p className="text-[11.5px] text-red-400 text-center">{error}</p>}
@@ -1203,7 +1212,7 @@ function AuthBody({
         <div className="space-y-4">
           <div>
             <label htmlFor="onboarding-username" className="block text-[12px] text-fg-3 mb-1.5">
-              Username
+              {t("username.label")}
             </label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[14px] text-fg-3 pointer-events-none">
@@ -1218,7 +1227,7 @@ function AuthBody({
                 minLength={4}
                 maxLength={30}
                 onChange={(e) => setUsernameValue(e.target.value)}
-                placeholder="yourname"
+                placeholder={t("username.exampleHandle")}
                 disabled={onboardingBusy !== null}
                 className="w-full h-11 pl-7 pr-10 rounded-[10px] bg-surface border border-border-strong text-[14px] text-fg-1 placeholder:text-placeholder focus:outline-none focus:border-[#8e7dff] focus:ring-2 focus:ring-[#8e7dff]/20 transition disabled:opacity-60 disabled:cursor-not-allowed"
               />
@@ -1238,22 +1247,22 @@ function AuthBody({
             <p className="text-[11px] mt-1.5 leading-relaxed min-h-[14px]">
               {usernameCheck.kind === "idle" && (
                 <span className="text-fg-3">
-                  4–30 chars, a–z 0–9 . _ — must start with a letter.
+                  {t("username.rulesHint")}
                 </span>
               )}
-              {usernameCheck.kind === "checking" && <span className="text-fg-3">Checking…</span>}
+              {usernameCheck.kind === "checking" && <span className="text-fg-3">{t("username.checking")}</span>}
               {usernameCheck.kind === "available" && (
-                <span className="text-emerald-500">Looks good. This one's yours.</span>
+                <span className="text-emerald-500">{t("username.availableHint")}</span>
               )}
               {usernameCheck.kind === "rejected" && (
-                <span className="text-red-500">{usernameReasonLabel(usernameCheck.reason)}</span>
+                <span className="text-red-500">{usernameReasonLabel(t, usernameCheck.reason)}</span>
               )}
             </p>
           </div>
 
           {usernameSuggestions.length > 0 && (
             <div className="space-y-2">
-              <div className="text-[11px] uppercase tracking-[0.08em] text-fg-3">Suggestions</div>
+              <div className="text-[11px] uppercase tracking-[0.08em] text-fg-3">{t("username.suggestionsHeading")}</div>
               {/* Horizontal chip strip. Overflows scroll horizontally for
                   long handles; the scrollbar is hidden via
                   scrollbar-none + WebkitScrollbar tweak below. The final
@@ -1280,7 +1289,7 @@ function AuthBody({
                   {onboardingBusy === "skip" ? (
                     <Loader2 className="size-3.5 animate-spin" />
                   ) : (
-                    "Skip"
+                    t("common.skip")
                   )}
                 </button>
               </div>
@@ -1300,7 +1309,7 @@ function AuthBody({
               {onboardingBusy === "claim" ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
-                `Claim @${usernameValue || "yourname"}`
+                t("username.claimCta", { handle: usernameValue || t("username.yournameFallback") })
               )}
             </span>
           </button>
@@ -1310,15 +1319,15 @@ function AuthBody({
           <ul className="text-[12.5px] text-fg-2 leading-relaxed space-y-1.5">
             <li className="flex items-start gap-2">
               <span className="mt-1.5 size-1 rounded-full" style={{ background: brandColor }} />
-              <span>No more password or email codes</span>
+              <span>{t("signin.passkeyBullet1")}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1.5 size-1 rounded-full" style={{ background: brandColor }} />
-              <span>Phish-proof — works only on this site</span>
+              <span>{t("signin.passkeyBullet2")}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1.5 size-1 rounded-full" style={{ background: brandColor }} />
-              <span>Syncs across your devices via iCloud / Google / 1Password</span>
+              <span>{t("signin.passkeyBullet3")}</span>
             </li>
           </ul>
 
@@ -1336,7 +1345,7 @@ function AuthBody({
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <>
-                  <Fingerprint className="size-4" /> Add a passkey
+                  <Fingerprint className="size-4" /> {t("signin.addPasskeyCta")}
                 </>
               )}
             </span>
@@ -1352,7 +1361,7 @@ function AuthBody({
             {onboardingBusy === "skip" ? (
               <Loader2 className="size-4 animate-spin" />
             ) : (
-              "Skip for now"
+              t("signin.skipForNow")
             )}
           </button>
         </div>
@@ -1390,7 +1399,7 @@ function AuthBody({
       ) : !anyMethod ? (
         <div className="rounded-[10px] border border-dashed border-border-base bg-surface-hover py-8 px-4 text-center">
           <p className="text-[12.5px] text-fg-3">
-            Enable at least one method to preview the sign-in.
+            {t("signin.previewEmptyMethods")}
           </p>
         </div>
       ) : (
@@ -1430,7 +1439,7 @@ function AuthBody({
                   <div
                     ref={gisButtonRef}
                     className="w-full min-h-10"
-                    aria-label="Continue with Google"
+                    aria-label={t("signin.googleButton")}
                   />
                 ) : (
                   <a
@@ -1440,7 +1449,7 @@ function AuthBody({
                   >
                     <GoogleGlyph />
                     {/* LEGACY: spine-lint-disable-next-line spine/enum-over-string */}
-                    {socialLayout === "grid" && methodPasskey ? "Google" : "Continue with Google"}
+                    {socialLayout === "grid" && methodPasskey ? t("signin.googleButtonShort") : t("signin.googleButton")}
                   </a>
                 ))}
               {methodPasskey && (
@@ -1455,7 +1464,7 @@ function AuthBody({
                   ) : (
                     <Fingerprint className="size-4" />
                   )}
-                  {socialLayout === "grid" && methodGoogle ? "Passkey" : "Continue with passkey"}
+                  {socialLayout === "grid" && methodGoogle ? t("signin.passkeyButtonShort") : t("signin.passkeyButton")}
                 </button>
               )}
             </div>
@@ -1466,7 +1475,7 @@ function AuthBody({
               {(methodGoogle || methodPasskey) && (
                 <div className="flex items-center gap-3 my-3">
                   <span className="h-px flex-1 bg-border-base" />
-                  <span className="text-[11px] uppercase tracking-[0.08em] text-fg-3">or</span>
+                  <span className="text-[11px] uppercase tracking-[0.08em] text-fg-3">{t("signin.or")}</span>
                   <span className="h-px flex-1 bg-border-base" />
                 </div>
               )}
@@ -1488,7 +1497,7 @@ function AuthBody({
                 style={ctaStyle}
               >
                 <span className="inline-flex items-center gap-1.5" style={ctaLabelStyle}>
-                  {sendingOtp ? <Loader2 className="size-4 animate-spin" /> : "Continue"}
+                  {sendingOtp ? <Loader2 className="size-4 animate-spin" /> : t("signin.sendCodeButton")}
                   {!sendingOtp && (
                     <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden>
                       <path
@@ -1519,12 +1528,12 @@ function AuthBody({
 
       <div className="text-center mt-5 leading-[1.45]">
         <div className="text-[11.5px] text-placeholder">
-          By continuing, you agree to {appName || "the app"}&apos;s
+          {t("signin.legalIntro", { app: appName || t("signin.legalAppFallback") })}
         </div>
         <div className="text-[11.5px] mt-1 flex items-center justify-center gap-1.5">
-          <LegalLink href={termsOfServiceUrl}>Terms of Service</LegalLink>
+          <LegalLink href={termsOfServiceUrl}>{t("signin.termsOfService")}</LegalLink>
           <span className="text-placeholder">·</span>
-          <LegalLink href={privacyPolicyUrl}>Privacy Policy</LegalLink>
+          <LegalLink href={privacyPolicyUrl}>{t("signin.privacyPolicy")}</LegalLink>
         </div>
       </div>
     </>
@@ -1532,6 +1541,7 @@ function AuthBody({
 }
 
 export function FramedPreview({ children }: { children: React.ReactNode }) {
+  const t = useT();
   const hDash = "repeating-linear-gradient(to right, rgba(0,0,0,0.22) 0 4px, transparent 4px 8px)";
   const vDash = "repeating-linear-gradient(to bottom, rgba(0,0,0,0.22) 0 4px, transparent 4px 8px)";
   const OVERSHOOT = 20;
@@ -1565,7 +1575,7 @@ export function FramedPreview({ children }: { children: React.ReactNode }) {
             "repeating-linear-gradient(45deg, transparent 0 6px, rgba(0,0,0,0.06) 6px 7px)",
         }}
       >
-        This is a preview
+        {t("signin.framedPreviewLabel")}
       </div>
     </div>
   );
@@ -1605,39 +1615,41 @@ function GoogleGlyph() {
   );
 }
 
-function humanError(code?: string, retryAfterSeconds?: number): string {
+type Translator = (key: string, params?: Record<string, string | number>) => string;
+
+function humanError(t: Translator, code?: string, retryAfterSeconds?: number): string {
   switch (code) {
     case "too_recent":
       return retryAfterSeconds
-        ? `Wait ${retryAfterSeconds}s before requesting another code.`
-        : "Wait a moment before requesting another code.";
+        ? t("signin.errorTooRecentWithSeconds", { seconds: retryAfterSeconds })
+        : t("signin.errorTooRecent");
     case "too_many":
       return retryAfterSeconds
-        ? `Too many codes sent to this email. Try again in ${formatRetry(retryAfterSeconds)}.`
-        : "Too many codes sent to this email. Try again later.";
+        ? t("signin.errorTooManyWithRetry", { retry: formatRetry(t, retryAfterSeconds) })
+        : t("signin.errorTooMany");
     case "invalid_code":
-      return "That code didn't work. Try again.";
+      return t("signin.errorInvalidCode");
     case "expired":
-      return "That code expired. Send a new one.";
+      return t("signin.errorExpired");
     case "send_failed":
-      return "Couldn't send the email. Check the address.";
+      return t("signin.errorSendFailed");
     case "user_paused":
-      return "Your access has been paused. Contact support.";
+      return t("signin.errorUserPaused");
     case "user_banned":
-      return "Access denied.";
+      return t("signin.errorUserBanned");
     case "username_not_found":
-      return "No account with that username here.";
+      return t("signin.errorUsernameNotFound");
     case "method_disabled":
-      return "That sign-in method isn't enabled for this app.";
+      return t("signin.errorMethodDisabled");
     default:
-      return "Something went wrong. Try again.";
+      return t("signin.errorGeneric");
   }
 }
 
-function formatRetry(seconds: number): string {
-  if (seconds < 60) return `${seconds}s`;
+function formatRetry(t: Translator, seconds: number): string {
+  if (seconds < 60) return t("common.durationSeconds", { seconds });
   const m = Math.ceil(seconds / 60);
-  return m === 1 ? "1 minute" : `${m} minutes`;
+  return m === 1 ? t("common.durationOneMinute") : t("common.durationMinutes", { minutes: m });
 }
 
 /**
@@ -1678,27 +1690,27 @@ type UsernameCheckState =
   | { kind: "available" }
   | { kind: "rejected"; reason: string };
 
-function usernameReasonLabel(reason: string): string {
+function usernameReasonLabel(t: Translator, reason: string): string {
   switch (reason) {
     case "blank":
-      return "Pick a username.";
+      return t("username.reasonBlank");
     case "too_short":
-      return "Min 4 characters.";
+      return t("username.reasonTooShort");
     case "too_long":
-      return "Max 30 characters.";
+      return t("username.reasonTooLong");
     case "only_numbers":
-      return "Cannot be all numbers.";
+      return t("username.reasonOnlyNumbers");
     case "bad_start":
-      return "Must start with a letter.";
+      return t("username.reasonBadStart");
     case "bad_chars":
-      return "Only a–z, 0–9, dot, underscore.";
+      return t("username.reasonBadChars");
     case "consecutive_special":
-      return "No two dots or underscores in a row.";
+      return t("username.reasonConsecutiveSpecial");
     case "trailing_special":
-      return "Cannot end with a dot or underscore.";
+      return t("username.reasonTrailingSpecial");
     case "taken":
-      return "That one's taken.";
+      return t("username.reasonTaken");
     default:
-      return "That username isn't valid.";
+      return t("username.reasonInvalid");
   }
 }

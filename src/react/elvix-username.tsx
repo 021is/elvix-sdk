@@ -33,6 +33,9 @@ import {
 import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
+import { useT } from "../locale/use-t";
+
+type T = ReturnType<typeof useT>;
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -170,6 +173,7 @@ function ElvixUsernameInner({
       />
     );
   }
+  const t = useT();
   const ctx = useElvixContext();
   const [pane, setPane] = useState<Pane>("edit");
   const [direction, setDirection] = useState<1 | -1>(1);
@@ -263,11 +267,11 @@ function ElvixUsernameInner({
         const message =
           // LEGACY: spine-lint-disable-next-line spine/enum-over-string
           body.error === "taken"
-            ? "That username was just taken. Pick another."
-            // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-            : body.error === "format_invalid"
-              ? "That username doesn't match the rules."
-              : "Couldn't save. Try again.";
+            ? t("username.errorJustTaken")
+            : // LEGACY: spine-lint-disable-next-line spine/enum-over-string
+              body.error === "format_invalid"
+              ? t("username.errorFormat")
+              : t("username.errorSaveFailed");
         setServerError(message);
         onFail?.(message);
         onResult?.({ ok: false, error: body.error ?? "save_failed", message });
@@ -286,7 +290,7 @@ function ElvixUsernameInner({
         setPane("done");
       }
     } catch {
-      const message = "Network hiccup. Try again.";
+      const message = t("username.errorNetwork");
       setServerError(message);
       onFail?.(message);
       onResult?.({ ok: false, error: "network_error", message });
@@ -385,11 +389,14 @@ function EditPane({
   canContinue: boolean;
   onSubmit: (e: React.FormEvent) => void;
 }) {
+  const t = useT();
   const hasError = status === "format_invalid" || status === "taken" || Boolean(serverError);
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div>
-        <label className="block text-[12.5px] font-medium text-fg-2 mb-1.5">Username</label>
+        <label className="block text-[12.5px] font-medium text-fg-2 mb-1.5">
+          {t("username.label")}
+        </label>
         <div className="relative">
           <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-fg-3 pointer-events-none" />
           <ElvixInput
@@ -398,7 +405,7 @@ function EditPane({
             autoCapitalize="off"
             autoCorrect="off"
             spellCheck={false}
-            placeholder="yourname"
+            placeholder={t("username.placeholder")}
             value={value}
             onChange={(e) => setValue(e.target.value.replace(/\s+/g, ""))}
             hasError={hasError}
@@ -412,15 +419,18 @@ function EditPane({
       </div>
 
       <ul className="text-[11.5px] text-fg-3 leading-[1.55] list-disc pl-4 space-y-0.5">
-        <li>
-          {USERNAME_MIN_LENGTH}–{USERNAME_MAX_LENGTH} characters
-        </li>
-        <li>lowercase letters, digits, dot, underscore</li>
-        <li>start with a letter, end with a letter or digit</li>
-        <li>no two specials in a row, no reserved words</li>
+        <li>{t("username.ruleLength", { min: USERNAME_MIN_LENGTH, max: USERNAME_MAX_LENGTH })}</li>
+        <li>{t("username.ruleChars")}</li>
+        <li>{t("username.ruleStartEnd")}</li>
+        <li>{t("username.ruleNoDoubles")}</li>
       </ul>
 
-      <ElvixSaveButton state="idle" disabled={!canContinue} label="Continue" hint="Enter" />
+      <ElvixSaveButton
+        state="idle"
+        disabled={!canContinue}
+        label={t("common.continue")}
+        hint={t("common.hintEnter")}
+      />
     </form>
   );
 }
@@ -438,6 +448,7 @@ function ConfirmPane({
   onBack: () => void;
   onConfirm: () => void;
 }) {
+  const t = useT();
   return (
     <div className="space-y-5">
       <button
@@ -447,29 +458,26 @@ function ConfirmPane({
         className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-fg-2 hover:text-fg-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <ArrowLeft className="size-3.5" />
-        Back
+        {t("common.back")}
       </button>
 
       <div className="rounded-[12px] p-4 bg-white dark:bg-[#101013] border border-[var(--elvix-primary-12)]">
         <div className="text-[12px] uppercase tracking-[0.06em] font-medium text-fg-3">
-          Confirm change
+          {t("username.confirmHeading")}
         </div>
         <div className="mt-3 flex items-center gap-3 flex-wrap">
-          <PreviewChip>{current ? `@${current}` : "Not set"}</PreviewChip>
+          <PreviewChip>{current ? `@${current}` : t("username.notSet")}</PreviewChip>
           <span className="text-fg-3">→</span>
           <PreviewChip emphasis>{`@${next}`}</PreviewChip>
         </div>
-        <p className="text-[12px] text-fg-3 leading-[1.55] mt-3">
-          Anyone signing into this app with this username will be you. You can change it again any
-          time.
-        </p>
+        <p className="text-[12px] text-fg-3 leading-[1.55] mt-3">{t("username.confirmBody")}</p>
       </div>
 
       <ElvixSaveButton
         state={saving ? "saving" : "idle"}
         disabled={saving}
-        label="Confirm change"
-        savedLabel="Saved"
+        label={t("username.confirmCta")}
+        savedLabel={t("identity.saved")}
         hint={null}
         onClick={onConfirm}
         autoFocus
@@ -487,6 +495,7 @@ function DonePane({
   appName: string;
   onChangeAgain: () => void;
 }) {
+  const t = useT();
   return (
     <div className="flex flex-col items-center text-center gap-4 py-2">
       <motion.span
@@ -504,18 +513,16 @@ function DonePane({
       </motion.span>
       <div className="space-y-1">
         <div className="text-[15px] font-semibold tracking-tight text-fg-1">
-          You're @{username} on {appName}.
+          {t("username.doneTitle", { username, appName })}
         </div>
-        <div className="text-[12.5px] text-fg-3 leading-[1.55]">
-          We saved it. You can keep using this surface, or head back when you're ready.
-        </div>
+        <div className="text-[12.5px] text-fg-3 leading-[1.55]">{t("username.doneBody")}</div>
       </div>
       <button
         type="button"
         onClick={onChangeAgain}
         className="text-[12.5px] font-medium text-fg-2 hover:text-fg-1 underline underline-offset-4 cursor-pointer"
       >
-        Change it again
+        {t("username.changeAgain")}
       </button>
     </div>
   );
@@ -540,13 +547,16 @@ function DisabledPane({
   supportUrl: string | null;
   supportEmail: string | null;
 }) {
+  const t = useT();
   const hasSupport = Boolean(supportUrl || supportEmail);
   const supportHref = supportUrl
     ? supportUrl
     : supportEmail
-      ? `mailto:${supportEmail}?subject=${encodeURIComponent(`Re-enable username sign-in on ${appName}`)}`
+      ? `mailto:${supportEmail}?subject=${encodeURIComponent(t("username.disabledMailSubject", { appName }))}`
       : null;
-  const supportLabel = supportUrl ? `Contact ${appName} support` : `Email ${appName}`;
+  const supportLabel = supportUrl
+    ? t("username.disabledContactSupport", { appName })
+    : t("username.disabledEmailSupport", { appName });
   const SupportIcon = supportUrl ? ArrowUpRight : Mail;
 
   return (
@@ -566,16 +576,14 @@ function DisabledPane({
       </motion.span>
       <div className="space-y-1 max-w-[320px]">
         <div className="text-[15px] font-semibold tracking-tight text-fg-1">
-          Usernames are off on {appName}.
+          {t("username.disabledTitle", { appName })}
         </div>
         <div className="text-[12.5px] text-fg-3 leading-[1.55]">
-          The app owner currently has username sign-in disabled, so we can't let you set or change
-          your username here.
+          {t("username.disabledBody")}
           {current ? (
             <>
               {" "}
-              You still have <span className="font-mono text-fg-2">@{current}</span> from before. It
-              stays on your membership until the app owner turns the feature back on.
+              {t("username.disabledStillHave", { current })}
             </>
           ) : null}
         </div>
@@ -596,13 +604,11 @@ function DisabledPane({
         </a>
       ) : (
         <p className="text-[12px] text-fg-3 leading-[1.55] max-w-[320px]">
-          The app hasn't published a support contact yet. Reach out through whatever channel you
-          usually use with them.
+          {t("username.disabledNoSupport")}
         </p>
       )}
       <p className="text-[11px] text-fg-3 leading-[1.55] max-w-[320px]">
-        Ask them to flip Username sign-in back on in Console → Sign-in methods. Once they do, you
-        can come back here and pick a username.
+        {t("username.disabledHint")}
       </p>
     </div>
   );
@@ -661,6 +667,7 @@ function StatusLine({
   current: string | null;
   serverError: string | null;
 }) {
+  const t = useT();
   if (serverError) {
     return <p className="text-[12px] text-red-500 leading-tight mt-1.5">{serverError}</p>;
   }
@@ -668,31 +675,31 @@ function StatusLine({
     return (
       <p className="text-[12px] text-fg-3 leading-tight mt-1.5">
         {current
-          ? `Currently @${current}. Type something different to change it.`
-          : "Pick a name other people on this app can use to find you."}
+          ? t("username.idleCurrent", { current })
+          : t("username.idleEmpty")}
       </p>
     );
   }
   if (status === "checking") {
-    return <p className="text-[12px] text-fg-3 leading-tight mt-1.5">Checking…</p>;
+    return (
+      <p className="text-[12px] text-fg-3 leading-tight mt-1.5">{`${t("username.checking")}…`}</p>
+    );
   }
   if (status === "format_invalid") {
     const reason = usernameReason(normaliseUsername(value));
-    const message = REASON_COPY[reason] ?? "Doesn't match the rules below.";
+    const message = reasonCopy(t, reason) ?? t("username.formatGeneric");
     return <p className="text-[12px] text-red-500 leading-tight mt-1.5">{message}</p>;
   }
   if (status === "taken") {
     return (
       <p className="text-[12px] text-red-500 leading-tight mt-1.5">
-        Someone else on this app already has @{normaliseUsername(value)}.
+        {t("username.takenLine", { username: normaliseUsername(value) })}
       </p>
     );
   }
   if (status === "current") {
     return (
-      <p className="text-[12px] text-fg-3 leading-tight mt-1.5">
-        That's the username you already have here.
-      </p>
+      <p className="text-[12px] text-fg-3 leading-tight mt-1.5">{t("username.currentLine")}</p>
     );
   }
   return (
@@ -700,20 +707,36 @@ function StatusLine({
       className="text-[12px] leading-tight mt-1.5"
       style={{ color: "var(--elvix-primary-strong)" }}
     >
-      @{value.trim().toLowerCase()} is available.
+      {t("username.availableLine", { username: value.trim().toLowerCase() })}
     </p>
   );
 }
 
-const REASON_COPY: Partial<Record<UsernameReason, string>> = {
-  too_short: `Username is too short (need at least ${USERNAME_MIN_LENGTH}).`,
-  too_long: `Username is too long (max ${USERNAME_MAX_LENGTH}).`,
-  bad_chars: "Only lowercase letters, digits, dot, and underscore.",
-  must_start_letter: "Must start with a letter.",
-  must_end_alnum: "Must end with a letter or digit.",
-  no_double_special: "Can't have two dots or underscores in a row.",
-  reserved: "That username is reserved. Pick another.",
-};
+/**
+ * Maps a {@link UsernameReason} enum value to the localized error copy.
+ * Helper takes `t` because it's only invoked from a rendering component.
+ */
+function reasonCopy(t: T, reason: UsernameReason): string | undefined {
+  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
+  switch (reason) {
+    case "too_short":
+      return t("username.reasonTooShort");
+    case "too_long":
+      return t("username.reasonTooLong");
+    case "bad_chars":
+      return t("username.reasonBadChars");
+    case "must_start_letter":
+      return t("username.reasonMustStartLetter");
+    case "must_end_alnum":
+      return t("username.reasonMustEndAlnum");
+    case "no_double_special":
+      return t("username.reasonNoDoubleSpecial");
+    case "reserved":
+      return t("username.reasonReserved");
+    default:
+      return undefined;
+  }
+}
 
 const paneVariants = {
   enter: (dir: 1 | -1) => ({ x: dir * 24, opacity: 0 }),

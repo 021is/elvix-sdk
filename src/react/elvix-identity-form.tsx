@@ -42,25 +42,14 @@ import {
 } from "./identity-schema";
 import { unwrapEnvelope } from "./spine-fetch";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useT } from "../locale/use-t";
 import { toast } from "./toast";
 
 // Pills are content-sized + flex-wrap, so labels can be their full
 // natural length without breaking layout. Translations safe — long
 // German/French strings just push chips onto a second line.
-const GENDER_OPTIONS = [
-  { value: "male" as Gender, label: "Male" },
-  { value: "female" as Gender, label: "Female" },
-  { value: "non_binary" as Gender, label: "Non-binary" },
-  { value: "prefer_not_to_say" as Gender, label: "Prefer not to say" },
-];
-
-const PRONOUN_OPTIONS = [
-  { value: "she_her" as Pronouns, label: "She / her" },
-  { value: "he_him" as Pronouns, label: "He / him" },
-  { value: "they_them" as Pronouns, label: "They / them" },
-  { value: "other" as Pronouns, label: "Other" },
-  { value: "prefer_not_to_say" as Pronouns, label: "Prefer not to say" },
-];
+// Option labels are built per-render via t() inside the component
+// so they pick up the active locale.
 
 export type ElvixIdentityFormResult =
   | { ok: true }
@@ -81,6 +70,7 @@ export function ElvixIdentityForm({
   onResult?: (result: ElvixIdentityFormResult) => void;
 }) {
   const ctx = useElvixContext();
+  const t = useT();
   const [hydrated, setHydrated] = useState<Partial<IdentityInput> | null>(
     initial ?? null,
   );
@@ -106,7 +96,7 @@ export function ElvixIdentityForm({
   if (!hydrated) {
     return (
       <div className="w-full h-48 grid place-items-center text-[12.5px] text-fg-3">
-        Loading…
+        {t("common.loading")}
       </div>
     );
   }
@@ -121,6 +111,7 @@ function ElvixIdentityFormInner({
   onResult?: (result: ElvixIdentityFormResult) => void;
 }) {
   const ctx = useElvixContext();
+  const t = useT();
   const [givenName, setGivenName] = useState(initial.givenName ?? "");
   const [familyName, setFamilyName] = useState(initial.familyName ?? "");
   const [birthdate, setBirthdate] = useState(initial.birthdate ?? "");
@@ -130,6 +121,27 @@ function ElvixIdentityFormInner({
   );
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [state, setState] = useState<ElvixSaveState>("idle");
+
+  const GENDER_OPTIONS = useMemo(
+    () => [
+      { value: "male" as Gender, label: t("identity.genderMale") },
+      { value: "female" as Gender, label: t("identity.genderFemale") },
+      { value: "non_binary" as Gender, label: t("identity.genderNonBinary") },
+      { value: "prefer_not_to_say" as Gender, label: t("identity.genderPreferNotToSay") },
+    ],
+    [t],
+  );
+
+  const PRONOUN_OPTIONS = useMemo(
+    () => [
+      { value: "she_her" as Pronouns, label: t("identity.pronounSheHer") },
+      { value: "he_him" as Pronouns, label: t("identity.pronounHeHim") },
+      { value: "they_them" as Pronouns, label: t("identity.pronounTheyThem") },
+      { value: "other" as Pronouns, label: t("identity.pronounOther") },
+      { value: "prefer_not_to_say" as Pronouns, label: t("identity.pronounPreferNotToSay") },
+    ],
+    [t],
+  );
 
   // Baseline snapshot of "what's already on disk." Save button stays
   // disabled until at least one field diverges from the baseline.
@@ -198,11 +210,11 @@ function ElvixIdentityFormInner({
       } | null;
       if (!res.ok || !body?.ok) {
         setState("idle");
-        toast.error(body?.error ?? "Could not save.");
+        toast.error(body?.error ?? t("identity.errorSaveFailed"));
         onResult?.({
           ok: false,
           error: body?.error ?? "save_failed",
-          message: "Could not save.",
+          message: t("identity.errorSaveFailed"),
         });
         return;
       }
@@ -222,10 +234,10 @@ function ElvixIdentityFormInner({
       // SSR caches for `/account/*` so the next navigation is fresh.
     } catch {
       setState("idle");
-      toast.error("Could not save.");
-      onResult?.({ ok: false, error: "network_error", message: "Could not save." });
+      toast.error(t("identity.errorSaveFailed"));
+      onResult?.({ ok: false, error: "network_error", message: t("identity.errorSaveFailed") });
     }
-  }, [parse, state, onResult, ctx.baseUrl]);
+  }, [parse, state, onResult, ctx.baseUrl, t]);
 
   // Drop "saved" back to "idle" after a brief celebration so the
   // button is usable again for follow-up edits.
@@ -246,33 +258,33 @@ function ElvixIdentityFormInner({
       className="space-y-5"
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="Given name" error={show("givenName")}>
+        <Field label={t("identity.givenName")} error={show("givenName")}>
           <ElvixInput
             type="text"
             value={givenName}
             onChange={(e) => setGivenName(e.target.value)}
             onBlur={() => markTouched("givenName")}
             autoComplete="given-name"
-            placeholder="Jane"
+            placeholder={t("identity.givenNamePlaceholder")}
             maxLength={80}
             hasError={Boolean(show("givenName"))}
           />
         </Field>
-        <Field label="Family name" error={show("familyName")}>
+        <Field label={t("identity.familyName")} error={show("familyName")}>
           <ElvixInput
             type="text"
             value={familyName}
             onChange={(e) => setFamilyName(e.target.value)}
             onBlur={() => markTouched("familyName")}
             autoComplete="family-name"
-            placeholder="Doe"
+            placeholder={t("identity.familyNamePlaceholder")}
             maxLength={80}
             hasError={Boolean(show("familyName"))}
           />
         </Field>
       </div>
 
-      <Field label="Date of birth" error={show("birthdate")}>
+      <Field label={t("identity.birthdate")} error={show("birthdate")}>
         <ElvixDateInput
           value={birthdate}
           onChange={(v) => setBirthdate(v)}
@@ -281,7 +293,7 @@ function ElvixIdentityFormInner({
         />
       </Field>
 
-      <Field label="Gender" error={show("gender")}>
+      <Field label={t("identity.gender")} error={show("gender")}>
         <ElvixChipGroup
           variant="pills"
           options={GENDER_OPTIONS}
@@ -293,7 +305,7 @@ function ElvixIdentityFormInner({
         />
       </Field>
 
-      <Field label="Pronouns (optional)" error={undefined}>
+      <Field label={t("identity.pronounsOptional")} error={undefined}>
         <ElvixChipGroup
           variant="pills"
           options={PRONOUN_OPTIONS}

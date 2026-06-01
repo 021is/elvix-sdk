@@ -55,6 +55,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import { type CSSProperties, Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { useT } from "../locale/use-t";
 
 const ReturnTo = {
   LIST: "list",
@@ -148,6 +149,7 @@ export function ElvixAddressBook({
   onChange,
   onResult,
 }: ElvixAddressBookProps) {
+  const t = useT();
   const ctx = useElvixContext();
   const [addresses, setAddresses] = useState<AddressRecord[]>([]);
   const [view, setView] = useState<View>("empty");
@@ -587,7 +589,7 @@ export function ElvixAddressBook({
           <AnimatePresence custom={navDir} initial={false}>
             {loading ? (
               <Pane key="loading" dir={navDir}>
-                <div className="grid h-full place-items-center text-fg-3 text-sm">Loading…</div>
+                <div className="grid h-full place-items-center text-fg-3 text-sm">{t("common.loading")}</div>
               </Pane>
             ) : view === "empty" ? (
               <Pane key="empty" dir={navDir}>
@@ -686,7 +688,7 @@ export function ElvixAddressBook({
               </Pane>
             ) : view === "saving" ? (
               <Pane key="saving" dir={navDir}>
-                <SavingView label="Saving address…" />
+                <SavingView label={t("addressBook.savingLabel")} />
               </Pane>
             ) : view === "detail" ? (
               <Pane key="detail" dir={navDir}>
@@ -736,7 +738,7 @@ export function ElvixAddressBook({
               </Pane>
             ) : (
               <Pane key="deleting" dir={navDir}>
-                <SavingView label="Deleting address…" />
+                <SavingView label={t("addressBook.deletingLabel")} />
               </Pane>
             )}
           </AnimatePresence>
@@ -796,8 +798,7 @@ function Pane({
 // ─── Sub-views ────────────────────────────────────────────────────────
 
 function EmptyState({ kind, onAdd }: { kind: AddressKind; onAdd: () => void }) {
-  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  const noun = kind === "billing" ? "billing" : "shipping";
+  const t = useT();
   return (
     <div className="flex h-full flex-col items-center justify-center text-center">
       <button
@@ -809,10 +810,13 @@ function EmptyState({ kind, onAdd }: { kind: AddressKind; onAdd: () => void }) {
           <Plus className="size-6" />
         </div>
         <div>
-          <div className="text-[15px] font-semibold text-fg-1">Add {noun} address</div>
+          <div className="text-[15px] font-semibold text-fg-1">
+            {kind === "billing" ? t("addressBook.addBilling") : t("addressBook.addShipping")}
+          </div>
           <div className="mt-1 text-[12px] text-fg-3">
-            We&apos;ll use this for{" "}
-            {kind === "billing" ? "invoices and receipts" : "deliveries and pickups"}.
+            {kind === "billing"
+              ? t("addressBook.useForBilling")
+              : t("addressBook.useForShipping")}
           </div>
         </div>
       </button>
@@ -835,7 +839,7 @@ function ListView({
   onToggleDefault: (id: string, currentlyDefault: boolean) => void;
   onAdd: () => void;
 }) {
-  const noun = kind === "billing" ? "billing" : "shipping";
+  const t = useT();
   // Top + bottom padding gives the first / last card clearance from
   // the Pane's fade mask so they're never partially fogged when the
   // list isn't scrolled.
@@ -847,7 +851,9 @@ function ListView({
         className="group flex items-center justify-center gap-2 rounded-[12px] border border-dashed border-fg-3/30 px-4 py-3 text-[13px] font-medium text-fg-2 transition hover:border-[var(--elvix-primary)] hover:text-[var(--elvix-primary)] cursor-pointer"
       >
         <Plus className="size-4" />
-        Add another {noun} address
+        {kind === "billing"
+          ? t("addressBook.addAnotherBilling")
+          : t("addressBook.addAnotherShipping")}
       </button>
       {addresses.map((a) => {
         const hasLabel = Boolean(a.label?.trim());
@@ -873,7 +879,7 @@ function ListView({
                   {a.isDefault && (
                     <span className="inline-flex items-center gap-1 rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_15%,transparent)] px-2 py-[1px] text-[10px] font-medium text-[var(--elvix-primary)]">
                       <Star className="size-2.5 fill-current" />
-                      Default
+                      {t("addressBook.defaultBadge")}
                     </span>
                   )}
                 </div>
@@ -887,7 +893,9 @@ function ListView({
                   </div>
                 )}
                 {!hasLabel && hasCompany && (
-                  <div className="mt-0.5 truncate text-[12.5px] text-fg-2">at {a.companyName}</div>
+                  <div className="mt-0.5 truncate text-[12.5px] text-fg-2">
+                    {t("addressBook.atCompany", { company: a.companyName ?? "" })}
+                  </div>
                 )}
                 <div className="mt-0.5 truncate text-[12.5px] text-fg-2">
                   {a.line1}
@@ -917,8 +925,8 @@ function ListView({
                     ? "text-[var(--elvix-primary)] hover:bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)]"
                     : "text-fg-3 hover:bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)] hover:text-[var(--elvix-primary)]")
                 }
-                aria-label={a.isDefault ? "Remove default" : "Set as default"}
-                title={a.isDefault ? "Remove default" : "Set as default"}
+                aria-label={a.isDefault ? t("addressBook.removeDefault") : t("addressBook.setAsDefault")}
+                title={a.isDefault ? t("addressBook.removeDefault") : t("addressBook.setAsDefault")}
               >
                 <Star className={a.isDefault ? "size-4 fill-current" : "size-4"} />
               </button>
@@ -929,8 +937,8 @@ function ListView({
                   onDelete(a.id);
                 }}
                 className="inline-flex size-8 items-center justify-center rounded-md text-fg-3 transition hover:bg-red-500/10 hover:text-red-600 cursor-pointer"
-                aria-label="Delete address"
-                title="Delete address"
+                aria-label={t("addressBook.deleteAddress")}
+                title={t("addressBook.deleteAddress")}
               >
                 <Trash2 className="size-4" />
               </button>
@@ -953,6 +961,7 @@ function SearchView({
   onPick: (details: PlaceDetails) => void;
   onBack: () => void;
 }) {
+  const t = useT();
   const ctx = useElvixContext();
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
@@ -1027,8 +1036,6 @@ function SearchView({
     [onPick, ctx.baseUrl],
   );
 
-  const noun = kind === "billing" ? "billing" : "shipping";
-
   return (
     <div className="flex h-full flex-col">
       <div className="mb-3 flex items-center gap-2">
@@ -1038,14 +1045,18 @@ function SearchView({
           className="inline-flex items-center gap-1 text-[12.5px] text-fg-2 hover:text-fg-1 cursor-pointer"
         >
           <ArrowLeft className="size-3.5" />
-          Back
+          {t("common.back")}
         </button>
-        <div className="ml-auto text-[12px] text-fg-3">New {noun} address</div>
+        <div className="ml-auto text-[12px] text-fg-3">
+          {kind === "billing"
+            ? t("addressBook.newBillingAddress")
+            : t("addressBook.newShippingAddress")}
+        </div>
       </div>
 
       <label className="block">
         <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
-          Start typing your address
+          {t("addressBook.searchPrompt")}
         </span>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-3" />
@@ -1053,7 +1064,7 @@ function SearchView({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="221B Baker Street, London…"
+            placeholder={t("addressBook.searchPlaceholder")}
             autoFocus
             autoComplete="off"
             className="pl-9"
@@ -1067,12 +1078,12 @@ function SearchView({
       <div className="mt-2 flex-1 min-h-0 overflow-y-auto pr-1">
         {err && (
           <div className="rounded-md bg-red-500/10 px-3 py-2 text-[12.5px] text-red-600 dark:text-red-300">
-            Couldn&apos;t search: {err}
+            {t("addressBook.searchError", { error: err })}
           </div>
         )}
         {!err && suggestions.length === 0 && query.trim().length >= 2 && !searching && (
           <div className="rounded-md bg-fg-3/5 px-3 py-2 text-[12.5px] text-fg-3">
-            No matches yet. Keep typing.
+            {t("addressBook.noMatchesKeepTyping")}
           </div>
         )}
         <ul className="flex flex-col gap-1">
@@ -1120,10 +1131,10 @@ function AptFloorView({
   onConfirm: (line2: string | null) => void;
   onBack: () => void;
 }) {
+  const t = useT();
   const [line2, setLine2] = useState(initial);
   const trimmed = line2.trim();
   const valid = trimmed.length <= 180;
-  const noun = kind === "billing" ? "billing" : "shipping";
 
   return (
     <div className="flex h-full flex-col">
@@ -1134,31 +1145,31 @@ function AptFloorView({
           className="inline-flex items-center gap-1 text-[12.5px] text-fg-2 hover:text-fg-1 cursor-pointer"
         >
           <ArrowLeft className="size-3.5" />
-          Back
+          {t("common.back")}
         </button>
-        <div className="ml-auto text-[12px] text-fg-3">Apartment · floor · suite</div>
+        <div className="ml-auto text-[12px] text-fg-3">{t("addressBook.aptFloorEyebrow")}</div>
       </div>
 
       <div className="mb-4">
         <h2 className="text-[18px] font-semibold tracking-tight text-fg-1">
-          Apartment, suite, or floor?
+          {t("addressBook.aptFloorTitle")}
         </h2>
         <p className="mt-1 text-[12.5px] text-fg-3">
           {kind === "billing"
-            ? "Maps rarely captures unit numbers. Adds a second line to the address."
-            : "Carriers misroute without unit info. Skip if you don't need it."}
+            ? t("addressBook.aptFloorBodyBilling")
+            : t("addressBook.aptFloorBodyShipping")}
         </p>
       </div>
 
       <label className="block">
         <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
-          Address line 2 (optional)
+          {t("addressBook.line2Label")}
         </span>
         <ElvixInput
           type="text"
           value={line2}
           onChange={(e) => setLine2(e.target.value)}
-          placeholder="Apt 4B, 3rd floor, Suite 200…"
+          placeholder={t("addressBook.line2Placeholder")}
           autoFocus
           autoComplete="address-line2"
           maxLength={180}
@@ -1178,9 +1189,9 @@ function AptFloorView({
           state="idle"
           disabled={!valid}
           onClick={() => valid && onConfirm(trimmed || null)}
-          label="Continue"
-          savedLabel="Continue"
-          hint="Enter"
+          label={t("common.continue")}
+          savedLabel={t("common.continue")}
+          hint={t("common.enterHint")}
           className="!w-auto !px-5"
         />
       </div>
@@ -1207,7 +1218,7 @@ function RecipientChoiceView({
   onBack: () => void;
   error: string | null;
 }) {
-  const noun = kind === "billing" ? "billing" : "shipping";
+  const t = useT();
   const hasOwnName = Boolean(userDisplayName?.trim());
 
   return (
@@ -1219,17 +1230,21 @@ function RecipientChoiceView({
           className="inline-flex items-center gap-1 text-[12.5px] text-fg-2 hover:text-fg-1 cursor-pointer"
         >
           <ArrowLeft className="size-3.5" />
-          Back
+          {t("common.back")}
         </button>
-        <div className="ml-auto text-[12px] text-fg-3">Step 2 of 3</div>
+        <div className="ml-auto text-[12px] text-fg-3">{t("addressBook.step2of3")}</div>
       </div>
 
       <div className="mb-4">
         <h2 className="text-[18px] font-semibold tracking-tight text-fg-1">
-          Who is this {noun} address for?
+          {kind === "billing"
+            ? t("addressBook.recipientTitleBilling")
+            : t("addressBook.recipientTitleShipping")}
         </h2>
         <p className="mt-1 text-[12.5px] text-fg-3">
-          {kind === "billing" ? "Name on the invoice." : "Name on the package."}
+          {kind === "billing"
+            ? t("addressBook.recipientSubtitleBilling")
+            : t("addressBook.recipientSubtitleShipping")}
         </p>
       </div>
 
@@ -1244,7 +1259,7 @@ function RecipientChoiceView({
               <User className="size-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <div className="truncate text-[14px] font-semibold text-fg-1">Me</div>
+              <div className="truncate text-[14px] font-semibold text-fg-1">{t("entityKind.me")}</div>
               <div className="truncate text-[12.5px] text-fg-3">{userDisplayName}</div>
             </div>
             <ChevronRight className="mt-1 size-4 shrink-0 text-fg-3 transition group-hover:translate-x-0.5 group-hover:text-[var(--elvix-primary)]" />
@@ -1260,9 +1275,11 @@ function RecipientChoiceView({
             <UserPlus className="size-4" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="truncate text-[14px] font-semibold text-fg-1">Someone else</div>
+            <div className="truncate text-[14px] font-semibold text-fg-1">{t("entityKind.someoneElse")}</div>
             <div className="truncate text-[12.5px] text-fg-3">
-              {kind === "billing" ? "A different name for the invoice" : "Sending to someone else"}
+              {kind === "billing"
+                ? t("addressBook.someoneElseSubtitleBilling")
+                : t("addressBook.someoneElseSubtitleShipping")}
             </div>
           </div>
           <ChevronRight className="mt-1 size-4 shrink-0 text-fg-3 transition group-hover:translate-x-0.5 group-hover:text-[var(--elvix-primary)]" />
@@ -1277,9 +1294,11 @@ function RecipientChoiceView({
             <Building2 className="size-4" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="truncate text-[14px] font-semibold text-fg-1">A business</div>
+            <div className="truncate text-[14px] font-semibold text-fg-1">{t("entityKind.business")}</div>
             <div className="truncate text-[12.5px] text-fg-3">
-              {kind === "billing" ? "Invoice the company (B2B)" : "Ship to a company / workplace"}
+              {kind === "billing"
+                ? t("addressBook.businessSubtitleBilling")
+                : t("addressBook.businessSubtitleShipping")}
             </div>
           </div>
           <ChevronRight className="mt-1 size-4 shrink-0 text-fg-3 transition group-hover:translate-x-0.5 group-hover:text-[var(--elvix-primary)]" />
@@ -1288,7 +1307,7 @@ function RecipientChoiceView({
 
       {error && (
         <div className="mt-3 rounded-md bg-red-500/10 px-3 py-2 text-[12.5px] text-red-600 dark:text-red-300">
-          Couldn&apos;t save: {error}
+          {t("addressBook.saveError", { error })}
         </div>
       )}
     </div>
@@ -1308,8 +1327,8 @@ function RecipientCustomView({
   onConfirm: (name: string) => void;
   onBack: () => void;
 }) {
+  const t = useT();
   const [name, setName] = useState(initial);
-  const noun = kind === "billing" ? "billing" : "shipping";
   const trimmed = name.trim();
   const valid = trimmed.length >= 1 && trimmed.length <= 120;
 
@@ -1322,27 +1341,29 @@ function RecipientCustomView({
           className="inline-flex items-center gap-1 text-[12.5px] text-fg-2 hover:text-fg-1 cursor-pointer"
         >
           <ArrowLeft className="size-3.5" />
-          Back
+          {t("common.back")}
         </button>
-        <div className="ml-auto text-[12px] text-fg-3">Step 2 of 3</div>
+        <div className="ml-auto text-[12px] text-fg-3">{t("addressBook.step2of3")}</div>
       </div>
 
       <div className="mb-4">
         <h2 className="text-[18px] font-semibold tracking-tight text-fg-1">
-          Who&apos;s the recipient?
+          {t("addressBook.recipientCustomTitle")}
         </h2>
         <p className="mt-1 text-[12.5px] text-fg-3">
-          The name that will appear on the {noun === "billing" ? "invoice" : "package"}.
+          {kind === "billing"
+            ? t("addressBook.recipientCustomSubtitleBilling")
+            : t("addressBook.recipientCustomSubtitleShipping")}
         </p>
       </div>
 
       <label className="block">
-        <span className="mb-1.5 block text-[13px] font-medium text-fg-2">Full name</span>
+        <span className="mb-1.5 block text-[13px] font-medium text-fg-2">{t("identity.fullName")}</span>
         <ElvixInput
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Jane Doe"
+          placeholder={t("addressBook.recipientPlaceholder")}
           autoFocus
           autoComplete="name"
           maxLength={120}
@@ -1357,9 +1378,9 @@ function RecipientCustomView({
           state="idle"
           disabled={!valid}
           onClick={() => valid && onConfirm(trimmed)}
-          label="Continue"
-          savedLabel="Continue"
-          hint="Enter"
+          label={t("common.continue")}
+          savedLabel={t("common.continue")}
+          hint={t("common.enterHint")}
           className="!w-auto !px-5"
         />
       </div>
@@ -1380,6 +1401,7 @@ function RecipientBusinessNameView({
   onConfirm: (companyName: string) => void;
   onBack: () => void;
 }) {
+  const t = useT();
   const [company, setCompany] = useState(initial);
   const trimmed = company.trim();
   const valid = trimmed.length >= 1 && trimmed.length <= 120;
@@ -1393,29 +1415,29 @@ function RecipientBusinessNameView({
           className="inline-flex items-center gap-1 text-[12.5px] text-fg-2 hover:text-fg-1 cursor-pointer"
         >
           <ArrowLeft className="size-3.5" />
-          Back
+          {t("common.back")}
         </button>
-        <div className="ml-auto text-[12px] text-fg-3">Business · step 1 of 2</div>
+        <div className="ml-auto text-[12px] text-fg-3">{t("addressBook.businessStep1of2")}</div>
       </div>
 
       <div className="mb-4">
         <h2 className="text-[18px] font-semibold tracking-tight text-fg-1">
-          What&apos;s the company name?
+          {t("addressBook.companyNameTitle")}
         </h2>
         <p className="mt-1 text-[12.5px] text-fg-3">
           {kind === "billing"
-            ? "Appears on the invoice. Required for B2B tax handling later."
-            : "Company that receives the package."}
+            ? t("addressBook.companyNameBodyBilling")
+            : t("addressBook.companyNameBodyShipping")}
         </p>
       </div>
 
       <label className="block">
-        <span className="mb-1.5 block text-[13px] font-medium text-fg-2">Company name</span>
+        <span className="mb-1.5 block text-[13px] font-medium text-fg-2">{t("legalEntities.companyName")}</span>
         <ElvixInput
           type="text"
           value={company}
           onChange={(e) => setCompany(e.target.value)}
-          placeholder="Edvone"
+          placeholder={t("addressBook.companyNamePlaceholder")}
           autoFocus
           autoComplete="organization"
           maxLength={120}
@@ -1430,9 +1452,9 @@ function RecipientBusinessNameView({
           state="idle"
           disabled={!valid}
           onClick={() => valid && onConfirm(trimmed)}
-          label="Continue"
-          savedLabel="Continue"
-          hint="Enter"
+          label={t("common.continue")}
+          savedLabel={t("common.continue")}
+          hint={t("common.enterHint")}
           className="!w-auto !px-5"
         />
       </div>
@@ -1453,10 +1475,10 @@ function RecipientBusinessContactView({
   onConfirm: (contact: string | null) => void;
   onBack: () => void;
 }) {
+  const t = useT();
   const [contact, setContact] = useState("");
   const trimmed = contact.trim();
   const valid = trimmed.length <= 120; // empty is allowed — it's optional
-  const noun = kind === "billing" ? "invoice" : "package";
 
   return (
     <div className="flex h-full flex-col">
@@ -1467,29 +1489,31 @@ function RecipientBusinessContactView({
           className="inline-flex items-center gap-1 text-[12.5px] text-fg-2 hover:text-fg-1 cursor-pointer"
         >
           <ArrowLeft className="size-3.5" />
-          Back
+          {t("common.back")}
         </button>
-        <div className="ml-auto text-[12px] text-fg-3">Business · step 2 of 2</div>
+        <div className="ml-auto text-[12px] text-fg-3">{t("addressBook.businessStep2of2")}</div>
       </div>
 
       <div className="mb-4">
         <h2 className="text-[18px] font-semibold tracking-tight text-fg-1">
-          Anyone in particular at <span className="text-fg-2">{companyName}</span>?
+          {t("addressBook.contactAtCompanyTitle", { company: companyName })}
         </h2>
         <p className="mt-1 text-[12.5px] text-fg-3">
-          Adds an &quot;Attn:&quot; line to the {noun}. Skip to address it to the company.
+          {kind === "billing"
+            ? t("addressBook.attnBodyInvoice")
+            : t("addressBook.attnBodyPackage")}
         </p>
       </div>
 
       <label className="block">
         <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
-          Contact person (optional)
+          {t("addressBook.contactPersonOptional")}
         </span>
         <ElvixInput
           type="text"
           value={contact}
           onChange={(e) => setContact(e.target.value)}
-          placeholder="Jane Doe"
+          placeholder={t("addressBook.recipientPlaceholder")}
           autoFocus
           autoComplete="name"
           maxLength={120}
@@ -1505,16 +1529,16 @@ function RecipientBusinessContactView({
           onClick={() => onConfirm(null)}
           className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
         >
-          Skip
+          {t("addressBook.skip")}
         </button>
         <div className="ml-auto">
           <ElvixSaveButton
             state="idle"
             disabled={!valid}
             onClick={() => valid && onConfirm(trimmed || null)}
-            label="Save"
-            savedLabel="Save"
-            hint="Enter"
+            label={t("common.save")}
+            savedLabel={t("common.save")}
+            hint={t("common.enterHint")}
             className="!w-auto !px-5"
           />
         </div>
@@ -1538,7 +1562,7 @@ function NoteChoiceView({
   onBack: () => void;
   error: string | null;
 }) {
-  const noun = kind === "billing" ? "billing" : "shipping";
+  const t = useT();
   return (
     <div className="flex h-full flex-col">
       <div className="mb-3 flex items-center gap-2">
@@ -1548,19 +1572,19 @@ function NoteChoiceView({
           className="inline-flex items-center gap-1 text-[12.5px] text-fg-2 hover:text-fg-1 cursor-pointer"
         >
           <ArrowLeft className="size-3.5" />
-          Back
+          {t("common.back")}
         </button>
-        <div className="ml-auto text-[12px] text-fg-3">Last step</div>
+        <div className="ml-auto text-[12px] text-fg-3">{t("common.lastStep")}</div>
       </div>
 
       <div className="mb-4">
         <h2 className="text-[18px] font-semibold tracking-tight text-fg-1">
-          Want to add a delivery note?
+          {t("addressBook.noteChoiceTitle")}
         </h2>
         <p className="mt-1 text-[12.5px] text-fg-3">
           {kind === "billing"
-            ? "Anything the billing team should know. ATTN line, PO number, c/o someone…"
-            : "Anything for the delivery person. Buzzer, gate code, leave-at-door…"}
+            ? t("addressBook.noteChoiceBodyBilling")
+            : t("addressBook.noteChoiceBodyShipping")}
         </p>
       </div>
 
@@ -1574,8 +1598,8 @@ function NoteChoiceView({
             <Plus className="size-4" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="truncate text-[14px] font-semibold text-fg-1">Yes, add a note</div>
-            <div className="truncate text-[12.5px] text-fg-3">Write a short instruction</div>
+            <div className="truncate text-[14px] font-semibold text-fg-1">{t("addressBook.noteYesTitle")}</div>
+            <div className="truncate text-[12.5px] text-fg-3">{t("addressBook.noteYesSubtitle")}</div>
           </div>
           <ChevronRight className="mt-1 size-4 shrink-0 text-fg-3 transition group-hover:translate-x-0.5 group-hover:text-[var(--elvix-primary)]" />
         </button>
@@ -1589,8 +1613,8 @@ function NoteChoiceView({
             <ChevronRight className="size-4" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="truncate text-[14px] font-semibold text-fg-1">No, skip</div>
-            <div className="truncate text-[12.5px] text-fg-3">Save the address as-is</div>
+            <div className="truncate text-[14px] font-semibold text-fg-1">{t("addressBook.noteNoTitle")}</div>
+            <div className="truncate text-[12.5px] text-fg-3">{t("addressBook.noteNoSubtitle")}</div>
           </div>
           <ChevronRight className="mt-1 size-4 shrink-0 text-fg-3 transition group-hover:translate-x-0.5 group-hover:text-[var(--elvix-primary)]" />
         </button>
@@ -1598,7 +1622,7 @@ function NoteChoiceView({
 
       {error && (
         <div className="mt-3 rounded-md bg-red-500/10 px-3 py-2 text-[12.5px] text-red-600 dark:text-red-300">
-          Couldn&apos;t save: {error}
+          {t("addressBook.saveError", { error })}
         </div>
       )}
     </div>
@@ -1618,12 +1642,12 @@ function NoteInputView({
   onConfirm: (notes: string) => void;
   onBack: () => void;
 }) {
+  const t = useT();
   const [notes, setNotes] = useState(initial);
   const trimmed = notes.trim();
   // Optional field — empty saves null (removes the note). Length cap
   // is the only constraint.
   const valid = trimmed.length <= 500;
-  const noun = kind === "billing" ? "billing" : "shipping";
 
   return (
     <div className="flex h-full flex-col">
@@ -1634,23 +1658,25 @@ function NoteInputView({
           className="inline-flex items-center gap-1 text-[12.5px] text-fg-2 hover:text-fg-1 cursor-pointer"
         >
           <ArrowLeft className="size-3.5" />
-          Back
+          {t("common.back")}
         </button>
-        <div className="ml-auto text-[12px] text-fg-3">Note · last step</div>
+        <div className="ml-auto text-[12px] text-fg-3">{t("addressBook.noteLastStep")}</div>
       </div>
 
       <div className="mb-4">
-        <h2 className="text-[18px] font-semibold tracking-tight text-fg-1">What should we say?</h2>
+        <h2 className="text-[18px] font-semibold tracking-tight text-fg-1">
+          {t("addressBook.noteInputTitle")}
+        </h2>
         <p className="mt-1 text-[12.5px] text-fg-3">
           {kind === "billing"
-            ? "Appears on the invoice / billing record."
-            : "Hands off to the delivery carrier."}
+            ? t("addressBook.noteInputBodyBilling")
+            : t("addressBook.noteInputBodyShipping")}
         </p>
       </div>
 
       <label className="block">
         <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
-          {noun === "billing" ? "Billing note" : "Delivery note"}
+          {kind === "billing" ? t("addressBook.billingNote") : t("addressBook.deliveryNote")}
         </span>
         <textarea
           value={notes}
@@ -1659,9 +1685,9 @@ function NoteInputView({
           maxLength={500}
           autoFocus
           placeholder={
-            noun === "billing"
-              ? "Bill to ATTN: Finance, PO #ABC-1234…"
-              : "Ring buzzer 3, leave with concierge if not home…"
+            kind === "billing"
+              ? t("addressBook.notePlaceholderBilling")
+              : t("addressBook.notePlaceholderShipping")
           }
           className="w-full resize-none rounded-[10px] border border-fg-3/25 bg-canvas px-3 py-2 text-[14px] text-fg-1 placeholder:text-fg-3 focus:border-[var(--elvix-primary)] focus:outline-none focus:ring-2 focus:ring-[color-mix(in_srgb,var(--elvix-primary)_25%,transparent)]"
         />
@@ -1673,8 +1699,8 @@ function NoteInputView({
           state="idle"
           disabled={!valid}
           onClick={() => valid && onConfirm(trimmed)}
-          label="Save"
-          savedLabel="Saved"
+          label={t("common.save")}
+          savedLabel={t("identity.saved")}
           hint={null}
           className="!w-auto !px-5"
         />
@@ -1685,7 +1711,7 @@ function NoteInputView({
 
 // ─── Saving pane (commit / delete in flight) ────────────────────────
 
-function SavingView({ label = "Saving address…" }: { label?: string }) {
+function SavingView({ label }: { label: string }) {
   return (
     <div className="grid h-full place-items-center">
       <div className="flex flex-col items-center gap-3">
@@ -1721,17 +1747,16 @@ function DetailView({
   onEditLine2: () => void;
   onEditNotes: () => void;
 }) {
+  const t = useT();
   if (!address) {
     return (
       <div className="grid h-full place-items-center text-sm text-fg-3">
         <button type="button" onClick={onBack} className="underline cursor-pointer">
-          Back to list
+          {t("addressBook.backToList")}
         </button>
       </div>
     );
   }
-
-  const noun = kind === "billing" ? "billing" : "shipping";
 
   return (
     <div className="flex h-full flex-col">
@@ -1742,9 +1767,13 @@ function DetailView({
           className="inline-flex items-center gap-1 text-[12.5px] text-fg-2 hover:text-fg-1 cursor-pointer"
         >
           <ArrowLeft className="size-3.5" />
-          Back
+          {t("common.back")}
         </button>
-        <div className="ml-auto text-[12px] text-fg-3">{noun} address</div>
+        <div className="ml-auto text-[12px] text-fg-3">
+          {kind === "billing"
+            ? t("addressBook.billingAddressLabel")
+            : t("addressBook.shippingAddressLabel")}
+        </div>
       </div>
 
       {/* Hero card — title + formatted address. Reads as the
@@ -1762,7 +1791,7 @@ function DetailView({
               {address.isDefault && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_15%,transparent)] px-2 py-[1px] text-[10px] font-medium text-[var(--elvix-primary)]">
                   <Star className="size-2.5 fill-current" />
-                  Default
+                  {t("addressBook.defaultBadge")}
                 </span>
               )}
             </div>
@@ -1788,12 +1817,16 @@ function DetailView({
         }}
       >
         {/* Who */}
-        <DetailSection title="Who">
-          <DetailRow label="Recipient" value={address.recipientName} onClick={onEditRecipient} />
+        <DetailSection title={t("addressBook.sectionWho")}>
           <DetailRow
-            label="Company"
+            label={t("addressBook.fieldRecipient")}
+            value={address.recipientName}
+            onClick={onEditRecipient}
+          />
+          <DetailRow
+            label={t("addressBook.fieldCompany")}
             value={address.companyName}
-            placeholder="Add a company"
+            placeholder={t("addressBook.addCompanyPlaceholder")}
             onClick={onEditCompany}
           />
         </DetailSection>
@@ -1801,18 +1834,18 @@ function DetailView({
         {/* Where — Google-sourced; only line2 is directly editable.
             The rest live on the place record and require a re-search.
             Shown as read-only for now. */}
-        <DetailSection title="Where">
-          <DetailRow label="Street" value={address.line1} />
+        <DetailSection title={t("addressBook.sectionWhere")}>
+          <DetailRow label={t("addressBook.fieldStreet")} value={address.line1} />
           <DetailRow
-            label="Apt / floor"
+            label={t("addressBook.fieldAptFloor")}
             value={address.line2}
-            placeholder="Add a unit"
+            placeholder={t("addressBook.addUnitPlaceholder")}
             onClick={onEditLine2}
           />
-          <DetailRow label="City" value={address.city} />
-          <DetailRow label="Postal code" value={address.postalCode} />
+          <DetailRow label={t("addressBook.fieldCity")} value={address.city} />
+          <DetailRow label={t("addressBook.fieldPostalCode")} value={address.postalCode} />
           <DetailRow
-            label="Region"
+            label={t("addressBook.fieldRegion")}
             value={
               address.regionName && address.regionCode
                 ? `${address.regionName} (${address.regionCode})`
@@ -1820,7 +1853,7 @@ function DetailView({
             }
           />
           <DetailRow
-            label="Country"
+            label={t("addressBook.fieldCountry")}
             value={
               address.countryName && address.country
                 ? `${address.countryName} (${address.country})`
@@ -1830,15 +1863,15 @@ function DetailView({
         </DetailSection>
 
         {/* Extras */}
-        <DetailSection title="Notes & meta">
+        <DetailSection title={t("addressBook.sectionNotesMeta")}>
           <DetailRow
-            label="Delivery notes"
+            label={t("addressBook.fieldDeliveryNotes")}
             value={address.deliveryNotes}
-            placeholder="Add a note"
+            placeholder={t("addressBook.addNotePlaceholder")}
             onClick={onEditNotes}
           />
-          <DetailRow label="Timezone" value={address.timezone} />
-          <DetailRow label="Venue / building" value={address.venueName} />
+          <DetailRow label={t("addressBook.fieldTimezone")} value={address.timezone} />
+          <DetailRow label={t("addressBook.fieldVenue")} value={address.venueName} />
         </DetailSection>
       </div>
 
@@ -1849,7 +1882,7 @@ function DetailView({
           className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[12.5px] text-fg-3 transition hover:bg-red-500/10 hover:text-red-600 cursor-pointer"
         >
           <Trash2 className="size-3.5" />
-          Delete
+          {t("common.delete")}
         </button>
         <div className="ml-auto">
           <button
@@ -1864,7 +1897,9 @@ function DetailView({
                   : "size-3.5"
               }
             />
-            {address.isDefault ? "Remove default" : "Set as default"}
+            {address.isDefault
+              ? t("addressBook.removeDefault")
+              : t("addressBook.setAsDefault")}
           </button>
         </div>
       </div>
@@ -1939,22 +1974,24 @@ function DefaultConfirmView({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  const t = useT();
   if (!address) {
     return (
       <div className="grid h-full place-items-center text-sm text-fg-3">
         <button type="button" onClick={onCancel} className="underline cursor-pointer">
-          Nothing to change
+          {t("addressBook.nothingToChange")}
         </button>
       </div>
     );
   }
 
-  const noun = kind === "billing" ? "billing" : "shipping";
-  const verb = setting ? "Set as default" : "Remove default";
-  const title = setting ? "Set this as your default?" : "Remove default from this address?";
+  const verb = setting ? t("addressBook.setAsDefault") : t("addressBook.removeDefault");
+  const title = setting
+    ? t("addressBook.setDefaultTitle")
+    : t("addressBook.removeDefaultTitle");
   const subtitle = setting
-    ? "It'll be the auto-pick at checkout / invoice time."
-    : "Nothing will be pre-selected at checkout / invoice time.";
+    ? t("addressBook.setDefaultSubtitle")
+    : t("addressBook.removeDefaultSubtitle");
 
   return (
     <div className="flex h-full flex-col">
@@ -1965,7 +2002,7 @@ function DefaultConfirmView({
           className="inline-flex items-center gap-1 text-[12.5px] text-fg-2 hover:text-fg-1 cursor-pointer"
         >
           <ArrowLeft className="size-3.5" />
-          Back
+          {t("common.back")}
         </button>
         <div className="ml-auto text-[12px] text-fg-3">{verb}</div>
       </div>
@@ -2002,19 +2039,18 @@ function DefaultConfirmView({
 
       <div className="rounded-[10px] border border-amber-500/30 bg-amber-500/[0.08] px-3 py-2.5">
         <div className="text-[12.5px] font-semibold text-amber-700 dark:text-amber-300">
-          Heads up. This affects every app you use with elvix.
+          {t("addressBook.crossAppHeadsUp")}
         </div>
         <div className="mt-1 text-[12px] leading-snug text-amber-700/85 dark:text-amber-300/85">
-          Your default {noun} address is shared across every app you sign in to.{" "}
           {setting
-            ? "Switching it here updates the auto-pick everywhere at once."
-            : "Removing it means no address is pre-selected anywhere; you'll pick one each time at checkout / invoice."}
+            ? t("addressBook.crossAppDefaultBodySetting", { kind })
+            : t("addressBook.crossAppDefaultBodyClearing", { kind })}
         </div>
       </div>
 
       {error && (
         <div className="mt-3 rounded-md bg-red-500/10 px-3 py-2 text-[12.5px] text-red-600 dark:text-red-300">
-          Couldn&apos;t save: {error}
+          {t("addressBook.saveError", { error })}
         </div>
       )}
 
@@ -2024,7 +2060,7 @@ function DefaultConfirmView({
           onClick={onCancel}
           className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
         >
-          Cancel
+          {t("common.cancel")}
         </button>
         <div className="ml-auto">
           <ElvixSaveButton
@@ -2056,17 +2092,16 @@ function DeleteConfirmView({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  const t = useT();
   if (!address) {
     return (
       <div className="grid h-full place-items-center text-sm text-fg-3">
         <button type="button" onClick={onCancel} className="underline cursor-pointer">
-          Nothing to delete
+          {t("addressBook.nothingToDelete")}
         </button>
       </div>
     );
   }
-
-  const noun = kind === "billing" ? "billing" : "shipping";
 
   return (
     <div className="flex h-full flex-col">
@@ -2077,14 +2112,20 @@ function DeleteConfirmView({
           className="inline-flex items-center gap-1 text-[12.5px] text-fg-2 hover:text-fg-1 cursor-pointer"
         >
           <ArrowLeft className="size-3.5" />
-          Back
+          {t("common.back")}
         </button>
-        <div className="ml-auto text-[12px] text-fg-3">Delete {noun} address</div>
+        <div className="ml-auto text-[12px] text-fg-3">
+          {kind === "billing"
+            ? t("addressBook.deleteBillingHeader")
+            : t("addressBook.deleteShippingHeader")}
+        </div>
       </div>
 
       <div className="mb-4">
-        <h2 className="text-[18px] font-semibold tracking-tight text-fg-1">Delete this address?</h2>
-        <p className="mt-1 text-[12.5px] text-fg-3">This can&apos;t be undone.</p>
+        <h2 className="text-[18px] font-semibold tracking-tight text-fg-1">
+          {t("addressBook.deleteConfirmTitle")}
+        </h2>
+        <p className="mt-1 text-[12.5px] text-fg-3">{t("addressBook.cantBeUndone")}</p>
       </div>
 
       <div className="mb-4 rounded-[12px] border border-fg-3/15 bg-surface px-4 py-3">
@@ -2114,18 +2155,18 @@ function DeleteConfirmView({
 
       <div className="rounded-[10px] border border-amber-500/30 bg-amber-500/[0.08] px-3 py-2.5">
         <div className="text-[12.5px] font-semibold text-amber-700 dark:text-amber-300">
-          Heads up. This affects every app you use with elvix.
+          {t("addressBook.crossAppHeadsUp")}
         </div>
         <div className="mt-1 text-[12px] leading-snug text-amber-700/85 dark:text-amber-300/85">
-          Your {noun} address is stored once on your elvix profile and shared with the apps you sign
-          in to. Deleting removes it everywhere. Any checkout, invoice, or shipping flow that
-          referenced this address will need a fresh one.
+          {kind === "billing"
+            ? t("addressBook.crossAppDeleteBodyBilling")
+            : t("addressBook.crossAppDeleteBodyShipping")}
         </div>
       </div>
 
       {error && (
         <div className="mt-3 rounded-md bg-red-500/10 px-3 py-2 text-[12.5px] text-red-600 dark:text-red-300">
-          Couldn&apos;t delete: {error}
+          {t("addressBook.deleteError", { error })}
         </div>
       )}
 
@@ -2135,7 +2176,7 @@ function DeleteConfirmView({
           onClick={onCancel}
           className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
         >
-          Cancel
+          {t("common.cancel")}
         </button>
         <div className="ml-auto">
           <button
@@ -2144,7 +2185,7 @@ function DeleteConfirmView({
             className="inline-flex h-10 items-center gap-1.5 rounded-[10px] bg-red-600 px-5 text-[14px] font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_2px_3px_-1px_rgba(0,0,0,0.18),0_0_0_1px_rgba(25,28,33,0.08)] transition hover:bg-red-700 active:scale-[0.985] cursor-pointer"
           >
             <Trash2 className="size-4" />
-            Yes, delete
+            {t("addressBook.yesDelete")}
           </button>
         </div>
       </div>
@@ -2165,19 +2206,19 @@ function ReviewView({
   onConfirm: () => void;
   onChange: () => void;
 }) {
+  const t = useT();
   if (!details) {
     // Defensive — should never happen because reaching this view
     // requires a successful pick. If it does, send the user back.
     return (
       <div className="grid h-full place-items-center text-sm text-fg-3">
         <button type="button" onClick={onChange} className="underline cursor-pointer">
-          Pick an address first
+          {t("addressBook.pickAddressFirst")}
         </button>
       </div>
     );
   }
 
-  const noun = kind === "billing" ? "billing" : "shipping";
   const region =
     details.regionName && details.regionCode
       ? `${details.regionName} (${details.regionCode})`
@@ -2188,11 +2229,11 @@ function ReviewView({
       : details.countryName || details.country || null;
 
   const rows: Array<{ label: string; value: string | null }> = [
-    { label: "Street", value: details.line1 || null },
-    { label: "City", value: details.city || null },
-    { label: "Postal code", value: details.postalCode },
-    { label: "Region", value: region },
-    { label: "Country", value: country },
+    { label: t("addressBook.fieldStreet"), value: details.line1 || null },
+    { label: t("addressBook.fieldCity"), value: details.city || null },
+    { label: t("addressBook.fieldPostalCode"), value: details.postalCode },
+    { label: t("addressBook.fieldRegion"), value: region },
+    { label: t("addressBook.fieldCountry"), value: country },
   ];
 
   // Required for a usable address record. If Google didn't return
@@ -2203,9 +2244,10 @@ function ReviewView({
   // would fail server-side validation too — block "Looks right" so
   // the user never hits a "Couldn't save: invalid" two steps later.
   const missing: string[] = [];
-  if (!details.line1?.trim()) missing.push("street");
-  if (!details.city?.trim()) missing.push("city");
-  if (!details.country || !/^[A-Z]{2}$/.test(details.country)) missing.push("country");
+  if (!details.line1?.trim()) missing.push(t("addressBook.fieldStreet").toLowerCase());
+  if (!details.city?.trim()) missing.push(t("addressBook.fieldCity").toLowerCase());
+  if (!details.country || !/^[A-Z]{2}$/.test(details.country))
+    missing.push(t("addressBook.fieldCountry").toLowerCase());
   const canContinue = missing.length === 0;
 
   return (
@@ -2217,9 +2259,13 @@ function ReviewView({
           className="inline-flex items-center gap-1 text-[12.5px] text-fg-2 hover:text-fg-1 cursor-pointer"
         >
           <ArrowLeft className="size-3.5" />
-          Change address
+          {t("addressBook.changeAddress")}
         </button>
-        <div className="ml-auto text-[12px] text-fg-3">Review {noun} address</div>
+        <div className="ml-auto text-[12px] text-fg-3">
+          {kind === "billing"
+            ? t("addressBook.reviewBilling")
+            : t("addressBook.reviewShipping")}
+        </div>
       </div>
 
       <div className="mb-4">
@@ -2250,8 +2296,7 @@ function ReviewView({
 
         {!canContinue && (
           <div className="mt-3 rounded-md bg-amber-500/10 px-3 py-2 text-[12.5px] text-amber-700 dark:text-amber-300">
-            We&apos;re missing the {missing.join(", ")}. Pick a more specific suggestion (with a
-            street number) so we can save a deliverable address.
+            {t("addressBook.missingFieldsHint", { fields: missing.join(", ") })}
           </div>
         )}
       </div>
@@ -2262,15 +2307,15 @@ function ReviewView({
           onClick={onChange}
           className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
         >
-          {canContinue ? "Not right" : "Change address"}
+          {canContinue ? t("addressBook.notRight") : t("addressBook.changeAddress")}
         </button>
         <div className="ml-auto">
           <ElvixSaveButton
             state="idle"
             disabled={!canContinue}
             onClick={onConfirm}
-            label="Looks right"
-            savedLabel="Looks right"
+            label={t("addressBook.looksRight")}
+            savedLabel={t("addressBook.looksRight")}
             hint={null}
             className="!w-auto !px-5"
           />

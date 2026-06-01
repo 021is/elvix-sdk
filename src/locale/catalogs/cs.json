@@ -1,0 +1,2285 @@
+{
+  "$comment": "Czech catalog for @elvix.is/sdk, translated from English canonical.",
+  "locale": "cs",
+  "namespaces": {
+    "common": {
+      "ok": {
+        "other": "OK"
+      },
+      "cancel": {
+        "other": "Zrušit"
+      },
+      "back": {
+        "other": "Zpět"
+      },
+      "next": {
+        "other": "Další"
+      },
+      "continue": {
+        "other": "Pokračovat"
+      },
+      "save": {
+        "other": "Uložit"
+      },
+      "saving": {
+        "other": "Ukládání"
+      },
+      "delete": {
+        "other": "Smazat"
+      },
+      "remove": {
+        "other": "Odstranit"
+      },
+      "edit": {
+        "other": "Upravit"
+      },
+      "close": {
+        "other": "Zavřít"
+      },
+      "done": {
+        "other": "Hotovo"
+      },
+      "retry": {
+        "other": "Zkusit znovu"
+      },
+      "loading": {
+        "other": "Načítání"
+      },
+      "search": {
+        "other": "Hledat"
+      },
+      "noMatches": {
+        "other": "Žádné výsledky"
+      },
+      "lastStep": {
+        "other": "Poslední krok"
+      },
+      "skip": {
+        "other": "Přeskočit"
+      },
+      "durationSeconds": {
+        "other": "{seconds} s"
+      },
+      "durationOneMinute": {
+        "other": "1 minuta"
+      },
+      "durationMinutes": {
+        "one": "{minutes} minuta",
+        "few": "{minutes} minuty",
+        "other": "{minutes} minut"
+      },
+      "somethingWentWrong": {
+        "other": "Něco se pokazilo. Zkuste to znovu."
+      },
+      "errorNetwork": {
+        "other": "Problém se sítí. Zkuste to znovu."
+      },
+      "errorSaveFailed": {
+        "other": "Nepodařilo se uložit. Zkuste to znovu."
+      },
+      "hintEnter": {
+        "other": "Enter"
+      },
+      "enterHint": {
+        "other": "Enter"
+      },
+      "sendingLabel": {
+        "other": "Odesílání"
+      },
+      "saved": {
+        "other": "Uloženo"
+      },
+      "optionalSuffix": {
+        "other": " (volitelné)"
+      },
+      "savingDots": {
+        "other": "Ukládání."
+      }
+    },
+    "signin": {
+      "title": {
+        "other": "Přihlaste se do {app}"
+      },
+      "titleDefault": {
+        "other": "Přihlásit se"
+      },
+      "subtitle": {
+        "other": ""
+      },
+      "googleButton": {
+        "other": "Pokračovat přes Google"
+      },
+      "passkeyButton": {
+        "other": "Pokračovat přes passkey"
+      },
+      "emailPlaceholder": {
+        "other": "E-mail"
+      },
+      "sendCodeButton": {
+        "other": "Pokračovat"
+      },
+      "sendingLabel": {
+        "other": "Odesílání"
+      },
+      "codeSentSubtitle": {
+        "other": "Poslali jsme kód na {email}"
+      },
+      "codePlaceholder": {
+        "other": "Ověřovací kód"
+      },
+      "submitButton": {
+        "other": "Přihlásit se"
+      },
+      "verifyingLabel": {
+        "other": "Ověřování"
+      },
+      "or": {
+        "other": "nebo"
+      },
+      "resendCode": {
+        "other": "Poslat kód znovu"
+      },
+      "resentLabel": {
+        "other": "Odesláno znovu"
+      },
+      "errorGeneric": {
+        "other": "Něco se pokazilo. Zkuste to znovu."
+      },
+      "errorBadCode": {
+        "other": "Tento kód neodpovídá."
+      },
+      "errorRateLimited": {
+        "other": "Příliš mnoho pokusů. Chvíli počkejte."
+      },
+      "securedBy": {
+        "other": "Zabezpečeno přes "
+      },
+      "verbLogin": {
+        "other": "Přihlásit se"
+      },
+      "titleLogin": {
+        "other": "Přihlaste se do {app}"
+      },
+      "bootstrapErrorTitle": {
+        "other": "Nepodařilo se načíst přihlášení"
+      },
+      "bootstrapErrorBody": {
+        "other": "Neplatný {clientIdToken} nebo původ není povolen pro tuto doménu. Otevřete Console, vaši aplikaci a Credentials, zkontrolujte {clientIdToken}, poté přidejte tento původ do povolených."
+      },
+      "identifierPlaceholderEmailOrUsername": {
+        "other": "E-mail nebo uživatelské jméno"
+      },
+      "identifierPlaceholderUsername": {
+        "other": "Uživatelské jméno"
+      },
+      "identifierPlaceholderEmail": {
+        "other": "Zadejte svůj e-mail"
+      },
+      "errorNetwork": {
+        "other": "Problém se sítí. Zkuste to znovu."
+      },
+      "errorPasskeyVerify": {
+        "other": "Ověření passkey selhalo."
+      },
+      "errorPasskeyAdd": {
+        "other": "Passkey se nepodařilo přidat. Zkuste znovu nebo přeskočte."
+      },
+      "visitAppWebsite": {
+        "other": "Navštívit web {app}"
+      },
+      "passkeyOnboardingTitleSignin": {
+        "other": "Přihlaste se příště rychleji"
+      },
+      "passkeyOnboardingTitleLogin": {
+        "other": "Přihlaste se příště rychleji"
+      },
+      "recoverTitle": {
+        "other": "Vítejte zpět v {app}"
+      },
+      "appNameFallback": {
+        "other": "vaše aplikace"
+      },
+      "legalAppFallback": {
+        "other": "aplikace"
+      },
+      "passkeyOnboardingSubtitle": {
+        "other": "Touch ID, Face ID nebo váš bezpečnostní klíč. Žádné další e-mailové kódy."
+      },
+      "recoverSubtitle": {
+        "other": "Vyberte, jestli se vrátit nebo zůstat pryč."
+      },
+      "identifierSubtitle": {
+        "other": "Vyberte, jak chcete pokračovat."
+      },
+      "verifyButton": {
+        "other": "Ověřit"
+      },
+      "useDifferentEmail": {
+        "other": "Použít jiný e-mail"
+      },
+      "resendInSeconds": {
+        "other": "Znovu za {seconds} s"
+      },
+      "passkeyBullet1": {
+        "other": "Žádná hesla ani e-mailové kódy"
+      },
+      "passkeyBullet2": {
+        "other": "Odolné proti phishingu. Funguje jen na tomto webu."
+      },
+      "passkeyBullet3": {
+        "other": "Synchronizace mezi zařízeními přes iCloud, Google nebo 1Password"
+      },
+      "addPasskeyCta": {
+        "other": "Přidat passkey"
+      },
+      "skipForNow": {
+        "other": "Zatím přeskočit"
+      },
+      "previewEmptyMethods": {
+        "other": "Povolte alespoň jednu metodu, abyste viděli náhled přihlášení."
+      },
+      "googleButtonShort": {
+        "other": "Google"
+      },
+      "passkeyButtonShort": {
+        "other": "Passkey"
+      },
+      "legalIntro": {
+        "other": "Pokračováním souhlasíte s podmínkami aplikace {app}"
+      },
+      "termsOfService": {
+        "other": "Podmínky služby"
+      },
+      "privacyPolicy": {
+        "other": "Zásady ochrany soukromí"
+      },
+      "framedPreviewLabel": {
+        "other": "Toto je náhled"
+      },
+      "errorTooRecentWithSeconds": {
+        "other": "Před žádostí o další kód počkejte {seconds} s."
+      },
+      "errorTooRecent": {
+        "other": "Před žádostí o další kód chvíli počkejte."
+      },
+      "errorTooManyWithRetry": {
+        "other": "Příliš mnoho kódů na tento e-mail. Zkuste to znovu za {retry}."
+      },
+      "errorTooMany": {
+        "other": "Příliš mnoho kódů na tento e-mail. Zkuste to později."
+      },
+      "errorInvalidCode": {
+        "other": "Tento kód nefunguje. Zkuste to znovu."
+      },
+      "errorExpired": {
+        "other": "Kód vypršel. Pošlete nový."
+      },
+      "errorSendFailed": {
+        "other": "E-mail se nepodařilo odeslat. Zkontrolujte adresu."
+      },
+      "errorUserPaused": {
+        "other": "Váš přístup byl pozastaven. Kontaktujte podporu."
+      },
+      "errorUserBanned": {
+        "other": "Přístup zamítnut."
+      },
+      "errorUsernameNotFound": {
+        "other": "Účet s tímto uživatelským jménem zde neexistuje."
+      },
+      "errorMethodDisabled": {
+        "other": "Tato metoda přihlášení není pro tuto aplikaci povolena."
+      },
+      "errorGraceExpired": {
+        "other": "90denní lhůta pro obnovení vypršela."
+      },
+      "errorSessionEnded": {
+        "other": "Vaše relace skončila. Přihlaste se znovu."
+      }
+    },
+    "sessions": {
+      "title": {
+        "other": "Vaše relace"
+      },
+      "empty": {
+        "other": "Žádné aktivní relace."
+      },
+      "currentBadge": {
+        "other": "Tuto nechat přihlášenou"
+      },
+      "revokeOne": {
+        "other": "Odhlásit"
+      },
+      "revokeOthersCta": {
+        "other": "Odhlásit ostatní zařízení"
+      },
+      "revokeAllCta": {
+        "other": "Odhlásit všude"
+      },
+      "confirmOthersTitle": {
+        "other": "Odhlásit z ostatních zařízení?"
+      },
+      "confirmOthersBody": {
+        "other": "Vyberte, které relace ukončit. Každá se zruší v okamžiku, kdy klepnete, a všechny záložky na tomto zařízení během několika sekund spadnou do odhlášeného stavu."
+      },
+      "confirmAllTitle": {
+        "other": "Odhlásit všude?"
+      },
+      "confirmAllBody": {
+        "other": "Včetně tohoto zařízení. Poté budete přesměrováni na opětovné přihlášení."
+      },
+      "doneTitle": {
+        "other": "Odhlášeno"
+      },
+      "doneCount": {
+        "one": "{count} zařízení bylo odhlášeno.",
+        "few": "{count} zařízení bylo odhlášeno.",
+        "other": "{count} zařízení bylo odhlášeno."
+      },
+      "errorLoad": {
+        "other": "Nepodařilo se načíst relace."
+      },
+      "errorRevoke": {
+        "other": "Nepodařilo se zrušit. Zkuste to znovu."
+      },
+      "errorMassRevoke": {
+        "other": "Nepodařilo se odhlásit. Zkuste to znovu."
+      },
+      "thisDeviceBadge": {
+        "other": "toto zařízení"
+      },
+      "deviceLine": {
+        "other": "{browser} na {os}"
+      },
+      "massRevokeCtaSelf": {
+        "other": "Odhlásit mě z tohoto zařízení"
+      },
+      "massRevokeCtaOpen": {
+        "other": "Odhlásit zařízení..."
+      },
+      "confirmChooserTitle": {
+        "other": "Odkud se odhlásit?"
+      },
+      "confirmChooserBody": {
+        "other": "Vyberte, které relace ukončit. Každá se zruší v okamžiku, kdy klepnete, a všechny záložky na tomto zařízení se odhlásí při svém příštím požadavku."
+      },
+      "signOutOtherDevicesCount": {
+        "one": "Odhlásit z dalšího {count} zařízení",
+        "few": "Odhlásit z dalších {count} zařízení",
+        "other": "Odhlásit z dalších {count} zařízení"
+      },
+      "signOutAllCtaSelf": {
+        "other": "Odhlásit mě z tohoto zařízení"
+      },
+      "signOutAllCtaIncludingThis": {
+        "other": "Odhlásit všude, i toto zařízení"
+      },
+      "signOutAllRedirectHint": {
+        "other": "Hned poté skončíte na stránce přihlášení"
+      },
+      "confirmTokensFootnote": {
+        "other": "Již vydané tokeny zůstanou zamítnuté. Není možné to vrátit, ale opětovné přihlášení na libovolném zařízení prostě zase funguje."
+      },
+      "doneAlreadyAlone": {
+        "other": "Už je tu jen tato jediná."
+      },
+      "doneFootnote": {
+        "other": "Vaše aktuální zařízení je stále přihlášeno. Ostatní záložky budou vyhozeny při svém příštím požadavku."
+      },
+      "backToList": {
+        "other": "Zpět na moje relace"
+      },
+      "methodSignIn": {
+        "other": "Přihlášení"
+      },
+      "methodEmailCode": {
+        "other": "E-mailový kód"
+      },
+      "methodPasskey": {
+        "other": "Passkey"
+      },
+      "relativeJustNow": {
+        "other": "právě teď"
+      },
+      "relativeMinutesAgo": {
+        "other": "před {count} min"
+      },
+      "relativeHoursAgo": {
+        "other": "před {count} h"
+      },
+      "relativeDaysAgo": {
+        "other": "před {count} d"
+      }
+    },
+    "avatar": {
+      "replace": {
+        "other": "Nahradit"
+      },
+      "removePhoto": {
+        "other": "Odstranit fotku"
+      },
+      "removeConfirmTitle": {
+        "other": "Odstranit vaši fotku?"
+      },
+      "removeConfirmBody": {
+        "other": "Vrátí se k vašim iniciálám."
+      },
+      "uploading": {
+        "other": "Nahrávání"
+      },
+      "cropTitle": {
+        "other": "Oříznout"
+      },
+      "cropApply": {
+        "other": "Použít"
+      },
+      "errorTooLarge": {
+        "other": "Obrázek je příliš velký. Vyberte menší než {limitMb} MB."
+      },
+      "errorBadType": {
+        "other": "Vyberte obrázek ve formátu PNG, JPG nebo WebP."
+      },
+      "uploadFailed": {
+        "other": "Fotku se nepodařilo nahrát. Zkuste jiný obrázek."
+      },
+      "removeFailed": {
+        "other": "Nepodařilo se odstranit fotku."
+      },
+      "editPhotoAria": {
+        "other": "Upravit vaši fotku"
+      },
+      "addPhotoAria": {
+        "other": "Přidat fotku"
+      },
+      "confirmRemoveAria": {
+        "other": "Potvrdit odstranění"
+      },
+      "replacePhotoAria": {
+        "other": "Nahradit fotku"
+      },
+      "uploadPhotoAria": {
+        "other": "Nahrát fotku"
+      },
+      "useThisCropAria": {
+        "other": "Použít toto oříznutí"
+      }
+    },
+    "banner": {
+      "replace": {
+        "other": "Nahradit"
+      },
+      "removeBanner": {
+        "other": "Odstranit banner"
+      },
+      "removeConfirmTitle": {
+        "other": "Odstranit váš banner?"
+      },
+      "removeConfirmBody": {
+        "other": "Vrátí se ke gradientovému zástupnému obrázku."
+      },
+      "uploading": {
+        "other": "Nahrávání"
+      },
+      "cropTitle": {
+        "other": "Oříznout banner"
+      },
+      "cropApply": {
+        "other": "Použít"
+      },
+      "errorUpload": {
+        "other": "Banner se nepodařilo nahrát. Zkuste jiný obrázek."
+      },
+      "errorRemove": {
+        "other": "Nepodařilo se odstranit banner."
+      },
+      "previewAlt": {
+        "other": "Náhled banneru"
+      },
+      "cropUse": {
+        "other": "Použít"
+      },
+      "cropUseAria": {
+        "other": "Použít toto oříznutí"
+      },
+      "editAria": {
+        "other": "Upravit banner"
+      },
+      "addAria": {
+        "other": "Přidat banner"
+      },
+      "uploadAria": {
+        "other": "Nahrát banner"
+      },
+      "confirmRemoveAria": {
+        "other": "Potvrdit odstranění"
+      },
+      "confirmRemoveHint": {
+        "other": "Klikněte znovu pro potvrzení"
+      }
+    },
+    "username": {
+      "title": {
+        "other": "Zvolte uživatelské jméno"
+      },
+      "placeholder": {
+        "other": "uživatelské jméno"
+      },
+      "checking": {
+        "other": "Kontrola"
+      },
+      "available": {
+        "other": "Dostupné"
+      },
+      "taken": {
+        "other": "Obsazeno"
+      },
+      "tooShort": {
+        "other": "Příliš krátké"
+      },
+      "tooLong": {
+        "other": "Příliš dlouhé"
+      },
+      "badChars": {
+        "other": "Jen písmena, čísla a pomlčky"
+      },
+      "reserved": {
+        "other": "Rezervováno"
+      },
+      "subtitle": {
+        "other": "Takto vás lidé uvidí v {app}."
+      },
+      "subtitleNoApp": {
+        "other": "Takto vás lidé uvidí."
+      },
+      "label": {
+        "other": "Uživatelské jméno"
+      },
+      "exampleHandle": {
+        "other": "vasejmeno"
+      },
+      "rulesHint": {
+        "other": "4 až 30 znaků, a až z, 0 až 9, tečka, podtržítko. Musí začínat písmenem."
+      },
+      "availableHint": {
+        "other": "Vypadá dobře. Toto je vaše."
+      },
+      "suggestionsHeading": {
+        "other": "Návrhy"
+      },
+      "claimCta": {
+        "other": "Zabrat @{handle}"
+      },
+      "yournameFallback": {
+        "other": "vasejmeno"
+      },
+      "reasonBlank": {
+        "other": "Zvolte uživatelské jméno."
+      },
+      "reasonTooShort": {
+        "other": "Minimálně 4 znaky."
+      },
+      "reasonTooLong": {
+        "other": "Maximálně 30 znaků."
+      },
+      "reasonOnlyNumbers": {
+        "other": "Nemůže být tvořeno jen čísly."
+      },
+      "reasonBadStart": {
+        "other": "Musí začínat písmenem."
+      },
+      "reasonBadChars": {
+        "other": "Jen a až z, 0 až 9, tečka, podtržítko."
+      },
+      "reasonConsecutiveSpecial": {
+        "other": "Žádné dvě tečky nebo podtržítka za sebou."
+      },
+      "reasonTrailingSpecial": {
+        "other": "Nemůže končit tečkou nebo podtržítkem."
+      },
+      "reasonTaken": {
+        "other": "Toto je obsazené."
+      },
+      "reasonInvalid": {
+        "other": "Toto uživatelské jméno není platné."
+      },
+      "errorJustTaken": {
+        "other": "Toto uživatelské jméno bylo právě obsazeno. Vyberte jiné."
+      },
+      "errorFormat": {
+        "other": "Toto uživatelské jméno neodpovídá pravidlům."
+      },
+      "errorSaveFailed": {
+        "other": "Nepodařilo se uložit. Zkuste to znovu."
+      },
+      "errorNetwork": {
+        "other": "Problém se sítí. Zkuste to znovu."
+      },
+      "ruleLength": {
+        "other": "{min} až {max} znaků"
+      },
+      "ruleChars": {
+        "other": "malá písmena, číslice, tečka, podtržítko"
+      },
+      "ruleStartEnd": {
+        "other": "začněte písmenem, ukončete písmenem nebo číslicí"
+      },
+      "ruleNoDoubles": {
+        "other": "žádné dva speciální znaky za sebou, žádná rezervovaná slova"
+      },
+      "confirmHeading": {
+        "other": "Potvrdit změnu"
+      },
+      "notSet": {
+        "other": "Nenastaveno"
+      },
+      "confirmBody": {
+        "other": "Kdokoli se přihlásí do této aplikace s tímto uživatelským jménem budete vy. Můžete to kdykoli znovu změnit."
+      },
+      "confirmCta": {
+        "other": "Potvrdit změnu"
+      },
+      "doneTitle": {
+        "other": "Jste @{username} v {appName}."
+      },
+      "doneBody": {
+        "other": "Uložili jsme to. Můžete pokračovat s touto plochou, nebo se vrátit, až budete připraveni."
+      },
+      "changeAgain": {
+        "other": "Změnit znovu"
+      },
+      "disabledMailSubject": {
+        "other": "Znovu povolit přihlášení uživatelským jménem v {appName}"
+      },
+      "disabledContactSupport": {
+        "other": "Kontaktovat podporu {appName}"
+      },
+      "disabledEmailSupport": {
+        "other": "Napsat e-mail {appName}"
+      },
+      "disabledTitle": {
+        "other": "Uživatelská jména jsou v {appName} vypnutá."
+      },
+      "disabledBody": {
+        "other": "Majitel aplikace má aktuálně přihlašování uživatelským jménem vypnuté, takže zde nemůžete nastavit ani změnit své uživatelské jméno."
+      },
+      "disabledStillHave": {
+        "other": "Stále máte @{current} z dřívějška. Zůstává u vašeho členství, dokud majitel aplikace funkci znovu nezapne."
+      },
+      "disabledNoSupport": {
+        "other": "Aplikace zatím nezveřejnila kontakt na podporu. Spojte se s nimi přes kanál, který obvykle používáte."
+      },
+      "disabledHint": {
+        "other": "Požádejte je, aby v Console v Sign-in methods znovu zapnuli přihlášení uživatelským jménem. Jakmile to udělají, můžete se sem vrátit a zvolit si uživatelské jméno."
+      },
+      "idleCurrent": {
+        "other": "Aktuálně @{current}. Napište něco jiného pro změnu."
+      },
+      "idleEmpty": {
+        "other": "Zvolte jméno, kterým vás ostatní v této aplikaci najdou."
+      },
+      "formatGeneric": {
+        "other": "Neodpovídá pravidlům níže."
+      },
+      "takenLine": {
+        "other": "Někdo jiný v této aplikaci už má @{username}."
+      },
+      "currentLine": {
+        "other": "To je uživatelské jméno, které tu už máte."
+      },
+      "availableLine": {
+        "other": "@{username} je dostupné."
+      },
+      "reasonMustStartLetter": {
+        "other": "Musí začínat písmenem."
+      },
+      "reasonMustEndAlnum": {
+        "other": "Musí končit písmenem nebo číslicí."
+      },
+      "reasonNoDoubleSpecial": {
+        "other": "Nemůže obsahovat dvě tečky nebo podtržítka za sebou."
+      },
+      "reasonReserved": {
+        "other": "Toto uživatelské jméno je rezervované. Vyberte jiné."
+      },
+      "appNameFallback": {
+        "other": "vaše aplikace"
+      }
+    },
+    "identity": {
+      "title": {
+        "other": "Váš profil"
+      },
+      "fullName": {
+        "other": "Celé jméno"
+      },
+      "birthdate": {
+        "other": "Datum narození"
+      },
+      "gender": {
+        "other": "Pohlaví"
+      },
+      "pronouns": {
+        "other": "Zájmena"
+      },
+      "save": {
+        "other": "Uložit profil"
+      },
+      "saved": {
+        "other": "Uloženo"
+      },
+      "genderMale": {
+        "other": "Muž"
+      },
+      "genderFemale": {
+        "other": "Žena"
+      },
+      "genderNonBinary": {
+        "other": "Nebinární"
+      },
+      "genderPreferNotToSay": {
+        "other": "Nechci uvádět"
+      },
+      "pronounSheHer": {
+        "other": "Ona / jí"
+      },
+      "pronounHeHim": {
+        "other": "On / jemu"
+      },
+      "pronounTheyThem": {
+        "other": "Oni / jim"
+      },
+      "pronounOther": {
+        "other": "Jiné"
+      },
+      "pronounPreferNotToSay": {
+        "other": "Nechci uvádět"
+      },
+      "errorSaveFailed": {
+        "other": "Nepodařilo se uložit."
+      },
+      "givenName": {
+        "other": "Křestní jméno"
+      },
+      "givenNamePlaceholder": {
+        "other": "Jana"
+      },
+      "familyName": {
+        "other": "Příjmení"
+      },
+      "familyNamePlaceholder": {
+        "other": "Nováková"
+      },
+      "pronounsOptional": {
+        "other": "Zájmena (volitelné)"
+      }
+    },
+    "region": {
+      "title": {
+        "other": "Zvolte svůj region"
+      },
+      "yourRegion": {
+        "other": "Váš region"
+      },
+      "country": {
+        "other": "Země"
+      },
+      "uiLocale": {
+        "other": "Jazyk"
+      },
+      "currency": {
+        "other": "Měna"
+      },
+      "firstDayOfWeek": {
+        "other": "První den týdne"
+      },
+      "timeZone": {
+        "other": "Časové pásmo"
+      },
+      "save": {
+        "other": "Uložit region"
+      },
+      "confirmTitle": {
+        "other": "Změnit region?"
+      },
+      "confirmBody": {
+        "other": "Změna země ovlivní měnu a první den týdne."
+      },
+      "errorSaveFailed": {
+        "other": "Region se nepodařilo uložit."
+      },
+      "emptyHint": {
+        "other": "Jazyk rozhraní, časové pásmo, měna a formát data se řídí vaší zemí."
+      },
+      "whereDoYouLive": {
+        "other": "Kde žijete?"
+      },
+      "cascadeHint": {
+        "other": "Podle toho nastavíme jazyk rozhraní, časové pásmo, měnu a formát data. Každé z toho můžete později přepsat."
+      },
+      "cascadeResetTitle": {
+        "other": "Resetovat vše na {country}?"
+      },
+      "cascadeResetBody": {
+        "other": "Přecházíte z {currentFlag} {currentName} na {nextFlag} {nextName}. Jazyk rozhraní, časové pásmo, měna, formát data a jednotky se vrátí na výchozí hodnoty pro {nextName}. Vaše vlastní úpravy (pokud nějaké jsou) budou přepsány."
+      },
+      "cascadeFallbackCountry": {
+        "other": "nová země"
+      },
+      "uiLanguageLabel": {
+        "other": "Jazyk rozhraní"
+      },
+      "dateLabel": {
+        "other": "Datum"
+      },
+      "timeLabel": {
+        "other": "Čas"
+      },
+      "unitsLabel": {
+        "other": "Jednotky"
+      },
+      "resetDefaults": {
+        "other": "Obnovit výchozí"
+      },
+      "savedLabel": {
+        "other": "Uloženo"
+      },
+      "changeCountryAria": {
+        "other": "Změnit zemi"
+      },
+      "setTimeZonePlaceholder": {
+        "other": "Nastavit časové pásmo"
+      },
+      "timeFormat": {
+        "other": "Formát času"
+      },
+      "dateFormat": {
+        "other": "Formát data"
+      },
+      "numberFormat": {
+        "other": "Formát čísel"
+      },
+      "numbersLabel": {
+        "other": "Čísla"
+      },
+      "weekStartsLabel": {
+        "other": "Týden začíná"
+      },
+      "weekStartsOnTitle": {
+        "other": "Týden začíná v"
+      },
+      "weekStartsHint": {
+        "other": "Ovlivňuje kalendáře, výběr týdne a týdenní reporty."
+      },
+      "pickOneHint": {
+        "other": "Vyberte to, co vám sedí."
+      },
+      "uiLanguageTitle": {
+        "other": "Jazyk rozhraní"
+      },
+      "uiLanguageHint": {
+        "other": "Jakým jazykem k vám mají aplikace postavené na elvix mluvit."
+      },
+      "languageSearchPlaceholder": {
+        "other": "English, Deutsch, fa..."
+      },
+      "currencyHint": {
+        "other": "Výchozí pro ceny, faktury a výplaty v aplikacích postavených na elvix."
+      },
+      "currencySearchPlaceholder": {
+        "other": "EUR, dollar, real..."
+      },
+      "timeZoneHint": {
+        "other": "Použito pro plánování, \"v 9 ráno vašeho času\" a týdenní reporty."
+      },
+      "timeZoneSearchPlaceholder": {
+        "other": "Berlín, Teherán, Pacific..."
+      }
+    },
+    "languages": {
+      "title": {
+        "other": "Jazyky, kterými mluvíte"
+      },
+      "addLanguage": {
+        "other": "Přidat jazyk"
+      },
+      "limitReached": {
+        "other": "Můžete uvést až {limit} jazyků."
+      },
+      "level": {
+        "other": "Úroveň"
+      },
+      "remove": {
+        "other": "Odstranit"
+      },
+      "saveLevel": {
+        "other": "Uložit úroveň"
+      },
+      "updatingLevel": {
+        "other": "Aktualizace úrovně"
+      },
+      "addingLanguage": {
+        "other": "Přidávání jazyka"
+      },
+      "removing": {
+        "other": "Odstraňování"
+      },
+      "emptyHint": {
+        "other": "Pro výchozí jazyk rozhraní, nabídky práce a odchozí zprávy."
+      },
+      "searchHint": {
+        "other": "Hledat podle anglického názvu, nativního názvu nebo ISO kódu."
+      },
+      "searchPlaceholder": {
+        "other": "English, Deutsch, fa"
+      },
+      "takenBadge": {
+        "other": "přidáno"
+      },
+      "levelPickTitle": {
+        "other": "Jak dobře mluvíte jazykem {language}?"
+      },
+      "thisLanguageFallback": {
+        "other": "tento jazyk"
+      },
+      "levelPickSubtitle": {
+        "other": "Zvolte úroveň, která sedí. Můžete to později změnit."
+      },
+      "errorAlreadyAdded": {
+        "other": "Tento jazyk jste už přidali. Upravte jeho úroveň v seznamu."
+      },
+      "removeConfirmTitle": {
+        "other": "Odstranit {language}?"
+      },
+      "removeConfirmBody": {
+        "other": "Aplikace cílící na jazyk {language} vás v něm už nezasáhnou. Můžete jej kdykoli znovu přidat."
+      },
+      "keepCta": {
+        "other": "Ponechat"
+      },
+      "addAnother": {
+        "other": "Přidat další jazyk"
+      }
+    },
+    "addressBook": {
+      "title": {
+        "other": "Vaše adresy"
+      },
+      "empty": {
+        "other": "Zatím žádné adresy."
+      },
+      "addCta": {
+        "other": "Přidat adresu"
+      },
+      "makeDefault": {
+        "other": "Nastavit jako výchozí"
+      },
+      "defaultBadge": {
+        "other": "Výchozí"
+      },
+      "remove": {
+        "other": "Odstranit"
+      },
+      "removeConfirmTitle": {
+        "other": "Odstranit tuto adresu?"
+      },
+      "savingLabel": {
+        "other": "Ukládání adresy."
+      },
+      "deletingLabel": {
+        "other": "Mazání adresy."
+      },
+      "addBilling": {
+        "other": "Přidat fakturační adresu"
+      },
+      "addShipping": {
+        "other": "Přidat doručovací adresu"
+      },
+      "useForBilling": {
+        "other": "Použijeme ji pro faktury a účtenky."
+      },
+      "useForShipping": {
+        "other": "Použijeme ji pro doručení a vyzvednutí."
+      },
+      "addAnotherBilling": {
+        "other": "Přidat další fakturační adresu"
+      },
+      "addAnotherShipping": {
+        "other": "Přidat další doručovací adresu"
+      },
+      "atCompany": {
+        "other": "u společnosti {company}"
+      },
+      "setAsDefault": {
+        "other": "Nastavit jako výchozí"
+      },
+      "removeDefault": {
+        "other": "Odebrat výchozí"
+      },
+      "deleteAddress": {
+        "other": "Smazat adresu"
+      },
+      "newBillingAddress": {
+        "other": "Nová fakturační adresa"
+      },
+      "newShippingAddress": {
+        "other": "Nová doručovací adresa"
+      },
+      "searchPrompt": {
+        "other": "Začněte psát adresu"
+      },
+      "searchPlaceholder": {
+        "other": "221B Baker Street, Londýn."
+      },
+      "searchError": {
+        "other": "Nepodařilo se vyhledat: {error}"
+      },
+      "noMatchesKeepTyping": {
+        "other": "Zatím žádné shody. Pište dál."
+      },
+      "aptFloorEyebrow": {
+        "other": "Byt, patro, apartmán"
+      },
+      "aptFloorTitle": {
+        "other": "Byt, apartmán nebo patro?"
+      },
+      "aptFloorBodyBilling": {
+        "other": "Mapy málokdy zachycují čísla bytů. Přidá druhý řádek k adrese."
+      },
+      "aptFloorBodyShipping": {
+        "other": "Dopravci doručují špatně bez informace o jednotce. Přeskočte, pokud to nepotřebujete."
+      },
+      "line2Label": {
+        "other": "2. řádek adresy (volitelné)"
+      },
+      "line2Placeholder": {
+        "other": "Byt 4B, 3. patro, Apartmán 200."
+      },
+      "step2of3": {
+        "other": "Krok 2 z 3"
+      },
+      "recipientTitleBilling": {
+        "other": "Pro koho je tato fakturační adresa?"
+      },
+      "recipientTitleShipping": {
+        "other": "Pro koho je tato doručovací adresa?"
+      },
+      "recipientSubtitleBilling": {
+        "other": "Jméno na faktuře."
+      },
+      "recipientSubtitleShipping": {
+        "other": "Jméno na balíku."
+      },
+      "someoneElseSubtitleBilling": {
+        "other": "Jiné jméno na faktuře"
+      },
+      "someoneElseSubtitleShipping": {
+        "other": "Posíláte to někomu jinému"
+      },
+      "businessSubtitleBilling": {
+        "other": "Fakturovat firmě (B2B)"
+      },
+      "businessSubtitleShipping": {
+        "other": "Doručit firmě nebo do práce"
+      },
+      "saveError": {
+        "other": "Nepodařilo se uložit: {error}"
+      },
+      "recipientCustomTitle": {
+        "other": "Kdo je příjemce?"
+      },
+      "recipientCustomSubtitleBilling": {
+        "other": "Jméno, které se objeví na faktuře."
+      },
+      "recipientCustomSubtitleShipping": {
+        "other": "Jméno, které se objeví na balíku."
+      },
+      "recipientPlaceholder": {
+        "other": "Jana Nováková"
+      },
+      "businessStep1of2": {
+        "other": "Firma, krok 1 z 2"
+      },
+      "companyNameTitle": {
+        "other": "Jaký je název firmy?"
+      },
+      "companyNameBodyBilling": {
+        "other": "Objeví se na faktuře. Požadováno později pro B2B zpracování daní."
+      },
+      "companyNameBodyShipping": {
+        "other": "Firma, která balík přijme."
+      },
+      "companyNamePlaceholder": {
+        "other": "Edvone"
+      },
+      "businessStep2of2": {
+        "other": "Firma, krok 2 z 2"
+      },
+      "contactAtCompanyTitle": {
+        "other": "Někdo konkrétní v {company}?"
+      },
+      "attnBodyInvoice": {
+        "other": "Přidá k faktuře řádek \"Attn:\". Přeskočte, pokud má být adresována firmě."
+      },
+      "attnBodyPackage": {
+        "other": "Přidá k balíku řádek \"Attn:\". Přeskočte, pokud má být adresován firmě."
+      },
+      "contactPersonOptional": {
+        "other": "Kontaktní osoba (volitelné)"
+      },
+      "skip": {
+        "other": "Přeskočit"
+      },
+      "noteChoiceTitle": {
+        "other": "Chcete přidat poznámku k doručení?"
+      },
+      "noteChoiceBodyBilling": {
+        "other": "Cokoli, co by mělo vědět fakturační oddělení. Řádek ATTN, číslo objednávky, c/o někdo."
+      },
+      "noteChoiceBodyShipping": {
+        "other": "Cokoli pro doručovatele. Zvonek, kód brány, nechat u dveří."
+      },
+      "noteYesTitle": {
+        "other": "Ano, přidat poznámku"
+      },
+      "noteYesSubtitle": {
+        "other": "Napsat krátkou instrukci"
+      },
+      "noteNoTitle": {
+        "other": "Ne, přeskočit"
+      },
+      "noteNoSubtitle": {
+        "other": "Uložit adresu, jak je"
+      },
+      "noteLastStep": {
+        "other": "Poznámka, poslední krok"
+      },
+      "noteInputTitle": {
+        "other": "Co máme říct?"
+      },
+      "noteInputBodyBilling": {
+        "other": "Objeví se na faktuře nebo fakturačním záznamu."
+      },
+      "noteInputBodyShipping": {
+        "other": "Předá se přepravci."
+      },
+      "billingNote": {
+        "other": "Poznámka k fakturaci"
+      },
+      "deliveryNote": {
+        "other": "Poznámka k doručení"
+      },
+      "notePlaceholderBilling": {
+        "other": "Fakturovat ATTN: Finance, PO #ABC-1234."
+      },
+      "notePlaceholderShipping": {
+        "other": "Zvoňte na zvonek 3, nechte u recepce, pokud nejsem doma."
+      },
+      "backToList": {
+        "other": "Zpět na seznam"
+      },
+      "billingAddressLabel": {
+        "other": "fakturační adresa"
+      },
+      "shippingAddressLabel": {
+        "other": "doručovací adresa"
+      },
+      "sectionWho": {
+        "other": "Kdo"
+      },
+      "sectionWhere": {
+        "other": "Kde"
+      },
+      "sectionNotesMeta": {
+        "other": "Poznámky a meta"
+      },
+      "fieldRecipient": {
+        "other": "Příjemce"
+      },
+      "fieldCompany": {
+        "other": "Firma"
+      },
+      "addCompanyPlaceholder": {
+        "other": "Přidat firmu"
+      },
+      "fieldStreet": {
+        "other": "Ulice"
+      },
+      "fieldAptFloor": {
+        "other": "Byt nebo patro"
+      },
+      "addUnitPlaceholder": {
+        "other": "Přidat jednotku"
+      },
+      "fieldCity": {
+        "other": "Město"
+      },
+      "fieldPostalCode": {
+        "other": "PSČ"
+      },
+      "fieldRegion": {
+        "other": "Region"
+      },
+      "fieldCountry": {
+        "other": "Země"
+      },
+      "fieldDeliveryNotes": {
+        "other": "Poznámky k doručení"
+      },
+      "addNotePlaceholder": {
+        "other": "Přidat poznámku"
+      },
+      "fieldTimezone": {
+        "other": "Časové pásmo"
+      },
+      "fieldVenue": {
+        "other": "Místo nebo budova"
+      },
+      "nothingToChange": {
+        "other": "Není co měnit"
+      },
+      "setDefaultTitle": {
+        "other": "Nastavit tuto jako vaši výchozí?"
+      },
+      "removeDefaultTitle": {
+        "other": "Odebrat výchozí z této adresy?"
+      },
+      "setDefaultSubtitle": {
+        "other": "Bude automaticky vybrána při placení nebo fakturaci."
+      },
+      "removeDefaultSubtitle": {
+        "other": "Při placení ani fakturaci nebude nic předvybráno."
+      },
+      "crossAppHeadsUp": {
+        "other": "Pozor. Toto ovlivní každou aplikaci, kterou používáte s elvix."
+      },
+      "crossAppDefaultBodySetting": {
+        "other": "Vaše výchozí adresa typu {kind} je sdílená napříč všemi aplikacemi, do kterých se přihlašujete. Změna zde aktualizuje automatický výběr všude najednou."
+      },
+      "crossAppDefaultBodyClearing": {
+        "other": "Vaše výchozí adresa typu {kind} je sdílená napříč všemi aplikacemi, do kterých se přihlašujete. Odebráním znamená, že nikde nebude předvybrána žádná adresa; pokaždé si ji vyberete při placení nebo fakturaci."
+      },
+      "nothingToDelete": {
+        "other": "Není co mazat"
+      },
+      "deleteBillingHeader": {
+        "other": "Smazat fakturační adresu"
+      },
+      "deleteShippingHeader": {
+        "other": "Smazat doručovací adresu"
+      },
+      "deleteConfirmTitle": {
+        "other": "Smazat tuto adresu?"
+      },
+      "cantBeUndone": {
+        "other": "Toto nelze vrátit zpět."
+      },
+      "crossAppDeleteBodyBilling": {
+        "other": "Vaše fakturační adresa je uložena jen jednou ve vašem profilu elvix a sdílena s aplikacemi, do kterých se přihlašujete. Smazáním ji odstraníte všude. Každý postup placení, fakturace nebo doručení, který na ni odkazoval, bude potřebovat novou."
+      },
+      "crossAppDeleteBodyShipping": {
+        "other": "Vaše doručovací adresa je uložena jen jednou ve vašem profilu elvix a sdílena s aplikacemi, do kterých se přihlašujete. Smazáním ji odstraníte všude. Každý postup placení, fakturace nebo doručení, který na ni odkazoval, bude potřebovat novou."
+      },
+      "deleteError": {
+        "other": "Nepodařilo se smazat: {error}"
+      },
+      "yesDelete": {
+        "other": "Ano, smazat"
+      },
+      "pickAddressFirst": {
+        "other": "Nejprve vyberte adresu"
+      },
+      "changeAddress": {
+        "other": "Změnit adresu"
+      },
+      "reviewBilling": {
+        "other": "Zkontrolovat fakturační adresu"
+      },
+      "reviewShipping": {
+        "other": "Zkontrolovat doručovací adresu"
+      },
+      "notRight": {
+        "other": "Není správně"
+      },
+      "looksRight": {
+        "other": "Vypadá správně"
+      },
+      "missingFieldsHint": {
+        "other": "Chybí nám {fields}. Vyberte konkrétnější návrh (s číslem ulice), abychom mohli uložit doručitelnou adresu."
+      }
+    },
+    "legalEntities": {
+      "title": {
+        "other": "Právní subjekty"
+      },
+      "addCta": {
+        "other": "Přidat právní subjekt"
+      },
+      "companyName": {
+        "other": "Název firmy"
+      },
+      "vatId": {
+        "other": "DIČ"
+      },
+      "taxCountry": {
+        "other": "Daňová země"
+      },
+      "verifyVat": {
+        "other": "Ověřit DIČ"
+      },
+      "verifying": {
+        "other": "Kontrola"
+      },
+      "verifiedBadge": {
+        "other": "Ověřeno"
+      },
+      "notRegistered": {
+        "other": "Neregistrováno"
+      },
+      "unreachable": {
+        "other": "Nedostupné"
+      },
+      "addCtaSubtitle": {
+        "other": "Pro faktury, smlouvy a daňová podání."
+      },
+      "addAnotherCta": {
+        "other": "Přidat další právní subjekt"
+      },
+      "kindIndividual": {
+        "other": "Fyzická osoba"
+      },
+      "kindSoleProp": {
+        "other": "OSVČ"
+      },
+      "kindCompany": {
+        "other": "Firma"
+      },
+      "removeDefaultAria": {
+        "other": "Odebrat výchozí"
+      },
+      "setDefaultAria": {
+        "other": "Nastavit jako výchozí"
+      },
+      "deleteAria": {
+        "other": "Smazat subjekt"
+      },
+      "typeChoiceTitle": {
+        "other": "O jaký druh subjektu jde?"
+      },
+      "typeChoiceSubtitle": {
+        "other": "Určí otázky, které vám položíme dál."
+      },
+      "step1of3": {
+        "other": "Krok 1 z 3"
+      },
+      "individualSubtitle": {
+        "other": "Jen vy, žádný podnik. Faktury jdou na vaše osobní jméno."
+      },
+      "soleProprietorshipSubtitle": {
+        "other": "Vy a obchodní název (Einzelunternehmen, freelancer apod.)."
+      },
+      "companySubtitle": {
+        "other": "Registrovaný právní subjekt (GmbH, Ltd, s.r.o. apod.)."
+      },
+      "legalNameTitleIndividual": {
+        "other": "Vaše právní jméno"
+      },
+      "legalNameTitleSoleProp": {
+        "other": "Vaše právní jméno (majitel)"
+      },
+      "legalNameTitleCompany": {
+        "other": "Právní název firmy"
+      },
+      "legalNameSubtitleIndividual": {
+        "other": "Jak je uvedeno ve vašem dokladu."
+      },
+      "legalNameSubtitleSoleProp": {
+        "other": "Fyzická osoba provozující podnik."
+      },
+      "legalNameSubtitleCompany": {
+        "other": "Registrovaný název firmy."
+      },
+      "legalNameLabel": {
+        "other": "Právní název"
+      },
+      "legalNamePlaceholderCompany": {
+        "other": "ACME s.r.o."
+      },
+      "legalNamePlaceholderPerson": {
+        "other": "Jana Nováková"
+      },
+      "legalNameInvalidCompany": {
+        "other": "Zadejte alespoň 2 znaky s alespoň jedním písmenem."
+      },
+      "legalNameInvalidPerson": {
+        "other": "Zadejte jméno i příjmení."
+      },
+      "tradingNameTitle": {
+        "other": "Obchodní název (volitelné)"
+      },
+      "tradingNameSubtitle": {
+        "other": "Geschaeftsbezeichnung, DBA, doing-business-as. Značka, pod kterou subjekt obchoduje."
+      },
+      "tradingNameLabel": {
+        "other": "Obchodní název"
+      },
+      "tradingNamePlaceholder": {
+        "other": "ACME Brands"
+      },
+      "dobTitle": {
+        "other": "Datum narození"
+      },
+      "dobSubtitle": {
+        "other": "Vyžadováno pro fakturaci na vaše jméno a KYC, pokud o to zákazník požádá později."
+      },
+      "dobAgeError": {
+        "other": "Pro registraci subjektu musíte mít 18 let a více."
+      },
+      "dobOutOfRange": {
+        "other": "Toto datum je mimo rozsah."
+      },
+      "placeOfBirthTitle": {
+        "other": "Místo narození"
+      },
+      "placeOfBirthSubtitle": {
+        "other": "Město, jak je uvedeno ve vašem dokladu. Vyžadováno pro fakturaci a KYC."
+      },
+      "placeOfBirthCityLabel": {
+        "other": "Město"
+      },
+      "placeOfBirthCityPlaceholder": {
+        "other": "Začněte psát město."
+      },
+      "placeChangeCta": {
+        "other": "Změnit"
+      },
+      "placeSearchError": {
+        "other": "Nepodařilo se vyhledat: {error}"
+      },
+      "nationalityTitle": {
+        "other": "Národnost"
+      },
+      "nationalitySubtitle": {
+        "other": "Vyberte jednu nebo více (až {max}). První je považována za hlavní."
+      },
+      "nationalityPrimaryBadge": {
+        "other": "Hlavní"
+      },
+      "nationalityCapReached": {
+        "other": "Dosažen maximální počet {max} národností. Jednu odeberte, abyste mohli přidat jinou."
+      },
+      "removeCountryAria": {
+        "other": "Odebrat {name}"
+      },
+      "taxCountryTitle": {
+        "other": "Daňová rezidence"
+      },
+      "taxCountrySubtitle": {
+        "other": "Kde subjekt platí daně. Uvedeny jsou jen země, kde dokážeme ověřit DIČ živě."
+      },
+      "taxIdsTitle": {
+        "other": "Daňové identifikátory"
+      },
+      "taxIdsSubtitleIndividual": {
+        "other": "Vaše místní daňové číslo z {country}. Uloženo tak, jak je."
+      },
+      "taxIdsSubtitleIndividualFallback": {
+        "other": "vaše finanční úřad"
+      },
+      "taxIdsSubtitleCompany": {
+        "other": "DIČ se ověřuje živě proti {authority}. Místní daňové číslo je volitelné."
+      },
+      "taxIdsSubtitleCompanyFallback": {
+        "other": "vydávající úřad"
+      },
+      "taxIdsSubtitleSoleProp": {
+        "other": "Obojí je volitelné. Přidejte místní daňové číslo, pokud ho chcete na fakturách; DIČ jen pokud jste plátce DPH. Registrace podnikání je zachycena v dalším kroku."
+      },
+      "localTaxNumberLabel": {
+        "other": "Místní daňové číslo"
+      },
+      "vatCompanyIdLabel": {
+        "other": "DIČ / IČO"
+      },
+      "blockReasonTaxIdRequired": {
+        "other": "Pro pokračování zadejte místní daňové číslo."
+      },
+      "blockReasonTaxIdFormat": {
+        "other": "Místní daňové číslo neodpovídá formátu země {country}. {hint}"
+      },
+      "blockReasonVatRequired": {
+        "other": "Pro pokračování zadejte DIČ / IČO."
+      },
+      "blockReasonVatFormat": {
+        "other": "Toto DIČ neodpovídá formátu země."
+      },
+      "taxIdFormatHint": {
+        "other": "Očekáváno: {placeholder}."
+      },
+      "verifyHeadingChecking": {
+        "other": "Ověřování u úřadu."
+      },
+      "verifyHeadingLive": {
+        "other": "Ověřeno."
+      },
+      "verifyHeadingInvalid": {
+        "other": "Nepodařilo se ověřit."
+      },
+      "verifyHeadingFormat": {
+        "other": "Úřad není dostupný."
+      },
+      "verifySubtitleChecking": {
+        "other": "Kontrola {vatId} v registru země {country}."
+      },
+      "verifySubtitleLiveNamed": {
+        "other": "{authority} rozpoznal toto DIČ jako {name}."
+      },
+      "verifySubtitleLive": {
+        "other": "{authority} rozpoznal toto DIČ."
+      },
+      "verifySubtitleInvalid": {
+        "other": "{authority} neuvádí {vatId} jako registrované. Vraťte se a opravte to."
+      },
+      "verifySubtitleFormat": {
+        "other": "Aktuálně se nám nepodařilo spojit s {authority}. Vaše zadání je uloženo tak, jak je, a automaticky se znovu ověří."
+      },
+      "authorityFallback": {
+        "other": "finanční úřad"
+      },
+      "editTaxIdsBackLabel": {
+        "other": "Upravit daňová ID"
+      },
+      "fixVatCta": {
+        "other": "Opravit DIČ"
+      },
+      "continueAnywayCta": {
+        "other": "Přesto pokračovat"
+      },
+      "registrationTitle": {
+        "other": "Registrace"
+      },
+      "registrationSubtitle": {
+        "other": "Handelsregister, Companies House, KvK. Oficiální rejstřík, kde je tento subjekt zapsán."
+      },
+      "registrationNumberLabel": {
+        "other": "Registrační číslo"
+      },
+      "issuingAuthorityLabel": {
+        "other": "Vydávající úřad"
+      },
+      "issuingAuthorityPlaceholder": {
+        "other": "Místní soud / obchodní rejstřík"
+      },
+      "registeredSinceLabel": {
+        "other": "Registrováno od (volitelné)"
+      },
+      "registeredSinceRangeError": {
+        "other": "Vyberte datum mezi 1900 a dneškem."
+      },
+      "regNumberFormatHint": {
+        "other": "Neodpovídá očekávanému formátu. Zkuste: {placeholder}."
+      },
+      "addressSearchTitle": {
+        "other": "Registrovaná adresa"
+      },
+      "addressSearchSubtitle": {
+        "other": "Kde je subjekt registrován u úřadu. Začněte psát."
+      },
+      "addressLabel": {
+        "other": "Adresa"
+      },
+      "addressSearchPlaceholder": {
+        "other": "Ulice, město."
+      },
+      "addressPickFirst": {
+        "other": "Nejprve vyberte adresu"
+      },
+      "addressReviewTitle": {
+        "other": "Vypadá správně?"
+      },
+      "addressReviewSubtitle": {
+        "other": "Ujistěte se, že registrované sídlo odpovídá oficiálnímu rejstříku."
+      },
+      "addressMissing": {
+        "other": "Chybí nám {fields}. Vyberte konkrétnější návrh."
+      },
+      "addressFieldStreet": {
+        "other": "Ulice"
+      },
+      "addressFieldCity": {
+        "other": "Město"
+      },
+      "addressFieldPostalCode": {
+        "other": "PSČ"
+      },
+      "addressFieldRegion": {
+        "other": "Region"
+      },
+      "addressFieldCountry": {
+        "other": "Země"
+      },
+      "addressChangeBackLabel": {
+        "other": "Změnit adresu"
+      },
+      "addressNotRightCta": {
+        "other": "Není správně"
+      },
+      "addressLooksRightCta": {
+        "other": "Vypadá správně"
+      },
+      "addressAptTitle": {
+        "other": "Byt, apartmán nebo patro?"
+      },
+      "addressAptSubtitle": {
+        "other": "Přidá druhý řádek k registrované adrese. Přeskočte, pokud není potřeba."
+      },
+      "addressAptLabel": {
+        "other": "2. řádek adresy (volitelné)"
+      },
+      "addressAptPlaceholder": {
+        "other": "Byt 4B, 3. patro, Apartmán 200."
+      },
+      "contactChoiceTitle": {
+        "other": "Chcete přidat kontaktní údaje?"
+      },
+      "contactChoiceSubtitle": {
+        "other": "Volitelný e-mail a telefon pro tento subjekt. Odděleno od kontaktu vašeho hlavního účtu."
+      },
+      "contactYesCta": {
+        "other": "Ano, přidat kontakt"
+      },
+      "contactNoCta": {
+        "other": "Ne, uložit bez něj"
+      },
+      "yesNoYesSubtitle": {
+        "other": "Přidá další krok"
+      },
+      "yesNoNoSubtitle": {
+        "other": "Uložit subjekt, jak je"
+      },
+      "saveError": {
+        "other": "Nepodařilo se uložit: {error}"
+      },
+      "contactInputTitle": {
+        "other": "Kontakt pro tento subjekt"
+      },
+      "contactInputSubtitle": {
+        "other": "E-mail a telefon zobrazené na fakturách a smlouvách."
+      },
+      "contactEmailLabel": {
+        "other": "E-mail (volitelné)"
+      },
+      "contactEmailPlaceholder": {
+        "other": "faktury@example.com"
+      },
+      "contactEmailInvalid": {
+        "other": "Zadejte platný e-mail nebo nechte prázdné."
+      },
+      "contactPhoneLabel": {
+        "other": "Telefon (volitelné)"
+      },
+      "contactPhonePlaceholder": {
+        "other": "+420 ."
+      },
+      "contactPhoneInvalid": {
+        "other": "Použijte číslice s volitelným úvodním + (6 až 20 číslic)."
+      },
+      "saveEntityCta": {
+        "other": "Uložit subjekt"
+      },
+      "saveChangesCta": {
+        "other": "Uložit změny"
+      },
+      "savingEntityLabel": {
+        "other": "Ukládání subjektu."
+      },
+      "deletingEntityLabel": {
+        "other": "Mazání subjektu."
+      },
+      "backToList": {
+        "other": "Zpět na seznam"
+      },
+      "detailSectionIdentity": {
+        "other": "Identita"
+      },
+      "detailSectionTax": {
+        "other": "Daně"
+      },
+      "detailSectionRegistration": {
+        "other": "Registrace"
+      },
+      "detailSectionAddress": {
+        "other": "Adresa"
+      },
+      "detailSectionContact": {
+        "other": "Kontakt"
+      },
+      "detailLegalName": {
+        "other": "Právní název"
+      },
+      "detailTradingName": {
+        "other": "Obchodní název"
+      },
+      "detailTradingNamePlaceholder": {
+        "other": "Přidat obchodní název"
+      },
+      "detailDob": {
+        "other": "Datum narození"
+      },
+      "detailPlaceOfBirth": {
+        "other": "Místo narození"
+      },
+      "detailPlaceOfBirthPlaceholder": {
+        "other": "Přidat místo narození"
+      },
+      "detailNationality": {
+        "other": "Národnost"
+      },
+      "detailTaxResidence": {
+        "other": "Daňová rezidence"
+      },
+      "detailVatId": {
+        "other": "DIČ / IČO"
+      },
+      "detailVatIdPlaceholder": {
+        "other": "Přidat DIČ"
+      },
+      "detailLocalTaxNumber": {
+        "other": "Místní daňové číslo"
+      },
+      "detailLocalTaxNumberPlaceholder": {
+        "other": "Přidat daňové číslo"
+      },
+      "detailRegistrationNumber": {
+        "other": "Registrační #"
+      },
+      "detailIssuingAuthority": {
+        "other": "Vydávající úřad"
+      },
+      "detailRegisteredSince": {
+        "other": "Registrováno od"
+      },
+      "detailStreet": {
+        "other": "Ulice"
+      },
+      "detailAptFloor": {
+        "other": "Byt / patro"
+      },
+      "detailCity": {
+        "other": "Město"
+      },
+      "detailPostalCode": {
+        "other": "PSČ"
+      },
+      "detailCountry": {
+        "other": "Země"
+      },
+      "detailEmail": {
+        "other": "E-mail"
+      },
+      "detailEmailPlaceholder": {
+        "other": "Přidat e-mail"
+      },
+      "detailPhone": {
+        "other": "Telefon"
+      },
+      "detailPhonePlaceholder": {
+        "other": "Přidat telefon"
+      },
+      "removeDefault": {
+        "other": "Odebrat výchozí"
+      },
+      "setDefault": {
+        "other": "Nastavit jako výchozí"
+      },
+      "deleteConfirmTitle": {
+        "other": "Smazat tento subjekt?"
+      },
+      "deleteConfirmBody": {
+        "other": "Toto nelze vrátit zpět."
+      },
+      "deleteEmpty": {
+        "other": "Není co mazat"
+      },
+      "sharedAcrossAppsHeading": {
+        "other": "Pozor. Toto ovlivní každou aplikaci, kterou používáte s elvix."
+      },
+      "deleteSharedAcrossAppsBody": {
+        "other": "Právní subjekty jsou sdílené napříč aplikacemi, do kterých se přihlašujete. Smazáním záznam odstraníte všude; každá šablona faktury, která ho referencovala, bude potřebovat novou."
+      },
+      "deleteError": {
+        "other": "Nepodařilo se smazat: {error}"
+      },
+      "yesDelete": {
+        "other": "Ano, smazat"
+      },
+      "nothingToChange": {
+        "other": "Není co měnit"
+      },
+      "defaultConfirmTitleSet": {
+        "other": "Nastavit tento jako váš výchozí subjekt?"
+      },
+      "defaultConfirmTitleUnset": {
+        "other": "Odebrat výchozí z tohoto subjektu?"
+      },
+      "defaultConfirmBodySet": {
+        "other": "Výchozí subjekt automaticky vyplní faktury a šablony smluv."
+      },
+      "defaultConfirmBodyUnset": {
+        "other": "Při generování faktur nebo smluv nebude nic předvybráno."
+      },
+      "defaultSharedAcrossAppsBodySet": {
+        "other": "Výchozí subjekt je sdílený napříč všemi aplikacemi, do kterých se přihlašujete. Změna zde aktualizuje automatický výběr všude najednou."
+      },
+      "defaultSharedAcrossAppsBodyUnset": {
+        "other": "Výchozí subjekt je sdílený napříč všemi aplikacemi, do kterých se přihlašujete. Odebráním znamená, že nikde nebude předvybrán žádný subjekt."
+      }
+    },
+    "entityKind": {
+      "title": {
+        "other": "Pro koho je toto?"
+      },
+      "me": {
+        "other": "Pro mě"
+      },
+      "someoneElse": {
+        "other": "Pro někoho jiného"
+      },
+      "business": {
+        "other": "Pro firmu"
+      }
+    },
+    "export": {
+      "title": {
+        "other": "Stáhnout vaše data"
+      },
+      "body": {
+        "other": "Získejte kopii všeho, co o vás máme. GDPR článek 15. Pošleme e-mailem jednorázový odkaz ke stažení, platný 24 hodin."
+      },
+      "sendCodeCta": {
+        "other": "Odeslat ověřovací kód"
+      },
+      "downloadCta": {
+        "other": "Pošlete mi odkaz e-mailem"
+      },
+      "doneTitle": {
+        "other": "Zkontrolujte schránku"
+      },
+      "doneBody": {
+        "other": "Poslali jsme odkaz ke stažení na {email}. Vyprší za 24 hodin."
+      },
+      "previewLoadFailed": {
+        "other": "Nepodařilo se načíst náhled. Zkuste to znovu."
+      },
+      "whatYouReceive": {
+        "other": "Co dostanete"
+      },
+      "archiveBlurbIdentity": {
+        "other": "Váš archiv bude obsahovat jediný soubor JSON se vším níže, plus váš avatar a banner, pokud jste nějaké nahráli, plus README, který vysvětluje každou sekci běžným jazykem a obsahuje informace podle GDPR čl. 15(1)."
+      },
+      "archiveBlurbApp": {
+        "other": "Váš archiv bude obsahovat jediný soubor JSON omezený na {label}, plus README, který vysvětluje každou sekci a obsahuje informace podle GDPR čl. 15(1)."
+      },
+      "notIncluded": {
+        "other": "Není zahrnuto: kryptografický materiál vašich passkeys, OAuth tokeny, OTP kódy a jakákoli data, která o vás aplikace, jež používáte, drží mimo elvix. Pro to kontaktujte každou aplikaci."
+      },
+      "sendToHeading": {
+        "other": "Vaše data pošleme na váš hlavní e-mail"
+      },
+      "sendToBody": {
+        "other": "Váš archiv přistane ve schránce {email} jako příloha .zip. Vlastnictví této schránky je důkazem totožnosti, takže soubor nikdy nežije na veřejné URL."
+      },
+      "sendToNotice": {
+        "other": "Nejprve pošleme 6místný kód na vaši hlavní schránku. Po jeho zadání na další obrazovce vygenerujeme váš archiv a pošleme vám ho e-mailem jako přílohu .zip."
+      },
+      "sendingCode": {
+        "other": "Odesílání kódu"
+      },
+      "sendToCta": {
+        "other": "Pošlete mi 6místný kód e-mailem"
+      },
+      "otpHeading": {
+        "other": "Potvrďte svým kódem"
+      },
+      "otpBody": {
+        "other": "Poslali jsme 6místný kód na {email}. Vyprší za 10 minut. Po jeho zadání vygenerujeme váš archiv a pošleme ho na stejnou schránku jako přílohu .zip."
+      },
+      "confirmCta": {
+        "other": "Potvrdit a poslat mi data e-mailem"
+      },
+      "workingLabel": {
+        "other": "Pracuji"
+      },
+      "resendIn": {
+        "other": "Znovu za {seconds} s"
+      },
+      "noPendingCode": {
+        "other": "Žádný čekající kód. Pošlete nový."
+      },
+      "networkError": {
+        "other": "Síťová chyba. Zkuste to znovu."
+      },
+      "doneHeading": {
+        "other": "Odesláno."
+      },
+      "doneInboxBody": {
+        "other": "Za chvíli zkontrolujte hlavní schránku ({email}). Váš archiv je připojen k e-mailu jako soubor .zip. Další export stejného cíle můžete vyžádat za 24 hodin."
+      },
+      "backToExports": {
+        "other": "Zpět na exporty"
+      },
+      "errorChallengeGeneric": {
+        "other": "Nepodařilo se odeslat kód. Zkuste to znovu."
+      },
+      "errorChallengeTooRecent": {
+        "other": "Před další žádostí počkejte {seconds} s."
+      },
+      "errorChallengeTooMany": {
+        "other": "Příliš mnoho požadavků tuto hodinu. Zkuste to později."
+      },
+      "errorChallengeSendFailed": {
+        "other": "Nepodařilo se odeslat kód e-mailem. Zkuste to znovu."
+      },
+      "errorChallengeRateLimit": {
+        "other": "Tento export jste už provedli za posledních 24 hodin. K dispozici znovu přibližně za {hours} h."
+      },
+      "errorChallengeNotMember": {
+        "other": "Už nejste členem této aplikace."
+      },
+      "errorChallengeAppNotFound": {
+        "other": "Tato aplikace není dostupná."
+      },
+      "errorApplyGeneric": {
+        "other": "Nepodařilo se vygenerovat váš export. Zkuste to znovu."
+      },
+      "errorApplyWrongCode": {
+        "one": "Špatný kód. Zbývá {count} pokus.",
+        "few": "Špatný kód. Zbývají {count} pokusy.",
+        "other": "Špatný kód. Zbývá {count} pokusů."
+      },
+      "errorApplyLocked": {
+        "other": "Příliš mnoho špatných pokusů. Pošlete nový kód."
+      },
+      "errorApplyExpired": {
+        "other": "Kód vypršel. Pošlete nový."
+      },
+      "errorApplyGenerateFailed": {
+        "other": "Nepodařilo se sestavit váš export. Zkuste to znovu."
+      },
+      "errorApplyStorageFailed": {
+        "other": "Nepodařilo se uložit váš export. Zkuste to znovu."
+      },
+      "errorApplyEmailFailed": {
+        "other": "Váš archiv byl vygenerován, ale e-mail selhal. Pro obnovu odkazu kontaktujte {email}."
+      }
+    },
+    "deactivate": {
+      "title": {
+        "other": "Dejte si pauzu"
+      },
+      "body": {
+        "other": "Deaktivace skryje váš účet z této aplikace. Reaktivujte kdykoli z vašeho účtu elvix."
+      },
+      "confirmCta": {
+        "other": "Deaktivovat"
+      },
+      "doneTitle": {
+        "other": "Váš účet je pozastaven"
+      },
+      "reactivateCta": {
+        "other": "Reaktivovat"
+      },
+      "errorTooMany": {
+        "other": "Vyžádáno příliš mnoho kódů. Zkuste to později."
+      },
+      "errorTooRecent": {
+        "other": "Před další žádostí počkejte {seconds} s."
+      },
+      "errorSendFailed": {
+        "other": "Nepodařilo se odeslat kód e-mailem. Zkuste to znovu."
+      },
+      "errorRequestFailed": {
+        "other": "Nepodařilo se vyžádat kód. Zkuste to znovu."
+      },
+      "errorWrongCode": {
+        "one": "Špatný kód. Zbývá {count} pokus.",
+        "few": "Špatný kód. Zbývají {count} pokusy.",
+        "other": "Špatný kód. Zbývá {count} pokusů."
+      },
+      "errorChallengeLocked": {
+        "other": "Příliš mnoho špatných pokusů. Vyžádejte si nový kód."
+      },
+      "errorChallengeExpired": {
+        "other": "Kód vypršel. Vyžádejte si nový."
+      },
+      "errorAlreadyLeft": {
+        "other": "Tuto aplikaci jste už opustili. Nejprve obnovte své členství."
+      },
+      "appNameFallback": {
+        "other": "vaše aplikace"
+      },
+      "warn1Title": {
+        "other": "Dejte si pauzu od {app}"
+      },
+      "warn1Body": {
+        "other": "Váš profil si dá tichou pauzu. Lidé v {app} vás přestanou vidět, ale vše, co jste si vybudovali, zůstane přesně tak, jak je. Až budete připraveni, vraťte se sem a znovu se přihlaste."
+      },
+      "soundGood": {
+        "other": "Zní to dobře?"
+      },
+      "warn1Cta": {
+        "other": "Rozumím"
+      },
+      "warn2Title": {
+        "other": "Několik věcí, které je dobré vědět"
+      },
+      "warn2Bullet1": {
+        "other": "Otevřené relace na této aplikaci se okamžitě odhlásí."
+      },
+      "warn2Bullet2": {
+        "other": "Vaše uživatelské jméno a identifikátor zůstávají vaše. Nikdo jiný si je nemůže vzít, dokud jste pryč."
+      },
+      "warn2Bullet3": {
+        "other": "Můžete se kdykoli vrátit z této stejné plochy."
+      },
+      "warn2Bullet4": {
+        "other": "Pošleme vám e-mailem 6místný kód na potvrzení. Pro jistotu, aby změna prošla, jen pokud máte také přístup ke schránce."
+      },
+      "warn2Cta": {
+        "other": "Rozumím. Pošlete mi kód e-mailem"
+      },
+      "sendingLabel": {
+        "other": "Odesílání"
+      },
+      "reactivateTitle": {
+        "other": "Vítejte zpět v {app}"
+      },
+      "reactivateBody": {
+        "other": "Právě teď jste na pauze. Reaktivujte, abyste se v {app} znovu objevili."
+      },
+      "reactivateBodyByOwner": {
+        "other": "Právě teď jste na pauze (admin to udělal za vás). Reaktivujte, abyste se v {app} znovu objevili."
+      },
+      "doneDeactivatedTitle": {
+        "other": "Jste na pauze od {app}."
+      },
+      "doneReactivatedTitle": {
+        "other": "Jste zpět v {app}."
+      },
+      "doneDeactivatedBody": {
+        "other": "Dali jsme to aplikaci vědět. Vraťte se sem kdykoli pro reaktivaci."
+      },
+      "doneReactivatedBody": {
+        "other": "Vaše členství je opět aktivní. Otevřené relace na straně aplikace se mohou aktualizovat za chvíli."
+      },
+      "reactivateAgain": {
+        "other": "Reaktivovat znovu"
+      },
+      "deactivateAgain": {
+        "other": "Deaktivovat znovu"
+      },
+      "otpTitle": {
+        "other": "Zadejte potvrzovací kód"
+      },
+      "otpDelivered": {
+        "other": "Poslali jsme 6místný kód na {email}. Vyprší za 10 minut."
+      },
+      "otpSending": {
+        "other": "Posíláme vám 6místný kód."
+      },
+      "otpPending": {
+        "other": "Posíláme 6místný kód na váš e-mail."
+      },
+      "resendIn": {
+        "other": "Znovu za {seconds} s"
+      }
+    },
+    "leave": {
+      "title": {
+        "other": "Opustit {app}?"
+      },
+      "body": {
+        "other": "Odstraní vaše členství. Toto je definitivní: majitel ho nemůže vrátit. Váš účet elvix zůstává otevřený."
+      },
+      "confirmCta": {
+        "other": "Odejít navždy"
+      },
+      "doneTitle": {
+        "other": "Opustili jste {app}."
+      },
+      "errorTooManyCodes": {
+        "other": "Vyžádáno příliš mnoho kódů. Zkuste to později."
+      },
+      "errorTooRecent": {
+        "other": "Před další žádostí počkejte {seconds} s."
+      },
+      "errorSendFailed": {
+        "other": "Nepodařilo se odeslat kód e-mailem. Zkuste to znovu."
+      },
+      "errorRequestFailed": {
+        "other": "Nepodařilo se vyžádat kód. Zkuste to znovu."
+      },
+      "errorWrongCode": {
+        "one": "Špatný kód. Zbývá {count} pokus.",
+        "few": "Špatný kód. Zbývají {count} pokusy.",
+        "other": "Špatný kód. Zbývá {count} pokusů."
+      },
+      "errorChallengeLocked": {
+        "other": "Příliš mnoho špatných pokusů. Vyžádejte si nový kód."
+      },
+      "errorChallengeExpired": {
+        "other": "Kód vypršel. Vyžádejte si nový."
+      },
+      "errorOwnerInitiated": {
+        "other": "Admin vás odebral. Musí to zrušit ze své Console."
+      },
+      "errorGraceExpired": {
+        "other": "90denní lhůta pro obnovení tohoto členství vypršela."
+      },
+      "errorRestoreFailed": {
+        "other": "Nepodařilo se obnovit. Zkuste to znovu."
+      },
+      "otpActionLabel": {
+        "other": "Opustit {app}"
+      },
+      "warn1Heading": {
+        "other": "Opustit {app}"
+      },
+      "warn1Body": {
+        "other": "Vaše členství je okamžitě skryto. Máte 90 dní na to si to rozmyslet a obnovit z této stejné plochy. Poté se aplikace přestane zobrazovat ve vašem seznamu. Vaše data na straně aplikace zůstávají řízena jejich vlastními zásadami."
+      },
+      "understandPrompt": {
+        "other": "Rozumíte?"
+      },
+      "iUnderstandCta": {
+        "other": "Rozumím"
+      },
+      "dataHeading": {
+        "other": "O vašich datech v {app}"
+      },
+      "warn2Body": {
+        "other": "elvix neuchovává ani nemaže to, co o vás drží {app}. Majitel aplikace je za to odpovědný podle vlastních zásad ochrany soukromí a podmínek služby. Aplikaci v okamžiku odchodu upozorníme, aby mohla jednat podle těchto podmínek. Přečtěte si je, než potvrdíte."
+      },
+      "privacyPolicy": {
+        "other": "Zásady ochrany soukromí"
+      },
+      "termsOfService": {
+        "other": "Podmínky služby"
+      },
+      "warn2EmailPrompt": {
+        "other": "Pošleme vám e-mailem kód pro potvrzení. Rozumíte?"
+      },
+      "warn2Cta": {
+        "other": "Rozumím. Pošlete mi kód e-mailem"
+      },
+      "restoreHeading": {
+        "other": "Obnovit vaše členství v {app}"
+      },
+      "restoreBody": {
+        "one": "Zbývá vám {count} den v ochranné lhůtě. Obnovte teď a aplikace vás uvidí přesně jako předtím: stejné uživatelské jméno, stejné role, stejná historie.",
+        "few": "Zbývají vám {count} dny v ochranné lhůtě. Obnovte teď a aplikace vás uvidí přesně jako předtím: stejné uživatelské jméno, stejné role, stejná historie.",
+        "other": "Zbývá vám {count} dní v ochranné lhůtě. Obnovte teď a aplikace vás uvidí přesně jako předtím: stejné uživatelské jméno, stejné role, stejná historie."
+      },
+      "restoreCta": {
+        "other": "Obnovit členství"
+      },
+      "ownerLockedHeading": {
+        "other": "Admin vás odebral z {app}"
+      },
+      "ownerLockedBody": {
+        "one": "Odstraněno {date}. Majitel aplikace má {count} den na to to ze své strany zrušit. Poté se aplikace zde už nezobrazí.",
+        "few": "Odstraněno {date}. Majitel aplikace má {count} dny na to to ze své strany zrušit. Poté se aplikace zde už nezobrazí.",
+        "other": "Odstraněno {date}. Majitel aplikace má {count} dní na to to ze své strany zrušit. Poté se aplikace zde už nezobrazí."
+      },
+      "ownerLockedReachOut": {
+        "other": "Protože odebrání zahájili oni, jen oni to mohou zrušit. Pokud o tom chcete mluvit, ozvěte se přes jejich kanál podpory."
+      },
+      "doneLeftTitle": {
+        "other": "Opustili jste {app}."
+      },
+      "doneRestoredTitle": {
+        "other": "Jste zpět v {app}."
+      },
+      "doneLeftBody": {
+        "other": "Aplikaci jsme to oznámili. Máte 90 dní na to se vrátit a obnovit z této stejné plochy. Poté se aplikace přestane zobrazovat ve vašem seznamu."
+      },
+      "doneRestoredBody": {
+        "other": "Vaše členství je opět aktivní. Strana aplikace se může aktualizovat za chvíli."
+      }
+    },
+    "lifecycle": {
+      "bannedTitle": {
+        "other": "Váš přístup byl zrušen."
+      },
+      "bannedBody": {
+        "other": "Administrátor zablokoval váš účet pro tuto aplikaci. Budete odhlášeni a nebudete se moci znovu přihlásit. Kontaktujte majitele, pokud si myslíte, že šlo o chybu."
+      },
+      "pausedTitle": {
+        "other": "Váš přístup byl pozastaven."
+      },
+      "pausedBody": {
+        "other": "Administrátor dočasně pozastavil váš účet pro tuto aplikaci. Brzy budete odhlášeni; obnovení přístupu řešte s majitelem."
+      },
+      "deletedTitle": {
+        "other": "Váš účet byl odstraněn."
+      },
+      "deletedBody": {
+        "other": "Administrátor smazal vaše členství pro tuto aplikaci. Budete odhlášeni a vaše uložená data jsou zařazena ke smazání za 90 dní, pokud nedojde k obnovení."
+      },
+      "inactiveTitle": {
+        "other": "Dáváte si od této aplikace pauzu."
+      },
+      "inactiveBody": {
+        "other": "Vaše členství je deaktivováno, takže vás zde odhlásíme. Kdykoli ho můžete reaktivovat z vašeho účtu elvix a hned se vrátit."
+      },
+      "countdown": {
+        "other": "Odhlašování za {seconds} s"
+      },
+      "recoverRestoredTitle": {
+        "other": "Jste zpět v {app}."
+      },
+      "recoverRestoredBody": {
+        "other": "Vaše členství je opět aktivní. Pokračujte do aplikace, kdykoli budete připraveni."
+      },
+      "recoverSignedOutTitle": {
+        "other": "Jste odhlášeni."
+      },
+      "recoverSignedOutBody": {
+        "other": "Zůstali jste mimo {app}. Vraťte se kdykoli."
+      },
+      "recoverWelcomeBack": {
+        "other": "Vítejte zpět v {app}"
+      },
+      "recoverDeletedIntro": {
+        "other": "Dříve jste opustili {app}."
+      },
+      "recoverDeletedDaysLeft": {
+        "one": "Zbývá vám {count} den na návrat.",
+        "few": "Zbývají vám {count} dny na návrat.",
+        "other": "Zbývá vám {count} dní na návrat."
+      },
+      "recoverDeletedNoCountdown": {
+        "other": "Stále jste uvnitř lhůty pro obnovení."
+      },
+      "recoverDeletedOutro": {
+        "other": "Obnovte své místo teď, nebo se znovu odhlaste."
+      },
+      "recoverPausedBody": {
+        "other": "Vaše členství v {app} je právě teď pozastaveno. Obnovte ho, abyste navázali tam, kde jste skončili, nebo se znovu odhlaste a zůstaňte pryč."
+      },
+      "recoverRestoringLabel": {
+        "other": "Obnovování"
+      },
+      "recoverRestoreDeletedCta": {
+        "other": "Obnovit moje místo v {app}"
+      },
+      "recoverRestorePausedCta": {
+        "other": "Vraťte mě zpět do {app}"
+      },
+      "recoverSigningOutLabel": {
+        "other": "Odhlašování"
+      },
+      "recoverDeclineCta": {
+        "other": "Teď ne, odhlaste mě"
+      }
+    }
+  }
+}

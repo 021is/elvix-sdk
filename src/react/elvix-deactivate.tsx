@@ -28,6 +28,7 @@ import { unwrapEnvelope } from "./spine-fetch";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, CheckCircle2, Eye, EyeOff, Loader2, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useT } from "../locale/use-t";
 
 const State = {
   INACTIVE: "inactive",
@@ -104,6 +105,7 @@ function ElvixDeactivateInner({
   onResult?: (result: ElvixDeactivateResult) => void;
 }) {
   const ctx = useElvixContext();
+  const t = useT();
   const [isInactive, setIsInactive] = useState(inactive);
   const [pane, setPane] = useState<Pane>(inactive ? "reactivate" : "warn1");
   const [direction, setDirection] = useState<1 | -1>(1);
@@ -156,12 +158,12 @@ function ElvixDeactivateInner({
         }
         setServerError(
           body.error === "too_many"
-            ? "Too many codes requested. Try again later."
+            ? t("deactivate.errorTooMany")
             : body.error === "too_recent"
-              ? `Wait ${body.retryAfterSeconds ?? 30}s before requesting again.`
+              ? t("deactivate.errorTooRecent", { seconds: body.retryAfterSeconds ?? 30 })
               : body.error === "send_failed"
-                ? "Couldn't email the code. Try again."
-                : "Couldn't request a code. Try again.",
+                ? t("deactivate.errorSendFailed")
+                : t("deactivate.errorRequestFailed"),
         );
         return false;
       }
@@ -172,7 +174,7 @@ function ElvixDeactivateInner({
       setResendIn(30);
       return true;
     } catch {
-      setServerError("Network hiccup. Try again.");
+      setServerError(t("common.errorNetwork"));
       return false;
     } finally {
       setRequesting(false);
@@ -209,27 +211,25 @@ function ElvixDeactivateInner({
           setAttemptsLeft(body.attemptsLeft ?? null);
           setCode("");
           setServerError(
-            `Wrong code. ${body.attemptsLeft ?? 0} ${
-              (body.attemptsLeft ?? 0) === 1 ? "try" : "tries"
-            } left.`,
+            t("deactivate.errorWrongCode", { count: body.attemptsLeft ?? 0 }),
           );
         } else if (body.error === "challenge_locked") {
-          setServerError("Too many wrong attempts. Request a new code.");
+          setServerError(t("deactivate.errorChallengeLocked"));
           setChallengeId(null);
           setCode("");
         } else if (body.error === "challenge_expired") {
-          setServerError("That code expired. Request a new one.");
+          setServerError(t("deactivate.errorChallengeExpired"));
           setChallengeId(null);
           setCode("");
         } else {
-          const msg = "Couldn't save. Try again.";
+          const msg = t("common.errorSaveFailed");
           setServerError(msg);
           onFail?.(msg);
         }
         onResult?.({
           ok: false,
           error: body.error ?? "save_failed",
-          message: serverError ?? "Couldn't save. Try again.",
+          message: serverError ?? t("common.errorSaveFailed"),
         });
         return;
       }
@@ -241,11 +241,11 @@ function ElvixDeactivateInner({
         setPane("done");
       }
     } catch {
-      setServerError("Network hiccup. Try again.");
+      setServerError(t("common.errorNetwork"));
       onResult?.({
         ok: false,
         error: "network_error",
-        message: "Network hiccup. Try again.",
+        message: t("common.errorNetwork"),
       });
     } finally {
       setSaving(false);
@@ -268,8 +268,8 @@ function ElvixDeactivateInner({
       if (!res.ok || !body.ok) {
         const msg =
           body.error === "deleted"
-            ? "You've already left this app. Restore your membership first."
-            : "Couldn't save. Try again.";
+            ? t("deactivate.errorAlreadyLeft")
+            : t("common.errorSaveFailed");
         setServerError(msg);
         onFail?.(msg);
         onResult?.({
@@ -287,7 +287,7 @@ function ElvixDeactivateInner({
         setPane("done");
       }
     } catch {
-      const msg = "Network hiccup. Try again.";
+      const msg = t("common.errorNetwork");
       setServerError(msg);
       onFail?.(msg);
       onResult?.({ ok: false, error: "network_error", message: msg });
@@ -354,7 +354,7 @@ function ElvixDeactivateInner({
               onBack={() => go("warn2", -1)}
               onConfirm={verifyAndSubmit}
               onResend={requestChallenge}
-              actionLabel="Deactivate"
+              actionLabel={t("deactivate.confirmCta")}
             />
           </motion.div>
         )}
@@ -412,6 +412,7 @@ function Warn1Pane({
   appName: string;
   onContinue: () => void;
 }) {
+  const t = useT();
   return (
     <form
       className="space-y-4"
@@ -433,17 +434,20 @@ function Warn1Pane({
         </span>
         <div className="min-w-0">
           <div className="text-[15px] font-semibold tracking-tight text-fg-1 leading-tight">
-            Take a break from {appName}
+            {t("deactivate.warn1Title", { app: appName })}
           </div>
           <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-1">
-            Your profile takes a quiet break. People on {appName} stop seeing you, but everything
-            you've built up stays exactly as it is. Whenever you're ready, come back here and sign
-            back in.
+            {t("deactivate.warn1Body", { app: appName })}
           </p>
-          <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-3">Sound good?</p>
+          <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-3">{t("deactivate.soundGood")}</p>
         </div>
       </div>
-      <ElvixSaveButton state="idle" label="I understand" hint="Enter" autoFocus />
+      <ElvixSaveButton
+        state="idle"
+        label={t("deactivate.warn1Cta")}
+        hint={t("common.hintEnter")}
+        autoFocus
+      />
     </form>
   );
 }
@@ -457,6 +461,7 @@ function Warn2Pane({
   onContinue: () => void;
   requesting: boolean;
 }) {
+  const t = useT();
   return (
     <form
       className="space-y-4"
@@ -471,28 +476,23 @@ function Warn2Pane({
         className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-fg-2 hover:text-fg-1 cursor-pointer"
       >
         <ArrowLeft className="size-3.5" />
-        Back
+        {t("common.back")}
       </button>
       <div className="text-[15px] font-semibold tracking-tight text-fg-1 leading-tight">
-        A few things to know
+        {t("deactivate.warn2Title")}
       </div>
       <ul className="text-[12.5px] text-fg-2 leading-[1.55] pl-3 space-y-1.5 list-disc">
-        <li>Open sessions on this app get signed out right away.</li>
-        <li>
-          Your username and identifier stay yours. No one else can take them while you're away.
-        </li>
-        <li>You can come back any time from this same surface.</li>
-        <li>
-          We'll email you a 6-digit code to confirm. Belt and braces, so the change only goes
-          through if you've also got your inbox.
-        </li>
+        <li>{t("deactivate.warn2Bullet1")}</li>
+        <li>{t("deactivate.warn2Bullet2")}</li>
+        <li>{t("deactivate.warn2Bullet3")}</li>
+        <li>{t("deactivate.warn2Bullet4")}</li>
       </ul>
-      <p className="text-[12.5px] text-fg-3 leading-[1.55]">Sound good?</p>
+      <p className="text-[12.5px] text-fg-3 leading-[1.55]">{t("deactivate.soundGood")}</p>
       <ElvixSaveButton
         state={requesting ? "saving" : "idle"}
         disabled={requesting}
-        label="I understand. Email me a code"
-        savedLabel="Sending…"
+        label={t("deactivate.warn2Cta")}
+        savedLabel={t("deactivate.sendingLabel")}
         hint={null}
         autoFocus
       />
@@ -513,6 +513,7 @@ function ReactivatePane({
   serverError: string | null;
   onConfirm: () => void;
 }) {
+  const t = useT();
   return (
     <div className="space-y-4">
       <div className="flex items-start gap-3">
@@ -528,12 +529,12 @@ function ReactivatePane({
         </span>
         <div className="min-w-0">
           <div className="text-[15px] font-semibold tracking-tight text-fg-1 leading-tight">
-            Welcome back to {appName}
+            {t("deactivate.reactivateTitle", { app: appName })}
           </div>
           <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-1">
-            You're on a break right now
-            {inactivatedBy === "owner" ? " (an admin did this on your behalf)" : ""}. Reactivate to
-            show up again on {appName}.
+            {inactivatedBy === "owner"
+              ? t("deactivate.reactivateBodyByOwner", { app: appName })
+              : t("deactivate.reactivateBody", { app: appName })}
           </p>
         </div>
       </div>
@@ -541,8 +542,8 @@ function ReactivatePane({
       <ElvixSaveButton
         state={saving ? "saving" : "idle"}
         disabled={saving}
-        label="Reactivate"
-        savedLabel="Saved"
+        label={t("deactivate.reactivateCta")}
+        savedLabel={t("identity.saved")}
         hint={null}
         onClick={onConfirm}
         autoFocus
@@ -560,6 +561,7 @@ function DonePane({
   kind: Kind;
   onAgain: () => void;
 }) {
+  const t = useT();
   return (
     <div className="flex flex-col items-center text-center gap-4 py-2">
       <motion.span
@@ -579,13 +581,13 @@ function DonePane({
         <div className="text-[15px] font-semibold tracking-tight text-fg-1">
           {/* LEGACY: spine-lint-disable-next-line spine/enum-over-string */}
           {kind === "deactivated"
-            ? `You're on a break from ${appName}.`
-            : `You're back on ${appName}.`}
+            ? t("deactivate.doneDeactivatedTitle", { app: appName })
+            : t("deactivate.doneReactivatedTitle", { app: appName })}
         </div>
         <div className="text-[12.5px] text-fg-3 leading-[1.55]">
           {kind === "deactivated"
-            ? "We let the app know. Come back here any time to reactivate."
-            : "Your membership is active again. Open sessions on the app side may take a moment to refresh."}
+            ? t("deactivate.doneDeactivatedBody")
+            : t("deactivate.doneReactivatedBody")}
         </div>
       </div>
       <button
@@ -593,7 +595,7 @@ function DonePane({
         onClick={onAgain}
         className="text-[12.5px] font-medium text-fg-2 hover:text-fg-1 underline underline-offset-4 cursor-pointer"
       >
-        {kind === "deactivated" ? "Reactivate again" : "Deactivate again"}
+        {kind === "deactivated" ? t("deactivate.reactivateAgain") : t("deactivate.deactivateAgain")}
       </button>
     </div>
   );
@@ -628,6 +630,7 @@ export function OtpPane({
   onResend: () => Promise<boolean | undefined>;
   actionLabel: string;
 }) {
+  const t = useT();
   return (
     <form
       className="space-y-4"
@@ -643,18 +646,18 @@ export function OtpPane({
         className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-fg-2 hover:text-fg-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <ArrowLeft className="size-3.5" />
-        Back
+        {t("common.back")}
       </button>
       <div>
         <div className="text-[15px] font-semibold tracking-tight text-fg-1 leading-tight">
-          Enter your confirmation code
+          {t("deactivate.otpTitle")}
         </div>
         <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-1">
           {deliveredTo
-            ? `We emailed a 6-digit code to ${deliveredTo}. It expires in 10 minutes.`
+            ? t("deactivate.otpDelivered", { email: deliveredTo })
             : requesting
-              ? "Sending you a 6-digit code…"
-              : "We're sending a 6-digit code to your email."}
+              ? t("deactivate.otpSending")
+              : t("deactivate.otpPending")}
         </p>
       </div>
       <OtpInput value={code} onChange={setCode} disabled={saving} autoFocus />
@@ -663,7 +666,7 @@ export function OtpPane({
         state={saving ? "saving" : "idle"}
         disabled={saving || code.length !== 6}
         label={actionLabel}
-        savedLabel="Saved"
+        savedLabel={t("identity.saved")}
         hint={null}
       />
       <div className="flex items-center justify-center gap-2 text-[12px] text-fg-3 pt-1">
@@ -681,7 +684,7 @@ export function OtpPane({
           ) : (
             <RefreshCw className="size-3.5" />
           )}
-          {resendIn > 0 ? `Resend in ${resendIn}s` : "Resend code"}
+          {resendIn > 0 ? t("deactivate.resendIn", { seconds: resendIn }) : t("signin.resendCode")}
         </button>
       </div>
     </form>
