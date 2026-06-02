@@ -42,6 +42,18 @@ export type { ElvixAppContext } from "./elvix-provider";
 export { ElvixSignIn } from "./elvix-sign-in";
 export { ElvixSignInForm } from "./elvix-sign-in-form";
 export { ElvixSignInButton } from "./elvix-sign-in-button";
+export {
+  ElvixSignOutButton,
+  ElvixSignOutPreset,
+  ElvixSignOutTone,
+  ElvixSignOutVariant,
+  ElvixSignOutShape,
+  ElvixSignOutType,
+  type ElvixSignOutResult,
+  type ElvixSignOutButtonProps,
+} from "./elvix-sign-out-button";
+export { useSignOut } from "./use-sign-out";
+export { signOut, type SignOutOptions, type SignOutResult } from "./sign-out";
 export { ElvixSecuredBadge } from "./elvix-secured-badge";
 
 // Editable sign-in copy. Primary source is the elvix Console (served live in
