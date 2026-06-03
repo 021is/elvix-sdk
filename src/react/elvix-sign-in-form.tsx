@@ -494,6 +494,10 @@ function AuthBody({
         googleConfig?.fedcm,
     );
   const gisButtonRef = useRef<HTMLDivElement | null>(null);
+  // Pull the Console envelope here too so the body has direct access
+  // to fields ElvixSignInForm didn't thread through as props (e.g.
+  // signinGate, used by the default GateBadge below the heading).
+  const appCtx = useElvixApp();
   // Whenever ANY GIS flag is on, swap our custom redirect anchor for
   // Google's official renderButton output. The button morphs into the
   // personalized "Continue as <name>" surface when GIS detects an
@@ -1188,9 +1192,14 @@ function AuthBody({
             {/* Gate-state badge sits inline under the subtitle so the
               user reads consequence + badge as one unit. Only the
               "pick-a-method" step shows it; once the user is mid-flow
-              (code / username / passkey) the badge would just clutter. */}
+              (code / username / passkey) the badge would just clutter.
+              Host's belowHeading prop wins; otherwise, when the
+              Application's signinGate is private_beta or closed, the
+              SDK paints a default badge automatically. Hosts can opt
+              out with belowHeading={null}. */}
             {/* LEGACY: spine-lint-disable-next-line spine/enum-over-string */}
-            {step === "identifier" && belowHeading}
+            {step === "identifier" &&
+              (belowHeading !== undefined ? belowHeading : <GateBadge gate={appCtx?.signinGate} t={t} />)}
           </div>
         </div>
       )}
@@ -1682,9 +1691,62 @@ function humanError(t: Translator, code?: string, retryAfterSeconds?: number): s
       return t("signin.errorUsernameNotFound");
     case "method_disabled":
       return t("signin.errorMethodDisabled");
+    // Gate enforcement reasons. The backend throws these when a sign-in
+    // attempt fails the Application's signinGate. Without a friendly
+    // string here every host saw "Something went wrong" instead of the
+    // real reason.
+    case "gate_private_beta":
+      return tOrFallback(t, "signin.errorGatePrivateBeta", "This app is in private beta. Ask the owner for an invite.");
+    case "gate_closed":
+      return tOrFallback(t, "signin.errorGateClosed", "Sign-ups are closed. Only existing members can sign in.");
+    case "gate_blocked":
+      return tOrFallback(t, "signin.errorGateBlocked", "Your account isn't approved for this app yet.");
+    // Account-state guards (lib/signin-account-state.ts).
+    case "user_deleted":
+      return tOrFallback(t, "signin.errorUserDeleted", "This account was deleted. Contact support if you need it back.");
+    case "email_archived":
+      return tOrFallback(t, "signin.errorEmailArchived", "This email was retired from sign-in. Use your current address.");
     default:
       return t("signin.errorGeneric");
   }
+}
+
+/**
+ * Translate-or-fallback wrapper. `useT()` returns the key itself when
+ * the catalog is missing the translation, so we trap that case and
+ * paint the bundled English string instead of leaking the raw key to
+ * a customer. This lets the SDK ship new error codes ahead of the i18n
+ * catalogs without surfacing `signin.errorGatePrivateBeta` to users.
+ */
+function tOrFallback(t: Translator, key: string, fallback: string): string {
+  const out = t(key);
+  return out === key ? fallback : out;
+}
+
+/**
+ * Default badge rendered under the heading when the Application's
+ * signinGate is set to `private_beta` or `closed` and the host did
+ * not supply its own `belowHeading`. Communicates the gate state to
+ * the user before they pick a method.
+ */
+function GateBadge({ gate, t }: { gate: string | undefined; t: Translator }) {
+  if (!gate || gate === "public") return null;
+  const isBeta = gate === "private_beta";
+  const label = isBeta
+    ? tOrFallback(t, "signin.gateBadgePrivateBeta", "Private beta · invite only")
+    : tOrFallback(t, "signin.gateBadgeClosed", "Sign-ups closed");
+  const bg = isBeta ? "rgba(46, 229, 168, 0.12)" : "rgba(220, 38, 38, 0.10)";
+  const dot = isBeta ? "#2EE5A8" : "#DC2626";
+  const color = isBeta ? "#0a8f63" : "#b91c1c";
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
+      style={{ background: bg, color }}
+    >
+      <span className="size-1.5 rounded-full" style={{ background: dot }} />
+      {label}
+    </span>
+  );
 }
 
 function formatRetry(t: Translator, seconds: number): string {
