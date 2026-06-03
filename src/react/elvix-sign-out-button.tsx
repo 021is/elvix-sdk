@@ -1,6 +1,7 @@
 "use client";
 
 import { LogOut } from "lucide-react";
+import type * as React from "react";
 import { type ReactNode } from "react";
 import { useSignOut } from "./use-sign-out";
 
@@ -69,6 +70,19 @@ export const ElvixSignOutType = {
 } as const;
 export type ElvixSignOutType = (typeof ElvixSignOutType)[keyof typeof ElvixSignOutType];
 
+export const ElvixSignOutAlign = {
+  LEFT: "left",
+  CENTER: "center",
+  RIGHT: "right",
+} as const;
+export type ElvixSignOutAlign = (typeof ElvixSignOutAlign)[keyof typeof ElvixSignOutAlign];
+
+const ALIGN_CLASS: Record<ElvixSignOutAlign, string> = {
+  left: "justify-start text-left",
+  center: "justify-center text-center",
+  right: "justify-end text-right",
+};
+
 export type ElvixSignOutResult =
   | { ok: true; redirect?: string }
   | { ok: false; error: string; message?: string };
@@ -92,6 +106,25 @@ export type ElvixSignOutButtonProps = {
    * you want a brand-aware glyph or a Heroicons / Tabler icon instead.
    */
   icon?: (size: number) => ReactNode;
+  /**
+   * Override the brand chord on `tone="brand"` + `variant="filled"`.
+   * Defaults to elvix lavender (#6c5ce7). Pair with `onBrandColor`.
+   */
+  brandColor?: string;
+  /** Foreground on top of `brandColor`. Defaults to #ffffff. */
+  onBrandColor?: string;
+  /** Content alignment inside the button. Defaults to "center". */
+  align?: ElvixSignOutAlign;
+  /**
+   * Override label font size. Number is treated as px; string is any
+   * CSS length. Defaults to the `size` preset's text token.
+   */
+  fontSize?: number | string;
+  /**
+   * Custom corner radius. Wins over `shape`. Number = px; string =
+   * any CSS length (e.g. `"8px"`, `"50%"`). Use `0` for sharp corners.
+   */
+  borderRadius?: number | string;
   className?: string;
   /**
    * Where to navigate after a successful sign-out. Defaults to the
@@ -236,6 +269,11 @@ export function ElvixSignOutButton({
   theme = "auto",
   showIcon = true,
   icon,
+  brandColor,
+  onBrandColor,
+  align = "center",
+  fontSize,
+  borderRadius,
   className,
   redirectAfterSignOut,
   cookieName = "elvix_token",
@@ -256,8 +294,11 @@ export function ElvixSignOutButton({
       : "square"
     : shape;
 
+  const useBrandOverride = brandColor && tone === "brand" && variant === "filled";
+
   const cls = [
-    "inline-flex items-center justify-center font-medium select-none transition",
+    "inline-flex items-center font-medium select-none transition",
+    ALIGN_CLASS[align],
     "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
     tone === "destructive"
       ? "focus-visible:ring-[#dc2626]/60"
@@ -265,13 +306,27 @@ export function ElvixSignOutButton({
         ? "focus-visible:ring-[#8e7dff]/60"
         : "focus-visible:ring-black/30",
     "disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer",
-    SHAPE_CLASS[effectiveShape],
+    borderRadius !== undefined ? "" : SHAPE_CLASS[effectiveShape],
     sizeClass,
-    variantClass,
+    useBrandOverride ? "" : variantClass,
     className ?? "",
   ]
+    .filter(Boolean)
     .join(" ")
     .trim();
+
+  const resolvedOnBrand = onBrandColor ?? "#ffffff";
+  const inlineStyle: React.CSSProperties = {
+    ...(fontSize !== undefined
+      ? { fontSize: typeof fontSize === "number" ? `${fontSize}px` : fontSize }
+      : {}),
+    ...(borderRadius !== undefined
+      ? { borderRadius: typeof borderRadius === "number" ? `${borderRadius}px` : borderRadius }
+      : {}),
+    ...(useBrandOverride && brandColor
+      ? { backgroundColor: brandColor, color: resolvedOnBrand }
+      : {}),
+  };
 
   async function handleClick() {
     const result = await doSignOut();
@@ -288,6 +343,7 @@ export function ElvixSignOutButton({
       onClick={handleClick}
       disabled={busy}
       className={cls}
+      style={inlineStyle}
       aria-label={isIconOnly ? resolvedLabel : undefined}
     >
       {iconNode}
