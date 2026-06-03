@@ -154,6 +154,21 @@ export function ElvixSignIn({
   }
 
   async function startPasskey() {
+    // Cross-origin: WebAuthn rpId is bound to elvix.is, so calling
+    // navigator.credentials.get() from the customer's origin gets
+    // rejected by the browser ("rp.id cannot be used with the current
+    // origin") on anything that doesn't support Related Origin
+    // Requests (Firefox today, older Chromium / Safari). Redirect to
+    // the hosted passkey ceremony page on elvix.is — same architecture
+    // as Google's redirect-OAuth flow, returns via #elvix_token=...
+    // which consumeElvixReturnToken already handles.
+    if (!isSameOrigin(ctx.baseUrl) && ctx.clientId) {
+      const returnTo = window.location.href;
+      window.location.assign(
+        `${ctx.baseUrl}/auth/passkey/${encodeURIComponent(ctx.clientId)}?returnUrl=${encodeURIComponent(returnTo)}`,
+      );
+      return;
+    }
     setBusy(true);
     setError(null);
     try {

@@ -917,6 +917,18 @@ function AuthBody({
   /** Real WebAuthn ceremony using the SDK's cross-origin passkey sign-in. */
   const onPasskey = useCallback(async () => {
     if (isPreview || passkeyBusy) return;
+    // Cross-origin: redirect to the hosted ceremony on elvix.is. Same
+    // architecture as Google's redirect-OAuth flow; returns via
+    // #elvix_token=<token> which consumeElvixReturnToken handles.
+    // Avoids the browser's "rp.id cannot be used with the current
+    // origin" rejection on browsers without Related Origin Requests.
+    if (!isSameOrigin(baseUrl) && clientId) {
+      const returnTo = window.location.href;
+      window.location.assign(
+        `${baseUrl}/auth/passkey/${encodeURIComponent(clientId)}?returnUrl=${encodeURIComponent(returnTo)}`,
+      );
+      return;
+    }
     setError(null);
     setPasskeyBusy(true);
     try {
