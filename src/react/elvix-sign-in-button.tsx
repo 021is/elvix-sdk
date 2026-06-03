@@ -25,6 +25,7 @@ export type ElvixSignInButtonVariant = "filled" | "filled-black" | "white" | "ou
 export type ElvixSignInButtonShape = "rectangle" | "pill" | "square" | "circle";
 export type ElvixSignInButtonType = "standard" | "icon";
 export type ElvixSignInButtonMode = "redirect" | "callback" | "embed";
+export type ElvixSignInButtonAlign = "left" | "center" | "right";
 export type ElvixSignInPreset =
   | "sign-in-with-elvix"
   | "continue-with-elvix"
@@ -51,6 +52,25 @@ export type ElvixSignInButtonProps = {
   onClick?: () => void;
   /** Terminal outcome of mode="embed": success (with token) or error. */
   onResult?: (result: ElvixSignInResult) => void;
+  /**
+   * Override the brand chord on `variant="filled"`. Defaults to elvix
+   * lavender (#6c5ce7). Pair with `onBrandColor` for the foreground.
+   */
+  brandColor?: string;
+  /** Foreground (shield + label) on top of `brandColor`. Defaults to #ffffff. */
+  onBrandColor?: string;
+  /** Content alignment inside the button. Defaults to "center". */
+  align?: ElvixSignInButtonAlign;
+  /**
+   * Override the label font size (px when number, any CSS length when
+   * string). Defaults to the `size` preset's text token.
+   */
+  fontSize?: number | string;
+  /**
+   * Custom corner radius. Wins over the `shape` preset. Number = px;
+   * string = any CSS length (e.g. `"8px"`, `"50%"`). Use `0` for sharp.
+   */
+  borderRadius?: number | string;
 } & /**
  * Dimensional sizing (width/height/min/max), additive to the `size` preset.
  * Merged last into the root element so an explicit width/height wins.
@@ -116,6 +136,11 @@ export function ElvixSignInButton({
   mode = "redirect",
   onClick,
   onResult,
+  brandColor,
+  onBrandColor,
+  align = "center",
+  fontSize,
+  borderRadius,
   width,
   height,
   minWidth,
@@ -135,18 +160,34 @@ export function ElvixSignInButton({
       : "square"
     : shape;
 
+  // Brand override applies on filled variant only; other variants paint
+  // neutral / transparent by design and the override would muddy them.
+  const useBrandOverride = brandColor && variant === "filled";
+  const resolvedOnBrand = onBrandColor ?? "#ffffff";
+
   const style: CSSProperties = {
     display: "inline-flex",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: align === "left" ? "flex-start" : align === "right" ? "flex-end" : "center",
+    textAlign: align,
     fontWeight: 500,
-    fontSize: std.font,
+    fontSize:
+      fontSize !== undefined
+        ? typeof fontSize === "number"
+          ? `${fontSize}px`
+          : fontSize
+        : std.font,
     cursor: "pointer",
     userSelect: "none",
     textDecoration: "none",
-    borderRadius: RADIUS[effectiveShape],
-    background: tone.bg,
-    color: tone.color,
+    borderRadius:
+      borderRadius !== undefined
+        ? typeof borderRadius === "number"
+          ? `${borderRadius}px`
+          : borderRadius
+        : RADIUS[effectiveShape],
+    background: useBrandOverride ? brandColor : tone.bg,
+    color: useBrandOverride ? resolvedOnBrand : tone.color,
     border: tone.border,
     boxShadow: tone.shadow,
     transition: "background 0.15s, border-color 0.15s",
@@ -159,7 +200,11 @@ export function ElvixSignInButton({
 
   const content = (
     <>
-      <ElvixShield size={ICON_SIZE[size]} fill={shieldColor(variant, theme)} accent="#8e7dff" />
+      <ElvixShield
+        size={ICON_SIZE[size]}
+        fill={useBrandOverride ? resolvedOnBrand : shieldColor(variant, theme)}
+        accent="#8e7dff"
+      />
       {isIcon ? null : <span>{resolvedLabel}</span>}
     </>
   );
