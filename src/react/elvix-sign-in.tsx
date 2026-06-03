@@ -290,6 +290,8 @@ export function ElvixSignIn({
       <h2 className="elvix-h">{title}</h2>
       {copy.subtitle && <p className="elvix-muted elvix-subtitle">{copy.subtitle}</p>}
 
+      {step === "identify" && <GateBadge gate={app?.signinGate} />}
+
       {step === "identify" && (
         <>
           {app?.methodGoogle && (
@@ -360,5 +362,42 @@ export function ElvixSignIn({
         </p>
       )}
     </div>
+  );
+}
+
+/**
+ * Auto badge painted under the heading when the Application's
+ * signinGate is `private_beta` (green pill) or `closed` (red pill).
+ * `public` renders nothing. Sibling of the same helper inside
+ * `<ElvixSignInForm>` so both surfaces communicate the gate state
+ * consistently.
+ */
+function GateBadge({ gate }: { gate: string | undefined }) {
+  if (!gate || gate === "public") return null;
+  const isBeta = gate === "private_beta";
+  const label = isBeta ? "Private beta · invite only" : "Sign-ups closed";
+  const bg = isBeta ? "rgba(46, 229, 168, 0.12)" : "rgba(220, 38, 38, 0.10)";
+  const dot = isBeta ? "#2EE5A8" : "#DC2626";
+  const color = isBeta ? "#0a8f63" : "#b91c1c";
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "6px",
+        padding: "4px 10px",
+        marginTop: "6px",
+        borderRadius: "9999px",
+        background: bg,
+        color,
+        fontSize: "11px",
+        fontWeight: 500,
+      }}
+    >
+      <span
+        style={{ width: "6px", height: "6px", borderRadius: "9999px", background: dot }}
+      />
+      {label}
+    </span>
   );
 }
