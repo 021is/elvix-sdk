@@ -91,6 +91,7 @@ export {
 export { useUserRoles, useUserScopes, useUserMemberships } from "./hooks";
 export type { UseUserListResult } from "./hooks";
 export { ElvixLifecycleWatcher } from "./lifecycle-watcher";
+export { ElvixPresence } from "./elvix-presence";
 
 // Identity
 export { ElvixUsername } from "./elvix-username";
