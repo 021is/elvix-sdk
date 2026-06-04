@@ -1,5 +1,6 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { useT } from "../locale/use-t";
 import { type FormEvent, useEffect, useState } from "react";
 import { type ElvixCopy, fillCopy, resolveCopy } from "./copy";
@@ -124,7 +125,8 @@ export function ElvixSignIn({
     return () => window.removeEventListener("elvix:return-token", listener);
   }, [onResult, redirectAfterSignIn]);
 
-  const [step, setStep] = useState<"identify" | "code" | "done">("identify");
+  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
+  const [step, setStep] = useState<"identify" | "code" | "authenticating" | "done">("identify");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [challengeId, setChallengeId] = useState<string | null>(null);
@@ -154,21 +156,22 @@ export function ElvixSignIn({
   }
 
   async function startPasskey() {
-    // Cross-origin: WebAuthn rpId is bound to elvix.is, so calling
-    // navigator.credentials.get() from the customer's origin gets
-    // rejected by the browser ("rp.id cannot be used with the current
-    // origin") on anything that doesn't support Related Origin
-    // Requests (Firefox today, older Chromium / Safari). Redirect to
-    // the hosted passkey ceremony page on elvix.is — same architecture
-    // as Google's redirect-OAuth flow, returns via #elvix_token=...
-    // which consumeElvixReturnToken already handles.
-    if (!isSameOrigin(ctx.baseUrl) && ctx.clientId) {
+    // Cross-origin: WebAuthn rpId is bound to elvix.is. Modern browsers
+    // honour Related Origin Requests via /.well-known/webauthn, so we
+    // try the inline ceremony first — keeps the user on the host's
+    // origin and is the better UX. If the browser rejects with
+    // "rp.id cannot be used with the current origin" (Firefox, older
+    // Safari, Chrome without ROR rolled out), fall back to the hosted
+    // passkey page on elvix.is via the redirect-OAuth-style flow that
+    // returns via #elvix_token=... handled by consumeElvixReturnToken.
+    const crossOrigin = !isSameOrigin(ctx.baseUrl) && ctx.clientId;
+    const redirectToHosted = () => {
+      if (!ctx.clientId) return;
       const returnTo = window.location.href;
       window.location.assign(
         `${ctx.baseUrl}/auth/passkey/${encodeURIComponent(ctx.clientId)}?returnUrl=${encodeURIComponent(returnTo)}`,
       );
-      return;
-    }
+    };
     setBusy(true);
     setError(null);
     try {
@@ -178,9 +181,19 @@ export function ElvixSignIn({
           onResult?.({ ok: false, error: result.error });
           return;
         }
+        if (
+          crossOrigin &&
+          (/rp\.?id|RelyingParty|cannot be used with the current origin|SecurityError/i.test(
+            result.message ?? "",
+          ) ||
+            result.error === "passkey_failed")
+        ) {
+          redirectToHosted();
+          return;
+        }
         return fail(result.error, result.message);
       }
-      setStep("done");
+      setStep("authenticating");
       onResult?.({
         ok: true,
         method: "passkey",
@@ -249,7 +262,10 @@ export function ElvixSignIn({
       // Cross-origin: store the session token returned in the body (no cookie
       // is set on a third-party origin) so every later SDK call carries it.
       if (body.data?.token) setElvixToken(body.data.token);
-      setStep("done");
+      // Switch to the "Signing you in…" pane before the host gets the
+      // success callback — the form must not sit on the stale "code"
+      // step while the host navigates.
+      setStep("authenticating");
       onResult?.({
         ok: true,
         method: "email_otp",
@@ -264,6 +280,41 @@ export function ElvixSignIn({
   }
 
   const card = `elvix-card ${className}`.trim();
+
+  if (step === "authenticating") {
+    return (
+      <div
+        className={card}
+        style={sized}
+        data-elvix-pane="authenticating"
+        aria-busy
+        aria-live="polite"
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "12px",
+            padding: "32px 0",
+          }}
+        >
+          <Loader2
+            size={28}
+            strokeWidth={2}
+            className="animate-spin"
+            style={{ color: "var(--elvix-primary, currentColor)" }}
+            aria-hidden
+          />
+          <div style={{ fontSize: "13.5px", fontWeight: 500 }}>Signing you in…</div>
+          <div className="elvix-muted" style={{ fontSize: "12px" }}>
+            Hold on a second, taking you to {app?.appName ?? "your app"}.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (step === "done") {
     return (

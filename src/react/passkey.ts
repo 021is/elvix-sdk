@@ -217,6 +217,10 @@ export type PasskeyRegisterResult =
 export async function runPasskeyRegister(
   baseUrl: string,
   surface: string,
+  /** When set, the issued passkey is bound to this one app and can
+   *  only sign the user in to it. The caller must already be a
+   *  member; elvix's `register/start` enforces membership. */
+  applicationId?: string,
 ): Promise<PasskeyRegisterResult> {
   if (typeof window === "undefined" || !window.PublicKeyCredential || !navigator.credentials?.create) {
     return { ok: false, error: "passkey_unsupported", message: "This browser can't use passkeys." };
@@ -234,7 +238,9 @@ export async function runPasskeyRegister(
     const res = await fetch(`${baseUrl}/api/auth/passkey/register/start`, {
       method: "POST",
       ...reqInit,
-      body: JSON.stringify({ surface }),
+      body: JSON.stringify(
+        applicationId ? { surface, applicationId } : { surface },
+      ),
     });
     const body = (await res.json()) as {
       success?: boolean;
@@ -300,7 +306,11 @@ export async function runPasskeyRegister(
     const res = await fetch(`${baseUrl}/api/auth/passkey/register/finish`, {
       method: "POST",
       ...reqInit,
-      body: JSON.stringify({ surface, response: attestation }),
+      body: JSON.stringify(
+        applicationId
+          ? { surface, applicationId, response: attestation }
+          : { surface, response: attestation },
+      ),
     });
     const body = (await res.json()) as { success?: boolean; errorMessage?: string };
     if (!res.ok || !body.success) {

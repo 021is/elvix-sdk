@@ -33,6 +33,7 @@ export { ElvixCard } from "./elvix-card";
 export type { ElvixSizeProps } from "./size";
 export {
   ElvixProvider,
+  useElvixAnimated,
   useElvixApp,
   useElvixAppContext,
   useElvixContext,
@@ -76,7 +77,13 @@ export { useLocale, useFmt, switchLocale } from "@021.is/spine-i18n/react";
 // `consumeElvixReturnToken` picks up the token elvix's Google redirect-callback
 // hands back in the URL fragment; <ElvixProvider> calls it automatically, but
 // hosts that don't mount the provider at the redirect target can call it.
-export { consumeElvixReturnToken, getElvixToken, setElvixToken } from "./session";
+export {
+  consumeElvixReturnToken,
+  getElvixToken,
+  setElvixToken,
+  takeJustReturnedLanding,
+  type ElvixLandingPayload,
+} from "./session";
 
 // Live gate — poll-based so it works cross-origin (EventSource can't carry the
 // bearer). Roles/scopes/memberships update within ~7s; the watcher signs the
@@ -100,6 +107,11 @@ export { ElvixSessions } from "./elvix-sessions";
 export { ElvixExport } from "./elvix-export";
 export { ElvixDeactivate } from "./elvix-deactivate";
 export { ElvixLeave } from "./elvix-leave";
+export {
+  ElvixAppPasskeys,
+  type ElvixAppPasskey,
+  type ElvixAppPasskeysResult,
+} from "./elvix-app-passkeys";
 export { ElvixAddressBook } from "./elvix-address-book";
 export { ElvixLegalEntities } from "./elvix-legal-entities";
 

@@ -47,10 +47,12 @@ import { GoogleOneTap } from "./google-one-tap";
 import { OtpInput } from "./otp-input";
 import { runPasskeyRegister, runPasskeySignIn } from "./passkey";
 import {
+  type ElvixLandingPayload,
   authInit,
   getElvixToken,
   isSameOrigin,
   setElvixToken,
+  takeJustReturnedLanding,
   takeJustReturnedToken,
 } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
@@ -529,9 +531,8 @@ function AuthBody({
   // whole point: developers embed <ElvixSignInForm /> and the user finishes the
   // entire flow without leaving the form.
   // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  const [step, setStep] = useState<"identifier" | "code" | "username" | "passkey" | "recover">(
-    "identifier",
-  );
+  const [step, setStep] = useState<"identifier" | "code" | "username" | "passkey" | "recover" | "authenticating">("identifier");
+
   // Recovery gateway: populated when the auth handler returns
   // `next_step: "recover"` because the user just signed back in to
   // an app where their membership is in a reversible off-state
@@ -600,27 +601,10 @@ function AuthBody({
   // redirect-OAuth callback), fire onResult so the host's existing
   // redirect handler (router.push, cookie write) runs — exactly like
   // an in-frame OTP / passkey sign-in already does.
-  useEffect(() => {
-    // Hosts that want to own navigation (cookie-exchange first) wire
-    // `onAuthenticated`; hosts that just react to terminal state wire
-    // `onResult`. Mirror the in-frame success path (passkey / onboarding):
-    // fire both, leave the choice to the host.
-    const dispatch = (token: string) => {
-      onResult?.({ ok: true, token, redirect: redirectAfterSignIn });
-      if (onAuthenticated) {
-        onAuthenticated({ ok: true, token, redirect: redirectAfterSignIn });
-      }
-    };
-    const token = takeJustReturnedToken();
-    if (token) dispatch(token);
-    const listener = (e: Event) => {
-      const ce = e as CustomEvent<{ token: string }>;
-      if (!ce.detail?.token) return;
-      dispatch(ce.detail.token);
-    };
-    window.addEventListener("elvix:return-token", listener);
-    return () => window.removeEventListener("elvix:return-token", listener);
-  }, [onAuthenticated, onResult, redirectAfterSignIn]);
+  // Token-return + landing-resume drain consolidated into a single
+  // effect AFTER applyLanding (declared below) so we can safely
+  // reference it in the dep array without hitting TDZ. See the second
+  // effect a few lines down — it owns both paths.
 
   /**
    * Set the inline error string AND fire `onResult({ ok: false })`
@@ -690,6 +674,12 @@ function AuthBody({
       // whatever was stashed earlier in this ceremony so the host always
       // receives a bearer even on intermediate "done" landings.
       const token = body.token ?? getElvixToken() ?? undefined;
+      // Flip to the loading pane immediately. Host `onAuthenticated`
+      // handlers typically run a server-side token exchange + router
+      // navigation that takes ~1s; without this the card would sit on
+      // the previous step (code input / Google button) until the page
+      // actually navigated, looking like the click did nothing.
+      setStep("authenticating");
       onResult?.({ ok: true, redirect, token });
       if (onAuthenticated) {
         onAuthenticated({ ok: true, redirect, token });
@@ -699,6 +689,71 @@ function AuthBody({
     },
     [intent, onAuthenticated, onResult, finalRedirect, baseUrl],
   );
+
+  // Drain the queues that ElvixProvider's consumeElvixReturnToken
+  // fills when it strips `#elvix_token=...&elvix_landing=...` from the
+  // URL on mount. Two outcomes:
+  //
+  //   1. Landing payload pending (Google return + onboarding gate)
+  //      → call applyLanding so the form renders the gate inline.
+  //
+  //   2. No landing → terminal sign-in event, mirror the in-frame
+  //      OTP / passkey success path: fire onResult AND onAuthenticated
+  //      (hosts wire whichever they prefer).
+  //
+  // This effect must live AFTER `applyLanding` is declared, otherwise
+  // the dep-array reference would be a TDZ ReferenceError on render.
+  useEffect(() => {
+    if (isPreview) return;
+    if (typeof window === "undefined") return;
+    const dispatch = (token: string, landing: ElvixLandingPayload | null) => {
+      if (landing && landing.next_step !== "done") {
+        // applyLanding's body shape mirrors the gate-endpoint envelope:
+        // `{ next_step, suggestions?, final?, token?, recover? }`. The
+        // landing payload from the fragment is the SAME shape (minus
+        // `ok` which is implied by reaching this branch). `recover.state`
+        // is a const-as-object union locally; the fragment carries a
+        // plain string so we narrow at the boundary instead of
+        // bubbling the wider type up the chain.
+        applyLanding({
+          next_step: landing.next_step,
+          suggestions:
+            landing.next_step === "username" ? landing.suggestions : undefined,
+          final: landing.final,
+          token,
+          recover:
+            landing.next_step === "recover" && landing.recover
+              ? {
+                  appId: landing.recover.appId,
+                  appName: landing.recover.appName,
+                  state: landing.recover.state as State,
+                  sinceAt: landing.recover.sinceAt,
+                }
+              : undefined,
+        });
+        return;
+      }
+      onResult?.({ ok: true, token, redirect: redirectAfterSignIn });
+      if (onAuthenticated) {
+        onAuthenticated({ ok: true, token, redirect: redirectAfterSignIn });
+      }
+    };
+    const token = takeJustReturnedToken();
+    if (token) dispatch(token, takeJustReturnedLanding());
+    const listener = (e: Event) => {
+      const ce = e as CustomEvent<{ token: string; landing?: ElvixLandingPayload | null }>;
+      if (!ce.detail?.token) return;
+      dispatch(ce.detail.token, ce.detail.landing ?? null);
+    };
+    window.addEventListener("elvix:return-token", listener);
+    return () => window.removeEventListener("elvix:return-token", listener);
+  }, [
+    isPreview,
+    applyLanding,
+    onAuthenticated,
+    onResult,
+    redirectAfterSignIn,
+  ]);
 
   // Google OAuth lands the user back on /sign-in/<surface>?onboarding=1&next=…
   // (it's a redirect flow — can't return JSON). Pick up the onboarding step
@@ -917,18 +972,22 @@ function AuthBody({
   /** Real WebAuthn ceremony using the SDK's cross-origin passkey sign-in. */
   const onPasskey = useCallback(async () => {
     if (isPreview || passkeyBusy) return;
-    // Cross-origin: redirect to the hosted ceremony on elvix.is. Same
-    // architecture as Google's redirect-OAuth flow; returns via
-    // #elvix_token=<token> which consumeElvixReturnToken handles.
-    // Avoids the browser's "rp.id cannot be used with the current
-    // origin" rejection on browsers without Related Origin Requests.
-    if (!isSameOrigin(baseUrl) && clientId) {
+    // Cross-origin strategy: try the inline ceremony FIRST. Modern
+    // browsers honour elvix's `/.well-known/webauthn` Related Origin
+    // Requests manifest, so the prompt lands on the host's own origin
+    // (best UX). If the browser rejects with rp.id / SecurityError
+    // (older Safari, Firefox without ROR), fall back to the hosted
+    // passkey page on elvix.is via the same architecture as Google
+    // redirect-OAuth: returns via #elvix_token=<token> which
+    // consumeElvixReturnToken already handles.
+    const crossOrigin = !isSameOrigin(baseUrl) && Boolean(clientId);
+    const redirectToHosted = () => {
+      if (!clientId) return;
       const returnTo = window.location.href;
       window.location.assign(
         `${baseUrl}/auth/passkey/${encodeURIComponent(clientId)}?returnUrl=${encodeURIComponent(returnTo)}`,
       );
-      return;
-    }
+    };
     setError(null);
     setPasskeyBusy(true);
     try {
@@ -937,6 +996,16 @@ function AuthBody({
         if (result.error === "passkey_cancelled") {
           // user dismissed the prompt — stay quiet, report via onResult only
           onResult?.({ ok: false, error: result.error });
+          return;
+        }
+        if (
+          crossOrigin &&
+          (/rp\.?id|RelyingParty|cannot be used with the current origin|SecurityError/i.test(
+            result.message ?? "",
+          ) ||
+            result.error === "passkey_failed")
+        ) {
+          redirectToHosted();
           return;
         }
         reportError(result.error, result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyVerify"));
@@ -1216,7 +1285,15 @@ function AuthBody({
         </div>
       )}
 
-      {step === "code" ? (
+      {step === "authenticating" ? (
+        <div className="flex flex-col items-center justify-center gap-3 py-8">
+          <Loader2 className="size-7 animate-spin" style={{ color: brandColor }} />
+          <div className="text-[13.5px] font-medium text-fg-1">Signing you in…</div>
+          <div className="text-[12px] text-fg-3">
+            Hold on a second, taking you to {appName || "your app"}.
+          </div>
+        </div>
+      ) : step === "code" ? (
         <form onSubmit={onSubmitCode} className="space-y-3">
           <OtpInput
             value={code}

@@ -1,6 +1,7 @@
 "use client";
 
 import { LocaleProvider, switchLocale } from "@021.is/spine-i18n/react";
+import { MotionConfig } from "framer-motion";
 import {
   type CSSProperties,
   type ReactNode,
@@ -87,6 +88,10 @@ type ElvixContextValue = {
   appError: string | null;
   appContext: ElvixAppContext | null;
   resolvedTheme: "light" | "dark";
+  /** Whether nested `<Elvix*>` components should run their mount /
+   *  transition animations. Cascades from `<ElvixProvider animated>`
+   *  to every consumer; per-component `animated` props still win. */
+  animated: boolean;
 };
 
 const ElvixContext = createContext<ElvixContextValue | null>(null);
@@ -109,6 +114,19 @@ export function useElvixContext(): ElvixContextValue {
     throw new Error("Elvix components must be wrapped in <ElvixProvider>.");
   }
   return ctx;
+}
+
+/**
+ * Read the SDK-wide animation flag set on `<ElvixProvider animated>`.
+ * Returns `true` outside a provider so component authors can call it
+ * unconditionally — the absence of a provider means defaults apply.
+ * Per-component `animated` props override this; callers compose like:
+ *
+ *   const animated = animatedProp ?? useElvixAnimated();
+ */
+export function useElvixAnimated(): boolean {
+  const ctx = useContext(ElvixContext);
+  return ctx?.animated ?? true;
 }
 
 /**
@@ -140,6 +158,7 @@ export function ElvixProvider({
   baseUrl,
   locale,
   i18nBase,
+  animated = true,
   children,
   className = "",
 }: {
@@ -148,6 +167,15 @@ export function ElvixProvider({
   brand?: ElvixBrand;
   /** Override the elvix origin (testing, proxy setups). */
   baseUrl?: string;
+  /**
+   * SDK-wide animation toggle. Defaults to `true`. Pass `false` to
+   * disable mount + transition animations across every nested
+   * `<Elvix*>` component in one move — useful for screenshot/print
+   * surfaces, embedded checkouts, low-motion preferences, or tests.
+   * Per-component `animated` props (e.g. `<ElvixCard animated>`)
+   * still override the cascade.
+   */
+  animated?: boolean;
   /**
    * BCP-47 locale tag (`"en"`, `"de"`, `"pt-BR"`). Switches every nested
    * `<Elvix*>` component's copy to the matching translation. The 14
@@ -299,7 +327,9 @@ export function ElvixProvider({
       ({
         "--elvix-primary": pair.primary,
         "--elvix-on-primary": pair.on,
+        "--elvix-primary-8": withAlpha(pair.primary, 0.08),
         "--elvix-primary-12": withAlpha(pair.primary, 0.12),
+        "--elvix-primary-20": withAlpha(pair.primary, 0.20),
         "--elvix-primary-35": withAlpha(pair.primary, 0.35),
         "--elvix-primary-55": withAlpha(pair.primary, 0.55),
         "--elvix-primary-strong": pair.primary,
@@ -314,19 +344,31 @@ export function ElvixProvider({
     appError,
     appContext,
     resolvedTheme: effectiveTheme,
+    animated,
   };
 
   return (
     <ElvixContext.Provider value={value}>
-      <LocaleProvider initial={initialRuntime}>
-        <div
-          data-elvix-theme={effectiveTheme}
-          style={cssVars}
-          className={(effectiveTheme === "dark" ? "dark " : "") + "elvix-sdk-root " + className}
-        >
-          {children}
-        </div>
-      </LocaleProvider>
+      {/* `MotionConfig` broadcasts `reducedMotion` to every nested
+          `framer-motion` animation in the SDK tree. `animated=false`
+          maps to `"always"` (force-reduced, every transition resolves
+          instantly); `animated=true` maps to `"user"`, which respects
+          the browser's `prefers-reduced-motion` — so the SDK is
+          accessibility-aware by default and can be disabled wholesale
+          via the provider when a host wants a static surface. */}
+      <MotionConfig reducedMotion={animated ? "user" : "always"}>
+        <LocaleProvider initial={initialRuntime}>
+          <div
+            data-elvix-theme={effectiveTheme}
+            style={cssVars}
+            className={
+              (effectiveTheme === "dark" ? "dark " : "") + "elvix-sdk-root " + className
+            }
+          >
+            {children}
+          </div>
+        </LocaleProvider>
+      </MotionConfig>
     </ElvixContext.Provider>
   );
 }
