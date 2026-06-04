@@ -1,8 +1,8 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import { Loader2, LogOut } from "lucide-react";
 import type * as React from "react";
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useSignOut } from "./use-sign-out";
 
 const Size = {
@@ -333,21 +333,31 @@ export function ElvixSignOutButton({
     onResult?.(result);
   }
 
-  const iconNode = showIcon
-    ? (icon?.(iconPx) ?? <LogOut size={iconPx} strokeWidth={2} aria-hidden />)
-    : null;
+  const isBusy = busy;
+
+  // Swap the leading glyph for an animated spinner while the sign-out
+  // is in flight so the click reads as ack'd immediately instead of
+  // looking dead until navigation happens.
+  const iconNode = isBusy
+    ? <Loader2 size={iconPx} strokeWidth={2} className="animate-spin" aria-hidden />
+    : showIcon
+      ? (icon?.(iconPx) ?? <LogOut size={iconPx} strokeWidth={2} aria-hidden />)
+      : null;
+
+  const liveLabel = isBusy ? "Signing out…" : resolvedLabel;
 
   return (
     <button
       type="button"
       onClick={handleClick}
-      disabled={busy}
+      disabled={isBusy}
       className={cls}
       style={inlineStyle}
-      aria-label={isIconOnly ? resolvedLabel : undefined}
+      aria-label={isIconOnly ? liveLabel : undefined}
+      aria-busy={isBusy || undefined}
     >
       {iconNode}
-      {isIconOnly ? null : <span>{resolvedLabel}</span>}
+      {isIconOnly ? null : <span>{liveLabel}</span>}
     </button>
   );
 }

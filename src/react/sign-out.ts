@@ -78,11 +78,16 @@ export async function signOut(options: SignOutOptions = {}): Promise<SignOutResu
 
     const target = redirectAfterSignOut === null ? undefined : (redirectAfterSignOut ?? "/");
     if (target && typeof window !== "undefined") {
-      // Use a microtask so the caller's `.then(...)` runs first if
-      // they want to do anything immediately before the page reloads.
-      queueMicrotask(() => {
-        window.location.href = target;
-      });
+      // Use `location.replace` so the signed-in page does not stay in
+      // history (back button would otherwise land the user on a stale
+      // authenticated screen). Resolve relative targets against the
+      // host's own origin so a customer that passes "/" never bounces
+      // through elvix.is by accident. Navigate synchronously — the
+      // microtask wrap was buying nothing and was occasionally letting
+      // a parallel host re-render swallow the navigation (the "have to
+      // click twice" report).
+      const abs = new URL(target, window.location.origin).toString();
+      window.location.replace(abs);
     }
     return { ok: true, redirect: target };
   } catch (e) {

@@ -58,6 +58,7 @@ export function authInit(): { headers: Record<string, string>; credentials: Requ
  * host page after the cross-origin Google round-trip returns.
  */
 const RETURN_TOKEN_KEY = "elvix_token";
+const RETURN_LANDING_KEY = "elvix_landing";
 
 /**
  * One-shot queue for the token that `consumeElvixReturnToken` just
@@ -75,6 +76,55 @@ export function takeJustReturnedToken(): string | null {
   const t = _justReturnedToken;
   _justReturnedToken = null;
   return t;
+}
+
+/**
+ * Shape of the landing step descriptor the elvix backend encodes in
+ * `#elvix_landing=<base64url-json>` alongside the token. Mirrors
+ * `LandingStep` from elvix's `lib/onboarding.ts` (`done | username |
+ * passkey | recover`). `<ElvixSignInForm>` feeds it into
+ * `applyLanding()` so the post-Google-return host renders the remaining
+ * onboarding gate inline instead of bouncing through elvix.is.
+ */
+export type ElvixLandingPayload =
+  | { next_step: "done"; redirect?: string }
+  | { next_step: "username"; suggestions?: string[]; final?: string }
+  | { next_step: "passkey"; final?: string }
+  | {
+      next_step: "recover";
+      final?: string;
+      recover?: {
+        appId: string;
+        appName: string;
+        state: string;
+        sinceAt: string;
+      };
+    };
+
+/**
+ * One-shot queue for the landing step descriptor that
+ * `consumeElvixReturnToken` just stripped from the fragment. Drained on
+ * mount by `<ElvixSignInForm>` so a Google-redirect return can resume
+ * the username / passkey / recover gate inline. Polished
+ * `<ElvixSignIn>` drains it too and forwards to `onResult` so the host
+ * can route on the descriptor if it cares.
+ */
+let _justReturnedLanding: ElvixLandingPayload | null = null;
+export function takeJustReturnedLanding(): ElvixLandingPayload | null {
+  const l = _justReturnedLanding;
+  _justReturnedLanding = null;
+  return l;
+}
+
+function decodeLandingPayload(b64url: string): ElvixLandingPayload | null {
+  try {
+    const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/");
+    const pad = b64.length % 4 === 0 ? "" : "=".repeat(4 - (b64.length % 4));
+    const json = atob(b64 + pad);
+    return JSON.parse(json) as ElvixLandingPayload;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -99,17 +149,30 @@ export function consumeElvixReturnToken(): string | null {
 
   setElvixToken(token);
   _justReturnedToken = token;
+  // Landing step descriptor (optional) — only present when the elvix
+  // backend determined the user has remaining onboarding gates after
+  // the Google round-trip. Decode + queue for the form to drain.
+  const landingRaw = params.get(RETURN_LANDING_KEY);
+  if (landingRaw) {
+    const decoded = decodeLandingPayload(landingRaw);
+    if (decoded) {
+      _justReturnedLanding = decoded;
+    }
+  }
   try {
     window.dispatchEvent(
-      new CustomEvent("elvix:return-token", { detail: { token } }),
+      new CustomEvent("elvix:return-token", {
+        detail: { token, landing: _justReturnedLanding },
+      }),
     );
   } catch {
     // CustomEvent may be unavailable in very old browsers — the queue
     // above is the load-bearing path; the event is a nice-to-have.
   }
 
-  // Strip only our key; preserve any other fragment params the host uses.
+  // Strip our keys; preserve any other fragment params the host uses.
   params.delete(RETURN_TOKEN_KEY);
+  params.delete(RETURN_LANDING_KEY);
   const rest = params.toString();
   try {
     const url = new URL(window.location.href);
