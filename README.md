@@ -99,6 +99,38 @@ export async function GET(request: Request) {
 
 That is the entire integration.
 
+## Post-sign-in: `onResult` + navigation
+
+`onResult` fires **exactly once per sign-in, at the terminal state** — after any in-frame onboarding panes (passkey enrollment, username claim, membership recovery) that the SDK renders itself. The host never sees those intermediate steps, so it is always correct to redirect from `onResult`. The success payload is self-describing:
+
+```ts
+type ElvixSignInResult =
+  | { ok: true; phase: "complete"; method: "google" | "email_otp" | "passkey" | "username"; redirect: string; token?: string }
+  | { ok: false; error: string; message?: string };
+```
+
+- `phase: "complete"` — terminal. Safe to redirect.
+- `method` — the factor that completed sign-in.
+- `redirect` — resolved destination (`redirectAfterSignIn` ?? backend final ?? `/`).
+- `token` — present cross-origin only; verify it server-side with `verifyElvixToken`.
+
+**Who navigates.** By default the SDK navigates to `result.redirect` itself after firing `onResult`. If you want to route yourself (SPA navigation, or to set a session cookie first), pass `navigate={false}` and redirect from `onResult`:
+
+```tsx
+<ElvixSignInForm
+  navigate={false}                 // SDK stays put; host owns routing
+  onResult={(r) => {
+    if (!r.ok) return;
+    if (r.token) setSessionCookie(r.token);  // cross-origin: persist the bearer
+    router.push(r.redirect);                 // SPA navigation
+  }}
+/>
+```
+
+> `onAuthenticated` is **deprecated** — it predates `onResult` carrying `method` + a resolved `redirect`. It still fires, and its presence implies `navigate={false}`. Migrate to `navigate={false}` + `onResult`.
+>
+> Migration note (0.7.13): if you previously redirected in `onResult` **without** `onAuthenticated`, add `navigate={false}` — otherwise the SDK and your handler will both navigate.
+
 ## AI coding agents
 
 elvix ships first-class agent support. Three surfaces:
