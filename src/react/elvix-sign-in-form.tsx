@@ -40,6 +40,7 @@
 import { useT } from "../locale/use-t";
 import { ArrowLeft, Check, Fingerprint, Loader2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { ElvixSignInMethod, ElvixSignInResult } from "./types";
 import { ElvixLogo } from "./elvix-logo";
 import { ElvixRecoverGate } from "./elvix-recover-gate";
 import { useElvixApp, useElvixContext } from "./elvix-provider";
@@ -64,13 +65,12 @@ import { isValidUsername } from "./username-rules";
 const ELVIX_SITE_URL = "https://elvix.is";
 
 /**
- * Public ResponseDto shape the SDK surfaces to `onResult` listeners.
- * Mirrors the `{ ok: true | false, ... }` envelope every elvix API
- * route returns via `withErrorHandling`. Customers branch on `ok`.
+ * Public ResponseDto shape surfaced to `onResult`. Single source of truth is
+ * `./types` (`ElvixSignInResultOk` carries `phase: "complete"` + `method` +
+ * resolved `redirect`); re-exported here for code that imported it from this
+ * module.
  */
-export type ElvixSignInResult =
-  | { ok: true; redirect?: string; token?: string }
-  | { ok: false; error: string; message?: string; status?: number };
+export type { ElvixSignInResult } from "./types";
 
 const Mode = {
   PREVIEW: "preview",
@@ -237,16 +237,22 @@ export type AuthFormProps = {
    *  absent, the Google factor degrades to the static redirect anchor. */
   googleClientId?: string;
   /**
-   * Fires after a successful sign-in (OTP, Google, Passkey) — BEFORE
-   * the default redirect runs. When provided, the form will NOT
-   * navigate; the host owns post-auth routing. Use this to keep an
-   * embedded surface (Drawer/Modal/Card) in place after auth and let
-   * the host call `router.push()` itself.
-   *
-   * Call `GET /api/me` from the host to fetch the authenticated user.
-   * The v2 SDK will surface user details directly in the payload.
+   * @deprecated Use `navigate={false}` and read the result in `onResult`
+   * instead. This hook predates `onResult` carrying `method` + a resolved
+   * `redirect`. It still fires on success and, for back-compat, its presence
+   * implies `navigate={false}` (the SDK will NOT navigate; the host owns
+   * routing). Will be removed in a future major.
    */
   onAuthenticated?: (result: { ok: true; redirect?: string; token?: string }) => void;
+  /**
+   * Who performs post-sign-in navigation. Default `true`: after firing
+   * `onResult` the SDK navigates to `result.redirect` itself
+   * (`window.location.href`). Set `false` to keep the SDK in place and route
+   * yourself from `onResult` (e.g. `router.push(result.redirect)` for SPA
+   * navigation, or to set a session cookie first). Passing the deprecated
+   * `onAuthenticated` also forces `false`.
+   */
+  navigate?: boolean;
   /**
    * Where to send the user after EVERY terminal success path. One prop, one
    * destination — no per-method customisation. Applies uniformly to:
@@ -275,8 +281,11 @@ export type AuthFormProps = {
    * elvix API surfaces, so the customer branches on `ok` the same
    * way they would for a `/api/v1/verify` call.
    *
-   * Both `onResult` and `onAuthenticated` may be set. `onResult` fires
-   * regardless; `onAuthenticated` only on success (legacy contract).
+   * Fires EXACTLY ONCE on success — at the terminal state, AFTER any in-frame
+   * onboarding panes (passkey / username / recover) the SDK renders itself.
+   * The host never sees those intermediate steps, so redirecting in `onResult`
+   * is always correct timing. The success payload carries `phase: "complete"`,
+   * the `method` that completed, and the resolved `redirect`.
    */
   onResult?: (result: ElvixSignInResult) => void;
 };
@@ -479,6 +488,7 @@ function AuthBody({
   redirectAfterSignIn,
   onAuthenticated,
   onResult,
+  navigate = true,
 }: AuthFormProps) {
   // Cross-origin elvix base URL the SDK talks to (provided by <ElvixProvider>).
   const { baseUrl } = useElvixContext();
@@ -589,6 +599,35 @@ function AuthBody({
     [redirectAfterSignIn, backendFinalRedirect],
   );
 
+  /**
+   * The factor that authenticated this ceremony. Stamped at each entry path
+   * (OTP / passkey / Google) and read by `finishSignIn` so `onResult.method`
+   * is correct even after in-frame onboarding steps. Persists across the
+   * onboarding panes (same component instance); on a Google redirect-return
+   * the fragment dispatch re-stamps it to "google" on mount.
+   */
+  const methodRef = useRef<ElvixSignInMethod>("email_otp");
+
+  /**
+   * The single terminal-success funnel. EVERY sign-in path (OTP, passkey,
+   * Google, and the onboarding completions) ends here. Fires `onResult` once
+   * with `phase: "complete"` + the method + the resolved destination, then
+   * navigates UNLESS the host opted out via `navigate={false}` or the
+   * deprecated `onAuthenticated` (whose presence implies host-owned routing).
+   * Centralising this keeps the contract identical across methods.
+   */
+  const finishSignIn = useCallback(
+    (redirect: string, token: string | undefined) => {
+      setStep("authenticating");
+      onResult?.({ ok: true, phase: "complete", method: methodRef.current, redirect, token });
+      // Deprecated hook — still fired for back-compat.
+      onAuthenticated?.({ ok: true, redirect, token });
+      const hostOwnsNav = navigate === false || Boolean(onAuthenticated);
+      if (!hostOwnsNav) window.location.href = redirect;
+    },
+    [onResult, onAuthenticated, navigate],
+  );
+
   useEffect(() => {
     if (resendIn <= 0) return;
     const t = setInterval(() => setResendIn((s) => Math.max(0, s - 1)), 1000);
@@ -674,20 +713,13 @@ function AuthBody({
       // whatever was stashed earlier in this ceremony so the host always
       // receives a bearer even on intermediate "done" landings.
       const token = body.token ?? getElvixToken() ?? undefined;
-      // Flip to the loading pane immediately. Host `onAuthenticated`
-      // handlers typically run a server-side token exchange + router
-      // navigation that takes ~1s; without this the card would sit on
-      // the previous step (code input / Google button) until the page
-      // actually navigated, looking like the click did nothing.
-      setStep("authenticating");
-      onResult?.({ ok: true, redirect, token });
-      if (onAuthenticated) {
-        onAuthenticated({ ok: true, redirect, token });
-        return;
-      }
-      window.location.href = redirect;
+      // Terminal success. finishSignIn flips to the "authenticating" pane
+      // (so the card doesn't sit on the old step during the host's ~1s
+      // token exchange + navigation), fires onResult, and navigates unless
+      // the host opted out.
+      finishSignIn(redirect, token);
     },
-    [intent, onAuthenticated, onResult, finalRedirect, baseUrl],
+    [intent, finalRedirect, finishSignIn, baseUrl],
   );
 
   // Drain the queues that ElvixProvider's consumeElvixReturnToken
@@ -707,6 +739,13 @@ function AuthBody({
     if (isPreview) return;
     if (typeof window === "undefined") return;
     const dispatch = (token: string, landing: ElvixLandingPayload | null) => {
+      // A #elvix_token return is a redirect-flow finish: Google redirect-OAuth
+      // (the common case) or the cross-origin hosted-passkey ceremony (older
+      // browsers without Related Origin Requests). The fragment carries no
+      // method marker, so we label it "google" — correct for the dominant
+      // path; a hosted-passkey return would mislabel until elvix adds an
+      // explicit method to the return payload.
+      methodRef.current = "google";
       if (landing && landing.next_step !== "done") {
         // applyLanding's body shape mirrors the gate-endpoint envelope:
         // `{ next_step, suggestions?, final?, token?, recover? }`. The
@@ -733,10 +772,7 @@ function AuthBody({
         });
         return;
       }
-      onResult?.({ ok: true, token, redirect: redirectAfterSignIn });
-      if (onAuthenticated) {
-        onAuthenticated({ ok: true, token, redirect: redirectAfterSignIn });
-      }
+      finishSignIn(finalRedirect(), token);
     };
     const token = takeJustReturnedToken();
     if (token) dispatch(token, takeJustReturnedLanding());
@@ -747,13 +783,7 @@ function AuthBody({
     };
     window.addEventListener("elvix:return-token", listener);
     return () => window.removeEventListener("elvix:return-token", listener);
-  }, [
-    isPreview,
-    applyLanding,
-    onAuthenticated,
-    onResult,
-    redirectAfterSignIn,
-  ]);
+  }, [isPreview, applyLanding, finishSignIn, finalRedirect]);
 
   // Google OAuth lands the user back on /sign-in/<surface>?onboarding=1&next=…
   // (it's a redirect flow — can't return JSON). Pick up the onboarding step
@@ -946,6 +976,7 @@ function AuthBody({
           reportError(body.error, humanError(t, body.error));
           return;
         }
+        methodRef.current = "email_otp";
         applyLanding(body);
       } catch {
         reportError("network_error", t("signin.errorNetwork"));
@@ -1014,6 +1045,7 @@ function AuthBody({
       // Passkey sign-in succeeded — applyLanding will run through
       // finalRedirect() so `redirectAfterSignIn` (if set) wins over
       // result.redirect.
+      methodRef.current = "passkey";
       applyLanding({ next_step: "done", redirect: result.redirect, token: result.token });
     } finally {
       setPasskeyBusy(false);
@@ -1117,19 +1149,14 @@ function AuthBody({
       }
       // Passkey added → done. Resolve the destination through
       // finalRedirect() so a host-supplied `redirectAfterSignIn` wins over
-      // the backend-stashed `final` for this onboarding leg.
-      const redirect = finalRedirect();
-      const token = getElvixToken() ?? undefined;
-      onResult?.({ ok: true, redirect, token });
-      if (onAuthenticated) {
-        onAuthenticated({ ok: true, redirect, token });
-        return;
-      }
-      window.location.href = redirect;
+      // the backend-stashed `final` for this onboarding leg. method stays the
+      // original sign-in factor (methodRef) — adding a passkey is onboarding,
+      // not the factor that authenticated this session.
+      finishSignIn(finalRedirect(), getElvixToken() ?? undefined);
     } finally {
       setOnboardingBusy(null);
     }
-  }, [intent, isPreview, onboardingBusy, finalRedirect, onAuthenticated, onResult, reportError, baseUrl, t]);
+  }, [intent, isPreview, onboardingBusy, finalRedirect, finishSignIn, reportError, baseUrl, t]);
 
   /**
    * Skip the onboarding "Add a passkey" step. The user is already
@@ -1142,15 +1169,8 @@ function AuthBody({
   const onSkipPasskey = useCallback(() => {
     if (onboardingBusy) return;
     setOnboardingBusy("skip");
-    const redirect = finalRedirect();
-    const token = getElvixToken() ?? undefined;
-    onResult?.({ ok: true, redirect, token });
-    if (onAuthenticated) {
-      onAuthenticated({ ok: true, redirect, token });
-      return;
-    }
-    window.location.href = redirect;
-  }, [onboardingBusy, finalRedirect, onAuthenticated, onResult]);
+    finishSignIn(finalRedirect(), getElvixToken() ?? undefined);
+  }, [onboardingBusy, finalRedirect, finishSignIn]);
 
   return (
     <>
@@ -1518,14 +1538,8 @@ function AuthBody({
           onRestore={({ redirect }) => {
             // Restore = successful sign-in completion. Funnel through
             // finalRedirect() so redirectAfterSignIn wins over the gate's
-            // suggested target.
-            const dest = finalRedirect(redirect);
-            onResult?.({ ok: true, redirect: dest });
-            if (onAuthenticated) {
-              onAuthenticated({ ok: true, redirect: dest });
-            } else {
-              window.location.href = dest;
-            }
+            // suggested target. method stays the original factor (methodRef).
+            finishSignIn(finalRedirect(redirect), getElvixToken() ?? undefined);
           }}
           onCancel={({ redirect }) => {
             // Cancel = NOT a sign-in success; honour the gate's redirect

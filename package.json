@@ -1,6 +1,6 @@
 {
   "name": "@elvix.is/sdk",
-  "version": "0.7.12",
+  "version": "0.7.13",
   "description": "Official elvix SDK. Drop-in React components, server helpers, and an MCP server so AI coding agents integrate elvix on the first try.",
   "license": "MIT",
   "homepage": "https://elvix.is",

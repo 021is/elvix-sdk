@@ -108,7 +108,7 @@ export function ElvixSignIn({
   useEffect(() => {
     const token = takeJustReturnedToken();
     if (!token) return;
-    onResult?.({ ok: true, method: "google", token, redirect: redirectAfterSignIn });
+    onResult?.({ ok: true, phase: "complete", method: "google", token, redirect: redirectAfterSignIn ?? "/" });
     // Also subscribe to LATER tokens in case the consume happens after
     // this mount (e.g. a second OAuth round-trip).
     const listener = (e: Event) => {
@@ -116,9 +116,10 @@ export function ElvixSignIn({
       if (!ce.detail?.token) return;
       onResult?.({
         ok: true,
+        phase: "complete",
         method: "google",
         token: ce.detail.token,
-        redirect: redirectAfterSignIn,
+        redirect: redirectAfterSignIn ?? "/",
       });
     };
     window.addEventListener("elvix:return-token", listener);
@@ -196,8 +197,9 @@ export function ElvixSignIn({
       setStep("authenticating");
       onResult?.({
         ok: true,
+        phase: "complete",
         method: "passkey",
-        redirect: result.redirect ?? redirectAfterSignIn,
+        redirect: result.redirect ?? redirectAfterSignIn ?? "/",
         token: result.token,
       });
     } finally {
@@ -268,8 +270,9 @@ export function ElvixSignIn({
       setStep("authenticating");
       onResult?.({
         ok: true,
+        phase: "complete",
         method: "email_otp",
-        redirect: body.data?.redirect ?? redirectAfterSignIn,
+        redirect: body.data?.redirect ?? redirectAfterSignIn ?? "/",
         token: body.data?.token,
       });
     } catch (e: unknown) {
