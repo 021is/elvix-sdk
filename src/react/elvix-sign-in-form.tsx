@@ -41,6 +41,7 @@ import { useT } from "../locale/use-t";
 import { ArrowLeft, Check, Fingerprint, Loader2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ElvixSignInMethod, ElvixSignInResult } from "./types";
+import { ELVIX_SDK_VERSION } from "./version";
 import { ElvixLogo } from "./elvix-logo";
 import { ElvixRecoverGate } from "./elvix-recover-gate";
 import { useElvixApp, useElvixContext } from "./elvix-provider";
@@ -454,6 +455,11 @@ function AuthCard(props: AuthFormProps) {
             <span className="font-semibold text-fg-1">elvix</span>
           </span>
         </a>
+      </div>
+      <div className="pb-2 text-center leading-none">
+        <span className="text-[9px] tracking-wide text-fg-3 opacity-50 tabular-nums">
+          v{ELVIX_SDK_VERSION}
+        </span>
       </div>
     </div>
   );
@@ -1134,6 +1140,19 @@ function AuthBody({
   /** Onboarding passkey step: register a new passkey for the current session. */
   const onAddPasskey = useCallback(async () => {
     if (onboardingBusy || isPreview) return;
+    // Cross-origin enrollment mirrors sign-in: try the inline ceremony FIRST
+    // (works when the browser honours elvix's Related Origin Requests
+    // manifest), and on an rp.id / SecurityError fall back to the hosted
+    // register page on elvix.is where rpId matches. The user is already
+    // authenticated, so we hand the bearer to that page via the URL fragment.
+    const crossOrigin = !isSameOrigin(baseUrl) && Boolean(clientId);
+    const redirectToHostedRegister = () => {
+      if (!clientId) return;
+      const returnTo = new URL(finalRedirect(), window.location.origin).toString();
+      const token = getElvixToken();
+      const url = `${baseUrl}/auth/passkey-register/${encodeURIComponent(clientId)}?returnUrl=${encodeURIComponent(returnTo)}`;
+      window.location.assign(token ? `${url}#elvix_token=${encodeURIComponent(token)}` : url);
+    };
     setError(null);
     setOnboardingBusy("add");
     try {
@@ -1141,6 +1160,16 @@ function AuthBody({
       const result = await runPasskeyRegister(baseUrl, surface);
       if (!result.ok) {
         if (result.error === "passkey_cancelled") return;
+        if (
+          crossOrigin &&
+          (/rp\.?id|RelyingParty|cannot be used with the current origin|SecurityError/i.test(
+            result.message ?? "",
+          ) ||
+            result.error === "passkey_register_failed")
+        ) {
+          redirectToHostedRegister();
+          return;
+        }
         reportError(
           result.error,
           result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyAdd"),
@@ -1156,7 +1185,7 @@ function AuthBody({
     } finally {
       setOnboardingBusy(null);
     }
-  }, [intent, isPreview, onboardingBusy, finalRedirect, finishSignIn, reportError, baseUrl, t]);
+  }, [intent, isPreview, onboardingBusy, finalRedirect, finishSignIn, reportError, baseUrl, clientId, t]);
 
   /**
    * Skip the onboarding "Add a passkey" step. The user is already

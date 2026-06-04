@@ -9,6 +9,7 @@ import { runPasskeySignIn } from "./passkey";
 import { isSameOrigin, setElvixToken, takeJustReturnedToken } from "./session";
 import { type ElvixSizeProps, sizeStyle } from "./size";
 import type { ElvixSignInResult } from "./types";
+import { ELVIX_SDK_VERSION } from "./version";
 
 /** Local helper: drop `undefined` fields so they don't shadow lower-precedence layers. */
 function stripUndefinedCopy(o?: Partial<ElvixCopy> | null): Partial<ElvixCopy> {
@@ -430,6 +431,18 @@ export function ElvixSignIn({
           {error}
         </p>
       )}
+      <div
+        style={{
+          textAlign: "center",
+          marginTop: "10px",
+          fontSize: "9px",
+          letterSpacing: "0.02em",
+          opacity: 0.5,
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
+        v{ELVIX_SDK_VERSION}
+      </div>
     </div>
   );
 }
