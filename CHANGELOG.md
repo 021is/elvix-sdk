@@ -13,6 +13,119 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.7.23] — 2026-06-05
+
+### Changed
+
+- Version badge now sits BELOW the sign-in card instead of inside it.
+
+## [0.7.22] — 2026-06-05
+
+### Added
+
+- Inline cross-origin passkey ENROLLMENT (no redirect). `register/finish` trusts the app's configured `allowedOrigins` (Console "developer domains") via `clientId`, so enrollment persists inline when the browser honours the ROR manifest. Falls back to the hosted ceremony otherwise, so it always works.
+
+## [0.7.21] — 2026-06-05
+
+### Added
+
+- **Automatic presence.** `<ElvixProvider>` beats `/api/presence/heartbeat` automatically while the user is signed in (30s cadence, pauses on a hidden tab, "idle" after 60s, bearer cross-origin / cookie same-origin). Users show online in the Console with zero wiring. Opt out with `presence={false}`.
+
+### Changed
+
+- `<ElvixPresence>` is now optional (kept for `applicationId` overrides / manual control); the provider handles presence by default.
+
+## [0.7.20] — 2026-06-05
+
+### Added
+
+- `verifyElvixToken(...)` now returns `membershipBrands: [{ slug, name, logoUrl }]` so consumer apps render partner branding from the session instead of hardcoding it per slug. `memberships: string[]` (slugs) is unchanged.
+
+## [0.7.19] — 2026-06-05
+
+### Changed
+
+- Cross-origin passkey enrollment routed through the hosted ceremony (superseded by inline enrollment in 0.7.22).
+
+## [0.7.18] — 2026-06-05
+
+### Fixed
+
+- `redirectIfAuthenticated` no longer skips onboarding (e.g. passkey enrollment) on a cross-origin sign-in return: the resume yields when a fresh session token was just consumed from the URL fragment.
+
+## [0.7.17] — 2026-06-05
+
+### Fixed
+
+- Sign-out works cross-origin. `signOut()` now calls `${baseUrl}/api/auth/sign-out` with the bearer (it previously used a relative URL with no bearer and never reached elvix), always clears the local token, and sets a one-shot marker so `redirectIfAuthenticated` can't sign the user back in on the post-logout landing.
+
+## [0.7.16] — 2026-06-05
+
+### Added
+
+- `redirectIfAuthenticated` on the sign-in surfaces (SSO silent-resume): an already-signed-in visitor skips the form and resumes to the dashboard. Adds `useElvixSession()` and `<ElvixProvider>` session-status (`loading | authenticated | anonymous`).
+
+## [0.7.15] — 2026-06-05
+
+### Fixed
+
+- Cross-origin passkey enrollment completes sign-in: the hosted register ceremony returns to the originating form page with `#elvix_token`, so the SDK fires `onResult` and the host establishes its session (previously the passkey saved but the user bounced to the gate).
+
+## [0.7.14] — 2026-06-04
+
+### Added
+
+- Cross-origin passkey ENROLLMENT fallback: an "Add a passkey" step that can't run inline falls back to a hosted register ceremony on elvix.is. Plus a small version badge under the sign-in forms.
+
+## [0.7.13] — 2026-06-04
+
+### Added
+
+- `<ElvixPresence>` cross-origin presence heartbeat component.
+- `onResult` terminal contract documented + `navigate` prop to let the host own post-sign-in routing.
+
+## [0.7.12] — 2026-06-04
+
+### Added
+
+- Per-app passkeys, the `animated` cascade on `<ElvixProvider>`, and canonical `<ElvixCard>` chrome.
+
+## [0.7.11] — 2026-06-03
+
+### Added
+
+- Cross-origin passkey sign-in: redirect through elvix.is (hosted ceremony) when the host origin can't run WebAuthn inline.
+
+## [0.7.10] — 2026-06-03
+
+### Fixed
+
+- Gate-state badge also paints on `<ElvixSignIn>` (not just `<ElvixSignInForm>`).
+
+## [0.7.9] — 2026-06-03
+
+### Added
+
+- Automatic gate-state badge + friendly error copy for gated / deleted / archived apps.
+
+## [0.7.8] — 2026-06-03
+
+### Added
+
+- `brandColor`, `align`, `fontSize`, and `borderRadius` props on the sign-in + sign-out buttons.
+
+## [0.7.7] — 2026-06-02
+
+### Added
+
+- `<ElvixSignOutButton>`, the `useSignOut()` hook, and the `signOut()` primitive.
+
+## [0.7.6] — 2026-06-01
+
+### Fixed
+
+- Fire `onAuthenticated` after the URL-fragment token return (cross-origin Google redirect callback).
+
 ## [0.6.5] — 2026-05-30
 
 ### Added
