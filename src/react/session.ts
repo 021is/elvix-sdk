@@ -52,6 +52,36 @@ export function authInit(): { headers: Record<string, string>; credentials: Requ
 }
 
 /**
+ * One-shot "the user just signed out" marker, stored in sessionStorage so it
+ * survives the hard navigation to the sign-in page but not a new tab/session.
+ * `signOut()` sets it; `redirectIfAuthenticated` reads + clears it to skip a
+ * single auto-resume — so the SSO resume can never sign a user straight back
+ * in on the post-logout landing, even if a session somehow lingers server-side.
+ */
+const SIGNED_OUT_KEY = "elvix_signed_out";
+
+export function markSignedOut(): void {
+  try {
+    if (typeof window !== "undefined") window.sessionStorage.setItem(SIGNED_OUT_KEY, "1");
+  } catch {
+    // sessionStorage can throw (privacy mode, disabled storage). The fixed
+    // sign-out clearing is the load-bearing path; this flag is belt-and-braces.
+  }
+}
+
+/** Read AND clear the just-signed-out marker. Returns true once after a sign-out. */
+export function consumeSignedOutFlag(): boolean {
+  try {
+    if (typeof window === "undefined") return false;
+    const v = window.sessionStorage.getItem(SIGNED_OUT_KEY);
+    if (v) window.sessionStorage.removeItem(SIGNED_OUT_KEY);
+    return Boolean(v);
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Fragment key the elvix Google redirect-callback appends the session token
  * under (`<returnUrl>#elvix_token=<token>`). The token rides the URL fragment,
  * which browsers never send to the server, so it's only ever read here on the
@@ -72,6 +102,21 @@ const RETURN_LANDING_KEY = "elvix_landing";
  * /app or wherever `redirectAfterSignIn` pointed.
  */
 let _justReturnedToken: string | null = null;
+
+/**
+ * Sticky (page-load-scoped, NOT one-shot) flag: did `consumeElvixReturnToken`
+ * pick a token out of the URL fragment on this load? `redirectIfAuthenticated`
+ * reads it to YIELD — when a fresh cross-origin sign-in just returned, the
+ * form's own return handler owns the completion (including onboarding panes
+ * like passkey enrollment), so the SSO resume must not race ahead and skip it.
+ * Distinct from the one-shot `_justReturnedToken`, which the form drains before
+ * the async session probe resolves.
+ */
+let _returnTokenConsumed = false;
+export function wasReturnTokenConsumed(): boolean {
+  return _returnTokenConsumed;
+}
+
 export function takeJustReturnedToken(): string | null {
   const t = _justReturnedToken;
   _justReturnedToken = null;
@@ -149,6 +194,10 @@ export function consumeElvixReturnToken(): string | null {
 
   setElvixToken(token);
   _justReturnedToken = token;
+  // Sticky for the whole page load so `redirectIfAuthenticated` yields to the
+  // form's return handler (which runs the onboarding panes). The one-shot
+  // `_justReturnedToken` above is drained too early to gate the async resume.
+  _returnTokenConsumed = true;
   // Landing step descriptor (optional) — only present when the elvix
   // backend determined the user has remaining onboarding gates after
   // the Google round-trip. Decode + queue for the form to drain.

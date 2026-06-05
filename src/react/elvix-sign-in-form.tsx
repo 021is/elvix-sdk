@@ -51,11 +51,13 @@ import { runPasskeyRegister, runPasskeySignIn } from "./passkey";
 import {
   type ElvixLandingPayload,
   authInit,
+  consumeSignedOutFlag,
   getElvixToken,
   isSameOrigin,
   setElvixToken,
   takeJustReturnedLanding,
   takeJustReturnedToken,
+  wasReturnTokenConsumed,
 } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { isValidUsername } from "./username-rules";
@@ -653,8 +655,18 @@ function AuthBody({
   // Fires once. The loading state below holds the UI until the session probe
   // resolves, so a signed-in user never sees a sign-in flash.
   const resumedRef = useRef(false);
+  // Read the one-shot "just signed out" marker once per mount. If the user
+  // landed here straight from signOut(), suppress the auto-resume so we never
+  // sign them back in on the post-logout landing (even if a session lingers).
+  const justSignedOutRef = useRef<boolean | null>(null);
   useEffect(() => {
     if (!redirectIfAuthenticated || isPreview) return;
+    if (justSignedOutRef.current === null) justSignedOutRef.current = consumeSignedOutFlag();
+    if (justSignedOutRef.current) return;
+    // A fresh sign-in just returned via the URL fragment — the form's own
+    // return handler owns completion + onboarding (passkey/username). Yield, or
+    // the resume races ahead and skips the enrollment prompt.
+    if (wasReturnTokenConsumed()) return;
     if (sessionStatus !== ElvixSessionStatus.AUTHENTICATED) return;
     if (resumedRef.current) return;
     resumedRef.current = true;
@@ -1192,20 +1204,22 @@ function AuthBody({
     setError(null);
     setOnboardingBusy("add");
     try {
+      // Cross-origin enrollment ALWAYS uses the hosted ceremony. elvix's
+      // register/finish only trusts elvix's own origin, so an inline register
+      // from the customer origin is rejected at finish (origin mismatch) EVEN
+      // when the browser honours the ROR manifest for create() — producing a
+      // "registered in the authenticator but not saved server-side" error. The
+      // ceremony registers same-origin on elvix.is (origin matches) and hands
+      // the token back. One Touch ID, on elvix.is. (Same-origin enrollment
+      // below stays inline — origin already matches.)
+      if (crossOrigin) {
+        redirectToHostedRegister();
+        return;
+      }
       const surface = intent === "app" ? "app" : intent;
       const result = await runPasskeyRegister(baseUrl, surface);
       if (!result.ok) {
         if (result.error === "passkey_cancelled") return;
-        if (
-          crossOrigin &&
-          (/rp\.?id|RelyingParty|cannot be used with the current origin|SecurityError/i.test(
-            result.message ?? "",
-          ) ||
-            result.error === "passkey_register_failed")
-        ) {
-          redirectToHostedRegister();
-          return;
-        }
         reportError(
           result.error,
           result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyAdd"),
