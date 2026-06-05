@@ -440,41 +440,44 @@ function AuthCard(props: AuthFormProps) {
     ? "overflow-hidden"
     : "rounded-[14px] bg-surface shadow-[0_2px_8px_rgba(0,0,0,0.04),0_20px_40px_-20px_rgba(0,0,0,0.12)] border border-border-base overflow-hidden";
   return (
-    <div className={cardClass}>
-      <div className={transparentBg ? "px-1 py-1" : "px-7 py-7"}>
-        <AuthBody {...props} />
-      </div>
-      <div
-        className={
-          (transparentBg ? "mt-3 " : "border-t border-border-base bg-surface-hover px-7 py-3 ") +
-          "flex items-center justify-center"
-        }
-      >
-        <a
-          href={ELVIX_SITE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 pl-1.5 pr-2.5 py-1 rounded-full bg-surface ring-1 ring-border-base shadow-sm hover:bg-surface-hover hover:ring-border-strong transition"
+    <>
+      <div className={cardClass}>
+        <div className={transparentBg ? "px-1 py-1" : "px-7 py-7"}>
+          <AuthBody {...props} />
+        </div>
+        <div
+          className={
+            (transparentBg ? "mt-3 " : "border-t border-border-base bg-surface-hover px-7 py-3 ") +
+            "flex items-center justify-center"
+          }
         >
-          <span className="relative inline-flex items-center">
-            <ElvixLogo size={12} className="text-fg-1" />
-            <span
-              aria-hidden
-              className="absolute -right-px -top-px size-1 rounded-full bg-emerald-500 ring-1 ring-surface"
-            />
-          </span>
-          <span className="text-[11px] tracking-tight leading-none">
-            <span className="text-fg-3">{t("signin.securedBy")}</span>
-            <span className="font-semibold text-fg-1">elvix</span>
-          </span>
-        </a>
+          <a
+            href={ELVIX_SITE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 pl-1.5 pr-2.5 py-1 rounded-full bg-surface ring-1 ring-border-base shadow-sm hover:bg-surface-hover hover:ring-border-strong transition"
+          >
+            <span className="relative inline-flex items-center">
+              <ElvixLogo size={12} className="text-fg-1" />
+              <span
+                aria-hidden
+                className="absolute -right-px -top-px size-1 rounded-full bg-emerald-500 ring-1 ring-surface"
+              />
+            </span>
+            <span className="text-[11px] tracking-tight leading-none">
+              <span className="text-fg-3">{t("signin.securedBy")}</span>
+              <span className="font-semibold text-fg-1">elvix</span>
+            </span>
+          </a>
+        </div>
       </div>
-      <div className="pb-2 text-center leading-none">
+      {/* Version badge sits BELOW the card, not inside it. */}
+      <div className="mt-2.5 text-center leading-none">
         <span className="text-[9px] tracking-wide text-fg-3 opacity-50 tabular-nums">
           v{ELVIX_SDK_VERSION}
         </span>
       </div>
-    </div>
+    </>
   );
 }
 
