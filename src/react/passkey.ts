@@ -221,6 +221,12 @@ export async function runPasskeyRegister(
    *  only sign the user in to it. The caller must already be a
    *  member; elvix's `register/start` enforces membership. */
   applicationId?: string,
+  /** Public client id. Sent to `register/finish` so elvix can trust the app's
+   *  configured allowedOrigins for an INLINE cross-origin enrollment (the
+   *  credential's origin is the customer origin). Does NOT scope the passkey —
+   *  that's `applicationId`. Without it, cross-origin inline finish is rejected
+   *  (origin mismatch) and the caller should fall back to the hosted ceremony. */
+  clientId?: string,
 ): Promise<PasskeyRegisterResult> {
   if (typeof window === "undefined" || !window.PublicKeyCredential || !navigator.credentials?.create) {
     return { ok: false, error: "passkey_unsupported", message: "This browser can't use passkeys." };
@@ -306,11 +312,12 @@ export async function runPasskeyRegister(
     const res = await fetch(`${baseUrl}/api/auth/passkey/register/finish`, {
       method: "POST",
       ...reqInit,
-      body: JSON.stringify(
-        applicationId
-          ? { surface, applicationId, response: attestation }
-          : { surface, response: attestation },
-      ),
+      body: JSON.stringify({
+        surface,
+        ...(applicationId ? { applicationId } : {}),
+        ...(clientId ? { clientId } : {}),
+        response: attestation,
+      }),
     });
     const body = (await res.json()) as { success?: boolean; errorMessage?: string };
     if (!res.ok || !body.success) {
