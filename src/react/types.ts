@@ -77,10 +77,24 @@ export type ElvixBootstrapEnvelope = {
 
 export type ElvixSignInResultOk = {
   ok: true;
-  /** Where the host should send the user (if anywhere). */
-  redirect?: string;
-  /** Sign-in factor that succeeded. */
+  /**
+   * Always "complete". `onResult` fires EXACTLY ONCE per sign-in, at the
+   * terminal state — AFTER any in-frame onboarding panes (passkey / username
+   * / recover), which the SDK renders itself. The host never sees those
+   * intermediate steps. Reaching here means sign-in is fully done, so it is
+   * always safe to redirect. (Reserved as a discriminator: future non-terminal
+   * `onResult` events, if ever added, would carry a different `phase`.)
+   */
+  phase: "complete";
+  /** Sign-in factor that completed the ceremony. */
   method: ElvixSignInMethod;
+  /**
+   * Resolved final destination — `redirectAfterSignIn` (host prop) ?? the
+   * backend's per-method redirect ?? "/". The SDK navigates here itself
+   * UNLESS the host passed `navigate={false}` (then the host redirects using
+   * this value).
+   */
+  redirect: string;
   /**
    * Cross-origin only: the session token. Pass it to your backend and verify
    * it with `verifyElvixToken` from `@elvix.is/sdk/server`. Undefined for
