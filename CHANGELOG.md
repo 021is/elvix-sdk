@@ -13,6 +13,12 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.7.24] — 2026-06-05
+
+### Changed
+
+- Version badge now sits below the card on `<ElvixSignIn>` too (0.7.23 only moved it on `<ElvixSignInForm>`). Both sign-in surfaces now render it outside/under the box.
+
 ## [0.7.23] — 2026-06-05
 
 ### Changed

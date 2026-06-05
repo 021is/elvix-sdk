@@ -356,7 +356,8 @@ export function ElvixSignIn({
   }
 
   return (
-    <div className={card} style={sized} data-elvix-pane={step}>
+    <>
+      <div className={card} style={sized} data-elvix-pane={step}>
       <h2 className="elvix-h">{title}</h2>
       {copy.subtitle && <p className="elvix-muted elvix-subtitle">{copy.subtitle}</p>}
 
@@ -431,6 +432,8 @@ export function ElvixSignIn({
           {error}
         </p>
       )}
+      </div>
+      {/* Version badge sits BELOW the card, not inside it. */}
       <div
         style={{
           textAlign: "center",
@@ -443,7 +446,7 @@ export function ElvixSignIn({
       >
         v{ELVIX_SDK_VERSION}
       </div>
-    </div>
+    </>
   );
 }
 
