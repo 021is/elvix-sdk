@@ -101,6 +101,7 @@ export async function verifyElvixToken(
       roles?: string[];
       scopes?: string[];
       memberships?: string[];
+      membershipBrands?: { slug: string; name: string; logoUrl: string | null }[];
       error?: string;
     };
     if (!res.ok || !body.ok || !body.userId) {
@@ -121,6 +122,7 @@ export async function verifyElvixToken(
       roles: body.roles ?? [],
       scopes: body.scopes ?? [],
       memberships: body.memberships ?? [],
+      membershipBrands: body.membershipBrands ?? [],
     };
   } finally {
     clearTimeout(timer);
