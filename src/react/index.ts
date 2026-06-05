@@ -93,6 +93,7 @@ export type { UseUserListResult } from "./hooks";
 export { ElvixLifecycleWatcher } from "./lifecycle-watcher";
 export { ElvixPresence } from "./elvix-presence";
 export { ELVIX_SDK_VERSION } from "./version";
+export { ElvixSessionStatus, useElvixSession } from "./elvix-provider";
 
 // Identity
 export { ElvixUsername } from "./elvix-username";

@@ -155,6 +155,24 @@ A passkey is bound to elvix's RP id (`elvix.is`). On your own origin the browser
 - Nothing else is required cross-origin — no manifest config, no second redirect handler. If inline WebAuthn happens to work (browsers that honour elvix's Related Origin Requests manifest), there's no hop at all; the same `onResult` fires. Either way your code is identical.
 - **Set `redirectAfterSignIn` to your post-sign-in destination.** It's the *declarative* landing target and it survives the ceremony round-trip (it's a prop, re-applied on mount). `result.redirect` is best-effort and **falls back to `/` after a cross-origin hop** (the backend's per-method redirect lived in state that the full-page navigation wiped). So if you have an intended destination (e.g. a `?next=` your gate set), pass it as `redirectAfterSignIn={next}` rather than relying on `result.redirect ?? next` — otherwise `"/"` wins and the user lands on your home page instead of where they were headed.
 
+### Already signed in? Skip the form (`redirectIfAuthenticated`)
+
+Pass `redirectIfAuthenticated` to send an already-signed-in visitor straight to the dashboard instead of showing them the sign-in form. On mount the SDK probes the session; while it checks it shows a brief loader (no form flash), and if a session exists it fires `onResult` with `method: "session"` + your resolved `redirect` (and navigates unless `navigate={false}`). No session → the form renders as normal.
+
+```tsx
+<ElvixSignInForm
+  redirectIfAuthenticated
+  redirectAfterSignIn={next}
+  onResult={async (r) => {
+    if (!r.ok) return;
+    if (r.token) await establishSession(r.token);  // same handler as a fresh sign-in
+    router.replace(r.redirect);
+  }}
+/>
+```
+
+It's opt-in (default off) so account-switch flows that *want* to show the form to a signed-in user keep working. You can also read the raw state via `useElvixSession()` → `"loading" | "authenticated" | "anonymous"`.
+
 ## AI coding agents
 
 elvix ships first-class agent support. Three surfaces:
