@@ -1148,7 +1148,15 @@ function AuthBody({
     const crossOrigin = !isSameOrigin(baseUrl) && Boolean(clientId);
     const redirectToHostedRegister = () => {
       if (!clientId) return;
-      const returnTo = new URL(finalRedirect(), window.location.origin).toString();
+      // Return to THIS page (the mounted sign-in surface), not the final dest:
+      // the ceremony hands the token back via #elvix_token and the SDK here
+      // consumes it to COMPLETE sign-in (fires onResult/onAuthenticated → the
+      // host's establishSession + navigate). Mirrors the sign-in ceremony.
+      // Sending the user straight to the final dest would skip session
+      // establishment and bounce them back to the gate. (`window.location.href`
+      // includes any ?next= the host login page carries, so post-auth routing
+      // still resolves.)
+      const returnTo = window.location.href;
       const token = getElvixToken();
       const url = `${baseUrl}/auth/passkey-register/${encodeURIComponent(clientId)}?returnUrl=${encodeURIComponent(returnTo)}`;
       window.location.assign(token ? `${url}#elvix_token=${encodeURIComponent(token)}` : url);

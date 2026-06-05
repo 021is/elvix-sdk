@@ -131,6 +131,29 @@ type ElvixSignInResult =
 >
 > Migration note (0.7.13): if you previously redirected in `onResult` **without** `onAuthenticated`, add `navigate={false}` — otherwise the SDK and your handler will both navigate.
 
+### Cross-origin passkeys (the one host rule that matters)
+
+A passkey is bound to elvix's RP id (`elvix.is`). On your own origin the browser may refuse the WebAuthn call with **"rp.id cannot be used with the current origin"**. The SDK handles this for you: it tries inline first, and on failure (passkey **sign-in** *and* passkey **enrollment**) it navigates the whole tab to a hosted ceremony on `elvix.is`, runs WebAuthn there where the RP id matches, and returns to **the page it left** with the session token in the URL fragment (`#elvix_token=…`). `<ElvixProvider>` reads + strips that fragment on mount and the SDK fires `onResult` to finish.
+
+**So the only rule for your host: mount the SDK on your sign-in PAGE and finish sign-in in `onResult`. Do not navigate away from the sign-in page until `onResult` fires.**
+
+- The ceremony returns to the page that launched it (your sign-in page, including any `?next=`). If the SDK isn't still mounted there, the returned token is never consumed and the user lands **unauthenticated** — they'll bounce back to your gate even though the passkey was created. This is the #1 integration mistake.
+- Establish your own session from the token **inside `onResult`** (verify it with `verifyElvixToken`, set your cookie), then navigate:
+
+```tsx
+// app/sign-in/page.tsx — keep this mounted; let onResult finish the flow.
+<ElvixSignInForm
+  navigate={false}
+  onResult={async (r) => {
+    if (!r.ok) return setError(r.message);
+    if (r.token) await establishSession(r.token);   // server action → your httpOnly cookie
+    router.replace(r.redirect ?? nextParam ?? "/dashboard");
+  }}
+/>
+```
+
+- Nothing else is required cross-origin — no manifest config, no second redirect handler. If inline WebAuthn happens to work (browsers that honour elvix's Related Origin Requests manifest), there's no hop at all; the same `onResult` fires. Either way your code is identical.
+
 ## AI coding agents
 
 elvix ships first-class agent support. Three surfaces:
