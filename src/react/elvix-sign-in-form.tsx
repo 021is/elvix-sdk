@@ -1204,20 +1204,22 @@ function AuthBody({
     setError(null);
     setOnboardingBusy("add");
     try {
+      // Cross-origin enrollment ALWAYS uses the hosted ceremony. elvix's
+      // register/finish only trusts elvix's own origin, so an inline register
+      // from the customer origin is rejected at finish (origin mismatch) EVEN
+      // when the browser honours the ROR manifest for create() — producing a
+      // "registered in the authenticator but not saved server-side" error. The
+      // ceremony registers same-origin on elvix.is (origin matches) and hands
+      // the token back. One Touch ID, on elvix.is. (Same-origin enrollment
+      // below stays inline — origin already matches.)
+      if (crossOrigin) {
+        redirectToHostedRegister();
+        return;
+      }
       const surface = intent === "app" ? "app" : intent;
       const result = await runPasskeyRegister(baseUrl, surface);
       if (!result.ok) {
         if (result.error === "passkey_cancelled") return;
-        if (
-          crossOrigin &&
-          (/rp\.?id|RelyingParty|cannot be used with the current origin|SecurityError/i.test(
-            result.message ?? "",
-          ) ||
-            result.error === "passkey_register_failed")
-        ) {
-          redirectToHostedRegister();
-          return;
-        }
         reportError(
           result.error,
           result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyAdd"),
