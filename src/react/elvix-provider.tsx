@@ -81,12 +81,27 @@ const DEFAULT_BASE_URL = "https://elvix.is";
 const BOOTSTRAP_URL = (baseUrl: string, clientId: string) =>
   `${baseUrl}/api/v1/bootstrap/${encodeURIComponent(clientId)}`;
 
+/**
+ * Resolution state of the per-app session probe (`sdk-context`). Lets a
+ * consumer distinguish "still checking" from "definitely no session" — the
+ * `appContext` field alone is `null` for both. Used by `redirectIfAuthenticated`
+ * on the sign-in surfaces so they don't flash the form before a known-signed-in
+ * user is redirected.
+ */
+export const ElvixSessionStatus = {
+  LOADING: "loading",
+  AUTHENTICATED: "authenticated",
+  ANONYMOUS: "anonymous",
+} as const;
+export type ElvixSessionStatus = (typeof ElvixSessionStatus)[keyof typeof ElvixSessionStatus];
+
 type ElvixContextValue = {
   clientId: string | undefined;
   baseUrl: string;
   app: ElvixBootstrapEnvelope | null;
   appError: string | null;
   appContext: ElvixAppContext | null;
+  sessionStatus: ElvixSessionStatus;
   resolvedTheme: "light" | "dark";
   /** Whether nested `<Elvix*>` components should run their mount /
    *  transition animations. Cascades from `<ElvixProvider animated>`
@@ -106,6 +121,17 @@ export function useElvixApp(): ElvixBootstrapEnvelope | null {
 export function useElvixAppContext(): ElvixAppContext | null {
   const ctx = useContext(ElvixContext);
   return ctx?.appContext ?? null;
+}
+
+/**
+ * Resolution state of the per-app session probe: "loading" (still checking),
+ * "authenticated" (an active elvix session exists for this app), or "anonymous"
+ * (no session). Use it to gate `redirectIfAuthenticated`-style flows without
+ * the `appContext === null` ambiguity (null = loading OR anonymous).
+ */
+export function useElvixSession(): ElvixSessionStatus {
+  const ctx = useContext(ElvixContext);
+  return ctx?.sessionStatus ?? ElvixSessionStatus.LOADING;
 }
 
 export function useElvixContext(): ElvixContextValue {
@@ -228,6 +254,9 @@ export function ElvixProvider({
   const [app, setApp] = useState<ElvixBootstrapEnvelope | null>(null);
   const [appError, setAppError] = useState<string | null>(null);
   const [appContext, setAppContext] = useState<ElvixAppContext | null>(null);
+  const [sessionStatus, setSessionStatus] = useState<ElvixSessionStatus>(
+    ElvixSessionStatus.LOADING,
+  );
   const [systemDark, setSystemDark] = useState(false);
 
   // Cross-origin Google redirect return: if elvix bounced the user back here
@@ -285,8 +314,10 @@ export function ElvixProvider({
   useEffect(() => {
     if (!clientId) {
       setAppContext(null);
+      setSessionStatus(ElvixSessionStatus.ANONYMOUS);
       return;
     }
+    setSessionStatus(ElvixSessionStatus.LOADING);
     const ctrl = new AbortController();
     fetch(`${resolvedBaseUrl}/api/account/apps/${encodeURIComponent(clientId)}/sdk-context`, {
       ...authInit(),
@@ -294,12 +325,18 @@ export function ElvixProvider({
     })
       .then((r) => (r.ok ? r.json() : null))
       .then((body) => {
-        if (body?.success && body?.data) setAppContext(body.data as ElvixAppContext);
-        else setAppContext(null);
+        if (body?.success && body?.data) {
+          setAppContext(body.data as ElvixAppContext);
+          setSessionStatus(ElvixSessionStatus.AUTHENTICATED);
+        } else {
+          setAppContext(null);
+          setSessionStatus(ElvixSessionStatus.ANONYMOUS);
+        }
       })
       .catch((e: unknown) => {
         if ((e as { name?: string })?.name === "AbortError") return;
         setAppContext(null);
+        setSessionStatus(ElvixSessionStatus.ANONYMOUS);
       });
     return () => ctrl.abort();
   }, [clientId, resolvedBaseUrl]);
@@ -343,6 +380,7 @@ export function ElvixProvider({
     app,
     appError,
     appContext,
+    sessionStatus,
     resolvedTheme: effectiveTheme,
     animated,
   };

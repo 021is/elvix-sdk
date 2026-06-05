@@ -44,7 +44,7 @@ import type { ElvixSignInMethod, ElvixSignInResult } from "./types";
 import { ELVIX_SDK_VERSION } from "./version";
 import { ElvixLogo } from "./elvix-logo";
 import { ElvixRecoverGate } from "./elvix-recover-gate";
-import { useElvixApp, useElvixContext } from "./elvix-provider";
+import { ElvixSessionStatus, useElvixApp, useElvixContext, useElvixSession } from "./elvix-provider";
 import { GoogleOneTap } from "./google-one-tap";
 import { OtpInput } from "./otp-input";
 import { runPasskeyRegister, runPasskeySignIn } from "./passkey";
@@ -289,6 +289,17 @@ export type AuthFormProps = {
    * the `method` that completed, and the resolved `redirect`.
    */
   onResult?: (result: ElvixSignInResult) => void;
+  /**
+   * SSO silent-resume. When true and the SDK detects an ALREADY-ACTIVE elvix
+   * session on mount (e.g. the user opens the sign-in page but is still signed
+   * in), the form skips the sign-in UI and immediately fires `onResult` with
+   * `method: "session"` + the resolved `redirect` (and navigates unless
+   * `navigate={false}`), so the host lands them on the dashboard. While the
+   * session probe is in flight it shows a brief loading state instead of the
+   * form, so a signed-in user never sees a sign-in flash. Default `false`
+   * (so "switch account" flows that intentionally show the form still work).
+   */
+  redirectIfAuthenticated?: boolean;
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -495,9 +506,11 @@ function AuthBody({
   onAuthenticated,
   onResult,
   navigate = true,
+  redirectIfAuthenticated = false,
 }: AuthFormProps) {
   // Cross-origin elvix base URL the SDK talks to (provided by <ElvixProvider>).
   const { baseUrl } = useElvixContext();
+  const sessionStatus = useElvixSession();
   const t = useT();
   const isPreview = mode === "preview";
   const anyMethod = methodGoogle || methodEmailOtp || methodPasskey || methodUsername;
@@ -633,6 +646,21 @@ function AuthBody({
     },
     [onResult, onAuthenticated, navigate],
   );
+
+  // SSO silent-resume: if the host opted in and the SDK detects an active
+  // session on mount, complete sign-in immediately (method "session") so the
+  // host lands the user on the dashboard instead of showing the sign-in form.
+  // Fires once. The loading state below holds the UI until the session probe
+  // resolves, so a signed-in user never sees a sign-in flash.
+  const resumedRef = useRef(false);
+  useEffect(() => {
+    if (!redirectIfAuthenticated || isPreview) return;
+    if (sessionStatus !== ElvixSessionStatus.AUTHENTICATED) return;
+    if (resumedRef.current) return;
+    resumedRef.current = true;
+    methodRef.current = "session";
+    finishSignIn(finalRedirect(), getElvixToken() ?? undefined);
+  }, [redirectIfAuthenticated, isPreview, sessionStatus, finishSignIn, finalRedirect]);
 
   useEffect(() => {
     if (resendIn <= 0) return;
@@ -1148,7 +1176,15 @@ function AuthBody({
     const crossOrigin = !isSameOrigin(baseUrl) && Boolean(clientId);
     const redirectToHostedRegister = () => {
       if (!clientId) return;
-      const returnTo = new URL(finalRedirect(), window.location.origin).toString();
+      // Return to THIS page (the mounted sign-in surface), not the final dest:
+      // the ceremony hands the token back via #elvix_token and the SDK here
+      // consumes it to COMPLETE sign-in (fires onResult/onAuthenticated → the
+      // host's establishSession + navigate). Mirrors the sign-in ceremony.
+      // Sending the user straight to the final dest would skip session
+      // establishment and bounce them back to the gate. (`window.location.href`
+      // includes any ?next= the host login page carries, so post-auth routing
+      // still resolves.)
+      const returnTo = window.location.href;
       const token = getElvixToken();
       const url = `${baseUrl}/auth/passkey-register/${encodeURIComponent(clientId)}?returnUrl=${encodeURIComponent(returnTo)}`;
       window.location.assign(token ? `${url}#elvix_token=${encodeURIComponent(token)}` : url);
@@ -1200,6 +1236,18 @@ function AuthBody({
     setOnboardingBusy("skip");
     finishSignIn(finalRedirect(), getElvixToken() ?? undefined);
   }, [onboardingBusy, finalRedirect, finishSignIn]);
+
+  // SSO silent-resume: while the opted-in session probe is in flight, hold the
+  // UI on a loader so a signed-in user never sees the sign-in form flash before
+  // the resume effect redirects them.
+  if (redirectIfAuthenticated && !isPreview && sessionStatus === ElvixSessionStatus.LOADING) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 py-10">
+        <Loader2 className="size-5 animate-spin text-fg-3" />
+        <p className="text-[13px] text-fg-3">Signing you in…</p>
+      </div>
+    );
+  }
 
   return (
     <>

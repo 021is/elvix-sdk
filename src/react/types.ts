@@ -11,7 +11,7 @@ export type ElvixBrand = {
   dark: { primary: string; on: string };
 };
 
-export type ElvixSignInMethod = "google" | "email_otp" | "passkey" | "username";
+export type ElvixSignInMethod = "google" | "email_otp" | "passkey" | "username" | "session";
 
 /**
  * The public render envelope `GET /api/v1/bootstrap/<clientId>` returns. Flat
