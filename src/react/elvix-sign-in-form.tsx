@@ -51,6 +51,7 @@ import { runPasskeyRegister, runPasskeySignIn } from "./passkey";
 import {
   type ElvixLandingPayload,
   authInit,
+  consumeSignedOutFlag,
   getElvixToken,
   isSameOrigin,
   setElvixToken,
@@ -653,8 +654,14 @@ function AuthBody({
   // Fires once. The loading state below holds the UI until the session probe
   // resolves, so a signed-in user never sees a sign-in flash.
   const resumedRef = useRef(false);
+  // Read the one-shot "just signed out" marker once per mount. If the user
+  // landed here straight from signOut(), suppress the auto-resume so we never
+  // sign them back in on the post-logout landing (even if a session lingers).
+  const justSignedOutRef = useRef<boolean | null>(null);
   useEffect(() => {
     if (!redirectIfAuthenticated || isPreview) return;
+    if (justSignedOutRef.current === null) justSignedOutRef.current = consumeSignedOutFlag();
+    if (justSignedOutRef.current) return;
     if (sessionStatus !== ElvixSessionStatus.AUTHENTICATED) return;
     if (resumedRef.current) return;
     resumedRef.current = true;

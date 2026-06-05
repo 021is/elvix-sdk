@@ -15,7 +15,7 @@
  *     wrappers.
  */
 
-import { setElvixToken } from "./session";
+import { authInit, markSignedOut, setElvixToken } from "./session";
 
 export type SignOutResult =
   | { ok: true; redirect?: string }
@@ -34,6 +34,14 @@ export type SignOutOptions = {
    * the cookie clear (your server tears down its own httpOnly cookie).
    */
   cookieName?: string | null;
+  /**
+   * elvix origin to call. REQUIRED for cross-origin hosts — the sign-out
+   * request must reach elvix.is, not the customer's own origin. `useSignOut`
+   * / `<ElvixSignOutButton>` inject it from `<ElvixProvider baseUrl>`
+   * automatically; only set it when calling `signOut()` standalone. Empty
+   * string (or omitted) means same-origin (elvix's own surfaces).
+   */
+  baseUrl?: string;
 };
 
 /**
@@ -49,52 +57,49 @@ export type SignOutOptions = {
  * already-ended session, gets a 204, still clears local state).
  */
 export async function signOut(options: SignOutOptions = {}): Promise<SignOutResult> {
-  const { redirectAfterSignOut, cookieName = "elvix_token" } = options;
+  const { redirectAfterSignOut, cookieName = "elvix_token", baseUrl } = options;
+  // Reach elvix.is cross-origin with the bearer attached, exactly like every
+  // other SDK call (presence, hooks). The old relative `/api/...` fetch + a
+  // mythical "interceptor" hit the CUSTOMER origin (404) on cross-origin hosts,
+  // so the session was never invalidated. `authInit()` sends the bearer
+  // cross-origin and the cookie same-origin. `base` "" == same-origin.
+  const base = typeof baseUrl === "string" ? baseUrl : "";
+  let result: SignOutResult;
   try {
-    // The SDK's cross-origin interceptor rewrites `/api/...` calls
-    // to the elvix origin and attaches the Bearer token when running
-    // on a customer origin. Same-origin sends the cookie automatically.
-    // One relative fetch covers both modes.
-    const res = await fetch("/api/auth/sign-out?surface=app", {
+    const res = await fetch(`${base}/api/auth/sign-out?surface=app`, {
       method: "POST",
-      credentials: "include",
+      ...authInit(),
     });
-    if (!res.ok && res.status !== 204) {
-      return {
-        ok: false,
-        error: `http_${res.status}`,
-        message: `sign-out failed (HTTP ${res.status})`,
-      };
-    }
-
-    // Always clear local state regardless of whether the server had
-    // a row to invalidate — the caller's intent is to be signed out.
-    setElvixToken(null);
-    if (cookieName && typeof document !== "undefined") {
-      const secure =
-        typeof location !== "undefined" && location.protocol === "https:" ? "; secure" : "";
-      document.cookie = `${cookieName}=; path=/; max-age=0; samesite=lax${secure}`;
-    }
-
-    const target = redirectAfterSignOut === null ? undefined : (redirectAfterSignOut ?? "/");
-    if (target && typeof window !== "undefined") {
-      // Use `location.replace` so the signed-in page does not stay in
-      // history (back button would otherwise land the user on a stale
-      // authenticated screen). Resolve relative targets against the
-      // host's own origin so a customer that passes "/" never bounces
-      // through elvix.is by accident. Navigate synchronously — the
-      // microtask wrap was buying nothing and was occasionally letting
-      // a parallel host re-render swallow the navigation (the "have to
-      // click twice" report).
-      const abs = new URL(target, window.location.origin).toString();
-      window.location.replace(abs);
-    }
-    return { ok: true, redirect: target };
+    result =
+      !res.ok && res.status !== 204
+        ? { ok: false, error: `http_${res.status}`, message: `sign-out failed (HTTP ${res.status})` }
+        : { ok: true, redirect: undefined };
   } catch (e) {
-    return {
-      ok: false,
-      error: "network_error",
-      message: e instanceof Error ? e.message : "network error",
-    };
+    result = { ok: false, error: "network_error", message: e instanceof Error ? e.message : "network error" };
   }
+
+  // ALWAYS clear local state — the user's intent is to be signed out even if
+  // the server call failed (offline, transient 5xx). Leaving a live token
+  // behind is what let `redirectIfAuthenticated` resume a "signed-out" user.
+  setElvixToken(null);
+  // One-shot flag the sign-in surface checks: suppress `redirectIfAuthenticated`
+  // for the immediate post-sign-out load so the resume can never fight a logout,
+  // even if a session somehow lingers.
+  markSignedOut();
+  if (cookieName && typeof document !== "undefined") {
+    const secure =
+      typeof location !== "undefined" && location.protocol === "https:" ? "; secure" : "";
+    document.cookie = `${cookieName}=; path=/; max-age=0; samesite=lax${secure}`;
+  }
+
+  const target = redirectAfterSignOut === null ? undefined : (redirectAfterSignOut ?? "/");
+  if (result.ok) result = { ok: true, redirect: target };
+  if (target && typeof window !== "undefined") {
+    // `location.replace` (hard nav) so the signed-in page leaves history and
+    // the whole tree tears down — a soft SPA nav left stale SDK state mounted
+    // and produced the "have to click twice" report.
+    const abs = new URL(target, window.location.origin).toString();
+    window.location.replace(abs);
+  }
+  return result;
 }

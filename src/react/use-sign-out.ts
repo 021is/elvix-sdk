@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { useResolvedBaseUrl } from "./elvix-provider";
 import { type SignOutOptions, type SignOutResult, signOut } from "./sign-out";
 
 /**
@@ -21,6 +22,9 @@ export function useSignOut(defaults: SignOutOptions = {}): {
   busy: boolean;
 } {
   const [busy, setBusy] = useState(false);
+  // Resolve the elvix origin from <ElvixProvider baseUrl> so the sign-out
+  // request reaches elvix.is cross-origin (not the customer's own origin).
+  const baseUrl = useResolvedBaseUrl(defaults.baseUrl);
   const run = useCallback(
     async (override?: SignOutOptions): Promise<SignOutResult> => {
       if (busy) {
@@ -28,12 +32,12 @@ export function useSignOut(defaults: SignOutOptions = {}): {
       }
       setBusy(true);
       try {
-        return await signOut({ ...defaults, ...override });
+        return await signOut({ baseUrl, ...defaults, ...override });
       } finally {
         setBusy(false);
       }
     },
-    [busy, defaults],
+    [busy, defaults, baseUrl],
   );
   return { run, busy };
 }

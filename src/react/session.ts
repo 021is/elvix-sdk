@@ -52,6 +52,36 @@ export function authInit(): { headers: Record<string, string>; credentials: Requ
 }
 
 /**
+ * One-shot "the user just signed out" marker, stored in sessionStorage so it
+ * survives the hard navigation to the sign-in page but not a new tab/session.
+ * `signOut()` sets it; `redirectIfAuthenticated` reads + clears it to skip a
+ * single auto-resume — so the SSO resume can never sign a user straight back
+ * in on the post-logout landing, even if a session somehow lingers server-side.
+ */
+const SIGNED_OUT_KEY = "elvix_signed_out";
+
+export function markSignedOut(): void {
+  try {
+    if (typeof window !== "undefined") window.sessionStorage.setItem(SIGNED_OUT_KEY, "1");
+  } catch {
+    // sessionStorage can throw (privacy mode, disabled storage). The fixed
+    // sign-out clearing is the load-bearing path; this flag is belt-and-braces.
+  }
+}
+
+/** Read AND clear the just-signed-out marker. Returns true once after a sign-out. */
+export function consumeSignedOutFlag(): boolean {
+  try {
+    if (typeof window === "undefined") return false;
+    const v = window.sessionStorage.getItem(SIGNED_OUT_KEY);
+    if (v) window.sessionStorage.removeItem(SIGNED_OUT_KEY);
+    return Boolean(v);
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Fragment key the elvix Google redirect-callback appends the session token
  * under (`<returnUrl>#elvix_token=<token>`). The token rides the URL fragment,
  * which browsers never send to the server, so it's only ever read here on the
