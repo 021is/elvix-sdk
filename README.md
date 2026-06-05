@@ -173,6 +173,17 @@ Pass `redirectIfAuthenticated` to send an already-signed-in visitor straight to 
 
 It's opt-in (default off) so account-switch flows that *want* to show the form to a signed-in user keep working. You can also read the raw state via `useElvixSession()` → `"loading" | "authenticated" | "anonymous"`.
 
+## Presence (automatic)
+
+`<ElvixProvider>` beats a presence heartbeat **automatically** whenever the user is signed in — so they show as **online** on your app's users list in the elvix Console with **zero wiring**. It beats every 30s, pauses on a hidden tab, reports "idle" after 60s without input, and works cross-origin (bearer) or same-origin (cookie). Nothing to mount.
+
+```tsx
+<ElvixProvider clientId={CLIENT_ID}>{children}</ElvixProvider>  // presence is on
+<ElvixProvider clientId={CLIENT_ID} presence={false}>…</ElvixProvider>  // opt out
+```
+
+`<ElvixPresence>` still exists for edge cases (beat for a different `applicationId`, or manual control when you set `presence={false}`), but you no longer need it.
+
 ## AI coding agents
 
 elvix ships first-class agent support. Three surfaces:
@@ -245,6 +256,9 @@ import { verifyElvixToken } from "@elvix.is/sdk/server";
 const result = await verifyElvixToken(token, { apiKey: process.env.ELVIX_API_KEY! });
 if (result.ok) {
   // result.user, result.roles, result.scopes, result.memberships
+  // result.membershipBrands → [{ slug, name, logoUrl }] — full membership
+  //   brand so you render partner branding from the session, not hardcoded
+  //   per slug. `memberships` (slugs) stays for back-compat.
 }
 ```
 
