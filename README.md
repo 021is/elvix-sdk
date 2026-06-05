@@ -153,6 +153,7 @@ A passkey is bound to elvix's RP id (`elvix.is`). On your own origin the browser
 ```
 
 - Nothing else is required cross-origin — no manifest config, no second redirect handler. If inline WebAuthn happens to work (browsers that honour elvix's Related Origin Requests manifest), there's no hop at all; the same `onResult` fires. Either way your code is identical.
+- **Set `redirectAfterSignIn` to your post-sign-in destination.** It's the *declarative* landing target and it survives the ceremony round-trip (it's a prop, re-applied on mount). `result.redirect` is best-effort and **falls back to `/` after a cross-origin hop** (the backend's per-method redirect lived in state that the full-page navigation wiped). So if you have an intended destination (e.g. a `?next=` your gate set), pass it as `redirectAfterSignIn={next}` rather than relying on `result.redirect ?? next` — otherwise `"/"` wins and the user lands on your home page instead of where they were headed.
 
 ## AI coding agents
 
