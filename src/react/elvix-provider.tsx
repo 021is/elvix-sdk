@@ -185,6 +185,7 @@ export function ElvixProvider({
   locale,
   i18nBase,
   animated = true,
+  presence = true,
   children,
   className = "",
 }: {
@@ -202,6 +203,16 @@ export function ElvixProvider({
    * still override the cascade.
    */
   animated?: boolean;
+  /**
+   * Automatic presence heartbeat. Defaults to `true`. While a clientId is set
+   * and the user is signed in, the provider beats `${baseUrl}/api/presence/
+   * heartbeat` every 30s (pausing on a hidden tab, reporting "idle" after 60s
+   * without input) so the user shows ONLINE on the app's users list in the
+   * elvix Console — every elvix app gets presence for free, no manual
+   * `<ElvixPresence>` mount required. Pass `false` to disable (e.g. a public
+   * marketing page that happens to wrap the provider).
+   */
+  presence?: boolean;
   /**
    * BCP-47 locale tag (`"en"`, `"de"`, `"pt-BR"`). Switches every nested
    * `<Elvix*>` component's copy to the matching translation. The 14
@@ -340,6 +351,53 @@ export function ElvixProvider({
       });
     return () => ctrl.abort();
   }, [clientId, resolvedBaseUrl]);
+
+  // Automatic presence heartbeat. While the user is signed in (sessionStatus
+  // AUTHENTICATED), beat /api/presence/heartbeat every 30s so they show ONLINE
+  // on the app's users list in the Console — every elvix app gets presence for
+  // free, no manual <ElvixPresence> mount. Pauses on a hidden tab; reports
+  // "idle" after 60s without input. Gated on AUTHENTICATED so anonymous sign-in
+  // pages never beat (the route requires a session anyway). authInit() sends the
+  // bearer cross-origin and the cookie same-origin. Disable with presence={false}.
+  const presenceAppId = app?.applicationId ?? null;
+  useEffect(() => {
+    if (!presence) return;
+    if (!presenceAppId) return;
+    if (sessionStatus !== ElvixSessionStatus.AUTHENTICATED) return;
+    if (typeof window === "undefined") return;
+    let lastInputAt = Date.now();
+    let cancelled = false;
+    const onInput = () => {
+      lastInputAt = Date.now();
+    };
+    window.addEventListener("mousemove", onInput, { passive: true });
+    window.addEventListener("keydown", onInput, { passive: true });
+    window.addEventListener("focus", onInput);
+    const beat = async () => {
+      if (cancelled || document.visibilityState === "hidden") return;
+      const status = Date.now() - lastInputAt > 60_000 ? "idle" : "online";
+      const init = authInit();
+      try {
+        await fetch(`${resolvedBaseUrl}/api/presence/heartbeat`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", ...init.headers },
+          credentials: init.credentials,
+          body: JSON.stringify({ applicationId: presenceAppId, status }),
+        });
+      } catch {
+        // Network blips don't matter — the next tick catches up.
+      }
+    };
+    void beat();
+    const id = setInterval(() => void beat(), 30_000);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+      window.removeEventListener("mousemove", onInput);
+      window.removeEventListener("keydown", onInput);
+      window.removeEventListener("focus", onInput);
+    };
+  }, [presence, presenceAppId, sessionStatus, resolvedBaseUrl]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

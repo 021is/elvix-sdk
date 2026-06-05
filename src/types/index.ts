@@ -16,7 +16,15 @@ export type ElvixVerifyOk = {
   user: ElvixUser;
   roles: string[];
   scopes: string[];
+  /** Membership slugs (back-compat). */
   memberships: string[];
+  /**
+   * Full membership brand (slug + name + logo) so consumer apps render partner
+   * branding from the session instead of hardcoding it per slug. Parallel to
+   * `memberships` (which stays slug-only). Empty when the server predates the
+   * field (pre-0.7.20 elvix) or the user has no memberships.
+   */
+  membershipBrands: { slug: string; name: string; logoUrl: string | null }[];
 };
 
 export type ElvixVerifyErr = {

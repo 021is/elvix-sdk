@@ -4,6 +4,12 @@
  * `<ElvixPresence>` — drops a periodic heartbeat to elvix while mounted, so the
  * user shows as **online** on the app's users list in the elvix Console.
  *
+ * NOTE (0.7.21+): `<ElvixProvider>` now beats presence AUTOMATICALLY whenever a
+ * user is signed in — you no longer need to mount this at all. Keep it only to
+ * (a) beat for a DIFFERENT applicationId than the provider's clientId resolves,
+ * or (b) when you set `<ElvixProvider presence={false}>` and want manual control.
+ * Mounting both is harmless (it just double-writes the same row), but redundant.
+ *
  * Unlike elvix's first-party presence ticker (same-origin, cookie auth), this
  * is the CROSS-ORIGIN-capable version: it beats `${baseUrl}/api/presence/
  * heartbeat` with the bearer token (via `authInit`) and the `applicationId`
