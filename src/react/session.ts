@@ -102,6 +102,21 @@ const RETURN_LANDING_KEY = "elvix_landing";
  * /app or wherever `redirectAfterSignIn` pointed.
  */
 let _justReturnedToken: string | null = null;
+
+/**
+ * Sticky (page-load-scoped, NOT one-shot) flag: did `consumeElvixReturnToken`
+ * pick a token out of the URL fragment on this load? `redirectIfAuthenticated`
+ * reads it to YIELD — when a fresh cross-origin sign-in just returned, the
+ * form's own return handler owns the completion (including onboarding panes
+ * like passkey enrollment), so the SSO resume must not race ahead and skip it.
+ * Distinct from the one-shot `_justReturnedToken`, which the form drains before
+ * the async session probe resolves.
+ */
+let _returnTokenConsumed = false;
+export function wasReturnTokenConsumed(): boolean {
+  return _returnTokenConsumed;
+}
+
 export function takeJustReturnedToken(): string | null {
   const t = _justReturnedToken;
   _justReturnedToken = null;
@@ -179,6 +194,10 @@ export function consumeElvixReturnToken(): string | null {
 
   setElvixToken(token);
   _justReturnedToken = token;
+  // Sticky for the whole page load so `redirectIfAuthenticated` yields to the
+  // form's return handler (which runs the onboarding panes). The one-shot
+  // `_justReturnedToken` above is drained too early to gate the async resume.
+  _returnTokenConsumed = true;
   // Landing step descriptor (optional) — only present when the elvix
   // backend determined the user has remaining onboarding gates after
   // the Google round-trip. Decode + queue for the form to drain.

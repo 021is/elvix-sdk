@@ -57,6 +57,7 @@ import {
   setElvixToken,
   takeJustReturnedLanding,
   takeJustReturnedToken,
+  wasReturnTokenConsumed,
 } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { isValidUsername } from "./username-rules";
@@ -662,6 +663,10 @@ function AuthBody({
     if (!redirectIfAuthenticated || isPreview) return;
     if (justSignedOutRef.current === null) justSignedOutRef.current = consumeSignedOutFlag();
     if (justSignedOutRef.current) return;
+    // A fresh sign-in just returned via the URL fragment — the form's own
+    // return handler owns completion + onboarding (passkey/username). Yield, or
+    // the resume races ahead and skips the enrollment prompt.
+    if (wasReturnTokenConsumed()) return;
     if (sessionStatus !== ElvixSessionStatus.AUTHENTICATED) return;
     if (resumedRef.current) return;
     resumedRef.current = true;
