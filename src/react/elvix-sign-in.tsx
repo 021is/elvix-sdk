@@ -152,8 +152,13 @@ export function ElvixSignIn({
 
   async function startGoogle() {
     if (!ctx.clientId) return fail("missing_client_id", "ElvixProvider needs a clientId.");
+    // Carry the host page as returnUrl so a cross-origin Google sign-in returns
+    // HERE (with #elvix_token + #elvix_landing) and any onboarding step renders
+    // in-frame, instead of stranding the user on elvix's hosted /sign-in page.
+    // The host origin must be in the app's allowedOrigins (start re-validates).
+    const returnUrl = encodeURIComponent(window.location.href);
     window.location.assign(
-      `${ctx.baseUrl}/api/auth/google/start?intent=app&clientId=${encodeURIComponent(ctx.clientId)}`,
+      `${ctx.baseUrl}/api/auth/google/start?intent=app&clientId=${encodeURIComponent(ctx.clientId)}&returnUrl=${returnUrl}`,
     );
   }
 
