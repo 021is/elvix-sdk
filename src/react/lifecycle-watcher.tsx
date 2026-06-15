@@ -161,6 +161,14 @@ export function ElvixLifecycleWatcher({
     // ── Polling fallback ──────────────────────────────────────────────────
     // Cross-origin host OR SSE props omitted: poll `/api/v1/session` and
     // react to !ok. authInit() ferries the bearer token for cross-origin.
+    //
+    // Only evict a session that was ALIVE at least once (`wasOk`). Without
+    // this, mounting the watcher on an unauthenticated page makes the very
+    // first poll `{ok:false}` → fire() → window.location.reload() → an
+    // infinite reload loop that bricks the page. The watcher's job is to
+    // evict a live session that gets revoked mid-use, not to police pages
+    // that never had one. Scar 2026-06-15 (fakeapp /sign-in loop).
+    let wasOk = false;
     const poll = async () => {
       try {
         const init = authInit();
@@ -171,7 +179,11 @@ export function ElvixLifecycleWatcher({
         });
         const body = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
         if (cancelled || fired) return;
-        if (!body.ok) fire(body.error ?? "signed_out");
+        if (body.ok) {
+          wasOk = true;
+        } else if (wasOk) {
+          fire(body.error ?? "signed_out");
+        }
       } catch {
         // Network blip — keep the session; retry next tick.
       }
