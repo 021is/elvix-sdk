@@ -13,6 +13,12 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.8.1] — 2026-06-15
+
+### Fixed
+
+- **`<ElvixSignIn>` cross-origin Google sign-in returns in-frame.** The Google start now carries `returnUrl`, so the callback bounces back to the host page with `#elvix_token` + `#elvix_landing` and onboarding renders in the host frame, instead of stranding the user on elvix's hosted `/sign-in` onboarding. (`<ElvixSignInForm>` already did this.)
+
 ## [0.8.0] — 2026-06-15
 
 ### Added
