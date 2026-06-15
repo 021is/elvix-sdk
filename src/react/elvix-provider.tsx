@@ -7,6 +7,7 @@ import {
   type ReactNode,
   createContext,
   useContext,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -186,6 +187,7 @@ export function ElvixProvider({
   i18nBase,
   animated = true,
   presence = true,
+  bootstrapRefreshMs = 20_000,
   children,
   className = "",
 }: {
@@ -213,6 +215,14 @@ export function ElvixProvider({
    * marketing page that happens to wrap the provider).
    */
   presence?: boolean;
+  /**
+   * Real-time bootstrap refresh interval in ms. Defaults to `20_000`. The
+   * provider re-fetches the render envelope on this interval AND when the
+   * tab regains focus, so Console changes to sign-in methods, brand, or
+   * the sign-in gate appear on an OPEN page without a reload. Pass `0` to
+   * disable (mount-only fetch).
+   */
+  bootstrapRefreshMs?: number;
   /**
    * BCP-47 locale tag (`"en"`, `"de"`, `"pt-BR"`). Switches every nested
    * `<Elvix*>` component's copy to the matching translation. The 14
@@ -278,19 +288,20 @@ export function ElvixProvider({
     consumeElvixReturnToken();
   }, []);
 
-  useEffect(() => {
-    if (!clientId) {
-      setApp(null);
-      setAppError(null);
-      return;
-    }
-    const ctrl = new AbortController();
-    fetch(BOOTSTRAP_URL(resolvedBaseUrl, clientId), { signal: ctrl.signal })
-      .then(async (r) => {
+  // Fetch the public render envelope. Extracted so both the initial mount
+  // effect AND the real-time refresh (interval + focus) call the same path.
+  const loadBootstrap = useCallback(
+    async (signal?: AbortSignal) => {
+      if (!clientId) {
+        setApp(null);
+        setAppError(null);
+        return;
+      }
+      try {
+        const r = await fetch(BOOTSTRAP_URL(resolvedBaseUrl, clientId), { signal });
         // Read body once; tolerate non-JSON 403/404/5xx (CORS-blocked
         // preflights serve no body). Without this branch the SDK silently
-        // failed with `body=null` and `<ElvixSignIn>` rendered an empty
-        // card. Cycle-2 friction.
+        // failed with `body=null` and `<ElvixSignIn>` rendered an empty card.
         let body: { success?: boolean; data?: unknown; errorMessage?: string } | null = null;
         try {
           body = await r.json();
@@ -307,16 +318,41 @@ export function ElvixProvider({
         } else {
           setAppError(body?.errorMessage ?? `bootstrap_failed_${r.status}`);
         }
-      })
-      .catch((e: unknown) => {
+      } catch (e: unknown) {
         if ((e as { name?: string })?.name === "AbortError") return;
-        // Network failures (DNS, CORS preflight blocked, offline) end
-        // up here. Surface them so <ElvixSignIn> can show a visible
-        // pane instead of an empty card.
+        // Network failures (DNS, CORS preflight blocked, offline) surface
+        // so <ElvixSignIn> shows a visible pane instead of an empty card.
         setAppError(e instanceof Error ? e.message : "network_error");
-      });
+      }
+    },
+    [clientId, resolvedBaseUrl],
+  );
+
+  // Initial bootstrap load.
+  useEffect(() => {
+    const ctrl = new AbortController();
+    void loadBootstrap(ctrl.signal);
     return () => ctrl.abort();
-  }, [clientId, resolvedBaseUrl]);
+  }, [loadBootstrap]);
+
+  // Real-time bootstrap refresh: re-fetch on an interval and when the tab
+  // regains focus, so Console changes (sign-in methods, brand, gate) appear
+  // on an open page with no reload. This is why elvix feels live. Disable
+  // with bootstrapRefreshMs={0}.
+  useEffect(() => {
+    if (!clientId || !bootstrapRefreshMs || typeof window === "undefined") return;
+    const refresh = () => {
+      if (document.visibilityState !== "hidden") void loadBootstrap();
+    };
+    const id = setInterval(refresh, bootstrapRefreshMs);
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      clearInterval(id);
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [clientId, bootstrapRefreshMs, loadBootstrap]);
 
   // Per-app user envelope. Carries the session cookie same-origin, the bearer
   // cross-origin (via authInit). A non-OK response is the no-session case —

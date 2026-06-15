@@ -13,6 +13,16 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.8.0] — 2026-06-15
+
+### Added
+
+- **Real-time bootstrap refresh.** `<ElvixProvider>` re-fetches the render envelope on an interval (default 20s) and when the tab regains focus, so Console changes to sign-in methods, brand, or the sign-in gate appear on an open page with no reload. Tune or disable with `bootstrapRefreshMs` (`0` = mount-only).
+
+### Fixed
+
+- **`<ElvixLifecycleWatcher>` no longer reload-loops** when mounted on a signed-out page. It now only evicts a session that was alive at least once (`wasOk` guard); the cross-origin poll no longer treats an initial `{ok:false}` as a revocation. Mount it in an authenticated context as documented.
+
 ## [0.7.24] — 2026-06-05
 
 ### Changed
