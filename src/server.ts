@@ -24,6 +24,15 @@ export type {
 } from "./types/webhook";
 export { ElvixWebhookEventType } from "./types/webhook";
 
+// Device Authorization Grant (RFC 8628) — for CLI / headless logins.
+export { pollDeviceToken, requestDeviceCode } from "./server/device";
+export type {
+  DeviceCode,
+  DeviceTokenResult,
+  PollDeviceTokenArgs,
+  RequestDeviceCodeArgs,
+} from "./server/device";
+
 const DEFAULT_BASE_URL = "https://elvix.is";
 
 export type VerifyOptions = {

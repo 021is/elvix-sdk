@@ -19,6 +19,11 @@ Usage:
       the environment. Read-only by default; --admin enables mutation
       tools (the server still enforces the admin scope on the key).
 
+  elvix login [--client-id=<id>] [--base-url=<url>]
+      Sign in from the terminal via the OAuth 2.0 device flow: prints a
+      URL + code to approve in a browser, then writes the access token to
+      stdout. Reads ELVIX_CLIENT_ID / ELVIX_BASE_URL.
+
   elvix doctor [--client-id=<id>] [--base-url=<url>]
       Diagnose an integration: base URL reachability, clientId
       resolution, verify-endpoint liveness, API-key presence.
@@ -45,6 +50,11 @@ async function main(): Promise<void> {
       const { connectStdio } = await createElvixMcpServer({ apiKey, readonly: !admin, baseUrl });
       await connectStdio();
       return;
+    }
+    case "login": {
+      const { runLogin } = await import("./login.js");
+      process.exit(await runLogin());
+      break;
     }
     case "doctor": {
       const { runDoctor } = await import("./doctor.js");
