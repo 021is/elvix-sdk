@@ -228,11 +228,16 @@ The package ships an `elvix` command:
 # Diagnose an integration — base URL, clientId, verify endpoint, API key.
 ELVIX_CLIENT_ID=client_… npx -p @elvix.is/sdk elvix doctor
 
+# Sign a CLI / headless tool into an elvix app (OAuth 2.0 device flow).
+ELVIX_CLIENT_ID=client_… npx -p @elvix.is/sdk elvix login
+
 # Launch the MCP server on stdio.
 ELVIX_API_KEY=eak_… npx -p @elvix.is/sdk elvix mcp
 ```
 
 `elvix doctor` prints a green/red checklist so "why isn't elvix working" is a two-second answer. (`elvix-mcp` is kept as an alias for `elvix mcp`.)
+
+`elvix login` runs the OAuth 2.0 device authorization grant (RFC 8628): it prints a verification URL + user code, you approve in a browser, and it stores an `eak_` access token bound to the approving user. This is how a CLI or headless tool signs into an elvix app without an inline browser.
 
 Full agent guide: <https://elvix.is/docs/agents>
 
@@ -253,7 +258,7 @@ Full catalog with previews: <https://elvix.is/docs/components>
 ```ts
 import { verifyElvixToken } from "@elvix.is/sdk/server";
 
-const result = await verifyElvixToken(token, { apiKey: process.env.ELVIX_API_KEY! });
+const result = await verifyElvixToken({ token, clientId: process.env.ELVIX_CLIENT_ID });
 if (result.ok) {
   // result.user, result.roles, result.scopes, result.memberships
   // result.membershipBrands → [{ slug, name, logoUrl }] — full membership
@@ -261,6 +266,34 @@ if (result.ok) {
   //   per slug. `memberships` (slugs) stays for back-compat.
 }
 ```
+
+The session token is self-authenticating: it is POSTed as a `Bearer` to `/api/v1/session`, so no API key is needed for verify. `clientId` is optional but recommended (it scopes the verify against the right application). `VerifyOptions` is `{ baseUrl?, timeoutMs? }`.
+
+### Device login (CLI / headless)
+
+For tools that can't open an inline browser, sign in with the OAuth 2.0 device authorization grant (RFC 8628). Request a code, show the user `verificationUriComplete` + `userCode`, poll until they approve, and receive an `eak_` access token bound to the approving user.
+
+```ts
+import { requestDeviceCode, pollDeviceToken } from "@elvix.is/sdk/server";
+
+const code = await requestDeviceCode({ clientId: process.env.ELVIX_CLIENT_ID });
+
+// Show the user where to approve.
+console.log(`Open ${code.verificationUriComplete} and confirm: ${code.userCode}`);
+
+const result = await pollDeviceToken({
+  clientId: process.env.ELVIX_CLIENT_ID,
+  deviceCode: code.deviceCode,
+  interval: code.interval,    // server-provided poll cadence (seconds)
+  expiresIn: code.expiresIn,  // server-provided code lifetime (seconds)
+});
+
+if (result.ok) {
+  // result.accessToken → store the eak_ token
+}
+```
+
+The sign-in methods and branding on the approval card are configured in the elvix Console. The bundled `elvix login` CLI command wraps these two helpers.
 
 ## Brand
 

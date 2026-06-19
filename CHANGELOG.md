@@ -13,6 +13,17 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.9.0] — 2026-06-16
+
+### Added
+
+- **Device login (OAuth 2.0 device authorization grant, RFC 8628).** New server helpers `requestDeviceCode({ clientId, baseUrl })` + `pollDeviceToken({ clientId, deviceCode, interval, expiresIn })` from `@elvix.is/sdk/server`: request a code, show the user `verificationUriComplete` + `userCode`, poll until approved, receive an `eak_` access token. Sign-in methods + branding on the approval card are Console-configured.
+- **`elvix login` CLI command.** Wraps the device flow so a CLI or headless tool signs into an elvix app without an inline browser: prints the verification URL + user code, polls until approval, stores the `eak_` token.
+
+### Changed
+
+- **`<ElvixSignInForm>` derives `clientId` from the bootstrap envelope.** The `clientId` prop is now optional; the component falls back to the `<ElvixProvider>` envelope when it isn't passed.
+
 ## [0.8.1] — 2026-06-15
 
 ### Fixed
@@ -278,7 +289,8 @@ Initial public release. Replaces the `0.0.0` scope-reservation stub on npm.
 - `--provenance` attestation on npm publishes.
 - MIT licence + explicit trademark notice (see `LICENSE`).
 
-[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/021is/elvix-sdk/compare/v0.8.1...v0.9.0
 [0.4.0]: https://github.com/021is/elvix-sdk/compare/v0.3.2...v0.4.0
 [0.3.2]: https://github.com/021is/elvix-sdk/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/021is/elvix-sdk/compare/v0.3.0...v0.3.1
