@@ -22,6 +22,10 @@ export type ElvixCopy = {
   subtitle?: string;
   /** Google factor button. */
   googleButton?: string;
+  /** GitHub factor button. */
+  githubButton?: string;
+  /** Shown on a redirect-OAuth button while bouncing to the provider. */
+  signingIn?: string;
   /** Passkey factor button. */
   passkeyButton?: string;
   /** Email field placeholder. */
@@ -50,6 +54,8 @@ export type ElvixCopy = {
 export const DEFAULT_COPY: ElvixCopy = {
   subtitle: "Pick how you want to continue.",
   googleButton: "Continue with Google",
+  githubButton: "Continue with GitHub",
+  signingIn: "Signing in…",
   passkeyButton: "Continue with passkey",
   emailPlaceholder: "you@example.com",
   sendCodeButton: "Send code",

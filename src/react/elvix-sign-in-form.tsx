@@ -48,6 +48,7 @@ import { ElvixSessionStatus, useElvixApp, useElvixContext, useElvixSession } fro
 import { GoogleOneTap } from "./google-one-tap";
 import { OtpInput } from "./otp-input";
 import { runPasskeyRegister, runPasskeySignIn } from "./passkey";
+import { toast } from "./toast";
 import {
   type ElvixLandingPayload,
   authInit,
@@ -185,6 +186,7 @@ export type AuthFormProps = {
   /** Foreground colour painted on top of brandColor (CTA text/icons). */
   onBrandColor?: string;
   methodGoogle?: boolean;
+  methodGithub?: boolean;
   methodEmailOtp?: boolean;
   methodPasskey?: boolean;
   methodUsername?: boolean;
@@ -351,6 +353,7 @@ export function ElvixSignInForm(props: AuthFormProps) {
     brandColor: props.brandColor ?? app?.brandColor ?? "#5d4dff",
     onBrandColor: props.onBrandColor ?? app?.onBrandColor ?? "#ffffff",
     methodGoogle: props.methodGoogle ?? app?.methodGoogle ?? false,
+    methodGithub: props.methodGithub ?? app?.methodGithub ?? false,
     methodEmailOtp: props.methodEmailOtp ?? app?.methodEmailOtp ?? true,
     methodPasskey: props.methodPasskey ?? app?.methodPasskey ?? false,
     methodUsername: props.methodUsername ?? app?.methodUsername ?? false,
@@ -490,6 +493,7 @@ function AuthBody({
   brandColor,
   onBrandColor = "#ffffff",
   methodGoogle,
+  methodGithub,
   methodEmailOtp,
   methodPasskey,
   methodUsername = false,
@@ -518,7 +522,8 @@ function AuthBody({
   const sessionStatus = useElvixSession();
   const t = useT();
   const isPreview = mode === "preview";
-  const anyMethod = methodGoogle || methodEmailOtp || methodPasskey || methodUsername;
+  const anyMethod =
+    methodGoogle || methodGithub || methodEmailOtp || methodPasskey || methodUsername;
   const gisEnabled =
     !isPreview &&
     methodGoogle &&
@@ -587,6 +592,10 @@ function AuthBody({
   const [error, setError] = useState<string | null>(null);
   const [resendIn, setResendIn] = useState(0);
   const [passkeyBusy, setPasskeyBusy] = useState(false);
+  // True once a redirect-OAuth button (GitHub) is clicked — the button flips to
+  // a "Signing in…" spinner so the user gets instant feedback during the
+  // round-trip instead of staring at a static button for 1-2s.
+  const [redirecting, setRedirecting] = useState(false);
 
   // Onboarding state — only meaningful once we're past identifier+code.
   const [usernameValue, setUsernameValue] = useState("");
@@ -864,6 +873,28 @@ function AuthBody({
         window.history.replaceState({}, "", url.toString());
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // A blocked OAuth REDIRECT (Google/GitHub) bounces the user back here with
+  // `?error=` (first-party) or `?elvix_error=` (cross-origin app) and NO token.
+  // Without surfacing it the user just lands on a fresh sign-in page with no
+  // idea why they couldn't get in. Show a toast (they just landed — not
+  // mid-form, so a toast reads better than an inline line) with the SPECIFIC
+  // reason (private beta / closed / banned / paused / ...), fire onResult for
+  // the host, then strip the param so a refresh is clean.
+  useEffect(() => {
+    if (isPreview || typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("elvix_error") ?? params.get("error");
+    if (!code) return;
+    const message = humanError(t, code);
+    toast.error(message);
+    onResult?.({ ok: false, error: code, message });
+    const url = new URL(window.location.href);
+    url.searchParams.delete("elvix_error");
+    url.searchParams.delete("error");
+    window.history.replaceState({}, "", url.toString());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -1667,7 +1698,7 @@ function AuthBody({
               }}
             />
           )}
-          {(methodGoogle || methodPasskey) && (
+          {(methodGoogle || methodPasskey || methodGithub) && (
             <div
               className={
                 socialLayout === "grid" && methodGoogle && methodPasskey
@@ -1713,12 +1744,44 @@ function AuthBody({
                   {socialLayout === "grid" && methodGoogle ? t("signin.passkeyButtonShort") : t("signin.passkeyButton")}
                 </button>
               )}
+              {methodGithub && (
+                <button
+                  type="button"
+                  disabled={isPreview || redirecting}
+                  onClick={
+                    isPreview
+                      ? undefined
+                      : () => {
+                          // Flip to the spinner, then navigate on the next frame
+                          // so React paints "Signing in…" before the browser
+                          // leaves for GitHub.
+                          setRedirecting(true);
+                          const href = githubStartHref(baseUrl, intent, clientId);
+                          requestAnimationFrame(() => window.location.assign(href));
+                        }
+                  }
+                  aria-label={t("signin.githubButton")}
+                  className="cursor-pointer w-full inline-flex items-center justify-center gap-2 h-10 rounded-[10px] font-medium text-[13px] border border-border-base bg-surface text-fg-1 hover:bg-surface-hover transition disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {redirecting ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" />
+                      {t("signin.signingIn")}
+                    </>
+                  ) : (
+                    <>
+                      <GithubGlyph />
+                      {t("signin.githubButton")}
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           )}
 
           {(methodEmailOtp || methodUsername) && (
             <>
-              {(methodGoogle || methodPasskey) && (
+              {(methodGoogle || methodPasskey || methodGithub) && (
                 <div className="flex items-center gap-3 my-3">
                   <span className="h-px flex-1 bg-border-base" />
                   <span className="text-[11px] uppercase tracking-[0.08em] text-fg-3">{t("signin.or")}</span>
@@ -1861,6 +1924,14 @@ function GoogleGlyph() {
   );
 }
 
+function GithubGlyph() {
+  return (
+    <svg viewBox="0 0 16 16" className="size-4" fill="currentColor" aria-hidden>
+      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.65 7.65 0 0 1 8 3.96c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
+    </svg>
+  );
+}
+
 type Translator = (key: string, params?: Record<string, string | number>) => string;
 
 function humanError(t: Translator, code?: string, retryAfterSeconds?: number): string {
@@ -1968,6 +2039,15 @@ function googleStartHref(baseUrl: string, intent?: string, clientId?: string): s
     params.set("returnUrl", window.location.href);
   }
   return `${baseUrl}/api/auth/google/start?${params.toString()}`;
+}
+
+function githubStartHref(baseUrl: string, intent?: string, clientId?: string): string {
+  const params = new URLSearchParams({ intent: intent ?? "app" });
+  if (clientId) params.set("clientId", clientId);
+  if (intent === "app" && typeof window !== "undefined") {
+    params.set("returnUrl", window.location.href);
+  }
+  return `${baseUrl}/api/auth/github/start?${params.toString()}`;
 }
 
 function defaultRedirect(intent?: string): string {

@@ -109,6 +109,9 @@
       "googleButton": {
         "other": "Pokračovat přes Google"
       },
+      "githubButton": {
+        "other": "Pokračovat přes GitHub"
+      },
       "passkeyButton": {
         "other": "Pokračovat přes passkey"
       },
@@ -294,6 +297,21 @@
       },
       "errorSessionEnded": {
         "other": "Vaše relace skončila. Přihlaste se znovu."
+      },
+      "signingIn": {
+        "other": "Přihlašování…"
+      },
+      "errorGatePrivateBeta": {
+        "other": "Tato aplikace je v soukromé beta verzi. Požádejte vlastníka o pozvánku."
+      },
+      "errorGateClosed": {
+        "other": "Registrace je uzavřena. Přihlásit se mohou pouze stávající členové."
+      },
+      "errorGateBlocked": {
+        "other": "Váš účet zatím nebyl pro tuto aplikaci schválen."
+      },
+      "errorUserDeleted": {
+        "other": "Tento účet byl odstraněn. Pokud jej chcete obnovit, kontaktujte podporu."
       }
     },
     "sessions": {

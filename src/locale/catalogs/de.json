@@ -108,6 +108,9 @@
       "googleButton": {
         "other": "Mit Google fortfahren"
       },
+      "githubButton": {
+        "other": "Mit GitHub fortfahren"
+      },
       "passkeyButton": {
         "other": "Mit Passkey fortfahren"
       },
@@ -293,6 +296,21 @@
       },
       "errorSessionEnded": {
         "other": "Ihre Sitzung wurde beendet. Melden Sie sich erneut an."
+      },
+      "signingIn": {
+        "other": "Anmeldung läuft…"
+      },
+      "errorGatePrivateBeta": {
+        "other": "Diese App ist in der privaten Beta. Bitten Sie den Inhaber um eine Einladung."
+      },
+      "errorGateClosed": {
+        "other": "Die Registrierung ist geschlossen. Nur bestehende Mitglieder können sich anmelden."
+      },
+      "errorGateBlocked": {
+        "other": "Ihr Konto ist für diese App noch nicht freigegeben."
+      },
+      "errorUserDeleted": {
+        "other": "Dieses Konto wurde gelöscht. Wenden Sie sich an den Support, wenn Sie es zurückhaben möchten."
       }
     },
     "sessions": {

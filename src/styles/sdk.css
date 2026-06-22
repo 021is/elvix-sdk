@@ -217,6 +217,11 @@
   color: var(--fg-1, #18181b);
 }
 
+.elvix-btn-github {
+  background: var(--surface, #ffffff);
+  color: var(--fg-1, #18181b);
+}
+
 .elvix-btn-passkey {
   background: var(--surface, #ffffff);
   color: var(--fg-1, #18181b);
