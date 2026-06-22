@@ -107,6 +107,9 @@
       "googleButton": {
         "other": "Google ile devam et"
       },
+      "githubButton": {
+        "other": "GitHub ile devam et"
+      },
       "passkeyButton": {
         "other": "Geçiş anahtarı ile devam et"
       },
@@ -292,6 +295,21 @@
       },
       "errorSessionEnded": {
         "other": "Oturumunuz sona erdi. Tekrar oturum açın."
+      },
+      "signingIn": {
+        "other": "Giriş yapılıyor…"
+      },
+      "errorGatePrivateBeta": {
+        "other": "Bu uygulama özel beta sürümünde. Sahibinden davet isteyin."
+      },
+      "errorGateClosed": {
+        "other": "Kayıtlar kapalı. Yalnızca mevcut üyeler giriş yapabilir."
+      },
+      "errorGateBlocked": {
+        "other": "Hesabınız bu uygulama için henüz onaylanmadı."
+      },
+      "errorUserDeleted": {
+        "other": "Bu hesap silindi. Geri almak için destek ekibiyle iletişime geçin."
       }
     },
     "sessions": {

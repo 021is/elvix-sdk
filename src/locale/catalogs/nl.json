@@ -107,6 +107,9 @@
       "googleButton": {
         "other": "Doorgaan met Google"
       },
+      "githubButton": {
+        "other": "Doorgaan met GitHub"
+      },
       "passkeyButton": {
         "other": "Doorgaan met passkey"
       },
@@ -292,6 +295,21 @@
       },
       "errorSessionEnded": {
         "other": "Uw sessie is beëindigd. Meld u opnieuw aan."
+      },
+      "signingIn": {
+        "other": "Bezig met aanmelden…"
+      },
+      "errorGatePrivateBeta": {
+        "other": "Deze app is in private bèta. Vraag de eigenaar om een uitnodiging."
+      },
+      "errorGateClosed": {
+        "other": "Aanmeldingen zijn gesloten. Alleen bestaande leden kunnen inloggen."
+      },
+      "errorGateBlocked": {
+        "other": "Je account is nog niet goedgekeurd voor deze app."
+      },
+      "errorUserDeleted": {
+        "other": "Dit account is verwijderd. Neem contact op met support als je het terug wilt."
       }
     },
     "sessions": {

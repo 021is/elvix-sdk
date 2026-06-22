@@ -108,6 +108,9 @@
       "googleButton": {
         "other": "Fortsätt med Google"
       },
+      "githubButton": {
+        "other": "Fortsätt med GitHub"
+      },
       "passkeyButton": {
         "other": "Fortsätt med passkey"
       },
@@ -293,6 +296,21 @@
       },
       "errorSessionEnded": {
         "other": "Din session avslutades. Logga in igen."
+      },
+      "signingIn": {
+        "other": "Loggar in…"
+      },
+      "errorGatePrivateBeta": {
+        "other": "Den här appen är i privat beta. Be ägaren om en inbjudan."
+      },
+      "errorGateClosed": {
+        "other": "Registreringen är stängd. Endast befintliga medlemmar kan logga in."
+      },
+      "errorGateBlocked": {
+        "other": "Ditt konto är inte godkänt för den här appen ännu."
+      },
+      "errorUserDeleted": {
+        "other": "Det här kontot har raderats. Kontakta supporten om du vill ha tillbaka det."
       }
     },
     "sessions": {

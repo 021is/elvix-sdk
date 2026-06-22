@@ -110,6 +110,9 @@
       "googleButton": {
         "other": "Продолжить с Google"
       },
+      "githubButton": {
+        "other": "Продолжить с GitHub"
+      },
       "passkeyButton": {
         "other": "Продолжить с passkey"
       },
@@ -295,6 +298,21 @@
       },
       "errorSessionEnded": {
         "other": "Ваша сессия завершилась. Войдите снова."
+      },
+      "signingIn": {
+        "other": "Выполняется вход…"
+      },
+      "errorGatePrivateBeta": {
+        "other": "Это приложение в закрытой бете. Попросите приглашение у владельца."
+      },
+      "errorGateClosed": {
+        "other": "Регистрация закрыта. Войти могут только существующие участники."
+      },
+      "errorGateBlocked": {
+        "other": "Ваш аккаунт ещё не одобрен для этого приложения."
+      },
+      "errorUserDeleted": {
+        "other": "Этот аккаунт был удалён. Обратитесь в поддержку, чтобы восстановить его."
       }
     },
     "sessions": {

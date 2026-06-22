@@ -38,6 +38,7 @@ export type ElvixBootstrapEnvelope = {
   onBrandColorDark: string | null;
   brandPreset: string;
   methodGoogle: boolean;
+  methodGithub: boolean;
   methodEmailOtp: boolean;
   methodPasskey: boolean;
   methodUsername: boolean;

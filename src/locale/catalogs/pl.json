@@ -110,6 +110,9 @@
       "googleButton": {
         "other": "Kontynuuj z Google"
       },
+      "githubButton": {
+        "other": "Kontynuuj z GitHub"
+      },
       "passkeyButton": {
         "other": "Kontynuuj z kluczem dostępu"
       },
@@ -295,6 +298,21 @@
       },
       "errorSessionEnded": {
         "other": "Twoja sesja zakończyła się. Zaloguj się ponownie."
+      },
+      "signingIn": {
+        "other": "Logowanie…"
+      },
+      "errorGatePrivateBeta": {
+        "other": "Ta aplikacja jest w prywatnej wersji beta. Poproś właściciela o zaproszenie."
+      },
+      "errorGateClosed": {
+        "other": "Rejestracja jest zamknięta. Zalogować się mogą tylko obecni członkowie."
+      },
+      "errorGateBlocked": {
+        "other": "Twoje konto nie zostało jeszcze zatwierdzone dla tej aplikacji."
+      },
+      "errorUserDeleted": {
+        "other": "To konto zostało usunięte. Skontaktuj się z pomocą techniczną, aby je odzyskać."
       }
     },
     "sessions": {

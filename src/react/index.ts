@@ -42,6 +42,7 @@ export {
 export type { ElvixAppContext } from "./elvix-provider";
 export { ElvixSignIn } from "./elvix-sign-in";
 export { ElvixSignInForm } from "./elvix-sign-in-form";
+export { ElvixDeviceApproval, type ElvixDeviceApprovalProps } from "./elvix-device-approval";
 export { ElvixSignInButton } from "./elvix-sign-in-button";
 export {
   ElvixSignOutButton,

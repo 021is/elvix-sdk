@@ -77,6 +77,8 @@ export function ElvixSignIn({
   const baseCopy = resolveCopy(app?.strings, copyProp);
   const tDefaults: Partial<ElvixCopy> = {
     googleButton: t("signin.googleButton"),
+    githubButton: t("signin.githubButton"),
+    signingIn: t("signin.signingIn"),
     passkeyButton: t("signin.passkeyButton"),
     emailPlaceholder: t("signin.emailPlaceholder"),
     sendCodeButton: t("signin.sendCodeButton"),
@@ -133,6 +135,9 @@ export function ElvixSignIn({
   const [code, setCode] = useState("");
   const [challengeId, setChallengeId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Flips true when a redirect-OAuth button is clicked, so it shows "Signing
+  // in…" during the round-trip instead of a static label.
+  const [redirecting, setRedirecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const verb =
@@ -160,6 +165,17 @@ export function ElvixSignIn({
     window.location.assign(
       `${ctx.baseUrl}/api/auth/google/start?intent=app&clientId=${encodeURIComponent(ctx.clientId)}&returnUrl=${returnUrl}`,
     );
+  }
+
+  function startGithub() {
+    if (!ctx.clientId) return fail("missing_client_id", "ElvixProvider needs a clientId.");
+    // Same cross-origin contract as Google: carry the host page as returnUrl so
+    // the GitHub callback returns HERE with the token in the fragment. Flip the
+    // button to "Signing in…" first, then navigate on the next frame.
+    setRedirecting(true);
+    const returnUrl = encodeURIComponent(window.location.href);
+    const href = `${ctx.baseUrl}/api/auth/github/start?intent=app&clientId=${encodeURIComponent(ctx.clientId)}&returnUrl=${returnUrl}`;
+    requestAnimationFrame(() => window.location.assign(href));
   }
 
   async function startPasskey() {
@@ -379,6 +395,17 @@ export function ElvixSignIn({
               data-elvix-method="google"
             >
               {copy.googleButton}
+            </button>
+          )}
+          {app?.methodGithub && (
+            <button
+              type="button"
+              onClick={startGithub}
+              disabled={busy || redirecting}
+              className="elvix-btn elvix-btn-github"
+              data-elvix-method="github"
+            >
+              {redirecting ? copy.signingIn : copy.githubButton}
             </button>
           )}
           {app?.methodPasskey && (
