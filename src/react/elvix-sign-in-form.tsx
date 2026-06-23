@@ -439,9 +439,12 @@ function ModalPresentation({ children }: { children: React.ReactNode }) {
 function AuthCard(props: AuthFormProps) {
   const t = useT();
   const { transparentBg = false } = props;
+  // Fixed width regardless of layout/appearance — the card never reflows wider
+  // just because the header switched to "left" or "banner". One width everywhere
+  // (Console preview, hosted page, customer host).
   const cardClass = transparentBg
-    ? "overflow-hidden"
-    : "rounded-[14px] bg-surface shadow-[0_2px_8px_rgba(0,0,0,0.04),0_20px_40px_-20px_rgba(0,0,0,0.12)] border border-border-base overflow-hidden";
+    ? "mx-auto w-full max-w-[420px] overflow-hidden"
+    : "mx-auto w-full max-w-[420px] rounded-[14px] bg-surface shadow-[0_2px_8px_rgba(0,0,0,0.04),0_20px_40px_-20px_rgba(0,0,0,0.12)] border border-border-base overflow-hidden";
   return (
     <>
       <div className={cardClass}>
@@ -524,6 +527,16 @@ function AuthBody({
   const isPreview = mode === "preview";
   const anyMethod =
     methodGoogle || methodGithub || methodEmailOtp || methodPasskey || methodUsername;
+  // Social buttons in importance order — Google, GitHub, Passkey. In grid mode
+  // they tile 2-up; when an odd number is enabled the LAST one spans the full
+  // width so there's never a lonely half-button. 2-up buttons use short labels;
+  // a full-width one keeps the long label (it has the room).
+  const socialCount = (methodGoogle ? 1 : 0) + (methodGithub ? 1 : 0) + (methodPasskey ? 1 : 0);
+  const socialGrid = socialLayout === "grid" && socialCount >= 2;
+  const socialSpanLast = socialGrid && socialCount % 2 === 1;
+  const passkeyIsLast = methodPasskey;
+  const githubIsLast = methodGithub && !methodPasskey;
+  const googleIsLast = methodGoogle && !methodGithub && !methodPasskey;
   const gisEnabled =
     !isPreview &&
     methodGoogle &&
@@ -1329,7 +1342,7 @@ function AuthBody({
             const letter = (
               <div
                 className={
-                  "size-12 rounded-[10px] border border-border-base grid place-items-center overflow-hidden transition" +
+                  "size-14 rounded-[12px] border border-border-base grid place-items-center overflow-hidden transition" +
                   (websiteUrl ? " hover:border-border-strong hover:shadow-sm" : "")
                 }
                 style={{ background: `${brandColor}1a` }}
@@ -1341,7 +1354,7 @@ function AuthBody({
             );
 
             const bareImg = (src: string) => (
-              <img src={src} alt={appName} className="h-10 w-auto max-w-[220px] object-contain" />
+              <img src={src} alt={appName} className="h-12 w-auto max-w-[220px] object-contain" />
             );
 
             let inner: React.ReactNode;
@@ -1360,7 +1373,7 @@ function AuthBody({
                   <img
                     src={logoUrl}
                     alt={appName}
-                    className="h-10 w-auto max-w-[220px] object-contain"
+                    className="h-12 w-auto max-w-[220px] object-contain"
                   />
                 </picture>
               );
@@ -1699,13 +1712,7 @@ function AuthBody({
             />
           )}
           {(methodGoogle || methodPasskey || methodGithub) && (
-            <div
-              className={
-                socialLayout === "grid" && methodGoogle && methodPasskey
-                  ? "grid grid-cols-2 gap-2"
-                  : "space-y-2"
-              }
-            >
+            <div className={socialGrid ? "grid grid-cols-2 gap-2" : "space-y-2"}>
               {methodGoogle &&
                 (useGisRenderedButton ? (
                   // GIS-rendered button — respects ux_mode='popup' so the
@@ -1715,35 +1722,21 @@ function AuthBody({
                   // stable while GIS hydrates.
                   <div
                     ref={gisButtonRef}
-                    className="w-full min-h-10"
+                    className={`w-full min-h-10${socialSpanLast && googleIsLast ? " col-span-2" : ""}`}
                     aria-label={t("signin.googleButton")}
                   />
                 ) : (
                   <a
                     href={isPreview ? "#" : googleStartHref(baseUrl, intent, clientId)}
                     onClick={isPreview ? (e) => e.preventDefault() : undefined}
-                    className="cursor-pointer w-full inline-flex items-center justify-center gap-2 h-10 rounded-[10px] font-medium text-[13px] border border-border-base bg-surface text-fg-1 hover:bg-surface-hover transition"
+                    className={`cursor-pointer w-full inline-flex items-center justify-center gap-2 h-10 rounded-[10px] font-medium text-[13px] border border-border-base bg-surface text-fg-1 hover:bg-surface-hover transition${socialSpanLast && googleIsLast ? " col-span-2" : ""}`}
                   >
                     <GoogleGlyph />
-                    {/* LEGACY: spine-lint-disable-next-line spine/enum-over-string */}
-                    {socialLayout === "grid" && methodPasskey ? t("signin.googleButtonShort") : t("signin.googleButton")}
+                    {socialGrid && !(socialSpanLast && googleIsLast)
+                      ? t("signin.googleButtonShort")
+                      : t("signin.googleButton")}
                   </a>
                 ))}
-              {methodPasskey && (
-                <button
-                  type="button"
-                  disabled={passkeyBusy}
-                  onClick={isPreview ? undefined : onPasskey}
-                  className="cursor-pointer w-full inline-flex items-center justify-center gap-2 h-10 rounded-[10px] font-medium text-[13px] border border-border-base bg-surface text-fg-1 hover:bg-surface-hover transition disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {passkeyBusy ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    <Fingerprint className="size-4" />
-                  )}
-                  {socialLayout === "grid" && methodGoogle ? t("signin.passkeyButtonShort") : t("signin.passkeyButton")}
-                </button>
-              )}
               {methodGithub && (
                 <button
                   type="button"
@@ -1761,7 +1754,7 @@ function AuthBody({
                         }
                   }
                   aria-label={t("signin.githubButton")}
-                  className="cursor-pointer w-full inline-flex items-center justify-center gap-2 h-10 rounded-[10px] font-medium text-[13px] border border-border-base bg-surface text-fg-1 hover:bg-surface-hover transition disabled:cursor-not-allowed disabled:opacity-70"
+                  className={`cursor-pointer w-full inline-flex items-center justify-center gap-2 h-10 rounded-[10px] font-medium text-[13px] border border-border-base bg-surface text-fg-1 hover:bg-surface-hover transition disabled:cursor-not-allowed disabled:opacity-70${socialSpanLast && githubIsLast ? " col-span-2" : ""}`}
                 >
                   {redirecting ? (
                     <>
@@ -1771,9 +1764,28 @@ function AuthBody({
                   ) : (
                     <>
                       <GithubGlyph />
-                      {t("signin.githubButton")}
+                      {socialGrid && !(socialSpanLast && githubIsLast)
+                        ? "GitHub"
+                        : t("signin.githubButton")}
                     </>
                   )}
+                </button>
+              )}
+              {methodPasskey && (
+                <button
+                  type="button"
+                  disabled={passkeyBusy}
+                  onClick={isPreview ? undefined : onPasskey}
+                  className={`cursor-pointer w-full inline-flex items-center justify-center gap-2 h-10 rounded-[10px] font-medium text-[13px] border border-border-base bg-surface text-fg-1 hover:bg-surface-hover transition disabled:cursor-not-allowed disabled:opacity-60${socialSpanLast && passkeyIsLast ? " col-span-2" : ""}`}
+                >
+                  {passkeyBusy ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Fingerprint className="size-4" />
+                  )}
+                  {socialGrid && !(socialSpanLast && passkeyIsLast)
+                    ? t("signin.passkeyButtonShort")
+                    : t("signin.passkeyButton")}
                 </button>
               )}
             </div>
