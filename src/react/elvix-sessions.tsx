@@ -118,6 +118,11 @@ export function ElvixSessions({
 }) {
   const ctx = useElvixContext();
   const t = useT();
+  // App-scoped sessions (cross-origin, app bearer) when `appId` is set;
+  // the global account-sessions surface (same-origin cookie) otherwise.
+  const base = appId
+    ? `/api/account/apps/${encodeURIComponent(appId)}/sessions`
+    : "/api/account/sessions";
   const [items, setItems] = useState<SessionRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -133,8 +138,7 @@ export function ElvixSessions({
     setLoading(true);
     setError(null);
     try {
-      const qs = appId ? `?appId=${encodeURIComponent(appId)}` : "";
-      const res = await fetch(`${ctx.baseUrl}/api/account/sessions${qs}`, { ...authInit() });
+      const res = await fetch(`${ctx.baseUrl}${base}`, { ...authInit() });
       const body = unwrapEnvelope(await res.json());
       if (!res.ok || !body.ok) {
         setError(t("sessions.errorLoad"));
@@ -153,7 +157,7 @@ export function ElvixSessions({
     setBusyId(id);
     setError(null);
     try {
-      const res = await fetch(`${ctx.baseUrl}/api/account/sessions/${id}/revoke`, {
+      const res = await fetch(`${ctx.baseUrl}${base}/${id}/revoke`, {
         method: "POST",
         ...authInit(),
       });
@@ -180,7 +184,7 @@ export function ElvixSessions({
     setError(null);
     try {
       const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/sessions/revoke-all`, {
+      const res = await fetch(`${ctx.baseUrl}${base}/revoke-all`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...auth.headers },
         credentials: auth.credentials,
