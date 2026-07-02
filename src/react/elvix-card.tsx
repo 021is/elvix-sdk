@@ -238,7 +238,7 @@ export function ElvixCard({
         {title && (
           <div
             style={{
-              padding: "28px 32px 0",
+              padding: "28px 20px 0",
               fontSize: "16px",
               fontWeight: 600,
               color: "var(--elvix-primary-strong, #5d4dff)",
@@ -247,7 +247,7 @@ export function ElvixCard({
             {title}
           </div>
         )}
-        <div style={{ padding: title ? "16px 32px 20px" : "28px 32px 20px", flex: 1 }}>
+        <div style={{ padding: title ? "16px 20px 20px" : "28px 20px 20px", flex: 1 }}>
           {children}
         </div>
         {footer !== undefined && (
@@ -272,4 +272,24 @@ export function ElvixCard({
       </motion.div>
     </div>
   );
+}
+
+/**
+ * `<MaybeCard card>` — render `children` inside an `<ElvixCard>` when `card`
+ * is true (the default), or bare when false. Every self-wrapping `<Elvix*>`
+ * mutation component uses this so a host can opt out of the card chrome with
+ * `card={false}` (e.g. to compose several components inside one shared card,
+ * or to drop the form into their own surface) while the card stays on by
+ * default.
+ */
+export function MaybeCard({
+  card = true,
+  className,
+  children,
+}: {
+  card?: boolean;
+  className?: string;
+  children: ReactNode;
+}) {
+  return card ? <ElvixCard className={className}>{children}</ElvixCard> : <>{children}</>;
 }

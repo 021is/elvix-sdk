@@ -27,6 +27,7 @@
 import { ElvixChipGroup } from "./elvix-chip-group";
 import { ElvixDateInput } from "./elvix-date-input";
 import { ElvixInput } from "./elvix-input";
+import { MaybeCard } from "./elvix-card";
 import { ElvixSaveButton, type ElvixSaveState } from "./elvix-save-button";
 import { useElvixContext } from "./elvix-provider";
 import { authInit } from "./session";
@@ -58,6 +59,7 @@ export type ElvixIdentityFormResult =
 export function ElvixIdentityForm({
   initial,
   onResult,
+  card,
 }: {
   /**
    * Pre-loaded identity fields. Optional — when omitted, the SDK
@@ -68,6 +70,8 @@ export function ElvixIdentityForm({
   /** Fires on every terminal save outcome. Safe payload: no PII —
    *  identity edits are saved, not echoed back to the host. */
   onResult?: (result: ElvixIdentityFormResult) => void;
+  /** Render inside an <ElvixCard>. Default true; pass false for bare. */
+  card?: boolean;
 }) {
   const ctx = useElvixContext();
   const t = useT();
@@ -93,14 +97,19 @@ export function ElvixIdentityForm({
     };
   }, [initial, ctx.baseUrl]);
 
-  if (!hydrated) {
-    return (
-      <div className="w-full h-48 grid place-items-center text-[12.5px] text-fg-3">
-        {t("common.loading")}
-      </div>
-    );
-  }
-  return <ElvixIdentityFormInner initial={hydrated} onResult={onResult} />;
+  // Self-wrap in <ElvixCard> so the form ships its own chrome, consistent
+  // with ElvixRegion / ElvixLanguages / ElvixAddressBook (which all self-wrap).
+  return (
+    <MaybeCard card={card} className="h-full">
+      {!hydrated ? (
+        <div className="w-full h-48 grid place-items-center text-[12.5px] text-fg-3">
+          {t("common.loading")}
+        </div>
+      ) : (
+        <ElvixIdentityFormInner initial={hydrated} onResult={onResult} />
+      )}
+    </MaybeCard>
+  );
 }
 
 function ElvixIdentityFormInner({

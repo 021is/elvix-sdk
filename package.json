@@ -1,6 +1,6 @@
 {
   "name": "@elvix.is/sdk",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "Official elvix SDK. Drop-in React components, server helpers, and an MCP server so AI coding agents integrate elvix on the first try.",
   "license": "MIT",
   "homepage": "https://elvix.is",
@@ -56,14 +56,15 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "node scripts/gen-version.mjs && tsup src/index.ts src/react.ts src/server.ts src/types.ts src/mcp/index.ts src/mcp/bin.ts src/cli/index.ts src/cli/doctor.ts src/cli/login.ts --format esm --dts --clean --external react --external react/jsx-runtime --external next && bun run build:css && node scripts/postbuild.mjs",
+    "build": "node scripts/gen-version.mjs && tsup src/index.ts src/react.ts src/server.ts src/types.ts src/mcp/index.ts src/mcp/bin.ts src/cli/index.ts src/cli/doctor.ts src/cli/login.ts --format esm --dts --clean --external react --external react/jsx-runtime --external react-dom --external next && bun run build:css && node scripts/postbuild.mjs",
     "build:css": "tailwindcss --input src/styles/sdk.css --output dist/styles.css --minify",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
   "peerDependencies": {
     "react": ">=18",
-    "next": ">=15"
+    "next": ">=15",
+    "react-dom": ">=18"
   },
   "peerDependenciesMeta": {
     "next": {
@@ -75,7 +76,8 @@
     "@modelcontextprotocol/sdk": "1.29.0",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.14.0",
-    "react-easy-crop": "^5.0.0"
+    "react-easy-crop": "^5.0.0",
+    "vaul": "^1.1.2"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4",
@@ -84,7 +86,8 @@
     "tailwindcss": "^4",
     "tsup": "^8.3.0",
     "typescript": "^5.6.3",
-    "vitest": "^2.1.2"
+    "vitest": "^2.1.2",
+    "@types/react-dom": "^19.2.0"
   },
   "publishConfig": {
     "access": "public"

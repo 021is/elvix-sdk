@@ -18,7 +18,7 @@
  * POST, DB has a unique constraint).
  */
 
-import { ElvixCard } from "./elvix-card";
+import { MaybeCard } from "./elvix-card";
 import { ElvixInput } from "./elvix-input";
 import { ElvixSaveButton } from "./elvix-save-button";
 import { useElvixContext } from "./elvix-provider";
@@ -55,6 +55,8 @@ export type ElvixLanguagesResult =
   | { ok: false; error: string; message?: string };
 
 export type ElvixLanguagesProps = {
+  /** Render inside an <ElvixCard>. Default true; pass false for bare (no chrome). */
+  card?: boolean;
   height?: number;
   minHeight?: number;
   maxHeight?: number;
@@ -118,6 +120,7 @@ export function ElvixLanguages({
   width = "100%",
   onChange,
   onResult,
+  card,
 }: ElvixLanguagesProps) {
   const ctx = useElvixContext();
   const t = useT();
@@ -291,7 +294,7 @@ export function ElvixLanguages({
 
   return (
     <div style={frameStyle} className="mx-auto">
-      <ElvixCard className="h-full">
+      <MaybeCard card={card} className="h-full">
         <div className="relative h-full overflow-hidden">
           <AnimatePresence initial={false}>
             {view === "loading" || view === ("fallback-decide" as View) ? (
@@ -355,7 +358,7 @@ export function ElvixLanguages({
             ) : null}
           </AnimatePresence>
         </div>
-      </ElvixCard>
+      </MaybeCard>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 "use client";
+import { MaybeCard } from "./elvix-card";
 
 /**
  * `<ElvixLeave>` — soft-delete the per-app membership from inside
@@ -54,7 +55,7 @@ export type ElvixLeaveResult =
   | { ok: true; state: State }
   | { ok: false; error: string; message?: string };
 
-export function ElvixLeave(props: {
+function ElvixLeaveImpl(props: {
   appId?: string;
   appName?: string;
   deletedAt?: string | null;
@@ -676,3 +677,16 @@ const paneVariants = {
 };
 
 const paneTransition = { duration: 0.24, ease: [0.22, 0.61, 0.36, 1] as const };
+
+/**
+ * Public export. Wraps the implementation in <ElvixCard> by default;
+ * pass `card={false}` to render bare (compose in your own surface).
+ */
+export function ElvixLeave(props: Parameters<typeof ElvixLeaveImpl>[0] & { card?: boolean }) {
+  const { card, ...rest } = props;
+  return (
+    <MaybeCard card={card} className="h-full">
+      <ElvixLeaveImpl {...(rest as Parameters<typeof ElvixLeaveImpl>[0])} />
+    </MaybeCard>
+  );
+}

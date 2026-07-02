@@ -1,6 +1,7 @@
 "use client";
 
 import { useElvixApp, useElvixAppContext } from "./elvix-provider";
+import { mediaKey, useLiveMedia } from "./live-media";
 import { UserBanner } from "./user-banner";
 
 /**
@@ -30,6 +31,8 @@ export type ElvixUserBannerProps = {
   membership?: { bannerUpdatedAt: Date | number; bannerSizes: number[] };
   /** Container max-width in CSS px. Drives `sizes` for srcset. */
   containerPx?: number;
+  /** Corner radius in px. Defaults to 14 to match `<ElvixBanner>`. */
+  cornerRadius?: number;
   className?: string;
   /** Class for the empty placeholder background (gradient by default). */
   emptyClassName?: string;
@@ -40,6 +43,7 @@ export function ElvixUserBanner({
   userId,
   membership,
   containerPx,
+  cornerRadius,
   className,
   emptyClassName,
 }: ElvixUserBannerProps = {}) {
@@ -57,12 +61,20 @@ export function ElvixUserBanner({
         }
       : { bannerUpdatedAt: 0, bannerSizes: [] });
 
+  // Live updates: reflect a banner change from <ElvixBanner> immediately
+  // (same tab + other tabs) without a refetch.
+  const live = useLiveMedia(resolvedUserId ? mediaKey("banner", resolvedUserId) : null);
+  const finalMembership = live
+    ? { bannerUpdatedAt: live.updatedAt, bannerSizes: live.sizes }
+    : resolvedMembership;
+
   return (
     <UserBanner
       appSlug={resolvedAppSlug}
       userId={resolvedUserId}
-      membership={resolvedMembership}
+      membership={finalMembership}
       containerPx={containerPx}
+      cornerRadius={cornerRadius}
       className={className}
       emptyClassName={emptyClassName}
     />

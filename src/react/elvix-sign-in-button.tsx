@@ -1,7 +1,8 @@
 "use client";
 
 import { type CSSProperties, useState } from "react";
-import { ElvixSignIn } from "./elvix-sign-in";
+import { ElvixSignInForm as ElvixSignIn } from "./elvix-sign-in-form";
+import { useElvixResolvedTheme } from "./elvix-provider";
 import { ElvixShield } from "./elvix-shield";
 import { type ElvixSizeProps, sizeStyle } from "./size";
 import type { ElvixSignInResult } from "./types";
@@ -96,8 +97,8 @@ const ICON_SIZE: Record<ElvixSignInButtonSize, number> = { sm: 18, md: 20, lg: 2
 const RADIUS: Record<ElvixSignInButtonShape, number> = { rectangle: 10, pill: 9999, square: 10, circle: 9999 };
 
 type Tone = { bg: string; color: string; border: string; shadow?: string };
-function variantTone(variant: ElvixSignInButtonVariant, theme: ElvixSignInButtonTheme): Tone {
-  const dark = theme === "dark" || theme === "auto";
+function variantTone(variant: ElvixSignInButtonVariant, theme: "light" | "dark"): Tone {
+  const dark = theme === "dark";
   switch (variant) {
     case "filled":
       return { bg: "#6c5ce7", color: "#fff", border: "1px solid rgba(0,0,0,0.1)", shadow: "0 4px 16px -4px rgba(108,92,231,0.45)" };
@@ -128,7 +129,7 @@ export function ElvixSignInButton({
   variant = "filled",
   shape = "rectangle",
   size = "md",
-  theme = "dark",
+  theme,
   preset = "sign-in-with-elvix",
   label,
   className,
@@ -152,7 +153,15 @@ export function ElvixSignInButton({
   const [embedOpen, setEmbedOpen] = useState(false);
   const isIcon = type === "icon";
   const resolvedLabel = label ?? PRESET_LABEL[preset];
-  const tone = variantTone(variant, theme);
+  // Theme-aware: an explicit light/dark prop wins; otherwise adopt the
+  // <ElvixProvider>'s resolved theme (which folds "auto" against the system
+  // scheme), falling back to "light" outside a provider. Prevents the old
+  // dark default from painting white-on-white for outline/ghost on a light
+  // surface.
+  const providerTheme = useElvixResolvedTheme();
+  const effectiveTheme: "light" | "dark" =
+    theme === "light" || theme === "dark" ? theme : (providerTheme ?? "light");
+  const tone = variantTone(variant, effectiveTheme);
   const std = SIZE_STANDARD[size];
   const effectiveShape: ElvixSignInButtonShape = isIcon
     ? shape === "pill" || shape === "circle"
@@ -202,7 +211,7 @@ export function ElvixSignInButton({
     <>
       <ElvixShield
         size={ICON_SIZE[size]}
-        fill={useBrandOverride ? resolvedOnBrand : shieldColor(variant, theme)}
+        fill={useBrandOverride ? resolvedOnBrand : shieldColor(variant, effectiveTheme)}
         accent="#8e7dff"
       />
       {isIcon ? null : <span>{resolvedLabel}</span>}

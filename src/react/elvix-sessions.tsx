@@ -1,4 +1,5 @@
 "use client";
+import { MaybeCard } from "./elvix-card";
 
 /**
  * `<ElvixSessions>` — live session list for the current user, scoped
@@ -99,7 +100,7 @@ export type ElvixSessionsResult =
   | { ok: true; action: ElvixSessionsAction; ended?: number }
   | { ok: false; error: string; message?: string };
 
-export function ElvixSessions({
+function ElvixSessionsImpl({
   appId,
   signInUrl = "/sign-in/account",
   onChanged,
@@ -645,3 +646,16 @@ const paneVariants = {
   exit: (dir: 1 | -1) => ({ x: dir * -24, opacity: 0 }),
 };
 const paneTransition = { duration: 0.24, ease: [0.22, 0.61, 0.36, 1] as const };
+
+/**
+ * Public export. Wraps the implementation in <ElvixCard> by default;
+ * pass `card={false}` to render bare (compose in your own surface).
+ */
+export function ElvixSessions(props: Parameters<typeof ElvixSessionsImpl>[0] & { card?: boolean }) {
+  const { card, ...rest } = props;
+  return (
+    <MaybeCard card={card} className="h-full">
+      <ElvixSessionsImpl {...(rest as Parameters<typeof ElvixSessionsImpl>[0])} />
+    </MaybeCard>
+  );
+}

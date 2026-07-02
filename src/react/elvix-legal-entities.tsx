@@ -30,7 +30,7 @@
  * POST (add) to PATCH (single-field update) automatically.
  */
 
-import { ElvixCard } from "./elvix-card";
+import { MaybeCard } from "./elvix-card";
 import { ElvixCountrySelect } from "./elvix-country-select";
 import { ElvixInput } from "./elvix-input";
 import { ElvixSaveButton } from "./elvix-save-button";
@@ -86,6 +86,8 @@ export type ElvixLegalEntitiesResult =
   | { ok: false; error: string; message?: string };
 
 export type ElvixLegalEntitiesProps = {
+  /** Render inside an <ElvixCard>. Default true; pass false for bare (no chrome). */
+  card?: boolean;
   /** Fixed frame height. Defaults to 580. */
   height?: number;
   minHeight?: number;
@@ -194,6 +196,7 @@ export function ElvixLegalEntities({
   width = "100%",
   onChange,
   onResult,
+  card,
 }: ElvixLegalEntitiesProps) {
   const ctx = useElvixContext();
   const t = useT();
@@ -669,7 +672,7 @@ export function ElvixLegalEntities({
 
   return (
     <div style={frameStyle} className="mx-auto">
-      <ElvixCard className="h-full">
+      <MaybeCard card={card} className="h-full">
         <div className="relative h-full overflow-hidden">
           <AnimatePresence initial={false}>
             {loading ? (
@@ -996,7 +999,7 @@ export function ElvixLegalEntities({
             )}
           </AnimatePresence>
         </div>
-      </ElvixCard>
+      </MaybeCard>
     </div>
   );
 }
