@@ -16,6 +16,7 @@
  */
 
 import { UserBanner, type UserBannerProps } from "./user-banner";
+import { mediaKey, publishMedia } from "./live-media";
 import { cropToBlob } from "./image-crop";
 import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
 import { authInit } from "./session";
@@ -162,6 +163,12 @@ function ElvixBannerInner({
       const nextTs = body.bannerUpdatedAt ? new Date(body.bannerUpdatedAt) : Date.now();
       setSizes(nextSizes);
       setUpdatedAt(nextTs);
+      // Live update: read-only banners reflect the new image immediately.
+      publishMedia(mediaKey("banner", bannerProps.userId), {
+        sizes: nextSizes,
+        updatedAt: nextTs instanceof Date ? nextTs.getTime() : nextTs,
+        fallbackUrl: null,
+      });
       onChange?.({ sizes: nextSizes, updatedAt: nextTs });
       onResult?.({
         ok: true,
@@ -209,6 +216,11 @@ function ElvixBannerInner({
       const now = Date.now();
       setSizes([]);
       setUpdatedAt(now);
+      publishMedia(mediaKey("banner", bannerProps.userId), {
+        sizes: [],
+        updatedAt: now,
+        fallbackUrl: null,
+      });
       onChange?.({ sizes: [], updatedAt: now });
       onResult?.({ ok: true, sizes: [], updatedAt: new Date(now).toISOString() });
       setView("display");

@@ -15,6 +15,9 @@ export type UserBannerProps = {
   membership: { bannerUpdatedAt: Date | number; bannerSizes: number[] };
   /** Container max-width in CSS px. Drives `sizes` for srcset. */
   containerPx?: number;
+  /** Corner radius in px. Defaults to 14 — matches `<ElvixBanner>`'s editor
+   *  frame so the read-only banner looks identical to the editable one. */
+  cornerRadius?: number;
   className?: string;
   /** Class for the empty placeholder background (gradient by default). */
   emptyClassName?: string;
@@ -25,6 +28,7 @@ export function UserBanner({
   userId,
   membership,
   containerPx = 1200,
+  cornerRadius = 14,
   className = "",
   emptyClassName = "bg-gradient-to-br from-[#8e7dff]/10 via-surface-hover to-[#6c5ce7]/10",
 }: UserBannerProps) {
@@ -34,9 +38,10 @@ export function UserBanner({
   );
 
   const base = `block w-full aspect-[3/1] overflow-hidden ${className}`;
+  const style = { borderRadius: cornerRadius };
 
   if (resolved.kind === "empty") {
-    return <div className={`${base} ${emptyClassName}`} aria-hidden />;
+    return <div className={`${base} ${emptyClassName}`} style={style} aria-hidden />;
   }
 
   return (
@@ -46,6 +51,7 @@ export function UserBanner({
       sizes={`${containerPx}px`}
       alt=""
       className={`${base} object-cover`}
+      style={style}
       loading="lazy"
       decoding="async"
     />

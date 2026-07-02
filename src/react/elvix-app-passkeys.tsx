@@ -1,4 +1,5 @@
 "use client";
+import { MaybeCard } from "./elvix-card";
 
 /**
  * `<ElvixAppPasskeys>` — per-app passkey manager. Designed to be
@@ -47,7 +48,7 @@ export type ElvixAppPasskeysResult =
   | { ok: true; kind: "removed"; passkeyId: string }
   | { ok: false; error: string; message?: string };
 
-export function ElvixAppPasskeys({
+function ElvixAppPasskeysImpl({
   appId,
   appName: appNameProp,
   onResult,
@@ -423,4 +424,17 @@ function friendlyError(code: string): string {
   if (code === "unauthenticated") return "Sign in first, then add a passkey.";
   if (code === "remove_failed") return "Couldn't remove the passkey. Try again.";
   return code.replace(/_/g, " ");
+}
+
+/**
+ * Public export. Wraps the implementation in <ElvixCard> by default;
+ * pass `card={false}` to render bare (compose in your own surface).
+ */
+export function ElvixAppPasskeys(props: Parameters<typeof ElvixAppPasskeysImpl>[0] & { card?: boolean }) {
+  const { card, ...rest } = props;
+  return (
+    <MaybeCard card={card} className="h-full">
+      <ElvixAppPasskeysImpl {...(rest as Parameters<typeof ElvixAppPasskeysImpl>[0])} />
+    </MaybeCard>
+  );
 }

@@ -40,17 +40,24 @@ export {
   useResolvedBaseUrl,
 } from "./elvix-provider";
 export type { ElvixAppContext } from "./elvix-provider";
-export { ElvixSignIn } from "./elvix-sign-in";
 export { ElvixSignInForm } from "./elvix-sign-in-form";
+// `ElvixSignIn` is now an ALIAS of `ElvixSignInForm` — the bare low-level
+// variant was removed (it was never the recommended surface). Both names
+// resolve to the same branded form so existing imports keep working without
+// any app changes.
+export { ElvixSignInForm as ElvixSignIn } from "./elvix-sign-in-form";
 export { ElvixDeviceApproval, type ElvixDeviceApprovalProps } from "./elvix-device-approval";
 export { ElvixSignInButton } from "./elvix-sign-in-button";
 export {
   ElvixSignOutButton,
+  ElvixSignOutMenuItem,
+  ElvixSignOutLink,
   ElvixSignOutPreset,
   ElvixSignOutTone,
   ElvixSignOutVariant,
   ElvixSignOutShape,
   ElvixSignOutType,
+  ElvixSignOutAs,
   type ElvixSignOutResult,
   type ElvixSignOutButtonProps,
 } from "./elvix-sign-out-button";
@@ -116,7 +123,11 @@ export {
   type ElvixAppPasskey,
   type ElvixAppPasskeysResult,
 } from "./elvix-app-passkeys";
-export { ElvixAddressBook } from "./elvix-address-book";
+export {
+  ElvixAddressBook,
+  ElvixBillingAddressBook,
+  ElvixShippingAddressBook,
+} from "./elvix-address-book";
 export { ElvixLegalEntities } from "./elvix-legal-entities";
 
 export type {

@@ -1,4 +1,5 @@
 "use client";
+import { MaybeCard } from "./elvix-card";
 
 /**
  * `<ElvixExport>` — in-frame wizard for the GDPR data export.
@@ -60,7 +61,7 @@ export type ElvixExportResult =
   | { ok: true; downloadId: string; deliveredTo: string }
   | { ok: false; error: string; message?: string };
 
-export function ElvixExport({
+function ElvixExportImpl({
   target = { kind: "identity" },
   primaryEmail,
   onSuccess,
@@ -644,4 +645,17 @@ function applyErrorCopy(t: TFn, error: string | undefined, attemptsLeft?: number
   if (error === "email_delivery_failed")
     return t("export.errorApplyEmailFailed", { email: PRIVACY_EMAIL });
   return t("common.somethingWentWrong");
+}
+
+/**
+ * Public export. Wraps the implementation in <ElvixCard> by default;
+ * pass `card={false}` to render bare (compose in your own surface).
+ */
+export function ElvixExport(props: Parameters<typeof ElvixExportImpl>[0] & { card?: boolean }) {
+  const { card, ...rest } = props;
+  return (
+    <MaybeCard card={card} className="h-full">
+      <ElvixExportImpl {...(rest as Parameters<typeof ElvixExportImpl>[0])} />
+    </MaybeCard>
+  );
 }

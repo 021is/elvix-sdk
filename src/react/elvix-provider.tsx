@@ -144,6 +144,17 @@ export function useElvixContext(): ElvixContextValue {
 }
 
 /**
+ * The provider's resolved light/dark theme (it folds `theme="auto"` against
+ * the system scheme), or `null` outside a provider. Non-throwing so a
+ * standalone component (e.g. `<ElvixSignInButton>` linking to hosted sign-in)
+ * can read it and fall back gracefully instead of crashing.
+ */
+export function useElvixResolvedTheme(): "light" | "dark" | null {
+  const ctx = useContext(ElvixContext);
+  return ctx?.resolvedTheme ?? null;
+}
+
+/**
  * Read the SDK-wide animation flag set on `<ElvixProvider animated>`.
  * Returns `true` outside a provider so component authors can call it
  * unconditionally — the absence of a provider means defaults apply.

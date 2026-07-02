@@ -70,6 +70,20 @@ export const ElvixSignOutType = {
 } as const;
 export type ElvixSignOutType = (typeof ElvixSignOutType)[keyof typeof ElvixSignOutType];
 
+/**
+ * The FORM the sign-out action takes — one component, every placement:
+ *   button   — a standalone styled button (default; honours tone/variant/shape).
+ *   menuitem — a full-width row for a dropdown / account menu (role="menuitem").
+ *   link     — an inline text link for footers / settings rows.
+ * For anything else, pass a render-fn as children to go fully headless.
+ */
+export const ElvixSignOutAs = {
+  BUTTON: "button",
+  MENUITEM: "menuitem",
+  LINK: "link",
+} as const;
+export type ElvixSignOutAs = (typeof ElvixSignOutAs)[keyof typeof ElvixSignOutAs];
+
 export const ElvixSignOutAlign = {
   LEFT: "left",
   CENTER: "center",
@@ -126,6 +140,25 @@ export type ElvixSignOutButtonProps = {
    */
   borderRadius?: number | string;
   className?: string;
+  /**
+   * The form this action takes: "button" (default), "menuitem" (a full-width
+   * dropdown row), or "link" (inline text link). Same behaviour, different
+   * placement.
+   */
+  as?: ElvixSignOutAs;
+  /**
+   * Headless escape hatch: pass a render function and YOU own the element.
+   * Receives `{ signOut, busy }` so you can wire sign-out onto any element
+   * from any design system (a Radix `<DropdownMenuItem>`, your own button,
+   * etc.). When provided, `as` and all styling props are ignored.
+   *
+   *   <ElvixSignOutButton>
+   *     {({ signOut, busy }) => (
+   *       <DropdownMenuItem onSelect={signOut} disabled={busy}>Log out</DropdownMenuItem>
+   *     )}
+   *   </ElvixSignOutButton>
+   */
+  children?: (api: { signOut: () => void; busy: boolean }) => ReactNode;
   /**
    * Where to navigate after a successful sign-out. Defaults to the
    * current origin's root. Pass `null` to disable navigation (the
@@ -275,6 +308,8 @@ export function ElvixSignOutButton({
   fontSize,
   borderRadius,
   className,
+  as = "button",
+  children,
   redirectAfterSignOut,
   cookieName = "elvix_token",
   onResult,
@@ -346,6 +381,69 @@ export function ElvixSignOutButton({
 
   const liveLabel = isBusy ? "Signing out…" : resolvedLabel;
 
+  // Headless: the host owns the element; we just hand over `signOut` + `busy`.
+  if (typeof children === "function") {
+    return <>{children({ signOut: () => void handleClick(), busy: isBusy })}</>;
+  }
+
+  // Menu item — a full-width dropdown row (account menus). Hardcoded colours +
+  // `dark:` variants so it reads on any host page without the SDK theme vars.
+  if (as === "menuitem") {
+    const menuCls = [
+      "w-full inline-flex items-center gap-2.5 px-3 h-10 rounded-md text-[14px] font-medium text-left transition cursor-pointer",
+      "hover:bg-black/[0.05] dark:hover:bg-white/[0.06] disabled:opacity-60 disabled:cursor-not-allowed",
+      tone === "destructive"
+        ? "text-[#b91c1c] dark:text-[#fca5a5] hover:bg-[#dc2626]/[0.06] dark:hover:bg-[#fca5a5]/[0.10]"
+        : "text-[#0a0a0b] dark:text-white",
+      className ?? "",
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .trim();
+    return (
+      <button
+        type="button"
+        role="menuitem"
+        onClick={handleClick}
+        disabled={isBusy}
+        aria-busy={isBusy || undefined}
+        className={menuCls}
+      >
+        {iconNode}
+        <span>{liveLabel}</span>
+      </button>
+    );
+  }
+
+  // Link — inline text link (footers / settings rows).
+  if (as === "link") {
+    const linkCls = [
+      "inline-flex items-center gap-1.5 text-[14px] font-medium underline-offset-4 hover:underline transition cursor-pointer",
+      "disabled:opacity-60 disabled:cursor-not-allowed disabled:no-underline",
+      tone === "destructive"
+        ? "text-[#b91c1c] dark:text-[#fca5a5]"
+        : tone === "brand"
+          ? "text-[#6c5ce7] dark:text-[#a59cff]"
+          : "text-[#0a0a0b] dark:text-white",
+      className ?? "",
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .trim();
+    return (
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={isBusy}
+        aria-busy={isBusy || undefined}
+        className={linkCls}
+      >
+        {showIcon ? iconNode : null}
+        <span>{liveLabel}</span>
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"
@@ -360,4 +458,20 @@ export function ElvixSignOutButton({
       {isIconOnly ? null : <span>{liveLabel}</span>}
     </button>
   );
+}
+
+/**
+ * `<ElvixSignOutMenuItem>` — the sign-out action as a dropdown/account-menu
+ * row. Thin alias for `<ElvixSignOutButton as="menuitem">`; same props.
+ */
+export function ElvixSignOutMenuItem(props: Omit<ElvixSignOutButtonProps, "as">) {
+  return <ElvixSignOutButton {...props} as="menuitem" />;
+}
+
+/**
+ * `<ElvixSignOutLink>` — the sign-out action as an inline text link. Thin
+ * alias for `<ElvixSignOutButton as="link">`; same props.
+ */
+export function ElvixSignOutLink(props: Omit<ElvixSignOutButtonProps, "as">) {
+  return <ElvixSignOutButton {...props} as="link" />;
 }

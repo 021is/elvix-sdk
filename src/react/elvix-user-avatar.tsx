@@ -1,6 +1,7 @@
 "use client";
 
 import { useElvixApp, useElvixAppContext } from "./elvix-provider";
+import { mediaKey, useLiveMedia } from "./live-media";
 import { UserAvatar } from "./user-avatar";
 
 const Shape = {
@@ -81,12 +82,21 @@ export function ElvixUserAvatar({
         }
       : { name: null, email: null, avatarUrl: null });
 
+  // Live updates: if <ElvixAvatar mode="edit"> changed this user's photo this
+  // session (same tab or another tab on this origin), reflect it immediately
+  // without a refetch — overrides the server-provided membership/avatarUrl.
+  const live = useLiveMedia(resolvedUserId ? mediaKey("avatar", resolvedUserId) : null);
+  const finalMembership = live
+    ? { avatarUpdatedAt: live.updatedAt, avatarSizes: live.sizes }
+    : resolvedMembership;
+  const finalUser = live ? { ...resolvedUser, avatarUrl: live.fallbackUrl } : resolvedUser;
+
   return (
     <UserAvatar
       appSlug={resolvedAppSlug}
       userId={resolvedUserId}
-      membership={resolvedMembership}
-      user={resolvedUser}
+      membership={finalMembership}
+      user={finalUser}
       size={size}
       className={className ?? ""}
       shape={shape}

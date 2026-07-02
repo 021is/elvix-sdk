@@ -33,7 +33,7 @@
  * grid reflows but the outer frame is theirs to size.
  */
 
-import { ElvixCard } from "./elvix-card";
+import { MaybeCard } from "./elvix-card";
 import { ElvixInput } from "./elvix-input";
 import { ElvixSaveButton } from "./elvix-save-button";
 import { useElvixContext } from "./elvix-provider";
@@ -69,6 +69,8 @@ export type ElvixAddressBookResult =
   | { ok: false; error: string; message?: string };
 
 export type ElvixAddressBookProps = {
+  /** Render inside an <ElvixCard>. Default true; pass false for bare (no chrome). */
+  card?: boolean;
   kind: AddressKind;
   /** Fixed frame height. Defaults to 520. Takes precedence over min/max. */
   height?: number;
@@ -148,6 +150,7 @@ export function ElvixAddressBook({
   userDisplayName,
   onChange,
   onResult,
+  card,
 }: ElvixAddressBookProps) {
   const t = useT();
   const ctx = useElvixContext();
@@ -584,7 +587,7 @@ export function ElvixAddressBook({
 
   return (
     <div style={frameStyle} className="mx-auto">
-      <ElvixCard className="h-full">
+      <MaybeCard card={card} className="h-full">
         <div className="relative h-full overflow-hidden">
           <AnimatePresence custom={navDir} initial={false}>
             {loading ? (
@@ -743,7 +746,7 @@ export function ElvixAddressBook({
             )}
           </AnimatePresence>
         </div>
-      </ElvixCard>
+      </MaybeCard>
     </div>
   );
 }
@@ -2347,4 +2350,28 @@ function humanizeApiError(body: unknown): string {
     return `${firstField}: ${msg}`;
   }
   return b.error ?? "save_failed";
+}
+
+// ─── kind-fixed aliases ──────────────────────────────────────────────
+// The same one component drives both address kinds — `kind` is the only
+// thing that differs. Hosts that prefer an explicit name (and never want
+// to pass `kind`) reach for these thin aliases instead, exactly like
+// <ElvixSignOutMenuItem> / <ElvixSignOutLink> wrap <ElvixSignOutButton>.
+
+/**
+ * `<ElvixBillingAddressBook>` — the address book pinned to billing
+ * addresses. Thin alias for `<ElvixAddressBook kind="billing">`; same
+ * props minus `kind`.
+ */
+export function ElvixBillingAddressBook(props: Omit<ElvixAddressBookProps, "kind">) {
+  return <ElvixAddressBook {...props} kind="billing" />;
+}
+
+/**
+ * `<ElvixShippingAddressBook>` — the address book pinned to shipping
+ * addresses. Thin alias for `<ElvixAddressBook kind="shipping">`; same
+ * props minus `kind`.
+ */
+export function ElvixShippingAddressBook(props: Omit<ElvixAddressBookProps, "kind">) {
+  return <ElvixAddressBook {...props} kind="shipping" />;
 }

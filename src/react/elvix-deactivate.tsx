@@ -1,4 +1,5 @@
 "use client";
+import { MaybeCard } from "./elvix-card";
 
 /**
  * `<ElvixDeactivate>` — Instagram-style temporary deactivation as an
@@ -56,7 +57,7 @@ export type ElvixDeactivateResult =
   | { ok: true; state: State }
   | { ok: false; error: string; message?: string };
 
-export function ElvixDeactivate(props: {
+function ElvixDeactivateImpl(props: {
   appId?: string;
   appName?: string;
   inactive?: boolean;
@@ -698,3 +699,16 @@ const paneVariants = {
 };
 
 const paneTransition = { duration: 0.24, ease: [0.22, 0.61, 0.36, 1] as const };
+
+/**
+ * Public export. Wraps the implementation in <ElvixCard> by default;
+ * pass `card={false}` to render bare (compose in your own surface).
+ */
+export function ElvixDeactivate(props: Parameters<typeof ElvixDeactivateImpl>[0] & { card?: boolean }) {
+  const { card, ...rest } = props;
+  return (
+    <MaybeCard card={card} className="h-full">
+      <ElvixDeactivateImpl {...(rest as Parameters<typeof ElvixDeactivateImpl>[0])} />
+    </MaybeCard>
+  );
+}

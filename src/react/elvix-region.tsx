@@ -16,7 +16,7 @@
  * because it cascades. Other fields PATCH only themselves.
  */
 
-import { ElvixCard } from "./elvix-card";
+import { MaybeCard } from "./elvix-card";
 import { ElvixCountrySelect } from "./elvix-country-select";
 import { ElvixInput } from "./elvix-input";
 import { ElvixSaveButton } from "./elvix-save-button";
@@ -59,6 +59,8 @@ export type ElvixRegionResult =
   | { ok: false; error: string; message?: string };
 
 export type ElvixRegionProps = {
+  /** Render inside an <ElvixCard>. Default true; pass false for bare (no chrome). */
+  card?: boolean;
   height?: number;
   minHeight?: number;
   maxHeight?: number;
@@ -129,6 +131,7 @@ export function ElvixRegion({
   width = "100%",
   onChange,
   onResult,
+  card,
 }: ElvixRegionProps) {
   const ctx = useElvixContext();
   const t = useT();
@@ -246,7 +249,7 @@ export function ElvixRegion({
 
   return (
     <div style={frameStyle} className="mx-auto">
-      <ElvixCard className="h-full">
+      <MaybeCard card={card} className="h-full">
         <div className="relative h-full overflow-hidden">
           <AnimatePresence initial={false}>
             {view === "loading" || view === ("decide" as View) ? (
@@ -373,7 +376,7 @@ export function ElvixRegion({
             ) : null}
           </AnimatePresence>
         </div>
-      </ElvixCard>
+      </MaybeCard>
     </div>
   );
 }

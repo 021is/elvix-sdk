@@ -20,6 +20,8 @@
  */
 
 import { UserAvatar, type UserAvatarProps } from "./user-avatar";
+import { ElvixUserAvatar } from "./elvix-user-avatar";
+import { mediaKey, publishMedia } from "./live-media";
 import { cropToBlob } from "./image-crop";
 import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
 import { authInit } from "./session";
@@ -43,8 +45,23 @@ export type ElvixAvatarResult =
   | { ok: true; sizes: number[]; updatedAt: string }
   | { ok: false; error: string; message?: string };
 
+/**
+ * Two modes, one component:
+ *   "edit" (default) — the in-place upload/crop/remove wizard.
+ *   "view"           — read-only display (delegates to <ElvixUserAvatar>),
+ *                      and it live-updates the instant an "edit" instance
+ *                      changes the photo (same tab or another tab).
+ */
+export const ElvixAvatarMode = {
+  VIEW: "view",
+  EDIT: "edit",
+} as const;
+export type ElvixAvatarMode = (typeof ElvixAvatarMode)[keyof typeof ElvixAvatarMode];
+
 export type ElvixAvatarProps = Omit<UserAvatarProps, "size"> & {
   applicationId: string;
+  /** "edit" (default) = the wizard; "view" = read-only, live-updating display. */
+  mode?: ElvixAvatarMode;
   /** Diameter (px). Default 128. The widget stays at this size in
    *  every state — no expand-on-edit. */
   size?: number;
@@ -88,7 +105,23 @@ export function ElvixAvatar(props: Partial<ElvixAvatarProps>) {
     className: props.className,
     onChange: props.onChange,
     onResult: props.onResult,
+    mode: props.mode ?? "edit",
   };
+  // View mode = the read-only display sibling, which subscribes to the live
+  // avatar store and updates the instant an "edit" instance changes the photo.
+  if (resolved.mode === "view") {
+    return (
+      <ElvixUserAvatar
+        appSlug={resolved.appSlug}
+        userId={resolved.userId}
+        size={resolved.size ?? 40}
+        shape={resolved.shape}
+        className={resolved.className}
+        membership={resolved.membership}
+        user={resolved.user}
+      />
+    );
+  }
   return <ElvixAvatarInner {...resolved} />;
 }
 
@@ -184,6 +217,12 @@ function ElvixAvatarInner({
       const nextTs = body.avatarUpdatedAt ? new Date(body.avatarUpdatedAt) : Date.now();
       setSizes(nextSizes);
       setUpdatedAt(nextTs);
+      // Broadcast so every read-only avatar (this tab + other tabs) updates now.
+      publishMedia(mediaKey("avatar", avatarProps.userId), {
+        sizes: nextSizes,
+        updatedAt: nextTs instanceof Date ? nextTs.getTime() : nextTs,
+        fallbackUrl: avatarUrl,
+      });
       onChange?.({ sizes: nextSizes, updatedAt: nextTs });
       onResult?.({
         ok: true,
@@ -245,9 +284,17 @@ function ElvixAvatarInner({
       //     userAvatarUrl arrives null → preview drops to initials.
       // `userAvatarUrl === undefined` would mean the server didn't
       // touch it (admin flow); we keep the existing local value.
+      const nextAvatarUrl = body.userAvatarUrl !== undefined ? body.userAvatarUrl : avatarUrl;
       if (body.userAvatarUrl !== undefined) {
         setAvatarUrl(body.userAvatarUrl);
       }
+      // Broadcast the post-remove state so read-only avatars drop to the
+      // fallback / initials immediately.
+      publishMedia(mediaKey("avatar", avatarProps.userId), {
+        sizes: nextSizes,
+        updatedAt: nextTs instanceof Date ? nextTs.getTime() : nextTs,
+        fallbackUrl: nextAvatarUrl,
+      });
       onChange?.({ sizes: nextSizes, updatedAt: nextTs });
       onResult?.({
         ok: true,

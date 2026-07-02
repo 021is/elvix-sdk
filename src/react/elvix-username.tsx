@@ -21,6 +21,7 @@
  * `edit` with the server message rendered under the input.
  */
 
+import { MaybeCard } from "./elvix-card";
 import { ElvixInput } from "./elvix-input";
 import { ElvixSaveButton } from "./elvix-save-button";
 import {
@@ -85,18 +86,22 @@ export function ElvixUsername(props: ElvixUsernameProps) {
   const supportEmail = props.supportEmail ?? null;
   const { onSuccess, onFail, onResult } = props;
 
+  // Self-wrap in <ElvixCard> for chrome consistency with ElvixRegion /
+  // ElvixLanguages / ElvixAddressBook (they all self-wrap).
   return (
-    <ElvixUsernameInner
-      appId={appId}
-      appName={appName}
-      current={current}
-      methodUsername={methodUsername}
-      supportUrl={supportUrl}
-      supportEmail={supportEmail}
-      onSuccess={onSuccess}
-      onFail={onFail}
-      onResult={onResult}
-    />
+    <MaybeCard card={props.card} className="h-full">
+      <ElvixUsernameInner
+        appId={appId}
+        appName={appName}
+        current={current}
+        methodUsername={methodUsername}
+        supportUrl={supportUrl}
+        supportEmail={supportEmail}
+        onSuccess={onSuccess}
+        onFail={onFail}
+        onResult={onResult}
+      />
+    </MaybeCard>
   );
 }
 
@@ -107,6 +112,8 @@ type ElvixUsernameProps = {
   methodUsername?: boolean;
   supportUrl?: string | null;
   supportEmail?: string | null;
+  /** Render inside an <ElvixCard>. Default true; pass false for bare. */
+  card?: boolean;
   onSuccess?: (value: string) => void;
   onFail?: (error: string) => void;
   onResult?: (result: ElvixUsernameResult) => void;

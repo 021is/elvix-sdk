@@ -38,11 +38,15 @@
  */
 
 import { useT } from "../locale/use-t";
+import { AnimatePresence, motion } from "framer-motion";
+import { Drawer as Vaul } from "vaul";
 import { ArrowLeft, Check, Fingerprint, Loader2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { ElvixSignInMethod, ElvixSignInResult } from "./types";
 import { ELVIX_SDK_VERSION } from "./version";
 import { ElvixLogo } from "./elvix-logo";
+import { ElvixSignInButton, type ElvixSignInButtonProps } from "./elvix-sign-in-button";
 import { ElvixRecoverGate } from "./elvix-recover-gate";
 import { ElvixSessionStatus, useElvixApp, useElvixContext, useElvixSession } from "./elvix-provider";
 import { GoogleOneTap } from "./google-one-tap";
@@ -108,6 +112,13 @@ const Presentation = {
   MODAL: "modal",
 } as const;
 type Presentation = (typeof Presentation)[keyof typeof Presentation];
+
+const DrawerSide = {
+  BOTTOM: "bottom",
+  LEFT: "left",
+  RIGHT: "right",
+} as const;
+type DrawerSide = (typeof DrawerSide)[keyof typeof DrawerSide];
 
 const Theme = {
   LIGHT: "light",
@@ -205,6 +216,40 @@ export type AuthFormProps = {
   socialLayout?: SocialLayout;
   /** Surrounding chrome — card / drawer (bottom sheet) / modal overlay. */
   presentation?: Presentation;
+  /**
+   * When `presentation` is "modal" or "drawer" in interactive mode, the form
+   * renders a trigger and opens the card in a real overlay (portal + backdrop
+   * + Escape + scroll-lock + focus-trap) on click. Custom trigger: a render
+   * fn that receives `open()`. Wins over the default `<ElvixSignInButton>`.
+   *
+   *   <ElvixSignInForm presentation="modal"
+   *     trigger={(open) => <MyButton onClick={open}>Sign in</MyButton>} />
+   */
+  trigger?: (open: () => void) => React.ReactNode;
+  /** Label for the auto-rendered trigger button. Default: "Sign in". */
+  triggerLabel?: string;
+  /** Style the auto-rendered trigger (variant / shape / size / brand / etc.) —
+   *  the full `<ElvixSignInButton>` prop surface. */
+  triggerProps?: Partial<ElvixSignInButtonProps>;
+  /** Controlled overlay open state. Omit for uncontrolled (the form owns it,
+   *  e.g. opened by its own trigger). */
+  open?: boolean;
+  /** Uncontrolled initial open state. Default false. */
+  defaultOpen?: boolean;
+  /** Fires whenever the overlay opens or closes. */
+  onOpenChange?: (open: boolean) => void;
+  /** Drawer anchor edge. Default "bottom". */
+  drawerSide?: DrawerSide;
+  /** Allow backdrop-click + Escape to close the overlay. Default true. */
+  dismissable?: boolean;
+  /**
+   * Width of the card / overlay panel. Number = px, string = any CSS length.
+   * Applies to the inline card, the modal panel, AND the drawer (`maxWidth` of
+   * the vaul sheet — set it to your app container's width so a bottom drawer
+   * matches your shell, the way DanceClub pins it to the container). Defaults:
+   * 420 (card / modal), 480 (bottom drawer), 420 (side drawer).
+   */
+  width?: number | string;
   /** Theme override for the form's surface tokens. */
   theme?: Theme;
   /** Hide the built-in header (logo + "Sign in to X" title + subtitle). */
@@ -381,6 +426,15 @@ export function ElvixSignInForm(props: AuthFormProps) {
   // any production sign-in) default to unframed so the banner never
   // leaks. Hosts can still opt in by passing `framed={true}`.
   const { framed = resolved.mode === "preview", presentation = "card", theme = "light" } = resolved;
+
+  // Interactive modal/drawer → a real, trigger-opened overlay (portal, backdrop,
+  // Escape + scroll-lock + focus-trap). Preview mode falls through to the inline
+  // cosmetic chrome below, so the Console can still show what the overlay looks
+  // like statically.
+  if (resolved.mode !== "preview" && (presentation === "modal" || presentation === "drawer")) {
+    return <OverlayPresentation resolved={resolved} presentation={presentation} theme={theme} />;
+  }
+
   const card = <AuthCard {...resolved} />;
   let content: React.ReactNode = card;
   if (presentation === "drawer") {
@@ -436,6 +490,258 @@ function ModalPresentation({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * Interactive modal/drawer: renders a trigger and mounts the auth card in a
+ * real overlay (portal to `document.body`, dim backdrop, framer-motion enter /
+ * exit, Escape + backdrop dismiss, body scroll-lock, focus-trap, focus restore).
+ * Open state is controlled (`open` / `onOpenChange`) or uncontrolled. The card's
+ * `onResult` is wrapped so a successful sign-in closes the overlay before the
+ * host's own `onResult` runs.
+ */
+function OverlayPresentation({
+  resolved,
+  presentation,
+  theme,
+}: {
+  resolved: AuthFormProps;
+  presentation: Presentation;
+  theme: Theme;
+}) {
+  const t = useT();
+  const {
+    open: controlledOpen,
+    defaultOpen = false,
+    onOpenChange,
+    trigger,
+    triggerLabel,
+    triggerProps,
+    brandColor,
+    onBrandColor,
+  } = resolved;
+
+  const isControlled = controlledOpen !== undefined;
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+  const open = isControlled ? controlledOpen : uncontrolledOpen;
+  const setOpen = useCallback(
+    (next: boolean) => {
+      if (!isControlled) setUncontrolledOpen(next);
+      onOpenChange?.(next);
+    },
+    [isControlled, onOpenChange],
+  );
+  const openFn = useCallback(() => setOpen(true), [setOpen]);
+
+  // Close on a successful sign-in, then forward to the host's onResult.
+  const hostOnResult = resolved.onResult;
+  const onResult = useCallback(
+    (r: ElvixSignInResult) => {
+      if (r.ok) setOpen(false);
+      hostOnResult?.(r);
+    },
+    [hostOnResult, setOpen],
+  );
+
+  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
+  const themeVars = theme === "auto" ? undefined : theme === "dark" ? ELVIX_DARK_VARS : ELVIX_LIGHT_VARS;
+
+  const triggerNode = trigger ? (
+    trigger(openFn)
+  ) : (
+    <ElvixSignInButton
+      mode="callback"
+      onClick={openFn}
+      label={triggerLabel ?? t("signin.titleDefault")}
+      variant="filled"
+      brandColor={brandColor ?? undefined}
+      onBrandColor={onBrandColor ?? undefined}
+      {...triggerProps}
+    />
+  );
+
+  return (
+    <>
+      {triggerNode}
+      {presentation === Presentation.DRAWER ? (
+        <DrawerOverlay
+          resolved={resolved}
+          open={open}
+          onOpenChange={setOpen}
+          themeVars={themeVars}
+          onResult={onResult}
+        />
+      ) : (
+        <ModalOverlay
+          resolved={resolved}
+          open={open}
+          onClose={() => setOpen(false)}
+          themeVars={themeVars}
+          onResult={onResult}
+        />
+      )}
+    </>
+  );
+}
+
+/** Centered modal overlay (framer-motion). No close button: it dismisses on a
+ *  backdrop click (outside the card) + Escape. The panel width tracks the card.
+ *  Owns its own scroll-lock + focus-trap (vaul handles those for the drawer). */
+function ModalOverlay({
+  resolved,
+  open,
+  onClose,
+  themeVars,
+  onResult,
+}: {
+  resolved: AuthFormProps;
+  open: boolean;
+  onClose: () => void;
+  themeVars: React.CSSProperties | undefined;
+  onResult: (r: ElvixSignInResult) => void;
+}) {
+  const { dismissable = true, width = 420 } = resolved;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const panelRef = useRef<HTMLDivElement>(null);
+  const restoreFocusRef = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (!open || typeof document === "undefined") return;
+    restoreFocusRef.current = (document.activeElement as HTMLElement) ?? null;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && dismissable) onClose();
+      else if (e.key === "Tab") trapTab(e, panelRef.current);
+    };
+    document.addEventListener("keydown", onKey);
+    const raf = requestAnimationFrame(() => {
+      panelRef.current?.querySelector<HTMLElement>("input, button")?.focus();
+    });
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+      cancelAnimationFrame(raf);
+      restoreFocusRef.current?.focus?.();
+    };
+  }, [open, dismissable, onClose]);
+
+  const overlay = (
+    <AnimatePresence>
+      {open && (
+        <div
+          className="elvix-sdk-root fixed inset-0 z-[2147483000] flex items-center justify-center p-4"
+          style={themeVars}
+          role="dialog"
+          aria-modal="true"
+        >
+          <motion.div
+            aria-hidden
+            className="absolute inset-0 bg-black/45 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            onClick={dismissable ? onClose : undefined}
+          />
+          <motion.div
+            ref={panelRef}
+            className="relative mx-auto w-full"
+            style={{ maxWidth: width }}
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={{ type: "spring", stiffness: 380, damping: 34 }}
+          >
+            <AuthCard {...resolved} onResult={onResult} />
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+
+  return mounted ? createPortal(overlay, document.body) : null;
+}
+
+/** Drawer overlay built on `vaul` (the same primitive shadcn/ui Drawer uses, so
+ *  it drops into shadcn hosts like DanceClub unchanged): drag-to-dismiss, snap,
+ *  spring, body scroll-lock, focus + Escape — all from vaul. The auth card
+ *  renders transparent so it blends into the sheet surface. `width` maps to the
+ *  sheet's `maxWidth` (pin it to your app container, the way DanceClub does). */
+function DrawerOverlay({
+  resolved,
+  open,
+  onOpenChange,
+  themeVars,
+  onResult,
+}: {
+  resolved: AuthFormProps;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  themeVars: React.CSSProperties | undefined;
+  onResult: (r: ElvixSignInResult) => void;
+}) {
+  const t = useT();
+  const { drawerSide = DrawerSide.BOTTOM, dismissable = true, width, appName } = resolved;
+  const isBottom = drawerSide === DrawerSide.BOTTOM;
+  const sideClass = isBottom
+    ? "inset-x-0 bottom-0 mt-24 max-h-[92dvh] rounded-t-[22px] border-t border-border-base"
+    : drawerSide === DrawerSide.LEFT
+      ? "inset-y-0 left-0 w-[92vw] border-r border-border-base"
+      : "inset-y-0 right-0 w-[92vw] border-l border-border-base";
+  const resolvedWidth = width ?? (isBottom ? 480 : 420);
+
+  return (
+    <Vaul.Root
+      open={open}
+      onOpenChange={onOpenChange}
+      direction={drawerSide}
+      dismissible={dismissable}
+      shouldScaleBackground={false}
+    >
+      <Vaul.Portal>
+        <Vaul.Overlay className="fixed inset-0 z-[2147483000] bg-black/45 backdrop-blur-sm" />
+        <Vaul.Content
+          className={`elvix-sdk-root fixed z-[2147483001] flex h-auto flex-col bg-surface outline-none focus:outline-none ${sideClass}`}
+          style={{
+            ...themeVars,
+            maxWidth: resolvedWidth,
+            ...(isBottom ? { marginLeft: "auto", marginRight: "auto" } : {}),
+          }}
+        >
+          {/* No close button on the drawer: vaul dismisses via drag-down +
+              backdrop tap (matches shadcn/DanceClub). The card fills the sheet
+              width (banner header bleeds edge-to-edge), no inset gutters. */}
+          {isBottom && (
+            <div className="mx-auto mt-3 mb-1 h-1.5 w-10 shrink-0 rounded-full bg-border-strong" />
+          )}
+          <Vaul.Title className="sr-only">{t("signin.title", { app: appName ?? "" })}</Vaul.Title>
+          <div className="min-h-0 overflow-y-auto pb-4">
+            <AuthCard {...resolved} transparentBg width={resolvedWidth} onResult={onResult} />
+          </div>
+        </Vaul.Content>
+      </Vaul.Portal>
+    </Vaul.Root>
+  );
+}
+
+/** Keep Tab focus cycling inside the open overlay panel. */
+function trapTab(e: KeyboardEvent, panel: HTMLElement | null): void {
+  if (!panel) return;
+  const focusables = panel.querySelectorAll<HTMLElement>(
+    'input:not([disabled]), button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
+  );
+  if (focusables.length === 0) return;
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last?.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first?.focus();
+  }
+}
+
 function AuthCard(props: AuthFormProps) {
   const t = useT();
   const { transparentBg = false } = props;
@@ -445,10 +751,17 @@ function AuthCard(props: AuthFormProps) {
   const cardClass = transparentBg
     ? "mx-auto w-full max-w-[420px] overflow-hidden"
     : "mx-auto w-full max-w-[420px] rounded-[14px] bg-surface shadow-[0_2px_8px_rgba(0,0,0,0.04),0_20px_40px_-20px_rgba(0,0,0,0.12)] border border-border-base overflow-hidden";
+  // `width` (when set) overrides the default 420px cap — inline style wins over
+  // the max-w-[420px] class. Lets a host widen the card / modal / drawer.
+  const cardStyle: React.CSSProperties | undefined =
+    props.width !== undefined ? { maxWidth: props.width } : undefined;
   return (
     <>
-      <div className={cardClass}>
-        <div className={transparentBg ? "px-1 py-1" : "px-7 py-7"}>
+      <div className={cardClass} style={cardStyle}>
+        {/* Same px-7 in both modes so the `banner` header's `-mx-7 -mt-7`
+            bleed lands exactly on the card edge (drawer/transparent included)
+            instead of floating inset. transparentBg only trims the bottom. */}
+        <div className={transparentBg ? "px-7 pt-7 pb-3" : "px-7 py-7"}>
           <AuthBody {...props} />
         </div>
         <div
