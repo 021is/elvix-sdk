@@ -1428,7 +1428,7 @@ function AuthBody({
     setError(null);
     setPasskeyBusy(true);
     try {
-      const result = await runPasskeySignIn(baseUrl, clientId);
+      const result = await runPasskeySignIn(baseUrl, clientId, intent);
       if (!result.ok) {
         if (result.error === "passkey_cancelled") {
           // user dismissed the prompt — stay quiet, report via onResult only
