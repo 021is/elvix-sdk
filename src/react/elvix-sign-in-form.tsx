@@ -2298,6 +2298,17 @@ function humanError(t: Translator, code?: string, retryAfterSeconds?: number): s
       return tOrFallback(t, "signin.errorUserDeleted", "This account was deleted. Contact support if you need it back.");
     case "email_archived":
       return tOrFallback(t, "signin.errorEmailArchived", "This email was retired from sign-in. Use your current address.");
+    // Passkey sign-in outcomes. `unknown_credential` = the browser offered a
+    // passkey elvix has no record of (a stale credential left in the keychain
+    // by a device that no longer holds the server-side row). Give the recovery
+    // path instead of the useless generic "Something went wrong".
+    case "unknown_credential":
+      return tOrFallback(t, "signin.errorPasskeyUnknown", "This passkey isn't registered with elvix. Sign in another way, then remove it and add a new one in Security settings.");
+    case "verify_failed":
+    case "not_verified":
+      return tOrFallback(t, "signin.errorPasskeyVerifyFailed", "That passkey couldn't be verified. Sign in another way, then re-add it in Security settings.");
+    case "challenge_invalid":
+      return tOrFallback(t, "signin.errorPasskeyExpired", "This passkey sign-in expired. Please try again.");
     default:
       return t("signin.errorGeneric");
   }
