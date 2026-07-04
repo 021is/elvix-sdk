@@ -78,8 +78,14 @@ export type PasskeySignInResult =
 export async function runPasskeySignIn(
   baseUrl: string,
   clientId: string | undefined,
+  intent: string = "app",
 ): Promise<PasskeySignInResult> {
-  if (!clientId) return { ok: false, error: "missing_client_id", message: "ElvixProvider needs a clientId." };
+  // First-party surfaces (elvix's own account / console sign-in on elvix.is)
+  // authenticate the identity itself, not an app membership — they have no
+  // external clientId. Only the external-app path requires one.
+  if (intent === "app" && !clientId) {
+    return { ok: false, error: "missing_client_id", message: "ElvixProvider needs a clientId." };
+  }
   if (typeof window === "undefined" || !window.PublicKeyCredential || !navigator.credentials?.get) {
     return { ok: false, error: "passkey_unsupported", message: "This browser can't use passkeys." };
   }
@@ -93,7 +99,7 @@ export async function runPasskeySignIn(
       method: "POST",
       headers: { "content-type": "application/json" },
       credentials,
-      body: JSON.stringify({ intent: "app", clientId }),
+      body: JSON.stringify({ intent, ...(clientId ? { clientId } : {}) }),
     });
     const body = (await res.json()) as {
       success?: boolean;
@@ -155,7 +161,7 @@ export async function runPasskeySignIn(
       method: "POST",
       headers: { "content-type": "application/json" },
       credentials,
-      body: JSON.stringify({ intent: "app", clientId, ...assertion }),
+      body: JSON.stringify({ intent, ...(clientId ? { clientId } : {}), ...assertion }),
     });
     const body = (await res.json()) as {
       success?: boolean;
