@@ -17,6 +17,7 @@
 
 import { UserBanner, type UserBannerProps } from "./user-banner";
 import { mediaKey, publishMedia } from "./live-media";
+import { useUserMedia } from "./user-media";
 import { cropToBlob } from "./image-crop";
 import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
 import { authInit } from "./session";
@@ -90,6 +91,20 @@ function ElvixBannerInner({
 
   const [sizes, setSizes] = useState<number[]>(bannerProps.membership.bannerSizes);
   const [updatedAt, setUpdatedAt] = useState<Date | number>(bannerProps.membership.bannerUpdatedAt);
+
+  // The banner is CENTRALIZED (elvix-account), not per-app. Seed the wizard's
+  // initial state from the centralized store once so the editor shows the
+  // GLOBAL banner regardless of which app mounts it (a host-passed per-app
+  // `membership` is only the while-loading fallback).
+  const centralized = useUserMedia(applicationId === "preview" ? null : bannerProps.userId, ctx.baseUrl);
+  const seeded = useRef(false);
+  useEffect(() => {
+    if (!centralized.data || seeded.current) return;
+    seeded.current = true;
+    setSizes(centralized.data.banner.sizes);
+    setUpdatedAt(centralized.data.banner.updatedAt ?? 0);
+  }, [centralized.data]);
+
   // Preview-mode in-memory blob URL. Set only when the catalog
   // mounts the banner with `applicationId="preview"` — used to
   // render the uploaded image without a CDN round-trip. Cleared on
@@ -151,7 +166,7 @@ function ElvixBannerInner({
       fd.append("file", blob, "banner.jpg");
       const auth = authInit();
       const res = await fetch(
-        `${ctx.baseUrl}/api/applications/${applicationId}/users/${bannerProps.userId}/images/banner`,
+        `${ctx.baseUrl}/api/account/self/images/banner`,
         { method: "PUT", body: fd, headers: auth.headers, credentials: auth.credentials },
       );
       if (!res.ok) throw new Error("upload_failed");
@@ -209,7 +224,7 @@ function ElvixBannerInner({
 
       const auth = authInit();
       const res = await fetch(
-        `${ctx.baseUrl}/api/applications/${applicationId}/users/${bannerProps.userId}/images/banner`,
+        `${ctx.baseUrl}/api/account/self/images/banner`,
         { method: "DELETE", headers: auth.headers, credentials: auth.credentials },
       );
       if (!res.ok) throw new Error("delete_failed");
@@ -254,7 +269,10 @@ function ElvixBannerInner({
         {view === "display" ? (
           <DisplayLayer
             key="display"
-            bannerProps={bannerProps}
+            // Render from the CENTRALIZED slug (elvix-account) — the photo lives
+            // there, not under the per-app bootstrap slug. Without this the CDN
+            // URL points at <app>/users/... and 404s.
+            bannerProps={{ ...bannerProps, appSlug: centralized.data?.slug ?? bannerProps.appSlug }}
             sizes={sizes}
             updatedAt={updatedAt}
             hasMedia={hasMedia}

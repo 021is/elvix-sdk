@@ -32,6 +32,12 @@ export type UserAvatarProps = {
   className?: string;
   /** Round vs square. Default rounded-full. */
   shape?: Shape;
+  /**
+   * Host-supplied placeholder IMAGE shown when the user has no photo —
+   * rendered in place of the default initials chip. A URL on your own origin
+   * or a `data:` URI. Ignored once a custom or OAuth photo resolves.
+   */
+  fallbackSrc?: string;
 };
 
 export function UserAvatar({
@@ -42,6 +48,7 @@ export function UserAvatar({
   size = 40,
   className = "",
   shape = "circle",
+  fallbackSrc,
 }: UserAvatarProps) {
   const resolved = useMemo(
     () => resolveAvatar({ appSlug, userId, membership, user } satisfies AvatarResolverInput),
@@ -94,6 +101,22 @@ export function UserAvatar({
       />
     );
   }
+  // Host-supplied placeholder image wins over the default initials chip.
+  if (fallbackSrc) {
+    return (
+      <img
+        src={fallbackSrc}
+        width={size}
+        height={size}
+        alt=""
+        className={base}
+        style={style}
+        loading="lazy"
+        decoding="async"
+      />
+    );
+  }
+
   // Initials fallback. Picks a stable bg tint from the userId so two
   // users with the same initials still get distinct chips.
   const bg = pickInitialsBg(userId);

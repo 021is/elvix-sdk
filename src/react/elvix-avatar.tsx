@@ -22,6 +22,7 @@
 import { UserAvatar, type UserAvatarProps } from "./user-avatar";
 import { ElvixUserAvatar } from "./elvix-user-avatar";
 import { mediaKey, publishMedia } from "./live-media";
+import { useUserMedia } from "./user-media";
 import { cropToBlob } from "./image-crop";
 import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
 import { authInit } from "./session";
@@ -144,6 +145,22 @@ function ElvixAvatarInner({
   // wizard would still think a Google photo is present even after
   // the backend cleared `User.avatarUrl` on self-flow DELETE.
   const [avatarUrl, setAvatarUrl] = useState<string | null>(avatarProps.user?.avatarUrl ?? null);
+
+  // The photo is CENTRALIZED (elvix-account), not per-app. Seed the wizard's
+  // initial state from the centralized store — once — so the editor shows the
+  // user's GLOBAL photo no matter which app it's mounted in (a host-passed
+  // per-app `membership` is only the while-loading fallback). Seed-once (not a
+  // live sync) avoids clobbering optimistic state after the user's own edits.
+  const centralized = useUserMedia(applicationId === "preview" ? null : avatarProps.userId, ctx.baseUrl);
+  const seeded = useRef(false);
+  useEffect(() => {
+    if (!centralized.data || seeded.current) return;
+    seeded.current = true;
+    setSizes(centralized.data.avatar.sizes);
+    setUpdatedAt(centralized.data.avatar.updatedAt ?? 0);
+    setAvatarUrl(centralized.data.avatar.googleUrl);
+  }, [centralized.data]);
+
   const liveUser = { ...avatarProps.user, avatarUrl };
   const hasMedia = sizes.length > 0;
   const hasRemovable = hasMedia || Boolean(avatarUrl);
@@ -205,7 +222,7 @@ function ElvixAvatarInner({
       fd.append("file", blob, "avatar.jpg");
       const auth = authInit();
       const res = await fetch(
-        `${ctx.baseUrl}/api/applications/${applicationId}/users/${avatarProps.userId}/images/avatar`,
+        `${ctx.baseUrl}/api/account/self/images/avatar`,
         { method: "PUT", body: fd, headers: auth.headers, credentials: auth.credentials },
       );
       if (!res.ok) throw new Error("upload_failed");
@@ -263,7 +280,7 @@ function ElvixAvatarInner({
 
       const auth = authInit();
       const res = await fetch(
-        `${ctx.baseUrl}/api/applications/${applicationId}/users/${avatarProps.userId}/images/avatar`,
+        `${ctx.baseUrl}/api/account/self/images/avatar`,
         { method: "DELETE", headers: auth.headers, credentials: auth.credentials },
       );
       if (!res.ok) throw new Error("delete_failed");
@@ -320,7 +337,7 @@ function ElvixAvatarInner({
         {view === "display" ? (
           <DisplayLayer
             key="display"
-            avatarProps={{ ...avatarProps, user: liveUser }}
+            avatarProps={{ ...avatarProps, user: liveUser, appSlug: centralized.data?.slug ?? avatarProps.appSlug }}
             size={size}
             sizes={sizes}
             updatedAt={updatedAt}
@@ -331,7 +348,7 @@ function ElvixAvatarInner({
           <ChoiceLayer
             key="choice"
             size={size}
-            avatarProps={{ ...avatarProps, user: liveUser }}
+            avatarProps={{ ...avatarProps, user: liveUser, appSlug: centralized.data?.slug ?? avatarProps.appSlug }}
             sizes={sizes}
             updatedAt={updatedAt}
             hasMedia={hasMedia}

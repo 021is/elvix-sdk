@@ -21,6 +21,12 @@ export type UserBannerProps = {
   className?: string;
   /** Class for the empty placeholder background (gradient by default). */
   emptyClassName?: string;
+  /**
+   * Host-supplied placeholder IMAGE shown when the user has no banner —
+   * rendered in place of the default gradient. A URL on your own origin or
+   * a `data:` URI. Ignored once the user sets a real banner.
+   */
+  fallbackSrc?: string;
 };
 
 export function UserBanner({
@@ -31,6 +37,7 @@ export function UserBanner({
   cornerRadius = 14,
   className = "",
   emptyClassName = "bg-gradient-to-br from-[#8e7dff]/10 via-surface-hover to-[#6c5ce7]/10",
+  fallbackSrc,
 }: UserBannerProps) {
   const resolved = useMemo(
     () => resolveBanner({ appSlug, userId, membership }),
@@ -41,6 +48,19 @@ export function UserBanner({
   const style = { borderRadius: cornerRadius };
 
   if (resolved.kind === "empty") {
+    // Host placeholder image wins over the default gradient, if provided.
+    if (fallbackSrc) {
+      return (
+        <img
+          src={fallbackSrc}
+          alt=""
+          className={`${base} object-cover`}
+          style={style}
+          loading="lazy"
+          decoding="async"
+        />
+      );
+    }
     return <div className={`${base} ${emptyClassName}`} style={style} aria-hidden />;
   }
 

@@ -31,41 +31,41 @@
    ELVIX_DARK_VARS) so the isolated-theme preview path keeps working;
    seeding them here means the utilities resolve even on a bare host. */
 :root {
-  --canvas: #fafafa;
-  --surface: #ffffff;
-  --surface-2: #f4f4f5;
-  --surface-hover: rgba(0, 0, 0, 0.04);
-  --surface-active: rgba(0, 0, 0, 0.06);
-  --border: rgba(0, 0, 0, 0.08);
-  --border-strong: rgba(0, 0, 0, 0.14);
-  --fg-1: #18181b;
-  --fg-2: #52525b;
-  --fg-3: #71717a;
-  --placeholder: #a1a1aa;
-  --brand: #6d5cff;
-  --brand-fg: #ffffff;
+  --elvix-canvas: #fafafa;
+  --elvix-surface: #ffffff;
+  --elvix-surface-2: #f4f4f5;
+  --elvix-surface-hover: rgba(0, 0, 0, 0.04);
+  --elvix-surface-active: rgba(0, 0, 0, 0.06);
+  --elvix-border: rgba(0, 0, 0, 0.08);
+  --elvix-border-strong: rgba(0, 0, 0, 0.14);
+  --elvix-fg-1: #18181b;
+  --elvix-fg-2: #52525b;
+  --elvix-fg-3: #71717a;
+  --elvix-placeholder: #a1a1aa;
+  --elvix-brand: #6d5cff;
+  --elvix-brand-fg: #ffffff;
 
-  --background: var(--canvas);
-  --foreground: var(--fg-1);
+  --elvix-background: var(--elvix-canvas);
+  --elvix-foreground: var(--elvix-fg-1);
 }
 
 .dark {
-  --canvas: #0a0a0b;
-  --surface: #0d0d10;
-  --surface-2: #08080a;
-  --surface-hover: rgba(255, 255, 255, 0.04);
-  --surface-active: rgba(255, 255, 255, 0.06);
-  --border: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.12);
-  --fg-1: #fafafa;
-  --fg-2: #a1a1aa;
-  --fg-3: #71717a;
-  --placeholder: #52525b;
-  --brand: #a89cff;
-  --brand-fg: #0a0a0b;
+  --elvix-canvas: #0a0a0b;
+  --elvix-surface: #0d0d10;
+  --elvix-surface-2: #08080a;
+  --elvix-surface-hover: rgba(255, 255, 255, 0.04);
+  --elvix-surface-active: rgba(255, 255, 255, 0.06);
+  --elvix-border: rgba(255, 255, 255, 0.06);
+  --elvix-border-strong: rgba(255, 255, 255, 0.12);
+  --elvix-fg-1: #fafafa;
+  --elvix-fg-2: #a1a1aa;
+  --elvix-fg-3: #71717a;
+  --elvix-placeholder: #52525b;
+  --elvix-brand: #a89cff;
+  --elvix-brand-fg: #0a0a0b;
 
-  --background: var(--canvas);
-  --foreground: var(--fg-1);
+  --elvix-background: var(--elvix-canvas);
+  --elvix-foreground: var(--elvix-fg-1);
 }
 
 /* Token → utility bridge. Mirrors the `@theme inline` block in elvix's
@@ -74,21 +74,21 @@
    `border-border-base`, `border-border-strong`, `text-fg-1/2/3`,
    `text-placeholder`, and the brand utilities all resolve identically. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-canvas: var(--canvas);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-surface-hover: var(--surface-hover);
-  --color-surface-active: var(--surface-active);
-  --color-border-base: var(--border);
-  --color-border-strong: var(--border-strong);
-  --color-fg-1: var(--fg-1);
-  --color-fg-2: var(--fg-2);
-  --color-fg-3: var(--fg-3);
-  --color-placeholder: var(--placeholder);
-  --color-brand: var(--brand);
-  --color-brand-foreground: var(--brand-fg);
+  --color-background: var(--elvix-background);
+  --color-foreground: var(--elvix-foreground);
+  --color-canvas: var(--elvix-canvas);
+  --color-surface: var(--elvix-surface);
+  --color-surface-2: var(--elvix-surface-2);
+  --color-surface-hover: var(--elvix-surface-hover);
+  --color-surface-active: var(--elvix-surface-active);
+  --color-border-base: var(--elvix-border);
+  --color-border-strong: var(--elvix-border-strong);
+  --color-fg-1: var(--elvix-fg-1);
+  --color-fg-2: var(--elvix-fg-2);
+  --color-fg-3: var(--elvix-fg-3);
+  --color-placeholder: var(--elvix-placeholder);
+  --color-brand: var(--elvix-brand);
+  --color-brand-foreground: var(--elvix-brand-fg);
 }
 
 /* Every interactive control gets a pointer by default. Tailwind v4 removed
@@ -132,12 +132,12 @@
   gap: 12px;
   width: 100%;
   max-width: 440px;
-  border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+  border: 1px solid var(--elvix-border, rgba(0, 0, 0, 0.08));
   border-radius: 14px;
-  background: var(--surface, #ffffff);
+  background: var(--elvix-surface, #ffffff);
   padding: 22px 24px;
   box-sizing: border-box;
-  color: var(--fg-1, #18181b);
+  color: var(--elvix-fg-1, #18181b);
   font-family:
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
@@ -147,12 +147,12 @@
   font-size: 18px;
   font-weight: 600;
   line-height: 1.3;
-  color: var(--fg-1, #18181b);
+  color: var(--elvix-fg-1, #18181b);
 }
 
 .elvix-muted {
   margin: 0;
-  color: var(--fg-2, #52525b);
+  color: var(--elvix-fg-2, #52525b);
   font-size: 14px;
   line-height: 1.45;
 }
@@ -176,9 +176,9 @@
   min-height: 44px;
   padding: 10px 16px;
   border-radius: 10px;
-  border: 1px solid var(--border-strong, rgba(0, 0, 0, 0.14));
-  background: var(--surface, #ffffff);
-  color: var(--fg-1, #18181b);
+  border: 1px solid var(--elvix-border-strong, rgba(0, 0, 0, 0.14));
+  background: var(--elvix-surface, #ffffff);
+  color: var(--elvix-fg-1, #18181b);
   font-size: 14px;
   font-weight: 500;
   line-height: 1;
@@ -190,11 +190,11 @@
 }
 
 .elvix-btn:hover:not(:disabled) {
-  background: var(--surface-hover, rgba(0, 0, 0, 0.04));
+  background: var(--elvix-surface-hover, rgba(0, 0, 0, 0.04));
 }
 
 .elvix-btn:active:not(:disabled) {
-  background: var(--surface-active, rgba(0, 0, 0, 0.06));
+  background: var(--elvix-surface-active, rgba(0, 0, 0, 0.06));
 }
 
 .elvix-btn:disabled {
@@ -203,8 +203,8 @@
 }
 
 .elvix-btn-primary {
-  background: var(--elvix-primary, var(--brand, #5d4dff));
-  color: var(--elvix-on-primary, var(--brand-fg, #ffffff));
+  background: var(--elvix-primary, var(--elvix-brand, #5d4dff));
+  color: var(--elvix-on-primary, var(--elvix-brand-fg, #ffffff));
   border-color: transparent;
 }
 
@@ -213,18 +213,18 @@
 }
 
 .elvix-btn-google {
-  background: var(--surface, #ffffff);
-  color: var(--fg-1, #18181b);
+  background: var(--elvix-surface, #ffffff);
+  color: var(--elvix-fg-1, #18181b);
 }
 
 .elvix-btn-github {
-  background: var(--surface, #ffffff);
-  color: var(--fg-1, #18181b);
+  background: var(--elvix-surface, #ffffff);
+  color: var(--elvix-fg-1, #18181b);
 }
 
 .elvix-btn-passkey {
-  background: var(--surface, #ffffff);
-  color: var(--fg-1, #18181b);
+  background: var(--elvix-surface, #ffffff);
+  color: var(--elvix-fg-1, #18181b);
 }
 
 .elvix-input {
@@ -233,9 +233,9 @@
   min-height: 44px;
   padding: 10px 14px;
   border-radius: 10px;
-  border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
-  background: var(--surface, #ffffff);
-  color: var(--fg-1, #18181b);
+  border: 1px solid var(--elvix-border, rgba(0, 0, 0, 0.08));
+  background: var(--elvix-surface, #ffffff);
+  color: var(--elvix-fg-1, #18181b);
   font-size: 14px;
   line-height: 1.4;
   box-sizing: border-box;
@@ -246,12 +246,12 @@
 }
 
 .elvix-input::placeholder {
-  color: var(--placeholder, #a1a1aa);
+  color: var(--elvix-placeholder, #a1a1aa);
 }
 
 .elvix-input:focus {
   outline: none;
-  border-color: var(--elvix-primary, var(--brand, #5d4dff));
+  border-color: var(--elvix-primary, var(--elvix-brand, #5d4dff));
   box-shadow: 0 0 0 3px var(--elvix-primary-12, rgba(93, 77, 255, 0.12));
 }
 
