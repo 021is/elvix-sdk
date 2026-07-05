@@ -169,7 +169,7 @@ function DeviceApprovalInner({
           <ShieldAlert size={19} />
         </Glyph>
         <Title>Could not approve</Title>
-        <Sub>{error ?? "Something went wrong. The code may have expired."}</Sub>
+        <Sub>{humanizeApprovalError(error)}</Sub>
         <button
           type="button"
           className="elvix-btn elvix-btn-primary"
@@ -199,6 +199,27 @@ function DeviceApprovalInner({
       }}
     />
   );
+}
+
+/**
+ * Turn a raw device-approval error code into a human sentence. The backend
+ * returns machine codes (`not_found`, `expired`, …); a user should never see
+ * one. Mirrors the actionable-error work in the sign-in form (SDK 0.9.6).
+ */
+function humanizeApprovalError(code: string | null): string {
+  switch (code) {
+    case "not_found":
+      return "That code wasn't found. It may have expired or already been used. Start again from your terminal.";
+    case "expired":
+      return "That code has expired. Start the sign-in again from your terminal for a fresh one.";
+    case "already_approved":
+      return "That code was already approved. Return to your terminal — it should have continued.";
+    case "code_mismatch":
+    case "invalid":
+      return "That code doesn't look right. Check it matches your terminal exactly.";
+    default:
+      return "Something went wrong. The code may have expired — start again from your terminal.";
+  }
 }
 
 /* ── Presentational bits (state panes; the sign-in pane is ElvixSignInForm) ── */

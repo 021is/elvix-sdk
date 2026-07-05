@@ -36,4 +36,6 @@ Publishing is tag-driven via GitHub Actions: tag `v0.1.0` on main → CI publish
 
 ## Source of truth
 
-The elvix SDK components currently live in the private `021is/elvix` monorepo at `components/sdk/`. This repo's `src/react/` is the extracted public copy. Until the extraction is mechanical (script + tag-driven sync), treat the elvix monorepo as authoritative and PR changes there first.
+**THIS repo is authoritative (since 2026-07-04).** The old `components/sdk/` fork in the private `021is/elvix` monorepo was DELETED — there is no second copy to keep in sync. `src/react/` here is the single source; elvix.is consumes `@elvix.is/sdk` from npm exactly like any customer (`import { … } from "@elvix.is/sdk/react"`) and bumps the dep version. To change a component's behaviour: change it HERE, `bun run build`, tag a release, then bump the version in the elvix monorepo. Never re-fork a component back into that repo.
+
+Component reference docs (the `components/*` catalogs consumed by the docs site + MCP) currently live in the elvix monorepo at `lib/docs/components/*.ts` — update those alongside a component change so the published docs and the code stay aligned.
