@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import type { CSSProperties, ReactNode } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useElvixAnimated } from "./elvix-provider";
 import { ElvixSecuredBadge } from "./elvix-secured-badge";
 import { type ElvixSizeProps, sizeStyle } from "./size";
@@ -82,8 +83,52 @@ export function ElvixCard({
   const animated = animatedProp ?? providerAnimated;
   const sized = sizeStyle({ width, height, minWidth, maxWidth, minHeight, maxHeight });
 
+  // The border trace must start at the badge gap's RIGHT edge and end
+  // at its LEFT edge on EVERY card size. A fixed pathOffset fraction
+  // (the old 0.08) is 8% of the perimeter, which only lands at the
+  // badge on the one card width it was tuned against; taller preview
+  // cards put the start point mid-badge. So: measure the real card box
+  // + the real badge-gap box once at mount (the animation is a one-shot
+  // mount effect; later resizes don't replay it) and convert pixels to
+  // path fractions.
+  const rootRef = useRef<HTMLDivElement>(null);
+  const badgeRef = useRef<HTMLDivElement>(null);
+  const [trace, setTrace] = useState<{ start: number; drawn: number } | null>(null);
+
+  useLayoutEffect(() => {
+    if (!animated) return;
+    const root = rootRef.current;
+    if (!root) return;
+    const W = root.offsetWidth;
+    const H = root.offsetHeight;
+    if (W === 0 || H === 0) return;
+    // Geometry mirrors the motion.rect below: inset 0.75, radius 17.
+    const r = 17;
+    const w = W - 1.5;
+    const h = H - 1.5;
+    const perimeter = 2 * (w + h) - 8 * r + 2 * Math.PI * r;
+    // An SVG rounded-rect path begins at (x + r) on the TOP edge and
+    // runs clockwise. Distances along the top edge measure from there.
+    const pathStartX = 0.75 + r;
+    const badge = badgeRef.current;
+    if (!badge) {
+      setTrace({ start: 0, drawn: 1 });
+      return;
+    }
+    // The overlay div IS the border gap box (the legend clones it):
+    // left:20, width = 6 + pill + 6.
+    const gapLeft = badge.offsetLeft;
+    const gapRight = gapLeft + badge.offsetWidth;
+    const start = Math.max(0, gapRight - pathStartX) / perimeter;
+    // Draw clockwise from the gap's right edge all the way around to
+    // its left edge: everything except the gap itself.
+    const drawn = Math.max(0, perimeter - (gapRight - gapLeft)) / perimeter;
+    setTrace({ start, drawn });
+  }, [animated]);
+
   return (
     <div
+      ref={rootRef}
       className={`elvix-card ${className}`.trim()}
       style={{
         position: "relative",
@@ -119,12 +164,24 @@ export function ElvixCard({
     >
       {/* Layer 1 — static soft brand-tinted border. Visible from
           first paint when not animating; fades in after the trace
-          finishes when animating. */}
-      <motion.div
+          finishes when animating.
+
+          Rendered as a fieldset so the Secured badge sits in a REAL
+          border gap (the legend), instead of masking the border with a
+          painted rectangle. A painted mask can only guess the host's
+          background — on any non-white host it showed up as a hard-
+          cornered white patch behind the badge. The legend holds an
+          invisible zero-height clone of the badge, so the gap is
+          always exactly the badge's width and the host background
+          shows through untouched. */}
+      <motion.fieldset
         aria-hidden
         style={{
           position: "absolute",
           inset: 0,
+          margin: 0,
+          padding: 0,
+          minInlineSize: 0,
           borderRadius: "18px",
           pointerEvents: "none",
           border: "1px solid var(--elvix-primary-20, rgba(93,77,255,0.20))",
@@ -134,15 +191,44 @@ export function ElvixCard({
         transition={
           animated ? { delay: 1.2, duration: 0.18, ease: "easeOut" } : undefined
         }
-      />
+      >
+        {secured && (
+          <legend
+            style={{
+              // Mirror the badge overlay's box EXACTLY: overlay outer
+              // div sits at left:20 (from the card edge) with 6px span
+              // padding each side. The fieldset's 1px border shifts
+              // content by 1, so 19 + 1 = 20 -> gap spans the same
+              // 20..(20+6+pill+6) box as the overlay. 6px breathing on
+              // BOTH sides -- 14 here left an 11px dead gap on the left.
+              marginLeft: 19,
+              padding: "0 6px",
+              lineHeight: 0,
+            }}
+          >
+            {/* Invisible clone — sizes the gap, never seen. */}
+            <span
+              style={{
+                visibility: "hidden",
+                display: "inline-flex",
+                height: 0,
+                overflow: "hidden",
+              }}
+            >
+              <ElvixSecuredBadge variant="outline" theme="light" size="sm" />
+            </span>
+          </legend>
+        )}
+      </motion.fieldset>
 
       {/* Layer 2 — brand-coloured trace drawn around the perimeter.
-          Only mounted when animating. `pathOffset: 0.08` starts the
-          stroke just past the badge at left:20; `pathLength: 1.03`
-          overshoots slightly so the trace ends meeting the badge
-          cleanly. The whole svg fades to 0 after the draw completes,
-          handing off to Layer 1. */}
-      {animated && (
+          Only mounted when animating AND once the mount-time
+          measurement has resolved the badge gap into path fractions:
+          the stroke starts at the gap's right edge, runs clockwise,
+          and ends at the gap's left edge, exact on every card size.
+          The whole svg fades to 0 after the draw completes, handing
+          off to Layer 1. */}
+      {animated && trace && (
         <motion.svg
           aria-hidden
           style={{
@@ -173,8 +259,8 @@ export function ElvixCard({
             strokeLinecap="round"
             style={{ width: "calc(100% - 1.5px)", height: "calc(100% - 1.5px)" }}
             pathLength={1}
-            initial={{ pathLength: 0, pathOffset: 0.08 }}
-            animate={{ pathLength: 1.03, pathOffset: 0.08 }}
+            initial={{ pathLength: 0, pathOffset: trace.start }}
+            animate={{ pathLength: trace.drawn, pathOffset: trace.start }}
             transition={{ delay: 0.4, duration: 0.8, ease: [0.65, 0, 0.35, 1] }}
           />
         </motion.svg>
@@ -188,6 +274,7 @@ export function ElvixCard({
           `translateY(-50%)` and drop the badge below the border. */}
       {secured && (
         <div
+          ref={badgeRef}
           style={{
             position: "absolute",
             top: 0,
@@ -202,7 +289,9 @@ export function ElvixCard({
               display: "inline-flex",
               alignItems: "center",
               padding: "0 6px",
-              background: "var(--elvix-card-bg-cutout, var(--elvix-canvas, white))",
+              // No painted background: the border has a REAL gap here
+              // (the fieldset legend below), so the host background
+              // shows through cleanly on any surface.
             }}
             initial={animated ? { opacity: 0 } : false}
             animate={animated ? { opacity: 1 } : undefined}
