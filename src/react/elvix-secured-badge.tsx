@@ -14,7 +14,10 @@ import { type ElvixSizeProps, sizeStyle } from "./size";
  * inherits the host page's contrast) so it paints right on light or dark.
  */
 
-const ELVIX_URL = "https://elvix.is";
+// ?ref=badge lets elvix.is greet badge-clickers accurately ("You clicked a
+// Secured by elvix badge") and measure the badge funnel. Direct visitors
+// (no ref) get neutral marketing copy instead.
+const ELVIX_URL = "https://elvix.is/?ref=badge";
 
 export type ElvixSecuredBadgeVariant = "white" | "dark" | "outline";
 export type ElvixSecuredBadgeSize = "sm" | "md" | "lg";

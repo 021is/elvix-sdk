@@ -13,6 +13,16 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.10.1] — 2026-07-20
+
+### Fixed
+
+- **`<ElvixCard>` border-trace now starts at the badge gap on every card size.** The mount animation used a fixed `pathOffset` (8% of the perimeter), which only lined up with the "Secured by elvix" badge on the one card width it was tuned against; taller cards started the trace mid-badge. It now measures the real card box and badge-gap at mount and converts pixels to path fractions, so the trace starts at the gap's right edge and closes at its left edge regardless of size. Cards without the badge draw the full perimeter.
+
+### Changed
+
+- **`<ElvixSecuredBadge>` links to `https://elvix.is/?ref=badge`.** Lets elvix.is greet badge-clickers accurately and measure the badge funnel; direct visitors still get neutral copy.
+
 ## [0.9.0] — 2026-06-16
 
 ### Added
