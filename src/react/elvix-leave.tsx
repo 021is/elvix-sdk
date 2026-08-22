@@ -32,7 +32,8 @@ import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowUpRight, CheckCircle2, Lock, LogOut, Trash2, Undo2 } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Lock, LogOut, Trash2, Undo2 } from "lucide-react";
+import { DonePane } from "./done-pane";
 import { useEffect, useState } from "react";
 
 const State = {
@@ -417,7 +418,7 @@ function ElvixLeaveInner({
             exit="exit"
             transition={paneTransition}
           >
-            <DonePane appName={appName} kind={isDeleted ? "left" : "restored"} />
+            <LeaveDonePane appName={appName} kind={isDeleted ? "left" : "restored"} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -628,7 +629,7 @@ function OwnerLockedPane({
   );
 }
 
-function DonePane({
+function LeaveDonePane({
   appName,
   kind,
 }: {
@@ -636,37 +637,18 @@ function DonePane({
   kind: State;
 }) {
   const t = useT();
+  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
+  const left = kind === "left";
   return (
-    <div className="flex flex-col items-center text-center gap-4 py-2">
-      <motion.span
-        initial={{ scale: 0.6, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.34, ease: [0.22, 0.61, 0.36, 1] }}
-        className="size-12 rounded-full inline-flex items-center justify-center"
-        style={{ background: "var(--elvix-primary-12)" }}
-      >
-        {/* LEGACY: spine-lint-disable-next-line spine/enum-over-string */}
-        {kind === "left" ? (
-          <Trash2 className="size-7 text-red-500" strokeWidth={2.2} />
-        ) : (
-          <CheckCircle2
-            className="size-7"
-            strokeWidth={2.2}
-            style={{ color: "var(--elvix-primary-strong)" }}
-          />
-        )}
-      </motion.span>
-      <div className="space-y-1 max-w-[320px]">
-        <div className="text-[15px] font-semibold tracking-tight text-fg-1">
-          {kind === "left"
-            ? t("leave.doneLeftTitle", { app: appName })
-            : t("leave.doneRestoredTitle", { app: appName })}
-        </div>
-        <div className="text-[12.5px] text-fg-3 leading-[1.55]">
-          {kind === "left" ? t("leave.doneLeftBody") : t("leave.doneRestoredBody")}
-        </div>
-      </div>
-    </div>
+    <DonePane
+      icon={left ? <Trash2 className="size-7 text-red-500" strokeWidth={2.2} /> : undefined}
+      title={
+        left
+          ? t("leave.doneLeftTitle", { app: appName })
+          : t("leave.doneRestoredTitle", { app: appName })
+      }
+      body={left ? t("leave.doneLeftBody") : t("leave.doneRestoredBody")}
+    />
   );
 }
 

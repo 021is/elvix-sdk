@@ -31,13 +31,13 @@ const PRIVACY_EMAIL = "privacy@elvix.is";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
-  CheckCircle2,
   ChevronRight,
   Loader2,
   Mail,
   RefreshCw,
   Shield,
 } from "lucide-react";
+import { DonePane } from "./done-pane";
 import { useEffect, useState } from "react";
 
 export type ExportTarget = { kind: "identity" } | { kind: "app"; appId: string; appName: string };
@@ -161,7 +161,7 @@ function ElvixExportImpl({
             exit="exit"
             transition={SLIDE_T}
           >
-            <DonePane deliveredTo={doneInfo?.deliveredTo ?? resolvedEmail} />
+            <ExportDonePane deliveredTo={doneInfo?.deliveredTo ?? resolvedEmail} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -553,38 +553,14 @@ function OtpPane({
 //   4. done
 // ─────────────────────────────────────────────────────────────────
 
-function DonePane({ deliveredTo }: { deliveredTo: string }) {
+function ExportDonePane({ deliveredTo }: { deliveredTo: string }) {
   const t = useT();
   return (
-    <div className="flex flex-col items-center text-center gap-4 py-2">
-      <motion.span
-        initial={{ scale: 0.6, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.34, ease: [0.22, 0.61, 0.36, 1] }}
-        className="size-12 rounded-full inline-flex items-center justify-center"
-        style={{ background: "var(--elvix-primary-12)" }}
-      >
-        <CheckCircle2
-          className="size-7"
-          strokeWidth={2.2}
-          style={{ color: "var(--elvix-primary-strong)" }}
-        />
-      </motion.span>
-      <div className="space-y-1 max-w-[340px]">
-        <div className="text-[15px] font-semibold tracking-tight text-fg-1">
-          {t("export.doneHeading")}
-        </div>
-        <div className="text-[12.5px] text-fg-3 leading-[1.55]">
-          {t("export.doneInboxBody", { email: deliveredTo })}
-        </div>
-      </div>
-      <a
-        href="/account/export"
-        className="text-[12.5px] font-medium text-fg-2 hover:text-fg-1 underline underline-offset-4 cursor-pointer"
-      >
-        {t("export.backToExports")}
-      </a>
-    </div>
+    <DonePane
+      title={t("export.doneHeading")}
+      body={t("export.doneInboxBody", { email: deliveredTo })}
+      action={{ label: t("export.backToExports"), href: "/account/export" }}
+    />
   );
 }
 

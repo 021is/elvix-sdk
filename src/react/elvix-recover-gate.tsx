@@ -21,7 +21,8 @@
 
 import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle2, EyeOff, LogOut, Undo2, X } from "lucide-react";
+import { EyeOff, LogOut, Undo2, X } from "lucide-react";
+import { DonePane } from "./done-pane";
 import { useState } from "react";
 import { authInit } from "./session";
 
@@ -188,7 +189,7 @@ export function ElvixRecoverGate({
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.24, ease: [0.22, 0.61, 0.36, 1] }}
           >
-            <DonePane
+            <RecoverDonePane
               icon="check"
               title={t("lifecycle.recoverRestoredTitle", { app: appName })}
               body={t("lifecycle.recoverRestoredBody")}
@@ -203,7 +204,7 @@ export function ElvixRecoverGate({
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.24, ease: [0.22, 0.61, 0.36, 1] }}
           >
-            <DonePane
+            <RecoverDonePane
               icon="logout"
               title={t("lifecycle.recoverSignedOutTitle")}
               body={t("lifecycle.recoverSignedOutBody", { app: appName })}
@@ -319,7 +320,7 @@ function DecidePane({
   );
 }
 
-function DonePane({
+function RecoverDonePane({
   icon,
   title,
   body,
@@ -329,28 +330,13 @@ function DonePane({
   body: string;
 }) {
   return (
-    <div className="flex flex-col items-center text-center gap-4 py-2">
-      <motion.span
-        initial={{ scale: 0.6, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.34, ease: [0.22, 0.61, 0.36, 1] }}
-        className="size-12 rounded-full inline-flex items-center justify-center"
-        style={{ background: "var(--elvix-primary-12)" }}
-      >
-        {icon === "check" ? (
-          <CheckCircle2
-            className="size-7"
-            strokeWidth={2.2}
-            style={{ color: "var(--elvix-primary-strong)" }}
-          />
-        ) : (
-          <LogOut className="size-7 text-fg-2" strokeWidth={2.2} />
-        )}
-      </motion.span>
-      <div className="space-y-1 max-w-[320px]">
-        <div className="text-[15px] font-semibold tracking-tight text-fg-1">{title}</div>
-        <div className="text-[12.5px] text-fg-3 leading-[1.55]">{body}</div>
-      </div>
-    </div>
+    <DonePane
+      icon={
+        // LEGACY: spine-lint-disable-next-line spine/enum-over-string
+        icon === "check" ? undefined : <LogOut className="size-7 text-fg-2" strokeWidth={2.2} />
+      }
+      title={title}
+      body={body}
+    />
   );
 }

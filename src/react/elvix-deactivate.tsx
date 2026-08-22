@@ -27,7 +27,8 @@ import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provid
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, CheckCircle2, Eye, EyeOff, Loader2, RefreshCw } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Loader2, RefreshCw } from "lucide-react";
+import { DonePane } from "./done-pane";
 import { useEffect, useState } from "react";
 import { useT } from "../locale/use-t";
 
@@ -388,7 +389,7 @@ function ElvixDeactivateInner({
             exit="exit"
             transition={paneTransition}
           >
-            <DonePane
+            <DeactivateDonePane
               appName={appName}
               kind={isInactive ? "deactivated" : "reactivated"}
               onAgain={() => {
@@ -553,7 +554,7 @@ function ReactivatePane({
   );
 }
 
-function DonePane({
+function DeactivateDonePane({
   appName,
   kind,
   onAgain,
@@ -563,42 +564,23 @@ function DonePane({
   onAgain: () => void;
 }) {
   const t = useT();
+  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
+  const deactivated = kind === "deactivated";
   return (
-    <div className="flex flex-col items-center text-center gap-4 py-2">
-      <motion.span
-        initial={{ scale: 0.6, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.34, ease: [0.22, 0.61, 0.36, 1] }}
-        className="size-12 rounded-full inline-flex items-center justify-center"
-        style={{ background: "var(--elvix-primary-12)" }}
-      >
-        <CheckCircle2
-          className="size-7"
-          strokeWidth={2.2}
-          style={{ color: "var(--elvix-primary-strong)" }}
-        />
-      </motion.span>
-      <div className="space-y-1 max-w-[300px]">
-        <div className="text-[15px] font-semibold tracking-tight text-fg-1">
-          {/* LEGACY: spine-lint-disable-next-line spine/enum-over-string */}
-          {kind === "deactivated"
-            ? t("deactivate.doneDeactivatedTitle", { app: appName })
-            : t("deactivate.doneReactivatedTitle", { app: appName })}
-        </div>
-        <div className="text-[12.5px] text-fg-3 leading-[1.55]">
-          {kind === "deactivated"
-            ? t("deactivate.doneDeactivatedBody")
-            : t("deactivate.doneReactivatedBody")}
-        </div>
-      </div>
-      <button
-        type="button"
-        onClick={onAgain}
-        className="text-[12.5px] font-medium text-fg-2 hover:text-fg-1 underline underline-offset-4 cursor-pointer"
-      >
-        {kind === "deactivated" ? t("deactivate.reactivateAgain") : t("deactivate.deactivateAgain")}
-      </button>
-    </div>
+    <DonePane
+      title={
+        deactivated
+          ? t("deactivate.doneDeactivatedTitle", { app: appName })
+          : t("deactivate.doneReactivatedTitle", { app: appName })
+      }
+      body={
+        deactivated ? t("deactivate.doneDeactivatedBody") : t("deactivate.doneReactivatedBody")
+      }
+      action={{
+        label: deactivated ? t("deactivate.reactivateAgain") : t("deactivate.deactivateAgain"),
+        onClick: onAgain,
+      }}
+    />
   );
 }
 

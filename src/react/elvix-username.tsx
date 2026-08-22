@@ -43,12 +43,12 @@ import {
   ArrowUpRight,
   AtSign,
   Check,
-  CheckCircle2,
   Loader2,
   Mail,
   ShieldOff,
   X,
 } from "lucide-react";
+import { DonePane } from "./done-pane";
 import { useEffect, useRef, useState } from "react";
 
 const DEBOUNCE_MS = 280;
@@ -367,7 +367,7 @@ function ElvixUsernameInner({
             exit="exit"
             transition={paneTransition}
           >
-            <DonePane
+            <UsernameDonePane
               username={persisted ?? normalised}
               appName={appName}
               onChangeAgain={goEditAgain}
@@ -493,7 +493,7 @@ function ConfirmPane({
   );
 }
 
-function DonePane({
+function UsernameDonePane({
   username,
   appName,
   onChangeAgain,
@@ -504,34 +504,11 @@ function DonePane({
 }) {
   const t = useT();
   return (
-    <div className="flex flex-col items-center text-center gap-4 py-2">
-      <motion.span
-        initial={{ scale: 0.6, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.34, ease: [0.22, 0.61, 0.36, 1] }}
-        className="size-12 rounded-full inline-flex items-center justify-center"
-        style={{ background: "var(--elvix-primary-12)" }}
-      >
-        <CheckCircle2
-          className="size-7"
-          strokeWidth={2.2}
-          style={{ color: "var(--elvix-primary-strong)" }}
-        />
-      </motion.span>
-      <div className="space-y-1">
-        <div className="text-[15px] font-semibold tracking-tight text-fg-1">
-          {t("username.doneTitle", { username, appName })}
-        </div>
-        <div className="text-[12.5px] text-fg-3 leading-[1.55]">{t("username.doneBody")}</div>
-      </div>
-      <button
-        type="button"
-        onClick={onChangeAgain}
-        className="text-[12.5px] font-medium text-fg-2 hover:text-fg-1 underline underline-offset-4 cursor-pointer"
-      >
-        {t("username.changeAgain")}
-      </button>
-    </div>
+    <DonePane
+      title={t("username.doneTitle", { username, appName })}
+      body={t("username.doneBody")}
+      action={{ label: t("username.changeAgain"), onClick: onChangeAgain }}
+    />
   );
 }
 
