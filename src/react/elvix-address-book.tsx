@@ -201,14 +201,6 @@ export function ElvixAddressBook({
   // to the opposite side. Old "per-Pane direction prop" approach
   // produced inconsistent transitions; this is the standard pattern.
   const [navDir, setNavDir] = useState<1 | -1>(1);
-  const goForward = useCallback((next: View) => {
-    setNavDir(1);
-    setView(next);
-  }, []);
-  const goBack = useCallback((next: View) => {
-    setNavDir(-1);
-    setView(next);
-  }, []);
 
   // Wizard state carried through the multi-step add flow.
   const [searchSeed, setSearchSeed] = useState<PlaceDetails | null>(null);
@@ -273,9 +265,6 @@ export function ElvixAddressBook({
   const advanceToAptFloor = useCallback(() => {
     setPickedLine2("");
     setView("apt-floor");
-  }, []);
-  const advanceToRecipientChoice = useCallback(() => {
-    setView("recipient-choice");
   }, []);
   const onConfirmAptFloor = useCallback(
     (line2: string | null) => {
