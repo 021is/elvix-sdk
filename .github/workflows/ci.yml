@@ -21,6 +21,11 @@ jobs:
         with:
           bun-version: 1.3.11
       - run: bun install --frozen-lockfile
+      # Formatting plus the size / complexity / dead-code gate. First because
+      # it is the fastest of the four and catches the cheapest mistakes.
+      # Nothing measured function length before this, which is how one
+      # component reached 3,292 lines without anyone noticing.
+      - run: bun run lint
       - run: bun run typecheck
       - run: bun run build
       - run: bun test

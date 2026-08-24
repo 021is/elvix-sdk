@@ -51,7 +51,14 @@ describe("verifyElvixToken", () => {
   });
 
   it("POSTs the token as a Bearer to /api/v1/session", async () => {
-    mockJson(200, { ok: true, userId: "u_1", email: "a@b.test", roles: [], scopes: [], memberships: [] });
+    mockJson(200, {
+      ok: true,
+      userId: "u_1",
+      email: "a@b.test",
+      roles: [],
+      scopes: [],
+      memberships: [],
+    });
     await verifyElvixToken("session_tok");
     const [url, init] = lastCall() as [string, RequestInit];
     expect(String(url)).toContain("/api/v1/session");
@@ -87,7 +94,14 @@ describe("verifyElvixToken", () => {
   });
 
   it("honours an override baseUrl", async () => {
-    mockJson(200, { ok: true, userId: "u_x", email: "x@y.test", roles: [], scopes: [], memberships: [] });
+    mockJson(200, {
+      ok: true,
+      userId: "u_x",
+      email: "x@y.test",
+      roles: [],
+      scopes: [],
+      memberships: [],
+    });
     await verifyElvixToken("tok", { baseUrl: "https://staging.elvix.is" });
     expect(String(lastCall()[0])).toContain("staging.elvix.is");
   });

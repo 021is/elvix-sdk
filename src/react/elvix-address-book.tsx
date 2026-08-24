@@ -33,13 +33,6 @@
  * grid reflows but the outer frame is theirs to size.
  */
 
-import { MaybeCard } from "./elvix-card";
-import { ElvixInput } from "./elvix-input";
-import { ElvixSaveButton } from "./elvix-save-button";
-import { useElvixContext } from "./elvix-provider";
-import { authInit, isSameOrigin } from "./session";
-import type { AddressInput, AddressKind, AddressRecord } from "./address-schema";
-import { unwrapEnvelope } from "./spine-fetch";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -56,13 +49,19 @@ import {
 } from "lucide-react";
 import { type CSSProperties, Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useT } from "../locale/use-t";
+import type { AddressInput, AddressKind, AddressRecord } from "./address-schema";
+import { MaybeCard } from "./elvix-card";
+import { ElvixInput } from "./elvix-input";
+import { useElvixContext } from "./elvix-provider";
+import { ElvixSaveButton } from "./elvix-save-button";
+import { authInit, isSameOrigin } from "./session";
+import { unwrapEnvelope } from "./spine-fetch";
 
 const ReturnTo = {
   LIST: "list",
   DETAIL: "detail",
 } as const;
 type ReturnTo = (typeof ReturnTo)[keyof typeof ReturnTo];
-
 
 export type ElvixAddressBookResult =
   | { ok: true; count: number }
@@ -581,7 +580,9 @@ export function ElvixAddressBook({
           <AnimatePresence custom={navDir} initial={false}>
             {loading ? (
               <Pane key="loading" dir={navDir}>
-                <div className="grid h-full place-items-center text-fg-3 text-sm">{t("common.loading")}</div>
+                <div className="grid h-full place-items-center text-fg-3 text-sm">
+                  {t("common.loading")}
+                </div>
               </Pane>
             ) : view === "empty" ? (
               <Pane key="empty" dir={navDir}>
@@ -806,9 +807,7 @@ function EmptyState({ kind, onAdd }: { kind: AddressKind; onAdd: () => void }) {
             {kind === "billing" ? t("addressBook.addBilling") : t("addressBook.addShipping")}
           </div>
           <div className="mt-1 text-[12px] text-fg-3">
-            {kind === "billing"
-              ? t("addressBook.useForBilling")
-              : t("addressBook.useForShipping")}
+            {kind === "billing" ? t("addressBook.useForBilling") : t("addressBook.useForShipping")}
           </div>
         </div>
       </button>
@@ -917,7 +916,9 @@ function ListView({
                     ? "text-[var(--elvix-primary)] hover:bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)]"
                     : "text-fg-3 hover:bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)] hover:text-[var(--elvix-primary)]")
                 }
-                aria-label={a.isDefault ? t("addressBook.removeDefault") : t("addressBook.setAsDefault")}
+                aria-label={
+                  a.isDefault ? t("addressBook.removeDefault") : t("addressBook.setAsDefault")
+                }
                 title={a.isDefault ? t("addressBook.removeDefault") : t("addressBook.setAsDefault")}
               >
                 <Star className={a.isDefault ? "size-4 fill-current" : "size-4"} />
@@ -1251,7 +1252,9 @@ function RecipientChoiceView({
               <User className="size-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <div className="truncate text-[14px] font-semibold text-fg-1">{t("entityKind.me")}</div>
+              <div className="truncate text-[14px] font-semibold text-fg-1">
+                {t("entityKind.me")}
+              </div>
               <div className="truncate text-[12.5px] text-fg-3">{userDisplayName}</div>
             </div>
             <ChevronRight className="mt-1 size-4 shrink-0 text-fg-3 transition group-hover:translate-x-0.5 group-hover:text-[var(--elvix-primary)]" />
@@ -1267,7 +1270,9 @@ function RecipientChoiceView({
             <UserPlus className="size-4" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="truncate text-[14px] font-semibold text-fg-1">{t("entityKind.someoneElse")}</div>
+            <div className="truncate text-[14px] font-semibold text-fg-1">
+              {t("entityKind.someoneElse")}
+            </div>
             <div className="truncate text-[12.5px] text-fg-3">
               {kind === "billing"
                 ? t("addressBook.someoneElseSubtitleBilling")
@@ -1286,7 +1291,9 @@ function RecipientChoiceView({
             <Building2 className="size-4" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="truncate text-[14px] font-semibold text-fg-1">{t("entityKind.business")}</div>
+            <div className="truncate text-[14px] font-semibold text-fg-1">
+              {t("entityKind.business")}
+            </div>
             <div className="truncate text-[12.5px] text-fg-3">
               {kind === "billing"
                 ? t("addressBook.businessSubtitleBilling")
@@ -1350,7 +1357,9 @@ function RecipientCustomView({
       </div>
 
       <label className="block">
-        <span className="mb-1.5 block text-[13px] font-medium text-fg-2">{t("identity.fullName")}</span>
+        <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
+          {t("identity.fullName")}
+        </span>
         <ElvixInput
           type="text"
           value={name}
@@ -1424,7 +1433,9 @@ function RecipientBusinessNameView({
       </div>
 
       <label className="block">
-        <span className="mb-1.5 block text-[13px] font-medium text-fg-2">{t("legalEntities.companyName")}</span>
+        <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
+          {t("legalEntities.companyName")}
+        </span>
         <ElvixInput
           type="text"
           value={company}
@@ -1491,9 +1502,7 @@ function RecipientBusinessContactView({
           {t("addressBook.contactAtCompanyTitle", { company: companyName })}
         </h2>
         <p className="mt-1 text-[12.5px] text-fg-3">
-          {kind === "billing"
-            ? t("addressBook.attnBodyInvoice")
-            : t("addressBook.attnBodyPackage")}
+          {kind === "billing" ? t("addressBook.attnBodyInvoice") : t("addressBook.attnBodyPackage")}
         </p>
       </div>
 
@@ -1590,8 +1599,12 @@ function NoteChoiceView({
             <Plus className="size-4" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="truncate text-[14px] font-semibold text-fg-1">{t("addressBook.noteYesTitle")}</div>
-            <div className="truncate text-[12.5px] text-fg-3">{t("addressBook.noteYesSubtitle")}</div>
+            <div className="truncate text-[14px] font-semibold text-fg-1">
+              {t("addressBook.noteYesTitle")}
+            </div>
+            <div className="truncate text-[12.5px] text-fg-3">
+              {t("addressBook.noteYesSubtitle")}
+            </div>
           </div>
           <ChevronRight className="mt-1 size-4 shrink-0 text-fg-3 transition group-hover:translate-x-0.5 group-hover:text-[var(--elvix-primary)]" />
         </button>
@@ -1605,8 +1618,12 @@ function NoteChoiceView({
             <ChevronRight className="size-4" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="truncate text-[14px] font-semibold text-fg-1">{t("addressBook.noteNoTitle")}</div>
-            <div className="truncate text-[12.5px] text-fg-3">{t("addressBook.noteNoSubtitle")}</div>
+            <div className="truncate text-[14px] font-semibold text-fg-1">
+              {t("addressBook.noteNoTitle")}
+            </div>
+            <div className="truncate text-[12.5px] text-fg-3">
+              {t("addressBook.noteNoSubtitle")}
+            </div>
           </div>
           <ChevronRight className="mt-1 size-4 shrink-0 text-fg-3 transition group-hover:translate-x-0.5 group-hover:text-[var(--elvix-primary)]" />
         </button>
@@ -1889,9 +1906,7 @@ function DetailView({
                   : "size-3.5"
               }
             />
-            {address.isDefault
-              ? t("addressBook.removeDefault")
-              : t("addressBook.setAsDefault")}
+            {address.isDefault ? t("addressBook.removeDefault") : t("addressBook.setAsDefault")}
           </button>
         </div>
       </div>
@@ -1978,9 +1993,7 @@ function DefaultConfirmView({
   }
 
   const verb = setting ? t("addressBook.setAsDefault") : t("addressBook.removeDefault");
-  const title = setting
-    ? t("addressBook.setDefaultTitle")
-    : t("addressBook.removeDefaultTitle");
+  const title = setting ? t("addressBook.setDefaultTitle") : t("addressBook.removeDefaultTitle");
   const subtitle = setting
     ? t("addressBook.setDefaultSubtitle")
     : t("addressBook.removeDefaultSubtitle");
@@ -2254,9 +2267,7 @@ function ReviewView({
           {t("addressBook.changeAddress")}
         </button>
         <div className="ml-auto text-[12px] text-fg-3">
-          {kind === "billing"
-            ? t("addressBook.reviewBilling")
-            : t("addressBook.reviewShipping")}
+          {kind === "billing" ? t("addressBook.reviewBilling") : t("addressBook.reviewShipping")}
         </div>
       </div>
 

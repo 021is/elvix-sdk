@@ -16,41 +16,41 @@
  * because it cascades. Other fields PATCH only themselves.
  */
 
-import { MaybeCard } from "./elvix-card";
-import { ElvixCountrySelect } from "./elvix-country-select";
-import { ElvixInput } from "./elvix-input";
-import { ElvixSaveButton } from "./elvix-save-button";
-import { useElvixContext } from "./elvix-provider";
-import { authInit } from "./session";
-import { findCountry } from "./countries";
-import { LANGUAGES, findLanguage } from "./languages";
-import type { RegionPatchInput, RegionRecord } from "./region-schema";
-import {
-  CURRENCIES,
-  DATE_FORMATS,
-  DATE_FORMAT_META,
-  DAY_OF_WEEK_META,
-  type DateFormat,
-  type DayOfWeek,
-  MEASUREMENT_META,
-  MEASUREMENT_SYSTEMS,
-  type MeasurementSystem,
-  NUMBER_FORMATS,
-  NUMBER_FORMAT_META,
-  type NumberFormat,
-  TIME_FORMATS,
-  TIME_FORMAT_META,
-  type TimeFormat,
-  defaultsFor,
-  findCurrency,
-  prettyTimeZone,
-  supportedTimeZones,
-} from "./regions";
-import { unwrapEnvelope } from "./spine-fetch";
-import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Check, ChevronRight, Globe, Loader2, Pencil, Search } from "lucide-react";
 import { type CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
+import { useT } from "../locale/use-t";
+import { findCountry } from "./countries";
+import { MaybeCard } from "./elvix-card";
+import { ElvixCountrySelect } from "./elvix-country-select";
+import { ElvixInput } from "./elvix-input";
+import { useElvixContext } from "./elvix-provider";
+import { ElvixSaveButton } from "./elvix-save-button";
+import { findLanguage, LANGUAGES } from "./languages";
+import type { RegionPatchInput, RegionRecord } from "./region-schema";
+import {
+  CURRENCIES,
+  DATE_FORMAT_META,
+  DATE_FORMATS,
+  DAY_OF_WEEK_META,
+  type DateFormat,
+  type DayOfWeek,
+  defaultsFor,
+  findCurrency,
+  MEASUREMENT_META,
+  MEASUREMENT_SYSTEMS,
+  type MeasurementSystem,
+  NUMBER_FORMAT_META,
+  NUMBER_FORMATS,
+  type NumberFormat,
+  prettyTimeZone,
+  supportedTimeZones,
+  TIME_FORMAT_META,
+  TIME_FORMATS,
+  type TimeFormat,
+} from "./regions";
+import { authInit } from "./session";
+import { unwrapEnvelope } from "./spine-fetch";
 
 // ─── Public types ────────────────────────────────────────────────────
 
@@ -100,13 +100,7 @@ const paneVariants = {
 const FADE_MASK =
   "linear-gradient(to bottom, transparent 0, rgba(0,0,0,0.4) 12px, black 28px, black calc(100% - 28px), rgba(0,0,0,0.4) calc(100% - 12px), transparent 100%)";
 
-function Pane({
-  children,
-  fadeEdges = false,
-}: {
-  children: React.ReactNode;
-  fadeEdges?: boolean;
-}) {
+function Pane({ children, fadeEdges = false }: { children: React.ReactNode; fadeEdges?: boolean }) {
   return (
     <motion.div
       variants={paneVariants}
@@ -254,7 +248,9 @@ export function ElvixRegion({
           <AnimatePresence initial={false}>
             {view === "loading" || view === ("decide" as View) ? (
               <Pane key="loading">
-                <div className="grid h-full place-items-center text-fg-3 text-sm">{t("common.loading")}</div>
+                <div className="grid h-full place-items-center text-fg-3 text-sm">
+                  {t("common.loading")}
+                </div>
               </Pane>
             ) : view === "empty" ? (
               <Pane key="empty">
@@ -1033,13 +1029,7 @@ function SavingView() {
 
 // ─── Shared chrome primitives ────────────────────────────────────────
 
-function WizardHeader({
-  onBack,
-  backLabel,
-}: {
-  onBack: () => void;
-  backLabel?: string;
-}) {
+function WizardHeader({ onBack, backLabel }: { onBack: () => void; backLabel?: string }) {
   const t = useT();
   return (
     <div className="flex items-center pt-2">
@@ -1055,13 +1045,7 @@ function WizardHeader({
   );
 }
 
-function Heading({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+function Heading({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <h2 className={"mt-2 text-[18px] font-semibold leading-tight text-fg-1 " + className}>
       {children}

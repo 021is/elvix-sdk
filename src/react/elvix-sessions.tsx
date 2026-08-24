@@ -24,10 +24,6 @@ import { MaybeCard } from "./elvix-card";
  * hook for refetch.
  */
 
-import { useElvixContext } from "./elvix-provider";
-import { authInit } from "./session";
-import { unwrapEnvelope } from "./spine-fetch";
-import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -43,8 +39,12 @@ import {
   Tablet,
   Trash2,
 } from "lucide-react";
-import { DonePane } from "./done-pane";
 import { useEffect, useState } from "react";
+import { useT } from "../locale/use-t";
+import { DonePane } from "./done-pane";
+import { useElvixContext } from "./elvix-provider";
+import { authInit } from "./session";
+import { unwrapEnvelope } from "./spine-fetch";
 
 type TFunction = (key: string, params?: Record<string, string | number>) => string;
 
@@ -60,7 +60,6 @@ const RevokingMode = {
   ALL: "all",
 } as const;
 type RevokingMode = (typeof RevokingMode)[keyof typeof RevokingMode];
-
 
 const DeviceKind = {
   DESKTOP: "desktop",
@@ -208,9 +207,7 @@ function ElvixSessionsImpl({
       onResult?.({
         ok: true,
         action:
-          mode === "all"
-            ? ElvixSessionsAction.SIGN_OUT_ALL
-            : ElvixSessionsAction.SIGN_OUT_OTHERS,
+          mode === "all" ? ElvixSessionsAction.SIGN_OUT_ALL : ElvixSessionsAction.SIGN_OUT_OTHERS,
         ended: body.ended ?? 0,
       });
       if (mode === "all") {
@@ -420,9 +417,7 @@ function ListPane({
           className="w-full inline-flex items-center justify-center gap-1.5 h-10 rounded-[10px] text-[12.5px] font-medium text-fg-2 hover:text-fg-1 bg-surface-hover border border-border-base transition cursor-pointer"
         >
           <LogOut className="size-3.5" />
-          {othersCount === 0
-            ? t("sessions.massRevokeCtaSelf")
-            : t("sessions.massRevokeCtaOpen")}
+          {othersCount === 0 ? t("sessions.massRevokeCtaSelf") : t("sessions.massRevokeCtaOpen")}
         </button>
       )}
     </div>
@@ -518,9 +513,7 @@ function ConfirmPane({
                 ? t("sessions.signOutAllCtaSelf")
                 : t("sessions.signOutAllCtaIncludingThis")}
             </span>
-            <span className="text-[11px] opacity-90">
-              {t("sessions.signOutAllRedirectHint")}
-            </span>
+            <span className="text-[11px] opacity-90">{t("sessions.signOutAllRedirectHint")}</span>
           </div>
           {revokingMode === "all" ? (
             <Loader2 className="size-4 animate-spin shrink-0" />
@@ -539,13 +532,7 @@ function ConfirmPane({
   );
 }
 
-function SessionsDonePane({
-  endedCount,
-  onBack,
-}: {
-  endedCount: number;
-  onBack: () => void;
-}) {
+function SessionsDonePane({ endedCount, onBack }: { endedCount: number; onBack: () => void }) {
   const t = useT();
   return (
     <DonePane

@@ -208,7 +208,8 @@ const PALETTE: Record<ElvixSignOutTone, Record<ElvixSignOutVariant, Record<Theme
       auto: "bg-[#0a0a0b] text-white ring-1 ring-black/10 hover:bg-[#1a1a1f]",
     },
     outline: {
-      light: "bg-white text-[#0a0a0b] border border-black/15 hover:bg-zinc-50 hover:border-black/25",
+      light:
+        "bg-white text-[#0a0a0b] border border-black/15 hover:bg-zinc-50 hover:border-black/25",
       dark: "bg-white/[0.04] text-white border border-white/20 hover:bg-white/[0.08] hover:border-white/30",
       auto: "bg-transparent text-[#0a0a0b] border border-black/15 hover:bg-black/[0.04] dark:bg-white/[0.04] dark:text-white dark:border-white/20 dark:hover:bg-white/[0.08]",
     },
@@ -373,11 +374,11 @@ export function ElvixSignOutButton({
   // Swap the leading glyph for an animated spinner while the sign-out
   // is in flight so the click reads as ack'd immediately instead of
   // looking dead until navigation happens.
-  const iconNode = isBusy
-    ? <Loader2 size={iconPx} strokeWidth={2} className="animate-spin" aria-hidden />
-    : showIcon
-      ? (icon?.(iconPx) ?? <LogOut size={iconPx} strokeWidth={2} aria-hidden />)
-      : null;
+  const iconNode = isBusy ? (
+    <Loader2 size={iconPx} strokeWidth={2} className="animate-spin" aria-hidden />
+  ) : showIcon ? (
+    (icon?.(iconPx) ?? <LogOut size={iconPx} strokeWidth={2} aria-hidden />)
+  ) : null;
 
   const liveLabel = isBusy ? "Signing out…" : resolvedLabel;
 

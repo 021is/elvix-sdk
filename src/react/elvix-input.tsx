@@ -14,7 +14,7 @@
  * the `dark` class the provider applies.
  */
 
-import { type InputHTMLAttributes, forwardRef } from "react";
+import { forwardRef, type InputHTMLAttributes } from "react";
 
 export type ElvixInputProps = InputHTMLAttributes<HTMLInputElement> & {
   hasError?: boolean;

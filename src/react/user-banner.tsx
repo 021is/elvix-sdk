@@ -6,8 +6,8 @@
  * sensible empty-state when no variants exist.
  */
 
-import { resolveBanner } from "./banner";
 import { useMemo } from "react";
+import { resolveBanner } from "./banner";
 
 export type UserBannerProps = {
   appSlug: string;

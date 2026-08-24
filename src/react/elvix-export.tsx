@@ -17,28 +17,22 @@ import { MaybeCard } from "./elvix-card";
  * and `onFail(error)` host hooks, brand from CSS vars only.
  */
 
-import { OtpInput } from "./otp-input";
-import { ElvixSaveButton } from "./elvix-save-button";
+import { useT } from "../locale/use-t";
 import { useElvixAppContext, useElvixContext } from "./elvix-provider";
+import { ElvixSaveButton } from "./elvix-save-button";
+import { OtpInput } from "./otp-input";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
-import { useT } from "../locale/use-t";
 
 /** elvix privacy contact surfaced on the export email-failure path. In the
  *  monorepo this is `PRIVACY_EMAIL` (NEXT_PUBLIC_PRIVACY_EMAIL); here it's the
  *  canonical published value. */
 const PRIVACY_EMAIL = "privacy@elvix.is";
+
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  ArrowLeft,
-  ChevronRight,
-  Loader2,
-  Mail,
-  RefreshCw,
-  Shield,
-} from "lucide-react";
-import { DonePane } from "./done-pane";
+import { ArrowLeft, ChevronRight, Loader2, Mail, RefreshCw, Shield } from "lucide-react";
 import { useEffect, useState } from "react";
+import { DonePane } from "./done-pane";
 
 export type ExportTarget = { kind: "identity" } | { kind: "app"; appId: string; appName: string };
 
@@ -173,13 +167,7 @@ function ElvixExportImpl({
 //   1. preview (what's in the archive)
 // ─────────────────────────────────────────────────────────────────
 
-function PreviewPane({
-  target,
-  go,
-}: {
-  target: ExportTarget;
-  go: (p: Pane, d?: 1 | -1) => void;
-}) {
+function PreviewPane({ target, go }: { target: ExportTarget; go: (p: Pane, d?: 1 | -1) => void }) {
   const ctx = useElvixContext();
   const t = useT();
   const [loading, setLoading] = useState(true);
@@ -194,7 +182,9 @@ function PreviewPane({
         // LEGACY: spine-lint-disable-next-line spine/enum-over-string
         target.kind === "identity" ? "" : `?applicationId=${encodeURIComponent(target.appId)}`;
       try {
-        const res = await fetch(`${ctx.baseUrl}/api/account/export/preview${qs}`, { ...authInit() });
+        const res = await fetch(`${ctx.baseUrl}/api/account/export/preview${qs}`, {
+          ...authInit(),
+        });
         const body = unwrapEnvelope(await res.json());
         if (cancelled) return;
         if (!res.ok || !body.ok) {
@@ -597,7 +587,8 @@ type TFn = (key: string, params?: Record<string, string | number>) => string;
  *  caller (always inside a React component) forwards the hook's `t`. */
 function challengeErrorCopy(t: TFn, error: string | undefined, retryAfter?: number): string {
   if (!error) return t("export.errorChallengeGeneric");
-  if (error === "too_recent") return t("export.errorChallengeTooRecent", { seconds: retryAfter ?? 30 });
+  if (error === "too_recent")
+    return t("export.errorChallengeTooRecent", { seconds: retryAfter ?? 30 });
   if (error === "too_many") return t("export.errorChallengeTooMany");
   if (error === "send_failed") return t("export.errorChallengeSendFailed");
   if (error === "export_rate_limit") {

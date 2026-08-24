@@ -14,9 +14,9 @@
  * (cross-origin) or sends the cookie (same-origin).
  */
 
-import { authInit } from "./session";
-import { useResolvedBaseUrl } from "./elvix-provider";
 import { useCallback, useEffect, useState } from "react";
+import { useResolvedBaseUrl } from "./elvix-provider";
+import { authInit } from "./session";
 
 const POLL_MS = 7000;
 

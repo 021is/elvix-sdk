@@ -37,26 +37,28 @@
  *     `onAuthenticated`. The default `window.location.href` fallback is kept.
  */
 
-import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
-import { Drawer as Vaul } from "vaul";
 import { ArrowLeft, Check, Fingerprint, Loader2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { ElvixSignInMethod, ElvixSignInResult } from "./types";
-import { ELVIX_SDK_VERSION } from "./version";
+import { Drawer as Vaul } from "vaul";
+import { useT } from "../locale/use-t";
 import { ElvixLogo } from "./elvix-logo";
-import { ElvixSignInButton, type ElvixSignInButtonProps } from "./elvix-sign-in-button";
+import {
+  ElvixSessionStatus,
+  useElvixApp,
+  useElvixContext,
+  useElvixSession,
+} from "./elvix-provider";
 import { ElvixRecoverGate } from "./elvix-recover-gate";
-import { ElvixSessionStatus, useElvixApp, useElvixContext, useElvixSession } from "./elvix-provider";
+import { ElvixSignInButton, type ElvixSignInButtonProps } from "./elvix-sign-in-button";
 import { GoogleOneTap } from "./google-one-tap";
 import { OtpInput } from "./otp-input";
 import { runPasskeyRegister, runPasskeySignIn } from "./passkey";
-import { toast } from "./toast";
 import {
-  type ElvixLandingPayload,
   authInit,
   consumeSignedOutFlag,
+  type ElvixLandingPayload,
   getElvixToken,
   isSameOrigin,
   setElvixToken,
@@ -65,7 +67,10 @@ import {
   wasReturnTokenConsumed,
 } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
+import { toast } from "./toast";
+import type { ElvixSignInMethod, ElvixSignInResult } from "./types";
 import { isValidUsername } from "./username-rules";
+import { ELVIX_SDK_VERSION } from "./version";
 
 /** elvix marketing origin the "Secured by elvix" chip links to. In the
  *  monorepo this is `SITE_URL` (NEXT_PUBLIC_SITE_URL); here it's the
@@ -153,7 +158,6 @@ const NextStep2 = {
   PASSKEY: "passkey",
 } as const;
 type NextStep2 = (typeof NextStep2)[keyof typeof NextStep2];
-
 
 /**
  * One auth surface to rule them all. Same component renders:
@@ -414,8 +418,7 @@ export function ElvixSignInForm(props: AuthFormProps) {
     theme: props.theme ?? (app?.theme as AuthFormProps["theme"]) ?? "light",
     showHeader: props.showHeader ?? app?.showHeader ?? true,
     transparentBg: props.transparentBg ?? app?.transparentBg ?? false,
-    signInVerb:
-      props.signInVerb ?? (app?.signInVerb as AuthFormProps["signInVerb"]) ?? "signin",
+    signInVerb: props.signInVerb ?? (app?.signInVerb as AuthFormProps["signInVerb"]) ?? "signin",
     googleConfig:
       props.googleConfig ?? (app?.googleConfig as AuthFormProps["googleConfig"]) ?? undefined,
     googleClientId: props.googleClientId ?? app?.googleClientId ?? undefined,
@@ -542,7 +545,8 @@ function OverlayPresentation({
   );
 
   // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  const themeVars = theme === "auto" ? undefined : theme === "dark" ? ELVIX_DARK_VARS : ELVIX_LIGHT_VARS;
+  const themeVars =
+    theme === "auto" ? undefined : theme === "dark" ? ELVIX_DARK_VARS : ELVIX_LIGHT_VARS;
 
   const triggerNode = trigger ? (
     trigger(openFn)
@@ -896,7 +900,9 @@ function AuthBody({
   // whole point: developers embed <ElvixSignInForm /> and the user finishes the
   // entire flow without leaving the form.
   // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  const [step, setStep] = useState<"identifier" | "code" | "username" | "passkey" | "recover" | "authenticating">("identifier");
+  const [step, setStep] = useState<
+    "identifier" | "code" | "username" | "passkey" | "recover" | "authenticating"
+  >("identifier");
 
   // Recovery gateway: populated when the auth handler returns
   // `next_step: "recover"` because the user just signed back in to
@@ -1140,8 +1146,7 @@ function AuthBody({
         // bubbling the wider type up the chain.
         applyLanding({
           next_step: landing.next_step,
-          suggestions:
-            landing.next_step === "username" ? landing.suggestions : undefined,
+          suggestions: landing.next_step === "username" ? landing.suggestions : undefined,
           final: landing.final,
           token,
           recover:
@@ -1445,7 +1450,10 @@ function AuthBody({
           redirectToHosted();
           return;
         }
-        reportError(result.error, result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyVerify"));
+        reportError(
+          result.error,
+          result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyVerify"),
+        );
         return;
       }
       // Passkey sign-in succeeded — applyLanding will run through
@@ -1480,7 +1488,9 @@ function AuthBody({
         credentials: init.credentials,
       })
         .then((r) => r.json())
-        .then((raw) => unwrapEnvelope(raw) as { ok?: boolean; available?: boolean; reason?: string })
+        .then(
+          (raw) => unwrapEnvelope(raw) as { ok?: boolean; available?: boolean; reason?: string },
+        )
         .then((b) => {
           if (b.ok === false) {
             setUsernameCheck({ kind: "rejected", reason: b.reason ?? "invalid" });
@@ -1594,7 +1604,17 @@ function AuthBody({
     } finally {
       setOnboardingBusy(null);
     }
-  }, [intent, isPreview, onboardingBusy, finalRedirect, finishSignIn, reportError, baseUrl, clientId, t]);
+  }, [
+    intent,
+    isPreview,
+    onboardingBusy,
+    finalRedirect,
+    finishSignIn,
+    reportError,
+    baseUrl,
+    clientId,
+    t,
+  ]);
 
   /**
    * Skip the onboarding "Add a passkey" step. The user is already
@@ -1630,8 +1650,8 @@ function AuthBody({
             "gap-3 mb-6 " +
             (layout === "left"
               ? "flex items-center text-left"
-              // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-              : layout === "banner"
+              : // LEGACY: spine-lint-disable-next-line spine/enum-over-string
+                layout === "banner"
                 ? "-mx-7 -mt-7 px-7 py-6 flex flex-col items-center text-center border-b border-border-base"
                 : "flex flex-col items-center text-center")
           }
@@ -1721,9 +1741,11 @@ function AuthBody({
                       ? t("signin.passkeyOnboardingTitleLogin")
                       : t("signin.passkeyOnboardingTitleSignin")
                     : step === "recover"
-                      ? t("signin.recoverTitle", { app: recoverState?.appName ?? appName ?? t("signin.appNameFallback") })
-                      // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-                      : signInVerb === "login"
+                      ? t("signin.recoverTitle", {
+                          app: recoverState?.appName ?? appName ?? t("signin.appNameFallback"),
+                        })
+                      : // LEGACY: spine-lint-disable-next-line spine/enum-over-string
+                        signInVerb === "login"
                         ? t("signin.titleLogin", { app: appName || t("signin.appNameFallback") })
                         : t("signin.title", { app: appName || t("signin.appNameFallback") })}
             </div>
@@ -1750,7 +1772,11 @@ function AuthBody({
               out with belowHeading={null}. */}
             {/* LEGACY: spine-lint-disable-next-line spine/enum-over-string */}
             {step === "identifier" &&
-              (belowHeading !== undefined ? belowHeading : <GateBadge gate={appCtx?.signinGate} t={t} />)}
+              (belowHeading !== undefined ? (
+                belowHeading
+              ) : (
+                <GateBadge gate={appCtx?.signinGate} t={t} />
+              ))}
           </div>
         </div>
       )}
@@ -1778,7 +1804,11 @@ function AuthBody({
             style={ctaStyle}
           >
             <span className="inline-flex items-center gap-1.5" style={ctaLabelStyle}>
-              {verifyingOtp ? <Loader2 className="size-4 animate-spin" /> : t("signin.verifyButton")}
+              {verifyingOtp ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                t("signin.verifyButton")
+              )}
               {!verifyingOtp && (
                 <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden>
                   <path
@@ -1812,7 +1842,9 @@ function AuthBody({
               onClick={() => onSubmitIdentifier()}
               className="cursor-pointer text-[12px] text-fg-2 hover:text-fg-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:text-fg-3 transition"
             >
-              {resendIn > 0 ? t("signin.resendInSeconds", { seconds: resendIn }) : t("signin.resendCode")}
+              {resendIn > 0
+                ? t("signin.resendInSeconds", { seconds: resendIn })
+                : t("signin.resendCode")}
             </button>
           </div>
           {error && <p className="text-[11.5px] text-red-400 text-center">{error}</p>}
@@ -1855,11 +1887,11 @@ function AuthBody({
             </div>
             <p className="text-[11px] mt-1.5 leading-relaxed min-h-[14px]">
               {usernameCheck.kind === "idle" && (
-                <span className="text-fg-3">
-                  {t("username.rulesHint")}
-                </span>
+                <span className="text-fg-3">{t("username.rulesHint")}</span>
               )}
-              {usernameCheck.kind === "checking" && <span className="text-fg-3">{t("username.checking")}</span>}
+              {usernameCheck.kind === "checking" && (
+                <span className="text-fg-3">{t("username.checking")}</span>
+              )}
               {usernameCheck.kind === "available" && (
                 <span className="text-emerald-500">{t("username.availableHint")}</span>
               )}
@@ -1871,7 +1903,9 @@ function AuthBody({
 
           {usernameSuggestions.length > 0 && (
             <div className="space-y-2">
-              <div className="text-[11px] uppercase tracking-[0.08em] text-fg-3">{t("username.suggestionsHeading")}</div>
+              <div className="text-[11px] uppercase tracking-[0.08em] text-fg-3">
+                {t("username.suggestionsHeading")}
+              </div>
               {/* Horizontal chip strip. Overflows scroll horizontally for
                   long handles; the scrollbar is hidden via
                   scrollbar-none + WebkitScrollbar tweak below. The final
@@ -2001,9 +2035,7 @@ function AuthBody({
         />
       ) : !anyMethod ? (
         <div className="rounded-[10px] border border-dashed border-border-base bg-surface-hover py-8 px-4 text-center">
-          <p className="text-[12.5px] text-fg-3">
-            {t("signin.previewEmptyMethods")}
-          </p>
+          <p className="text-[12.5px] text-fg-3">{t("signin.previewEmptyMethods")}</p>
         </div>
       ) : (
         <form onSubmit={onSubmitIdentifier} className="space-y-2">
@@ -2033,10 +2065,13 @@ function AuthBody({
                   // page redirect. Google styles this themselves; we
                   // reserve the slot at our button height so layout stays
                   // stable while GIS hydrates.
+                  // Mount point only: GIS renders its own button in here and
+                  // brings its own accessible name, so an aria-label on the
+                  // wrapper was both unsupported on a bare div and a second,
+                  // competing label for the same control.
                   <div
                     ref={gisButtonRef}
                     className={`w-full min-h-10${socialSpanLast && googleIsLast ? " col-span-2" : ""}`}
-                    aria-label={t("signin.googleButton")}
                   />
                 ) : (
                   <a
@@ -2109,7 +2144,9 @@ function AuthBody({
               {(methodGoogle || methodPasskey || methodGithub) && (
                 <div className="flex items-center gap-3 my-3">
                   <span className="h-px flex-1 bg-border-base" />
-                  <span className="text-[11px] uppercase tracking-[0.08em] text-fg-3">{t("signin.or")}</span>
+                  <span className="text-[11px] uppercase tracking-[0.08em] text-fg-3">
+                    {t("signin.or")}
+                  </span>
                   <span className="h-px flex-1 bg-border-base" />
                 </div>
               )}
@@ -2131,7 +2168,11 @@ function AuthBody({
                 style={ctaStyle}
               >
                 <span className="inline-flex items-center gap-1.5" style={ctaLabelStyle}>
-                  {sendingOtp ? <Loader2 className="size-4 animate-spin" /> : t("signin.sendCodeButton")}
+                  {sendingOtp ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    t("signin.sendCodeButton")
+                  )}
                   {!sendingOtp && (
                     <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden>
                       <path
@@ -2288,27 +2329,59 @@ function humanError(t: Translator, code?: string, retryAfterSeconds?: number): s
     // string here every host saw "Something went wrong" instead of the
     // real reason.
     case "gate_private_beta":
-      return tOrFallback(t, "signin.errorGatePrivateBeta", "This app is in private beta. Ask the owner for an invite.");
+      return tOrFallback(
+        t,
+        "signin.errorGatePrivateBeta",
+        "This app is in private beta. Ask the owner for an invite.",
+      );
     case "gate_closed":
-      return tOrFallback(t, "signin.errorGateClosed", "Sign-ups are closed. Only existing members can sign in.");
+      return tOrFallback(
+        t,
+        "signin.errorGateClosed",
+        "Sign-ups are closed. Only existing members can sign in.",
+      );
     case "gate_blocked":
-      return tOrFallback(t, "signin.errorGateBlocked", "Your account isn't approved for this app yet.");
+      return tOrFallback(
+        t,
+        "signin.errorGateBlocked",
+        "Your account isn't approved for this app yet.",
+      );
     // Account-state guards (lib/signin-account-state.ts).
     case "user_deleted":
-      return tOrFallback(t, "signin.errorUserDeleted", "This account was deleted. Contact support if you need it back.");
+      return tOrFallback(
+        t,
+        "signin.errorUserDeleted",
+        "This account was deleted. Contact support if you need it back.",
+      );
     case "email_archived":
-      return tOrFallback(t, "signin.errorEmailArchived", "This email was retired from sign-in. Use your current address.");
+      return tOrFallback(
+        t,
+        "signin.errorEmailArchived",
+        "This email was retired from sign-in. Use your current address.",
+      );
     // Passkey sign-in outcomes. `unknown_credential` = the browser offered a
     // passkey elvix has no record of (a stale credential left in the keychain
     // by a device that no longer holds the server-side row). Give the recovery
     // path instead of the useless generic "Something went wrong".
     case "unknown_credential":
-      return tOrFallback(t, "signin.errorPasskeyUnknown", "This passkey isn't registered with elvix. Sign in another way, then remove it and add a new one in Security settings.");
+      return tOrFallback(
+        t,
+        "signin.errorPasskeyUnknown",
+        "This passkey isn't registered with elvix. Sign in another way, then remove it and add a new one in Security settings.",
+      );
     case "verify_failed":
     case "not_verified":
-      return tOrFallback(t, "signin.errorPasskeyVerifyFailed", "That passkey couldn't be verified. Sign in another way, then re-add it in Security settings.");
+      return tOrFallback(
+        t,
+        "signin.errorPasskeyVerifyFailed",
+        "That passkey couldn't be verified. Sign in another way, then re-add it in Security settings.",
+      );
     case "challenge_invalid":
-      return tOrFallback(t, "signin.errorPasskeyExpired", "This passkey sign-in expired. Please try again.");
+      return tOrFallback(
+        t,
+        "signin.errorPasskeyExpired",
+        "This passkey sign-in expired. Please try again.",
+      );
     default:
       return t("signin.errorGeneric");
   }

@@ -13,7 +13,6 @@ const Type = {
 } as const;
 type Type = (typeof Type)[keyof typeof Type];
 
-
 export const AVATAR_SIZES = [128, 256, 1200] as const;
 export const BANNER_SIZES = [768, 1500, 2400] as const;
 

@@ -103,7 +103,12 @@ export async function pollDeviceToken(args: PollDeviceTokenArgs): Promise<Device
       error?: string;
     };
     if (b.access_token) {
-      return { ok: true, accessToken: b.access_token, tokenType: b.token_type ?? "Bearer", scope: b.scope };
+      return {
+        ok: true,
+        accessToken: b.access_token,
+        tokenType: b.token_type ?? "Bearer",
+        scope: b.scope,
+      };
     }
     if (b.error === "slow_down") {
       intervalMs += 2000;

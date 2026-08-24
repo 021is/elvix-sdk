@@ -21,16 +21,16 @@ import { MaybeCard } from "./elvix-card";
  * `onSuccess`/`onFail` hooks. Never navigates.
  */
 
-import { OtpInput } from "./otp-input";
-import { ElvixSaveButton } from "./elvix-save-button";
-import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
-import { authInit } from "./session";
-import { unwrapEnvelope } from "./spine-fetch";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Eye, EyeOff, Loader2, RefreshCw } from "lucide-react";
-import { DonePane } from "./done-pane";
 import { useEffect, useState } from "react";
 import { useT } from "../locale/use-t";
+import { DonePane } from "./done-pane";
+import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
+import { ElvixSaveButton } from "./elvix-save-button";
+import { OtpInput } from "./otp-input";
+import { authInit } from "./session";
+import { unwrapEnvelope } from "./spine-fetch";
 
 const State = {
   INACTIVE: "inactive",
@@ -43,7 +43,6 @@ const Kind = {
   REACTIVATED: "reactivated",
 } as const;
 type Kind = (typeof Kind)[keyof typeof Kind];
-
 
 const Pane = {
   WARN1: "warn1",
@@ -71,10 +70,8 @@ function ElvixDeactivateImpl(props: {
   const appCtx = useElvixAppContext();
   const appId = props.appId ?? app?.clientId ?? "preview";
   const appName = props.appName ?? app?.appName ?? "your app";
-  const inactive =
-    props.inactive ?? Boolean(appCtx?.membership?.inactiveAt) ?? false;
-  const inactivatedBy =
-    props.inactivatedBy ?? appCtx?.membership?.inactivatedBy ?? null;
+  const inactive = props.inactive ?? Boolean(appCtx?.membership?.inactiveAt) ?? false;
+  const inactivatedBy = props.inactivatedBy ?? appCtx?.membership?.inactivatedBy ?? null;
   const { onSuccess, onFail, onResult } = props;
   return (
     <ElvixDeactivateInner
@@ -212,9 +209,7 @@ function ElvixDeactivateInner({
         if (body.error === "wrong_code") {
           setAttemptsLeft(body.attemptsLeft ?? null);
           setCode("");
-          setServerError(
-            t("deactivate.errorWrongCode", { count: body.attemptsLeft ?? 0 }),
-          );
+          setServerError(t("deactivate.errorWrongCode", { count: body.attemptsLeft ?? 0 }));
         } else if (body.error === "challenge_locked") {
           setServerError(t("deactivate.errorChallengeLocked"));
           setChallengeId(null);
@@ -269,9 +264,7 @@ function ElvixDeactivateInner({
       const body = unwrapEnvelope(await res.json()) as { ok: boolean; error?: string };
       if (!res.ok || !body.ok) {
         const msg =
-          body.error === "deleted"
-            ? t("deactivate.errorAlreadyLeft")
-            : t("common.errorSaveFailed");
+          body.error === "deleted" ? t("deactivate.errorAlreadyLeft") : t("common.errorSaveFailed");
         setServerError(msg);
         onFail?.(msg);
         onResult?.({
@@ -407,13 +400,7 @@ function ElvixDeactivateInner({
   );
 }
 
-function Warn1Pane({
-  appName,
-  onContinue,
-}: {
-  appName: string;
-  onContinue: () => void;
-}) {
+function Warn1Pane({ appName, onContinue }: { appName: string; onContinue: () => void }) {
   const t = useT();
   return (
     <form
@@ -573,9 +560,7 @@ function DeactivateDonePane({
           ? t("deactivate.doneDeactivatedTitle", { app: appName })
           : t("deactivate.doneReactivatedTitle", { app: appName })
       }
-      body={
-        deactivated ? t("deactivate.doneDeactivatedBody") : t("deactivate.doneReactivatedBody")
-      }
+      body={deactivated ? t("deactivate.doneDeactivatedBody") : t("deactivate.doneReactivatedBody")}
       action={{
         label: deactivated ? t("deactivate.reactivateAgain") : t("deactivate.deactivateAgain"),
         onClick: onAgain,
@@ -686,7 +671,9 @@ const paneTransition = { duration: 0.24, ease: [0.22, 0.61, 0.36, 1] as const };
  * Public export. Wraps the implementation in <ElvixCard> by default;
  * pass `card={false}` to render bare (compose in your own surface).
  */
-export function ElvixDeactivate(props: Parameters<typeof ElvixDeactivateImpl>[0] & { card?: boolean }) {
+export function ElvixDeactivate(
+  props: Parameters<typeof ElvixDeactivateImpl>[0] & { card?: boolean },
+) {
   const { card, ...rest } = props;
   return (
     <MaybeCard card={card} className="h-full">

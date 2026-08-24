@@ -25,23 +25,22 @@ import { MaybeCard } from "./elvix-card";
  * `onSuccess`/`onFail` hooks. Never navigates.
  */
 
-import { OtpPane } from "./elvix-deactivate";
-import { ElvixSaveButton } from "./elvix-save-button";
-import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
-import { authInit } from "./session";
-import { unwrapEnvelope } from "./spine-fetch";
-import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, Lock, LogOut, Trash2, Undo2 } from "lucide-react";
-import { DonePane } from "./done-pane";
 import { useEffect, useState } from "react";
+import { useT } from "../locale/use-t";
+import { DonePane } from "./done-pane";
+import { OtpPane } from "./elvix-deactivate";
+import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
+import { ElvixSaveButton } from "./elvix-save-button";
+import { authInit } from "./session";
+import { unwrapEnvelope } from "./spine-fetch";
 
 const State = {
   LEFT: "left",
   RESTORED: "restored",
 } as const;
 type State = (typeof State)[keyof typeof State];
-
 
 const Pane = {
   WARN1: "warn1",
@@ -72,15 +71,15 @@ function ElvixLeaveImpl(props: {
   const appId = props.appId ?? app?.clientId ?? "preview";
   const appName = props.appName ?? app?.appName ?? "your app";
   const deletedAt =
-    props.deletedAt !== undefined ? props.deletedAt : appCtx?.membership?.deletedAt ?? null;
+    props.deletedAt !== undefined ? props.deletedAt : (appCtx?.membership?.deletedAt ?? null);
   const deletedBy =
-    props.deletedBy !== undefined ? props.deletedBy : appCtx?.membership?.deletedBy ?? null;
+    props.deletedBy !== undefined ? props.deletedBy : (appCtx?.membership?.deletedBy ?? null);
   const privacyPolicyUrl =
-    props.privacyPolicyUrl !== undefined ? props.privacyPolicyUrl : app?.privacyPolicyUrl ?? null;
+    props.privacyPolicyUrl !== undefined ? props.privacyPolicyUrl : (app?.privacyPolicyUrl ?? null);
   const termsOfServiceUrl =
     props.termsOfServiceUrl !== undefined
       ? props.termsOfServiceUrl
-      : app?.termsOfServiceUrl ?? null;
+      : (app?.termsOfServiceUrl ?? null);
   const { onSuccess, onFail, onResult } = props;
   return (
     <ElvixLeaveInner
@@ -233,9 +232,7 @@ function ElvixLeaveInner({
         if (body.error === "wrong_code") {
           setAttemptsLeft(body.attemptsLeft ?? null);
           setCode("");
-          setServerError(
-            t("leave.errorWrongCode", { count: body.attemptsLeft ?? 0 }),
-          );
+          setServerError(t("leave.errorWrongCode", { count: body.attemptsLeft ?? 0 }));
         } else if (body.error === "challenge_locked") {
           setServerError(t("leave.errorChallengeLocked"));
           setChallengeId(null);
@@ -426,13 +423,7 @@ function ElvixLeaveInner({
   );
 }
 
-function LeaveWarn1Pane({
-  appName,
-  onContinue,
-}: {
-  appName: string;
-  onContinue: () => void;
-}) {
+function LeaveWarn1Pane({ appName, onContinue }: { appName: string; onContinue: () => void }) {
   const t = useT();
   return (
     <form
@@ -450,13 +441,18 @@ function LeaveWarn1Pane({
           <div className="text-[15px] font-semibold tracking-tight text-fg-1 leading-tight">
             {t("leave.warn1Heading", { app: appName })}
           </div>
-          <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-1">
-            {t("leave.warn1Body")}
+          <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-1">{t("leave.warn1Body")}</p>
+          <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-3">
+            {t("leave.understandPrompt")}
           </p>
-          <p className="text-[12.5px] text-fg-3 leading-[1.55] mt-3">{t("leave.understandPrompt")}</p>
         </div>
       </div>
-      <ElvixSaveButton state="idle" label={t("leave.iUnderstandCta")} hint={t("common.enterHint")} autoFocus />
+      <ElvixSaveButton
+        state="idle"
+        label={t("leave.iUnderstandCta")}
+        hint={t("common.enterHint")}
+        autoFocus
+      />
     </form>
   );
 }
@@ -527,9 +523,7 @@ function LeaveWarn2Pane({
           </div>
         )}
       </div>
-      <p className="text-[12.5px] text-fg-3 leading-[1.55]">
-        {t("leave.warn2EmailPrompt")}
-      </p>
+      <p className="text-[12.5px] text-fg-3 leading-[1.55]">{t("leave.warn2EmailPrompt")}</p>
       <ElvixSaveButton
         state={requesting ? "saving" : "idle"}
         disabled={requesting}
@@ -629,13 +623,7 @@ function OwnerLockedPane({
   );
 }
 
-function LeaveDonePane({
-  appName,
-  kind,
-}: {
-  appName: string;
-  kind: State;
-}) {
+function LeaveDonePane({ appName, kind }: { appName: string; kind: State }) {
   const t = useT();
   // LEGACY: spine-lint-disable-next-line spine/enum-over-string
   const left = kind === "left";

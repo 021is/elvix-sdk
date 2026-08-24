@@ -28,9 +28,67 @@ docs/         agent-consumable Markdown, generated from @021is/agent-docs
 
 ```bash
 bun install
+bun run lint        # biome: format + the size/complexity gate
+bun run lint:fix    # auto-fix what is safe
 bun run build       # tsup → dist/
 bun test            # vitest
 ```
+
+## The size gate
+
+This repo had **no linter at all** until 2026-08-23, and CI ran only typecheck,
+build and test. Nothing measured function length, which is how
+`elvix-legal-entities.tsx` reached **3,292 lines** with a component of
+cognitive complexity **255**, and how six components kept importing a symbol
+they had stopped using.
+
+`biome.json` now enforces, as errors:
+
+| Rule | Limit |
+|---|---|
+| `noExcessiveLinesPerFunction` | 150 |
+| `noExcessiveCognitiveComplexity` | 25 |
+| `useMaxParams` | 4 |
+| `noUnusedImports` / `noUnusedVariables` | — |
+
+`bun run lint` runs in CI **before** typecheck.
+
+**The `overrides` block in `biome.json` is a shrinking allowlist, not a
+settings section.** It lists the 23 files that already violated the size rules
+when the gate went in, downgraded to warnings so CI could be green on day one.
+New code cannot violate these rules anywhere. When you touch a file on that
+list, split what you touched and delete its entry. Never add a file to it.
+
+Rules set to `warn` outside that block (a11y, `noNonNullAssertion`,
+`useExhaustiveDependencies`) are pre-existing debt, visible in `bun run lint`
+output and worth fixing opportunistically. They are warnings because turning
+them red on day one would have meant either 130 unrelated fixes in one commit
+or a gate nobody could keep green.
+
+## Splitting a large component
+
+`elvix-legal-entities.tsx` is the worked example, split 3,292 → 931 lines:
+
+- `legal-entity-flow.ts` — the wizard step machine as **pure functions**, with
+  tests. Extract this FIRST when refactoring a wizard: the pane ordering is
+  the part carrying product meaning (a company is never asked for a date of
+  birth) and therefore the part most likely to lose a feature silently.
+- `legal-entity-copy.ts` — placeholders and per-country formatting; pure.
+- `legal-entity-primitives.tsx` — shared presentational pieces.
+- `legal-entity-{wizard,detail}-views.tsx` — panes, one per question.
+- `use-legal-entity-draft.ts` — the in-progress entity as ONE object with a
+  typed `setField`, replacing eighteen `useState` calls and a hand-written
+  reset.
+
+Two patterns worth copying:
+
+- **A pane registry beats a ternary chain.** A 21-branch nested ternary was
+  the entire complexity of 255; as a `Partial<Record<View, () => ReactNode>>`
+  it is effectively zero, and each entry is a thunk so only the visible pane
+  is built.
+- **Verify "no feature lost" mechanically.** After the split the `View` enum
+  had 22 values and the pane registry 22 keys, with `comm` reporting zero on
+  both sides. That is evidence; re-reading the diff is not.
 
 Publishing is tag-driven via GitHub Actions: tag `v0.1.0` on main → CI publishes to npm public registry.
 

@@ -4,15 +4,15 @@ import { LocaleProvider, switchLocale } from "@021.is/spine-i18n/react";
 import { MotionConfig } from "framer-motion";
 import {
   type CSSProperties,
-  type ReactNode,
   createContext,
-  useContext,
+  type ReactNode,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import { bundledEnglishCatalog, buildEnglishRuntime, fetchCatalog } from "../locale/runtime";
+import { buildEnglishRuntime, bundledEnglishCatalog, fetchCatalog } from "../locale/runtime";
 import { authInit, consumeElvixReturnToken } from "./session";
 import type { ElvixBootstrapEnvelope, ElvixBrand, ElvixTheme } from "./types";
 
@@ -471,7 +471,7 @@ export function ElvixProvider({
         "--elvix-on-primary": pair.on,
         "--elvix-primary-8": withAlpha(pair.primary, 0.08),
         "--elvix-primary-12": withAlpha(pair.primary, 0.12),
-        "--elvix-primary-20": withAlpha(pair.primary, 0.20),
+        "--elvix-primary-20": withAlpha(pair.primary, 0.2),
         "--elvix-primary-35": withAlpha(pair.primary, 0.35),
         "--elvix-primary-55": withAlpha(pair.primary, 0.55),
         "--elvix-primary-strong": pair.primary,
@@ -504,9 +504,7 @@ export function ElvixProvider({
           <div
             data-elvix-theme={effectiveTheme}
             style={cssVars}
-            className={
-              (effectiveTheme === "dark" ? "dark " : "") + "elvix-sdk-root " + className
-            }
+            className={(effectiveTheme === "dark" ? "dark " : "") + "elvix-sdk-root " + className}
           >
             {children}
           </div>

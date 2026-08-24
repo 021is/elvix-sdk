@@ -19,11 +19,11 @@
  * until they pick Restore or Cancel.
  */
 
-import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
 import { EyeOff, LogOut, Undo2, X } from "lucide-react";
-import { DonePane } from "./done-pane";
 import { useState } from "react";
+import { useT } from "../locale/use-t";
+import { DonePane } from "./done-pane";
 import { authInit } from "./session";
 
 type TFn = ReturnType<typeof useT>;
@@ -320,15 +320,7 @@ function DecidePane({
   );
 }
 
-function RecoverDonePane({
-  icon,
-  title,
-  body,
-}: {
-  icon: Icon;
-  title: string;
-  body: string;
-}) {
+function RecoverDonePane({ icon, title, body }: { icon: Icon; title: string; body: string }) {
   return (
     <DonePane
       icon={

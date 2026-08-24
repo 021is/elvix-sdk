@@ -26,9 +26,9 @@ import { useT } from "../locale/use-t";
 import { findCountry } from "./countries";
 import { ElvixCountrySelect } from "./elvix-country-select";
 import { ElvixInput } from "./elvix-input";
+import { useElvixContext } from "./elvix-provider";
 import { ElvixSaveButton } from "./elvix-save-button";
 import { ElvixTaxIdInput, type TaxIdValidationState } from "./elvix-tax-id-input";
-import { useElvixContext } from "./elvix-provider";
 import {
   regNumberFormatHint,
   regNumberPlaceholder,
@@ -45,7 +45,7 @@ import {
   WizardHeader,
 } from "./legal-entity-primitives";
 import type { LegalEntityType } from "./legal-entity-schema";
-import { type PlaceDetails, type PlaceSuggestion, newSessionToken } from "./legal-entity-types";
+import { newSessionToken, type PlaceDetails, type PlaceSuggestion } from "./legal-entity-types";
 import { isSameOrigin } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { localTaxIdMatches, registrationNumberMatches } from "./tax-validation";
@@ -1354,7 +1354,7 @@ export function ContactInputView({
   const phoneDigits = phoneTrimmed.replace(/\D/g, "");
   const phoneOk =
     !phoneTrimmed ||
-    (/^\+?[\d\s().\-]+$/.test(phoneTrimmed) && phoneDigits.length >= 6 && phoneDigits.length <= 20);
+    (/^\+?[\d\s().-]+$/.test(phoneTrimmed) && phoneDigits.length >= 6 && phoneDigits.length <= 20);
   const allOk = emailOk && phoneOk;
   return (
     <form

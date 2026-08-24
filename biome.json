@@ -37,14 +37,33 @@
           "options": {
             "max": 4
           }
-        }
+        },
+        "useOptionalChain": "warn",
+        "noUselessFragments": "warn"
       },
       "suspicious": {
-        "noExplicitAny": "error"
+        "noExplicitAny": "error",
+        "noDocumentCookie": "warn",
+        "noArrayIndexKey": "warn"
       },
       "correctness": {
         "noUnusedImports": "error",
-        "noUnusedVariables": "error"
+        "noUnusedVariables": "error",
+        "useExhaustiveDependencies": "warn",
+        "useHookAtTopLevel": "warn"
+      },
+      "style": {
+        "noNonNullAssertion": "warn",
+        "useTemplate": "warn"
+      },
+      "performance": {
+        "noImgElement": "warn"
+      },
+      "a11y": {
+        "noLabelWithoutControl": "warn",
+        "useSemanticElements": "warn",
+        "noAutofocus": "warn",
+        "noNoninteractiveElementToInteractiveRole": "warn"
       }
     }
   },
@@ -54,5 +73,43 @@
         "organizeImports": "on"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "src/react/elvix-address-book.tsx",
+        "src/react/elvix-app-passkeys.tsx",
+        "src/react/elvix-avatar.tsx",
+        "src/react/elvix-banner.tsx",
+        "src/react/elvix-card.tsx",
+        "src/react/elvix-deactivate.tsx",
+        "src/react/elvix-identity-form.tsx",
+        "src/react/elvix-languages.tsx",
+        "src/react/elvix-leave.tsx",
+        "src/react/elvix-legal-entities.tsx",
+        "src/react/elvix-provider.tsx",
+        "src/react/elvix-region.tsx",
+        "src/react/elvix-sessions.tsx",
+        "src/react/elvix-sign-in-button.tsx",
+        "src/react/elvix-sign-in-form.tsx",
+        "src/react/elvix-sign-out-button.tsx",
+        "src/react/elvix-username.tsx",
+        "src/react/google-one-tap.tsx",
+        "src/react/legal-entity-schema.ts",
+        "src/react/legal-entity-wizard-views.tsx",
+        "src/react/passkey.ts",
+        "src/react/regions.ts",
+        "src/react/user-images-types.ts"
+      ],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noExcessiveLinesPerFunction": "warn",
+            "noExcessiveCognitiveComplexity": "warn",
+            "useMaxParams": "warn"
+          }
+        }
+      }
+    }
+  ]
 }

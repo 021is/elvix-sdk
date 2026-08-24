@@ -21,35 +21,27 @@
  * `edit` with the server message rendered under the input.
  */
 
+import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
 import { ElvixInput } from "./elvix-input";
+import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
 import { ElvixSaveButton } from "./elvix-save-button";
+import { authInit } from "./session";
+import { unwrapEnvelope } from "./spine-fetch";
 import {
+  normaliseUsername,
   USERNAME_MAX_LENGTH,
   USERNAME_MIN_LENGTH,
   type UsernameReason,
-  normaliseUsername,
   usernameReason,
 } from "./username-rules";
-import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
-import { authInit } from "./session";
-import { unwrapEnvelope } from "./spine-fetch";
-import { useT } from "../locale/use-t";
 
 type T = ReturnType<typeof useT>;
+
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  AtSign,
-  Check,
-  Loader2,
-  Mail,
-  ShieldOff,
-  X,
-} from "lucide-react";
-import { DonePane } from "./done-pane";
+import { ArrowLeft, ArrowUpRight, AtSign, Check, Loader2, Mail, ShieldOff, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { DonePane } from "./done-pane";
 
 const DEBOUNCE_MS = 280;
 
@@ -80,7 +72,8 @@ export function ElvixUsername(props: ElvixUsernameProps) {
   // rendered AccountStage) keep working as-is.
   const appId = props.appId ?? app?.clientId ?? "preview";
   const appName = props.appName ?? app?.appName ?? "your app";
-  const current = props.current !== undefined ? props.current : appCtx?.membership?.username ?? null;
+  const current =
+    props.current !== undefined ? props.current : (appCtx?.membership?.username ?? null);
   const methodUsername = props.methodUsername ?? app?.methodUsername ?? true;
   const supportUrl = props.supportUrl ?? app?.supportUrl ?? null;
   const supportEmail = props.supportEmail ?? null;
@@ -564,12 +557,7 @@ function DisabledPane({
         </div>
         <div className="text-[12.5px] text-fg-3 leading-[1.55]">
           {t("username.disabledBody")}
-          {current ? (
-            <>
-              {" "}
-              {t("username.disabledStillHave", { current })}
-            </>
-          ) : null}
+          {current ? <> {t("username.disabledStillHave", { current })}</> : null}
         </div>
       </div>
       {hasSupport && supportHref ? (
@@ -598,13 +586,7 @@ function DisabledPane({
   );
 }
 
-function PreviewChip({
-  children,
-  emphasis,
-}: {
-  children: React.ReactNode;
-  emphasis?: boolean;
-}) {
+function PreviewChip({ children, emphasis }: { children: React.ReactNode; emphasis?: boolean }) {
   return (
     <span
       className="inline-flex items-center h-8 px-3 rounded-full text-[13px] font-semibold tracking-tight"
@@ -658,9 +640,7 @@ function StatusLine({
   if (status === "idle") {
     return (
       <p className="text-[12px] text-fg-3 leading-tight mt-1.5">
-        {current
-          ? t("username.idleCurrent", { current })
-          : t("username.idleEmpty")}
+        {current ? t("username.idleCurrent", { current }) : t("username.idleEmpty")}
       </p>
     );
   }

@@ -45,7 +45,7 @@ import {
   DetailView,
   ListView,
 } from "./legal-entity-detail-views";
-import { View, needsBusinessSteps, needsPersonSteps } from "./legal-entity-flow";
+import { needsBusinessSteps, needsPersonSteps, type View } from "./legal-entity-flow";
 import { EmptyState, Pane, SavingView } from "./legal-entity-primitives";
 import type { LegalEntityInput, LegalEntityRecord, LegalEntityType } from "./legal-entity-schema";
 import type { PlaceDetails } from "./legal-entity-types";
@@ -55,6 +55,7 @@ import {
   ContactInputView,
   CountryView,
   DateView,
+  isoYearsAgo,
   NationalityView,
   PlaceOfBirthView,
   RegistrationView,
@@ -63,7 +64,6 @@ import {
   TypeChoiceView,
   VerifyingTaxIdView,
   YesNoView,
-  isoYearsAgo,
 } from "./legal-entity-wizard-views";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";

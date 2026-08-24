@@ -23,7 +23,13 @@ type ElvixLogoProps = {
 export function ElvixLogo({ size = 22, withText = false, className }: ElvixLogoProps) {
   const wordmarkSize = Math.round(size * 0.84);
   return (
-    <div className={`inline-flex items-center gap-[7px] ${className ?? ""}`} aria-label="elvix">
+    // role="img" is what makes the aria-label count: on a bare <div> the
+    // label is ignored, so the logo reached screen readers unnamed.
+    <div
+      role="img"
+      aria-label="elvix"
+      className={`inline-flex items-center gap-[7px] ${className ?? ""}`}
+    >
       <svg
         width={size}
         height={size}

@@ -19,20 +19,20 @@
  * compact — text wouldn't fit cleanly.
  */
 
-import { UserAvatar, type UserAvatarProps } from "./user-avatar";
-import { ElvixUserAvatar } from "./elvix-user-avatar";
-import { mediaKey, publishMedia } from "./live-media";
-import { useUserMedia } from "./user-media";
-import { cropToBlob } from "./image-crop";
-import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
-import { authInit } from "./session";
-import { unwrapEnvelope } from "./spine-fetch";
-import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Camera, Check, Loader2, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Cropper, { type Area } from "react-easy-crop";
+import { useT } from "../locale/use-t";
+import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
+import { ElvixUserAvatar } from "./elvix-user-avatar";
+import { cropToBlob } from "./image-crop";
+import { mediaKey, publishMedia } from "./live-media";
+import { authInit } from "./session";
+import { unwrapEnvelope } from "./spine-fetch";
 import { toast } from "./toast";
+import { UserAvatar, type UserAvatarProps } from "./user-avatar";
+import { useUserMedia } from "./user-media";
 
 const Variant = {
   BRAND: "brand",
@@ -40,7 +40,6 @@ const Variant = {
   NEUTRAL: "neutral",
 } as const;
 type Variant = (typeof Variant)[keyof typeof Variant];
-
 
 export type ElvixAvatarResult =
   | { ok: true; sizes: number[]; updatedAt: string }
@@ -151,7 +150,10 @@ function ElvixAvatarInner({
   // user's GLOBAL photo no matter which app it's mounted in (a host-passed
   // per-app `membership` is only the while-loading fallback). Seed-once (not a
   // live sync) avoids clobbering optimistic state after the user's own edits.
-  const centralized = useUserMedia(applicationId === "preview" ? null : avatarProps.userId, ctx.baseUrl);
+  const centralized = useUserMedia(
+    applicationId === "preview" ? null : avatarProps.userId,
+    ctx.baseUrl,
+  );
   const seeded = useRef(false);
   useEffect(() => {
     if (!centralized.data || seeded.current) return;
@@ -221,10 +223,12 @@ function ElvixAvatarInner({
       const fd = new FormData();
       fd.append("file", blob, "avatar.jpg");
       const auth = authInit();
-      const res = await fetch(
-        `${ctx.baseUrl}/api/account/self/images/avatar`,
-        { method: "PUT", body: fd, headers: auth.headers, credentials: auth.credentials },
-      );
+      const res = await fetch(`${ctx.baseUrl}/api/account/self/images/avatar`, {
+        method: "PUT",
+        body: fd,
+        headers: auth.headers,
+        credentials: auth.credentials,
+      });
       if (!res.ok) throw new Error("upload_failed");
       const body = unwrapEnvelope(await res.json().catch(() => ({}))) as {
         avatarSizes?: number[];
@@ -279,10 +283,11 @@ function ElvixAvatarInner({
       }
 
       const auth = authInit();
-      const res = await fetch(
-        `${ctx.baseUrl}/api/account/self/images/avatar`,
-        { method: "DELETE", headers: auth.headers, credentials: auth.credentials },
-      );
+      const res = await fetch(`${ctx.baseUrl}/api/account/self/images/avatar`, {
+        method: "DELETE",
+        headers: auth.headers,
+        credentials: auth.credentials,
+      });
       if (!res.ok) throw new Error("delete_failed");
       const body = unwrapEnvelope(await res.json().catch(() => ({}))) as {
         avatarSizes?: number[];
@@ -337,7 +342,11 @@ function ElvixAvatarInner({
         {view === "display" ? (
           <DisplayLayer
             key="display"
-            avatarProps={{ ...avatarProps, user: liveUser, appSlug: centralized.data?.slug ?? avatarProps.appSlug }}
+            avatarProps={{
+              ...avatarProps,
+              user: liveUser,
+              appSlug: centralized.data?.slug ?? avatarProps.appSlug,
+            }}
             size={size}
             sizes={sizes}
             updatedAt={updatedAt}
@@ -348,7 +357,11 @@ function ElvixAvatarInner({
           <ChoiceLayer
             key="choice"
             size={size}
-            avatarProps={{ ...avatarProps, user: liveUser, appSlug: centralized.data?.slug ?? avatarProps.appSlug }}
+            avatarProps={{
+              ...avatarProps,
+              user: liveUser,
+              appSlug: centralized.data?.slug ?? avatarProps.appSlug,
+            }}
             sizes={sizes}
             updatedAt={updatedAt}
             hasMedia={hasMedia}
@@ -736,7 +749,12 @@ function ChoiceLayer({
         hasMedia={hasMedia}
       />
       <VertexSlot pos={TRIANGLE_POS.back}>
-        <IconButton onClick={onBack} ariaLabel={t("common.back")} variant="neutral" size={actionSize}>
+        <IconButton
+          onClick={onBack}
+          ariaLabel={t("common.back")}
+          variant="neutral"
+          size={actionSize}
+        >
           <ArrowLeft style={{ width: iconPx, height: iconPx }} />
         </IconButton>
       </VertexSlot>

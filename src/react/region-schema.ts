@@ -1,14 +1,14 @@
+import { z } from "zod";
 import { COUNTRIES } from "./countries";
 import { LANGUAGES } from "./languages";
 import {
   DATE_FORMATS,
+  isKnownCurrency,
+  isKnownTimeZone,
   MEASUREMENT_SYSTEMS,
   NUMBER_FORMATS,
   TIME_FORMATS,
-  isKnownCurrency,
-  isKnownTimeZone,
 } from "./regions";
-import { z } from "zod";
 
 /**
  * Region schemas for the elvix Profile SDK.

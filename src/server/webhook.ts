@@ -54,10 +54,11 @@ export function verifyElvixWebhook(args: VerifyWebhookArgs): ElvixWebhookVerifyR
 
   // Header: t=<int>,v1=<hex>  (additional vN=... pairs allowed for
   // forward compat; any matching version is accepted).
-  const parts = signature.split(",").map((s) => s.trim()).filter(Boolean);
-  const ts = parts
-    .map((p) => /^t=(\d+)$/.exec(p))
-    .find((m) => m !== null)?.[1];
+  const parts = signature
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const ts = parts.map((p) => /^t=(\d+)$/.exec(p)).find((m) => m !== null)?.[1];
   const versions = parts
     .map((p) => /^v(\d+)=([a-f0-9]+)$/i.exec(p))
     .filter((m): m is RegExpExecArray => m !== null);

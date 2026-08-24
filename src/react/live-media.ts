@@ -24,8 +24,7 @@ export type LiveMedia = {
   fallbackUrl: string | null;
 };
 
-export const mediaKey = (kind: "avatar" | "banner", userId: string): string =>
-  `${kind}:${userId}`;
+export const mediaKey = (kind: "avatar" | "banner", userId: string): string => `${kind}:${userId}`;
 
 const snapshots = new Map<string, LiveMedia>();
 const listeners = new Map<string, Set<() => void>>();

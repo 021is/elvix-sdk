@@ -10,6 +10,7 @@ import {
   ElvixAddressBook,
   ElvixAvatar,
   ElvixBanner,
+  type ElvixBootstrapEnvelope,
   ElvixCard,
   ElvixDeactivate,
   ElvixExport,
@@ -21,12 +22,11 @@ import {
   ElvixRegion,
   ElvixSessions,
   ElvixSignIn,
+  type ElvixSignInResult,
+  type ElvixTheme,
   ElvixUsername,
   useElvixApp,
   useElvixContext,
-  type ElvixBootstrapEnvelope,
-  type ElvixSignInResult,
-  type ElvixTheme,
 } from "../src/react";
 
 describe("@elvix.is/sdk/react surface", () => {

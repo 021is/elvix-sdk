@@ -15,19 +15,19 @@
  *   working       → spinner
  */
 
-import { UserBanner, type UserBannerProps } from "./user-banner";
-import { mediaKey, publishMedia } from "./live-media";
-import { useUserMedia } from "./user-media";
-import { cropToBlob } from "./image-crop";
-import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
-import { authInit } from "./session";
-import { unwrapEnvelope } from "./spine-fetch";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Camera, Check, Loader2, Pencil, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Cropper, { type Area } from "react-easy-crop";
 import { useT } from "../locale/use-t";
+import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
+import { cropToBlob } from "./image-crop";
+import { mediaKey, publishMedia } from "./live-media";
+import { authInit } from "./session";
+import { unwrapEnvelope } from "./spine-fetch";
 import { toast } from "./toast";
+import { UserBanner, type UserBannerProps } from "./user-banner";
+import { useUserMedia } from "./user-media";
 
 export type ElvixBannerResult =
   | { ok: true; sizes: number[]; updatedAt: string }
@@ -96,7 +96,10 @@ function ElvixBannerInner({
   // initial state from the centralized store once so the editor shows the
   // GLOBAL banner regardless of which app mounts it (a host-passed per-app
   // `membership` is only the while-loading fallback).
-  const centralized = useUserMedia(applicationId === "preview" ? null : bannerProps.userId, ctx.baseUrl);
+  const centralized = useUserMedia(
+    applicationId === "preview" ? null : bannerProps.userId,
+    ctx.baseUrl,
+  );
   const seeded = useRef(false);
   useEffect(() => {
     if (!centralized.data || seeded.current) return;
@@ -165,10 +168,12 @@ function ElvixBannerInner({
       const fd = new FormData();
       fd.append("file", blob, "banner.jpg");
       const auth = authInit();
-      const res = await fetch(
-        `${ctx.baseUrl}/api/account/self/images/banner`,
-        { method: "PUT", body: fd, headers: auth.headers, credentials: auth.credentials },
-      );
+      const res = await fetch(`${ctx.baseUrl}/api/account/self/images/banner`, {
+        method: "PUT",
+        body: fd,
+        headers: auth.headers,
+        credentials: auth.credentials,
+      });
       if (!res.ok) throw new Error("upload_failed");
       const body = unwrapEnvelope(await res.json().catch(() => ({}))) as {
         bannerSizes?: number[];
@@ -223,10 +228,11 @@ function ElvixBannerInner({
       }
 
       const auth = authInit();
-      const res = await fetch(
-        `${ctx.baseUrl}/api/account/self/images/banner`,
-        { method: "DELETE", headers: auth.headers, credentials: auth.credentials },
-      );
+      const res = await fetch(`${ctx.baseUrl}/api/account/self/images/banner`, {
+        method: "DELETE",
+        headers: auth.headers,
+        credentials: auth.credentials,
+      });
       if (!res.ok) throw new Error("delete_failed");
       const now = Date.now();
       setSizes([]);

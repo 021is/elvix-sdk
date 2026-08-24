@@ -11,15 +11,14 @@
  * pure rendering from props.
  */
 
-import { type AvatarResolverInput, pickAvatarSize, resolveAvatar } from "./avatar";
 import { useMemo } from "react";
+import { type AvatarResolverInput, pickAvatarSize, resolveAvatar } from "./avatar";
 
 const Shape = {
   CIRCLE: "circle",
   SQUARE: "square",
 } as const;
 type Shape = (typeof Shape)[keyof typeof Shape];
-
 
 export type UserAvatarProps = {
   /** App slug — Application.urlSlug. */
@@ -80,11 +79,8 @@ export function UserAvatar({
     // crop before upload). Pass them through unchanged — appending
     // `=s<n>-c` would break them. Real Google avatar URLs get the
     // size suffix re-written.
-    const isInMemory =
-      resolved.src.startsWith("blob:") || resolved.src.startsWith("data:");
-    const cleanedSrc = isInMemory
-      ? resolved.src
-      : resolved.src.replace(/=s\d+(-c)?$/, "");
+    const isInMemory = resolved.src.startsWith("blob:") || resolved.src.startsWith("data:");
+    const cleanedSrc = isInMemory ? resolved.src : resolved.src.replace(/=s\d+(-c)?$/, "");
     const target = pickAvatarSize(size);
     const finalSrc = isInMemory ? cleanedSrc : `${cleanedSrc}=s${target}-c`;
     return (
@@ -121,7 +117,10 @@ export function UserAvatar({
   // users with the same initials still get distinct chips.
   const bg = pickInitialsBg(userId);
   return (
+    // The initials are decorative; the label carries the accessible name, and
+    // on a bare <span> it was being dropped, leaving the avatar unnamed.
     <span
+      role="img"
       className={base + " text-fg-1 font-semibold"}
       style={{ ...style, background: bg, fontSize: Math.max(10, Math.round(size * 0.4)) }}
       aria-label={user.name ?? user.email ?? "user"}

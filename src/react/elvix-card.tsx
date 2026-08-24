@@ -188,9 +188,7 @@ export function ElvixCard({
         }}
         initial={animated ? { opacity: 0 } : false}
         animate={animated ? { opacity: 1 } : undefined}
-        transition={
-          animated ? { delay: 1.2, duration: 0.18, ease: "easeOut" } : undefined
-        }
+        transition={animated ? { delay: 1.2, duration: 0.18, ease: "easeOut" } : undefined}
       >
         {secured && (
           <legend
@@ -295,9 +293,7 @@ export function ElvixCard({
             }}
             initial={animated ? { opacity: 0 } : false}
             animate={animated ? { opacity: 1 } : undefined}
-            transition={
-              animated ? { delay: 0.2, duration: 0.18, ease: "easeOut" } : undefined
-            }
+            transition={animated ? { delay: 0.2, duration: 0.18, ease: "easeOut" } : undefined}
           >
             <ElvixSecuredBadge variant="outline" theme="light" size="sm" />
           </motion.span>
@@ -320,9 +316,7 @@ export function ElvixCard({
         }}
         initial={animated ? { opacity: 0, y: 6 } : false}
         animate={animated ? { opacity: 1, y: 0 } : undefined}
-        transition={
-          animated ? { delay: 0.4, duration: 0.28, ease: "easeOut" } : undefined
-        }
+        transition={animated ? { delay: 0.4, duration: 0.28, ease: "easeOut" } : undefined}
       >
         {title && (
           <div

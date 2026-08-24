@@ -21,8 +21,8 @@ import {
   FADE_MASK,
   Heading,
   Subtitle,
-  WizardHeader,
   typeIcon,
+  WizardHeader,
 } from "./legal-entity-primitives";
 import type { LegalEntityRecord, LegalEntityType } from "./legal-entity-schema";
 

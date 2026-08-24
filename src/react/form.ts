@@ -1,4 +1,4 @@
-import type { ZodIssue, ZodTypeAny, output } from "zod";
+import type { output, ZodIssue, ZodTypeAny } from "zod";
 
 export type FieldErrors = Record<string, string>;
 

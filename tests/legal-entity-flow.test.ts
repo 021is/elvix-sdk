@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { View, nextView, needsBusinessSteps, needsPersonSteps, walkFlow } from "../src/react/legal-entity-flow";
+import {
+  needsBusinessSteps,
+  needsPersonSteps,
+  nextView,
+  View,
+  walkFlow,
+} from "../src/react/legal-entity-flow";
 
 /**
  * Characterization tests for the legal-entity wizard ordering.
