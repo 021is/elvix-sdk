@@ -120,7 +120,8 @@ export function ElvixUserAvatar({
             avatarSizes: appCtx.membership.avatarSizes,
           }
         : { avatarUpdatedAt: 0, avatarSizes: [] });
-    resolvedUser = user ??
+    resolvedUser =
+      user ??
       (appCtx?.user
         ? { name: appCtx.user.name, email: appCtx.user.email, avatarUrl: appCtx.user.avatarUrl }
         : { name: null, email: null, avatarUrl: null });

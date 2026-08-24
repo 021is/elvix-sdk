@@ -16,11 +16,11 @@
  * keystroke + per pane-advance.
  */
 
+import { AlertTriangle, XCircle } from "lucide-react";
+import { useCallback, useEffect, useRef } from "react";
 import { ElvixInput } from "./elvix-input";
 import type { TaxValidationLevel } from "./legal-entity-schema";
 import { normaliseTaxId, vatIdFormatMatches } from "./tax-validation";
-import { AlertTriangle, XCircle } from "lucide-react";
-import { useCallback, useEffect, useRef } from "react";
 
 export type TaxIdValidationState = {
   level: TaxValidationLevel | "checking" | "invalid";

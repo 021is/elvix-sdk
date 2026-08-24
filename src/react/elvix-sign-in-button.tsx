@@ -1,9 +1,9 @@
 "use client";
 
 import { type CSSProperties, useState } from "react";
-import { ElvixSignInForm as ElvixSignIn } from "./elvix-sign-in-form";
 import { useElvixResolvedTheme } from "./elvix-provider";
 import { ElvixShield } from "./elvix-shield";
+import { ElvixSignInForm as ElvixSignIn } from "./elvix-sign-in-form";
 import { type ElvixSizeProps, sizeStyle } from "./size";
 import type { ElvixSignInResult } from "./types";
 
@@ -72,11 +72,10 @@ export type ElvixSignInButtonProps = {
    * string = any CSS length (e.g. `"8px"`, `"50%"`). Use `0` for sharp.
    */
   borderRadius?: number | string;
-} & /**
+} /**
  * Dimensional sizing (width/height/min/max), additive to the `size` preset.
  * Merged last into the root element so an explicit width/height wins.
- */
-  ElvixSizeProps;
+ */ & ElvixSizeProps;
 
 const PRESET_LABEL: Record<ElvixSignInPreset, string> = {
   "sign-in-with-elvix": "Sign in with elvix",
@@ -87,31 +86,56 @@ const PRESET_LABEL: Record<ElvixSignInPreset, string> = {
   continue: "Continue",
 };
 
-const SIZE_STANDARD: Record<ElvixSignInButtonSize, { height: number; padX: number; font: number; gap: number }> = {
+const SIZE_STANDARD: Record<
+  ElvixSignInButtonSize,
+  { height: number; padX: number; font: number; gap: number }
+> = {
   sm: { height: 36, padX: 12, font: 14, gap: 8 },
   md: { height: 40, padX: 12, font: 14, gap: 10 },
   lg: { height: 48, padX: 16, font: 15, gap: 12 },
 };
 const SIZE_ICON: Record<ElvixSignInButtonSize, number> = { sm: 36, md: 40, lg: 48 };
 const ICON_SIZE: Record<ElvixSignInButtonSize, number> = { sm: 18, md: 20, lg: 22 };
-const RADIUS: Record<ElvixSignInButtonShape, number> = { rectangle: 10, pill: 9999, square: 10, circle: 9999 };
+const RADIUS: Record<ElvixSignInButtonShape, number> = {
+  rectangle: 10,
+  pill: 9999,
+  square: 10,
+  circle: 9999,
+};
 
 type Tone = { bg: string; color: string; border: string; shadow?: string };
 function variantTone(variant: ElvixSignInButtonVariant, theme: "light" | "dark"): Tone {
   const dark = theme === "dark";
   switch (variant) {
     case "filled":
-      return { bg: "#6c5ce7", color: "#fff", border: "1px solid rgba(0,0,0,0.1)", shadow: "0 4px 16px -4px rgba(108,92,231,0.45)" };
+      return {
+        bg: "#6c5ce7",
+        color: "#fff",
+        border: "1px solid rgba(0,0,0,0.1)",
+        shadow: "0 4px 16px -4px rgba(108,92,231,0.45)",
+      };
     case "filled-black":
-      return { bg: "#0a0a0b", color: "#fff", border: `1px solid ${dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.1)"}` };
+      return {
+        bg: "#0a0a0b",
+        color: "#fff",
+        border: `1px solid ${dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.1)"}`,
+      };
     case "white":
-      return { bg: "#fff", color: "#0a0a0b", border: `1px solid ${dark ? "transparent" : "#e4e4e7"}` };
+      return {
+        bg: "#fff",
+        color: "#0a0a0b",
+        border: `1px solid ${dark ? "transparent" : "#e4e4e7"}`,
+      };
     case "outline":
       return dark
         ? { bg: "transparent", color: "#fff", border: "1px solid rgba(142,125,255,0.4)" }
         : { bg: "#fff", color: "#0a0a0b", border: "1px solid rgba(0,0,0,0.15)" };
     case "ghost":
-      return { bg: "transparent", color: dark ? "#fff" : "#0a0a0b", border: "1px solid transparent" };
+      return {
+        bg: "transparent",
+        color: dark ? "#fff" : "#0a0a0b",
+        border: "1px solid transparent",
+      };
   }
 }
 
@@ -220,7 +244,13 @@ export function ElvixSignInButton({
 
   if (mode === "callback") {
     return (
-      <button type="button" onClick={onClick} className={className} style={style} aria-label={isIcon ? resolvedLabel : undefined}>
+      <button
+        type="button"
+        onClick={onClick}
+        className={className}
+        style={style}
+        aria-label={isIcon ? resolvedLabel : undefined}
+      >
         {content}
       </button>
     );
@@ -260,7 +290,12 @@ export function ElvixSignInButton({
   })();
 
   return (
-    <a href={destination} className={className} style={style} aria-label={isIcon ? resolvedLabel : undefined}>
+    <a
+      href={destination}
+      className={className}
+      style={style}
+      aria-label={isIcon ? resolvedLabel : undefined}
+    >
       {content}
     </a>
   );

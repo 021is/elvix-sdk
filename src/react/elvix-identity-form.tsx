@@ -24,27 +24,27 @@
  *   • Save errors surface as a toast (loud); success stays silent.
  */
 
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useT } from "../locale/use-t";
+import { MaybeCard } from "./elvix-card";
 import { ElvixChipGroup } from "./elvix-chip-group";
 import { ElvixDateInput } from "./elvix-date-input";
 import { ElvixInput } from "./elvix-input";
-import { MaybeCard } from "./elvix-card";
-import { ElvixSaveButton, type ElvixSaveState } from "./elvix-save-button";
 import { useElvixContext } from "./elvix-provider";
-import { authInit } from "./session";
-import { useSaveShortcut } from "./use-save-shortcut";
+import { ElvixSaveButton, type ElvixSaveState } from "./elvix-save-button";
 import { safeParseForm } from "./form";
 import {
   GENDER_VALUES,
   type Gender,
   type IdentityInput,
+  identitySchema,
   PRONOUN_VALUES,
   type Pronouns,
-  identitySchema,
 } from "./identity-schema";
+import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useT } from "../locale/use-t";
 import { toast } from "./toast";
+import { useSaveShortcut } from "./use-save-shortcut";
 
 // Pills are content-sized + flex-wrap, so labels can be their full
 // natural length without breaking layout. Translations safe — long
@@ -52,9 +52,7 @@ import { toast } from "./toast";
 // Option labels are built per-render via t() inside the component
 // so they pick up the active locale.
 
-export type ElvixIdentityFormResult =
-  | { ok: true }
-  | { ok: false; error: string; message?: string };
+export type ElvixIdentityFormResult = { ok: true } | { ok: false; error: string; message?: string };
 
 export function ElvixIdentityForm({
   initial,
@@ -75,9 +73,7 @@ export function ElvixIdentityForm({
 }) {
   const ctx = useElvixContext();
   const t = useT();
-  const [hydrated, setHydrated] = useState<Partial<IdentityInput> | null>(
-    initial ?? null,
-  );
+  const [hydrated, setHydrated] = useState<Partial<IdentityInput> | null>(initial ?? null);
 
   useEffect(() => {
     if (initial !== undefined) return;

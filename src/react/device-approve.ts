@@ -30,9 +30,10 @@ export async function approveDevice(args: {
       body: JSON.stringify({ user_code: args.userCode }),
     });
     if (res.ok) return { ok: true };
-    const body = (await res.json().catch(() => null)) as
-      | { errorMessage?: string; error?: string }
-      | null;
+    const body = (await res.json().catch(() => null)) as {
+      errorMessage?: string;
+      error?: string;
+    } | null;
     return { ok: false, error: body?.errorMessage ?? body?.error ?? "Approval failed." };
   } catch {
     return { ok: false, error: "Network error. Try again." };

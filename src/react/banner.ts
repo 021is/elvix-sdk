@@ -27,15 +27,24 @@ export function resolveBanner(input: BannerResolverInput): BannerSource {
 
   present.sort((a, b) => a - b);
   const srcSet = present
-    .map((s) => `${variantUrl(appSlug, userId, "banner", s, membership.bannerUpdatedAt)} ${s}w`)
+    .map((s) => {
+      const url = variantUrl({
+        appSlug,
+        userId,
+        type: "banner",
+        size: s,
+        updatedAt: membership.bannerUpdatedAt,
+      });
+      return `${url} ${s}w`;
+    })
     .join(", ");
-  const src = variantUrl(
+  const src = variantUrl({
     appSlug,
     userId,
-    "banner",
-    present[present.length - 1]!,
-    membership.bannerUpdatedAt,
-  );
+    type: "banner",
+    size: present[present.length - 1]!,
+    updatedAt: membership.bannerUpdatedAt,
+  });
   return { kind: "custom", src, srcSet, sizes: present };
 }
 

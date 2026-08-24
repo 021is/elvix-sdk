@@ -72,10 +72,18 @@ export async function signOut(options: SignOutOptions = {}): Promise<SignOutResu
     });
     result =
       !res.ok && res.status !== 204
-        ? { ok: false, error: `http_${res.status}`, message: `sign-out failed (HTTP ${res.status})` }
+        ? {
+            ok: false,
+            error: `http_${res.status}`,
+            message: `sign-out failed (HTTP ${res.status})`,
+          }
         : { ok: true, redirect: undefined };
   } catch (e) {
-    result = { ok: false, error: "network_error", message: e instanceof Error ? e.message : "network error" };
+    result = {
+      ok: false,
+      error: "network_error",
+      message: e instanceof Error ? e.message : "network error",
+    };
   }
 
   // ALWAYS clear local state — the user's intent is to be signed out even if

@@ -12,7 +12,7 @@
  * Value contract: `""` or `"YYYY-MM-DD"`.
  */
 
-import { type InputHTMLAttributes, forwardRef } from "react";
+import { forwardRef, type InputHTMLAttributes } from "react";
 
 export type ElvixDateInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,

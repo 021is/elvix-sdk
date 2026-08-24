@@ -3,8 +3,8 @@
  * Not exported from the public package.
  */
 
-import { authInit } from "./session";
 import type { ElvixActionResult } from "../types/index";
+import { authInit } from "./session";
 
 export type FetchOpts = {
   baseUrl: string;
@@ -71,10 +71,7 @@ export async function appPatch<T>(
   }
 }
 
-export async function appDelete<T>(
-  opts: FetchOpts,
-  path: string,
-): Promise<ElvixActionResult<T>> {
+export async function appDelete<T>(opts: FetchOpts, path: string): Promise<ElvixActionResult<T>> {
   try {
     const auth = authInit();
     const res = await fetch(`${opts.baseUrl}/api/account/apps/${opts.applicationId}${path}`, {

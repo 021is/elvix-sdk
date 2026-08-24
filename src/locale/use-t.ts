@@ -12,11 +12,11 @@
  * it returns a one-shot English-only `t` so no key ever throws.
  */
 
-import { useContext, useMemo } from "react";
+import type { Runtime } from "@021.is/spine-i18n";
 // `useRuntime` throws when LocaleProvider is missing, so we read the
 // context directly to detect the absent case before touching the hook.
 import { useT as upstreamUseT } from "@021.is/spine-i18n/react";
-import type { Runtime } from "@021.is/spine-i18n";
+import { useContext, useMemo } from "react";
 import { buildEnglishRuntime } from "./runtime";
 
 // spine-i18n doesn't export its internal context. We can call upstream

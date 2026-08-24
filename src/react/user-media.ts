@@ -45,9 +45,12 @@ async function fetchMedia(baseUrl: string, userId: string): Promise<UserMedia | 
       { credentials: "omit" },
     );
     if (!res.ok) return null;
-    const j = (await res.json()) as
-      | { ok?: boolean; slug?: string | null; avatar?: UserMedia["avatar"]; banner?: UserMedia["banner"] }
-      | null;
+    const j = (await res.json()) as {
+      ok?: boolean;
+      slug?: string | null;
+      avatar?: UserMedia["avatar"];
+      banner?: UserMedia["banner"];
+    } | null;
     if (!j?.ok || !j.avatar || !j.banner) return null;
     return { slug: j.slug ?? null, avatar: j.avatar, banner: j.banner };
   } catch {

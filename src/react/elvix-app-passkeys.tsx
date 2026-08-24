@@ -170,9 +170,7 @@ function ElvixAppPasskeysImpl({
   if (!resolvedAppId) {
     return (
       <div data-elvix-pane="error">
-        <p style={{ color: "var(--elvix-danger, #dc2626)", fontSize: 13 }}>
-          Missing app id.
-        </p>
+        <p style={{ color: "var(--elvix-danger, #dc2626)", fontSize: 13 }}>Missing app id.</p>
       </div>
     );
   }
@@ -202,9 +200,8 @@ function ElvixAppPasskeysImpl({
           lineHeight: 1.5,
         }}
       >
-        Phishing-proof. These passkeys can only sign you in to {appName}.
-        Account-level passkeys you added on /account/security work here too
-        and are managed there.
+        Phishing-proof. These passkeys can only sign you in to {appName}. Account-level passkeys you
+        added on /account/security work here too and are managed there.
       </p>
 
       {rows === null ? (
@@ -430,7 +427,9 @@ function friendlyError(code: string): string {
  * Public export. Wraps the implementation in <ElvixCard> by default;
  * pass `card={false}` to render bare (compose in your own surface).
  */
-export function ElvixAppPasskeys(props: Parameters<typeof ElvixAppPasskeysImpl>[0] & { card?: boolean }) {
+export function ElvixAppPasskeys(
+  props: Parameters<typeof ElvixAppPasskeysImpl>[0] & { card?: boolean },
+) {
   const { card, ...rest } = props;
   return (
     <MaybeCard card={card} className="h-full">

@@ -5,10 +5,7 @@
  */
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
+import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 
 const DEFAULT_BASE_URL = "https://elvix.is";
 
@@ -48,7 +45,7 @@ function splitEndpoint(endpoint: string): { method: string; path: string } {
 function toolName(method: string, path: string): string {
   return `${method.toLowerCase()}_${path
     .replace(/^\/api\//, "")
-    .replace(/[\/{}]+/g, "_")
+    .replace(/[/{}]+/g, "_")
     .replace(/_+/g, "_")
     .replace(/^_|_$/g, "")}`;
 }
@@ -87,10 +84,7 @@ export async function createElvixMcpServer(opts: ElvixMcpOptions): Promise<{
       _meta: { method, path, adminScope: entry.adminScope ?? false },
     }));
 
-  const server = new Server(
-    { name: "elvix", version: "0.1.0" },
-    { capabilities: { tools: {} } },
-  );
+  const server = new Server({ name: "elvix", version: "0.1.0" }, { capabilities: { tools: {} } });
 
   server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: tools.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })),
@@ -99,7 +93,10 @@ export async function createElvixMcpServer(opts: ElvixMcpOptions): Promise<{
   server.setRequestHandler(CallToolRequestSchema, async (req) => {
     const tool = tools.find((t) => t.name === req.params.name);
     if (!tool) {
-      return { content: [{ type: "text", text: `Unknown tool: ${req.params.name}` }], isError: true };
+      return {
+        content: [{ type: "text", text: `Unknown tool: ${req.params.name}` }],
+        isError: true,
+      };
     }
     const args = (req.params.arguments ?? {}) as {
       path?: string;
