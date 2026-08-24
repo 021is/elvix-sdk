@@ -36,13 +36,19 @@ export function isBannerSize(n: number): n is BannerSize {
  * reading a Prisma row you pass the DateTime directly; clients
  * receiving serialized JSON pass the already-coerced epoch ms.
  */
-export function variantUrl(
-  appSlug: string,
-  userId: string,
-  type: Type,
-  size: number,
-  updatedAt: Date | number,
-): string {
+export function variantUrl({
+  appSlug,
+  userId,
+  type,
+  size,
+  updatedAt,
+}: {
+  appSlug: string;
+  userId: string;
+  type: Type;
+  size: number;
+  updatedAt: Date | number;
+}): string {
   const v = typeof updatedAt === "number" ? updatedAt : updatedAt.getTime();
   return `${R2_PUBLIC_BASE}/${R2_PRODUCT_PREFIX}/${appSlug}/users/${userId}/${type}-${size}.webp?v=${v}`;
 }

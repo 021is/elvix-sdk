@@ -42,15 +42,24 @@ export function resolveAvatar(input: AvatarResolverInput): AvatarSource {
   if (present.length > 0) {
     present.sort((a, b) => a - b);
     const srcSet = present
-      .map((s) => `${variantUrl(appSlug, userId, "avatar", s, membership.avatarUpdatedAt)} ${s}w`)
+      .map((s) => {
+        const url = variantUrl({
+          appSlug,
+          userId,
+          type: "avatar",
+          size: s,
+          updatedAt: membership.avatarUpdatedAt,
+        });
+        return `${url} ${s}w`;
+      })
       .join(", ");
-    const src = variantUrl(
+    const src = variantUrl({
       appSlug,
       userId,
-      "avatar",
-      present[present.length - 1]!,
-      membership.avatarUpdatedAt,
-    );
+      type: "avatar",
+      size: present[present.length - 1]!,
+      updatedAt: membership.avatarUpdatedAt,
+    });
     return { kind: "custom", src, srcSet, sizes: present };
   }
 
