@@ -152,7 +152,11 @@ export async function runPasskeySignIn(
     if (name === "NotAllowedError" || name === "AbortError") {
       return { ok: false, error: "passkey_cancelled" };
     }
-    return { ok: false, error: "passkey_failed", message: e instanceof Error ? e.message : undefined };
+    return {
+      ok: false,
+      error: "passkey_failed",
+      message: e instanceof Error ? e.message : undefined,
+    };
   }
 
   // ── 3. finish ───────────────────────────────────────────────────────────────
@@ -207,9 +211,7 @@ type AttestationJSON = {
   };
 };
 
-export type PasskeyRegisterResult =
-  | { ok: true }
-  | { ok: false; error: string; message?: string };
+export type PasskeyRegisterResult = { ok: true } | { ok: false; error: string; message?: string };
 
 /**
  * Onboarding "add a passkey" step, cross-origin aware. Mirrors
@@ -234,7 +236,11 @@ export async function runPasskeyRegister(
    *  (origin mismatch) and the caller should fall back to the hosted ceremony. */
   clientId?: string,
 ): Promise<PasskeyRegisterResult> {
-  if (typeof window === "undefined" || !window.PublicKeyCredential || !navigator.credentials?.create) {
+  if (
+    typeof window === "undefined" ||
+    !window.PublicKeyCredential ||
+    !navigator.credentials?.create
+  ) {
     return { ok: false, error: "passkey_unsupported", message: "This browser can't use passkeys." };
   }
 
@@ -250,9 +256,7 @@ export async function runPasskeyRegister(
     const res = await fetch(`${baseUrl}/api/auth/passkey/register/start`, {
       method: "POST",
       ...reqInit,
-      body: JSON.stringify(
-        applicationId ? { surface, applicationId } : { surface },
-      ),
+      body: JSON.stringify(applicationId ? { surface, applicationId } : { surface }),
     });
     const body = (await res.json()) as {
       success?: boolean;
@@ -310,7 +314,11 @@ export async function runPasskeyRegister(
     if (name === "NotAllowedError" || name === "AbortError") {
       return { ok: false, error: "passkey_cancelled" };
     }
-    return { ok: false, error: "passkey_register_failed", message: e instanceof Error ? e.message : undefined };
+    return {
+      ok: false,
+      error: "passkey_register_failed",
+      message: e instanceof Error ? e.message : undefined,
+    };
   }
 
   // ── 3. finish ───────────────────────────────────────────────────────────────

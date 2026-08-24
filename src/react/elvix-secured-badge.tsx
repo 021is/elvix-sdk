@@ -33,10 +33,12 @@ export type ElvixSecuredBadgeProps = {
   /** Where the badge links. Defaults to elvix. */
   href?: string;
   className?: string;
-} & /** Dimensional sizing, additive to the `size` preset; merged last so it wins. */
-  ElvixSizeProps;
+} /** Dimensional sizing, additive to the `size` preset; merged last so it wins. */ & ElvixSizeProps;
 
-const SIZE: Record<ElvixSecuredBadgeSize, { height: number; padX: number; font: number; icon: number; gap: number }> = {
+const SIZE: Record<
+  ElvixSecuredBadgeSize,
+  { height: number; padX: number; font: number; icon: number; gap: number }
+> = {
   sm: { height: 28, padX: 10, font: 11.5, icon: 14, gap: 6 },
   md: { height: 32, padX: 12, font: 12.5, icon: 16, gap: 7 },
   lg: { height: 36, padX: 14, font: 13, icon: 18, gap: 8 },
@@ -46,16 +48,52 @@ type Tone = { bg: string; border: string; lead: string; brand: string; shield: s
 
 const TONE: Record<ElvixSecuredBadgeVariant, Record<ElvixSecuredBadgeTheme, Tone>> = {
   white: {
-    light: { bg: "#ffffff", border: "#e4e4e7", lead: "#71717a", brand: "#0a0a0b", shield: "#0a0a0b" },
-    dark: { bg: "#ffffff", border: "transparent", lead: "#71717a", brand: "#0a0a0b", shield: "#0a0a0b" },
+    light: {
+      bg: "#ffffff",
+      border: "#e4e4e7",
+      lead: "#71717a",
+      brand: "#0a0a0b",
+      shield: "#0a0a0b",
+    },
+    dark: {
+      bg: "#ffffff",
+      border: "transparent",
+      lead: "#71717a",
+      brand: "#0a0a0b",
+      shield: "#0a0a0b",
+    },
   },
   dark: {
-    light: { bg: "#0a0a0b", border: "rgba(0,0,0,0.1)", lead: "#d4d4d8", brand: "#ffffff", shield: "#ffffff" },
-    dark: { bg: "#0a0a0b", border: "rgba(255,255,255,0.1)", lead: "#d4d4d8", brand: "#ffffff", shield: "#ffffff" },
+    light: {
+      bg: "#0a0a0b",
+      border: "rgba(0,0,0,0.1)",
+      lead: "#d4d4d8",
+      brand: "#ffffff",
+      shield: "#ffffff",
+    },
+    dark: {
+      bg: "#0a0a0b",
+      border: "rgba(255,255,255,0.1)",
+      lead: "#d4d4d8",
+      brand: "#ffffff",
+      shield: "#ffffff",
+    },
   },
   outline: {
-    light: { bg: "transparent", border: "rgba(0,0,0,0.15)", lead: "#71717a", brand: "#0a0a0b", shield: "#0a0a0b" },
-    dark: { bg: "transparent", border: "rgba(142,125,255,0.4)", lead: "#d4d4d8", brand: "#ffffff", shield: "#ffffff" },
+    light: {
+      bg: "transparent",
+      border: "rgba(0,0,0,0.15)",
+      lead: "#71717a",
+      brand: "#0a0a0b",
+      shield: "#0a0a0b",
+    },
+    dark: {
+      bg: "transparent",
+      border: "rgba(142,125,255,0.4)",
+      lead: "#d4d4d8",
+      brand: "#ffffff",
+      shield: "#ffffff",
+    },
   },
 };
 

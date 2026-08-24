@@ -1,0 +1,115 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.10/schema.json",
+  "files": {
+    "includes": [
+      "src/**/*.ts",
+      "src/**/*.tsx",
+      "tests/**/*.ts",
+      "scripts/**/*.mjs"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "complexity": {
+        "noExcessiveLinesPerFunction": {
+          "level": "error",
+          "options": {
+            "maxLines": 150,
+            "skipIifes": true
+          }
+        },
+        "noExcessiveCognitiveComplexity": {
+          "level": "error",
+          "options": {
+            "maxAllowedComplexity": 25
+          }
+        },
+        "useMaxParams": {
+          "level": "error",
+          "options": {
+            "max": 4
+          }
+        },
+        "useOptionalChain": "warn",
+        "noUselessFragments": "warn"
+      },
+      "suspicious": {
+        "noExplicitAny": "error",
+        "noDocumentCookie": "warn",
+        "noArrayIndexKey": "warn"
+      },
+      "correctness": {
+        "noUnusedImports": "error",
+        "noUnusedVariables": "error",
+        "useExhaustiveDependencies": "warn",
+        "useHookAtTopLevel": "warn"
+      },
+      "style": {
+        "noNonNullAssertion": "warn",
+        "useTemplate": "warn"
+      },
+      "performance": {
+        "noImgElement": "warn"
+      },
+      "a11y": {
+        "noLabelWithoutControl": "warn",
+        "useSemanticElements": "warn",
+        "noAutofocus": "warn",
+        "noNoninteractiveElementToInteractiveRole": "warn"
+      }
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "src/react/elvix-address-book.tsx",
+        "src/react/elvix-app-passkeys.tsx",
+        "src/react/elvix-avatar.tsx",
+        "src/react/elvix-banner.tsx",
+        "src/react/elvix-card.tsx",
+        "src/react/elvix-deactivate.tsx",
+        "src/react/elvix-identity-form.tsx",
+        "src/react/elvix-languages.tsx",
+        "src/react/elvix-leave.tsx",
+        "src/react/elvix-legal-entities.tsx",
+        "src/react/elvix-provider.tsx",
+        "src/react/elvix-region.tsx",
+        "src/react/elvix-sessions.tsx",
+        "src/react/elvix-sign-in-button.tsx",
+        "src/react/elvix-sign-in-form.tsx",
+        "src/react/elvix-sign-out-button.tsx",
+        "src/react/elvix-username.tsx",
+        "src/react/google-one-tap.tsx",
+        "src/react/legal-entity-schema.ts",
+        "src/react/legal-entity-wizard-views.tsx",
+        "src/react/passkey.ts",
+        "src/react/regions.ts",
+        "src/react/user-images-types.ts"
+      ],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noExcessiveLinesPerFunction": "warn",
+            "noExcessiveCognitiveComplexity": "warn",
+            "useMaxParams": "warn"
+          }
+        }
+      }
+    }
+  ]
+}

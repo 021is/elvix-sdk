@@ -18,23 +18,6 @@
  * POST, DB has a unique constraint).
  */
 
-import { MaybeCard } from "./elvix-card";
-import { ElvixInput } from "./elvix-input";
-import { ElvixSaveButton } from "./elvix-save-button";
-import { useElvixContext } from "./elvix-provider";
-import { authInit } from "./session";
-import type { LanguageRecord } from "./language-schema";
-import {
-  LANGUAGES,
-  LANGUAGE_LEVELS,
-  LANGUAGE_LEVEL_META,
-  type Language,
-  type LanguageLevel,
-  MAX_LANGUAGES_PER_USER,
-  findLanguage,
-} from "./languages";
-import { unwrapEnvelope } from "./spine-fetch";
-import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -47,6 +30,23 @@ import {
   Trash2,
 } from "lucide-react";
 import { type CSSProperties, useCallback, useEffect, useState } from "react";
+import { useT } from "../locale/use-t";
+import { MaybeCard } from "./elvix-card";
+import { ElvixInput } from "./elvix-input";
+import { useElvixContext } from "./elvix-provider";
+import { ElvixSaveButton } from "./elvix-save-button";
+import type { LanguageRecord } from "./language-schema";
+import {
+  findLanguage,
+  LANGUAGE_LEVEL_META,
+  LANGUAGE_LEVELS,
+  LANGUAGES,
+  type Language,
+  type LanguageLevel,
+  MAX_LANGUAGES_PER_USER,
+} from "./languages";
+import { authInit } from "./session";
+import { unwrapEnvelope } from "./spine-fetch";
 
 // ─── Public types ────────────────────────────────────────────────────
 
@@ -89,13 +89,7 @@ const paneVariants = {
 const FADE_MASK =
   "linear-gradient(to bottom, transparent 0, rgba(0,0,0,0.4) 12px, black 28px, black calc(100% - 28px), rgba(0,0,0,0.4) calc(100% - 12px), transparent 100%)";
 
-function Pane({
-  children,
-  fadeEdges = false,
-}: {
-  children: React.ReactNode;
-  fadeEdges?: boolean;
-}) {
+function Pane({ children, fadeEdges = false }: { children: React.ReactNode; fadeEdges?: boolean }) {
   return (
     <motion.div
       variants={paneVariants}
@@ -503,9 +497,7 @@ function LanguagePickView({
         style={{ maskImage: FADE_MASK, WebkitMaskImage: FADE_MASK }}
       >
         {filtered.length === 0 ? (
-          <div className="px-3 py-6 text-center text-[13px] text-fg-3">
-            {t("common.noMatches")}
-          </div>
+          <div className="px-3 py-6 text-center text-[13px] text-fg-3">{t("common.noMatches")}</div>
         ) : (
           <ul className="flex flex-col gap-1.5 py-1">
             {filtered.map((l) => {
@@ -694,13 +686,7 @@ function SavingView({ label }: { label?: string }) {
 
 // ─── Shared chrome primitives ────────────────────────────────────────
 
-function WizardHeader({
-  onBack,
-  backLabel,
-}: {
-  onBack: () => void;
-  backLabel?: string;
-}) {
+function WizardHeader({ onBack, backLabel }: { onBack: () => void; backLabel?: string }) {
   const t = useT();
   return (
     <div className="flex items-center pt-2">
@@ -716,13 +702,7 @@ function WizardHeader({
   );
 }
 
-function Heading({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+function Heading({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <h2 className={"mt-2 text-[18px] font-semibold leading-tight text-fg-1 " + className}>
       {children}

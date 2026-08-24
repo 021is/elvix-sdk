@@ -19,10 +19,10 @@
  *   placeholder   — copy in the search input when no value.
  */
 
-import { COUNTRIES, type Country, findCountry } from "./countries";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronDown, Search } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { COUNTRIES, type Country, findCountry } from "./countries";
 
 export type ElvixCountrySelectProps = {
   value: string | null;

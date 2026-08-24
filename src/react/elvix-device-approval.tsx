@@ -190,8 +190,8 @@ function DeviceApprovalInner({
       navigate={false}
       belowHeading={
         <p className="elvix-muted" style={{ fontSize: 13, lineHeight: 1.5, marginTop: 4 }}>
-          A device wants to sign in to your account as a CLI. Confirm the code matches your terminal:{" "}
-          <code style={{ fontWeight: 600 }}>{userCode}</code>
+          A device wants to sign in to your account as a CLI. Confirm the code matches your
+          terminal: <code style={{ fontWeight: 600 }}>{userCode}</code>
         </p>
       }
       onAuthenticated={(r) => {

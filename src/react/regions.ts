@@ -77,6 +77,18 @@ export type RegionDefaults = {
   measurementSystem: MeasurementSystem;
 };
 
+/**
+ * Row constructor for the region table below.
+ *
+ * biome-ignore lint/complexity/useMaxParams: this is a table row, not an API.
+ * The eight positional arguments are the eight columns, and they are what
+ * keeps 66 regions readable as 66 one-line rows you can scan and diff. An
+ * options object would be correct for a function anyone calls from elsewhere;
+ * here it would turn a legible table into roughly 500 lines and make a wrong
+ * value harder to spot, not easier. The column order is fixed by the
+ * `RegionDefaults` type directly above, so a swapped argument of a different
+ * type is still a compile error.
+ */
 const D = (
   uiLocale: string,
   timeZone: string,

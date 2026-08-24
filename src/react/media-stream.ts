@@ -73,7 +73,11 @@ function reopen(): void {
  * The EventSource is shared across all watched ids and reopens as the set
  * changes.
  */
-export function subscribeMediaStream(userId: string, baseUrl: string, onChange: Listener): () => void {
+export function subscribeMediaStream(
+  userId: string,
+  baseUrl: string,
+  onChange: Listener,
+): () => void {
   refcounts.set(userId, (refcounts.get(userId) ?? 0) + 1);
   let set = listeners.get(userId);
   if (!set) {

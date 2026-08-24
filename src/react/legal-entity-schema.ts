@@ -1,6 +1,6 @@
+import { z } from "zod";
 import { TAX_VALIDATABLE_COUNTRIES } from "./countries";
 import { localTaxIdMatches, registrationNumberMatches } from "./tax-validation";
-import { z } from "zod";
 
 /**
  * Legal-entity schema for the elvix Profile SDK.

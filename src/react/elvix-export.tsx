@@ -17,28 +17,22 @@ import { MaybeCard } from "./elvix-card";
  * and `onFail(error)` host hooks, brand from CSS vars only.
  */
 
-import { OtpInput } from "./otp-input";
-import { ElvixSaveButton } from "./elvix-save-button";
+import { useT } from "../locale/use-t";
 import { useElvixAppContext, useElvixContext } from "./elvix-provider";
+import { ElvixSaveButton } from "./elvix-save-button";
+import { OtpInput } from "./otp-input";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
-import { useT } from "../locale/use-t";
 
 /** elvix privacy contact surfaced on the export email-failure path. In the
  *  monorepo this is `PRIVACY_EMAIL` (NEXT_PUBLIC_PRIVACY_EMAIL); here it's the
  *  canonical published value. */
 const PRIVACY_EMAIL = "privacy@elvix.is";
+
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  ArrowLeft,
-  CheckCircle2,
-  ChevronRight,
-  Loader2,
-  Mail,
-  RefreshCw,
-  Shield,
-} from "lucide-react";
+import { ArrowLeft, ChevronRight, Loader2, Mail, RefreshCw, Shield } from "lucide-react";
 import { useEffect, useState } from "react";
+import { DonePane } from "./done-pane";
 
 export type ExportTarget = { kind: "identity" } | { kind: "app"; appId: string; appName: string };
 
@@ -161,7 +155,7 @@ function ElvixExportImpl({
             exit="exit"
             transition={SLIDE_T}
           >
-            <DonePane deliveredTo={doneInfo?.deliveredTo ?? resolvedEmail} />
+            <ExportDonePane deliveredTo={doneInfo?.deliveredTo ?? resolvedEmail} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -173,13 +167,7 @@ function ElvixExportImpl({
 //   1. preview (what's in the archive)
 // ─────────────────────────────────────────────────────────────────
 
-function PreviewPane({
-  target,
-  go,
-}: {
-  target: ExportTarget;
-  go: (p: Pane, d?: 1 | -1) => void;
-}) {
+function PreviewPane({ target, go }: { target: ExportTarget; go: (p: Pane, d?: 1 | -1) => void }) {
   const ctx = useElvixContext();
   const t = useT();
   const [loading, setLoading] = useState(true);
@@ -194,7 +182,9 @@ function PreviewPane({
         // LEGACY: spine-lint-disable-next-line spine/enum-over-string
         target.kind === "identity" ? "" : `?applicationId=${encodeURIComponent(target.appId)}`;
       try {
-        const res = await fetch(`${ctx.baseUrl}/api/account/export/preview${qs}`, { ...authInit() });
+        const res = await fetch(`${ctx.baseUrl}/api/account/export/preview${qs}`, {
+          ...authInit(),
+        });
         const body = unwrapEnvelope(await res.json());
         if (cancelled) return;
         if (!res.ok || !body.ok) {
@@ -553,38 +543,14 @@ function OtpPane({
 //   4. done
 // ─────────────────────────────────────────────────────────────────
 
-function DonePane({ deliveredTo }: { deliveredTo: string }) {
+function ExportDonePane({ deliveredTo }: { deliveredTo: string }) {
   const t = useT();
   return (
-    <div className="flex flex-col items-center text-center gap-4 py-2">
-      <motion.span
-        initial={{ scale: 0.6, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.34, ease: [0.22, 0.61, 0.36, 1] }}
-        className="size-12 rounded-full inline-flex items-center justify-center"
-        style={{ background: "var(--elvix-primary-12)" }}
-      >
-        <CheckCircle2
-          className="size-7"
-          strokeWidth={2.2}
-          style={{ color: "var(--elvix-primary-strong)" }}
-        />
-      </motion.span>
-      <div className="space-y-1 max-w-[340px]">
-        <div className="text-[15px] font-semibold tracking-tight text-fg-1">
-          {t("export.doneHeading")}
-        </div>
-        <div className="text-[12.5px] text-fg-3 leading-[1.55]">
-          {t("export.doneInboxBody", { email: deliveredTo })}
-        </div>
-      </div>
-      <a
-        href="/account/export"
-        className="text-[12.5px] font-medium text-fg-2 hover:text-fg-1 underline underline-offset-4 cursor-pointer"
-      >
-        {t("export.backToExports")}
-      </a>
-    </div>
+    <DonePane
+      title={t("export.doneHeading")}
+      body={t("export.doneInboxBody", { email: deliveredTo })}
+      action={{ label: t("export.backToExports"), href: "/account/export" }}
+    />
   );
 }
 
@@ -621,7 +587,8 @@ type TFn = (key: string, params?: Record<string, string | number>) => string;
  *  caller (always inside a React component) forwards the hook's `t`. */
 function challengeErrorCopy(t: TFn, error: string | undefined, retryAfter?: number): string {
   if (!error) return t("export.errorChallengeGeneric");
-  if (error === "too_recent") return t("export.errorChallengeTooRecent", { seconds: retryAfter ?? 30 });
+  if (error === "too_recent")
+    return t("export.errorChallengeTooRecent", { seconds: retryAfter ?? 30 });
   if (error === "too_many") return t("export.errorChallengeTooMany");
   if (error === "send_failed") return t("export.errorChallengeSendFailed");
   if (error === "export_rate_limit") {

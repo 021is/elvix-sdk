@@ -1,5 +1,5 @@
-import { LANGUAGES, LANGUAGE_LEVELS } from "./languages";
 import { z } from "zod";
+import { LANGUAGE_LEVELS, LANGUAGES } from "./languages";
 
 /**
  * Spoken-language schemas for the elvix Profile SDK.

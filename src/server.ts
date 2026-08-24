@@ -8,8 +8,16 @@
 
 import type { ElvixVerifyResult } from "./types/index";
 
-export { verifyElvixWebhook } from "./server/webhook";
+export type {
+  DeviceCode,
+  DeviceTokenResult,
+  PollDeviceTokenArgs,
+  RequestDeviceCodeArgs,
+} from "./server/device";
+// Device Authorization Grant (RFC 8628) — for CLI / headless logins.
+export { pollDeviceToken, requestDeviceCode } from "./server/device";
 export type { VerifyWebhookArgs } from "./server/webhook";
+export { verifyElvixWebhook } from "./server/webhook";
 export type {
   ElvixWebhookEvent,
   ElvixWebhookVerifyResult,
@@ -23,15 +31,6 @@ export type {
   UserSignedOutData,
 } from "./types/webhook";
 export { ElvixWebhookEventType } from "./types/webhook";
-
-// Device Authorization Grant (RFC 8628) — for CLI / headless logins.
-export { pollDeviceToken, requestDeviceCode } from "./server/device";
-export type {
-  DeviceCode,
-  DeviceTokenResult,
-  PollDeviceTokenArgs,
-  RequestDeviceCodeArgs,
-} from "./server/device";
 
 const DEFAULT_BASE_URL = "https://elvix.is";
 
@@ -142,7 +141,12 @@ function pickError(
   raw: string | undefined,
   status: number,
 ): import("./types/index").ElvixVerifyErr["error"] {
-  if (raw === "expired" || raw === "revoked" || raw === "membership_blocked" || raw === "rate_limited") {
+  if (
+    raw === "expired" ||
+    raw === "revoked" ||
+    raw === "membership_blocked" ||
+    raw === "rate_limited"
+  ) {
     return raw;
   }
   if (status === 401) return "invalid_token";

@@ -24,14 +24,9 @@ import { MaybeCard } from "./elvix-card";
  * hook for refetch.
  */
 
-import { useElvixContext } from "./elvix-provider";
-import { authInit } from "./session";
-import { unwrapEnvelope } from "./spine-fetch";
-import { useT } from "../locale/use-t";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
-  CheckCircle2,
   Clock,
   Fingerprint,
   Globe,
@@ -45,6 +40,11 @@ import {
   Trash2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useT } from "../locale/use-t";
+import { DonePane } from "./done-pane";
+import { useElvixContext } from "./elvix-provider";
+import { authInit } from "./session";
+import { unwrapEnvelope } from "./spine-fetch";
 
 type TFunction = (key: string, params?: Record<string, string | number>) => string;
 
@@ -60,7 +60,6 @@ const RevokingMode = {
   ALL: "all",
 } as const;
 type RevokingMode = (typeof RevokingMode)[keyof typeof RevokingMode];
-
 
 const DeviceKind = {
   DESKTOP: "desktop",
@@ -208,9 +207,7 @@ function ElvixSessionsImpl({
       onResult?.({
         ok: true,
         action:
-          mode === "all"
-            ? ElvixSessionsAction.SIGN_OUT_ALL
-            : ElvixSessionsAction.SIGN_OUT_OTHERS,
+          mode === "all" ? ElvixSessionsAction.SIGN_OUT_ALL : ElvixSessionsAction.SIGN_OUT_OTHERS,
         ended: body.ended ?? 0,
       });
       if (mode === "all") {
@@ -303,7 +300,7 @@ function ElvixSessionsImpl({
             exit="exit"
             transition={paneTransition}
           >
-            <DonePane
+            <SessionsDonePane
               endedCount={endedCount}
               onBack={() => {
                 setDirection(-1);
@@ -420,9 +417,7 @@ function ListPane({
           className="w-full inline-flex items-center justify-center gap-1.5 h-10 rounded-[10px] text-[12.5px] font-medium text-fg-2 hover:text-fg-1 bg-surface-hover border border-border-base transition cursor-pointer"
         >
           <LogOut className="size-3.5" />
-          {othersCount === 0
-            ? t("sessions.massRevokeCtaSelf")
-            : t("sessions.massRevokeCtaOpen")}
+          {othersCount === 0 ? t("sessions.massRevokeCtaSelf") : t("sessions.massRevokeCtaOpen")}
         </button>
       )}
     </div>
@@ -518,9 +513,7 @@ function ConfirmPane({
                 ? t("sessions.signOutAllCtaSelf")
                 : t("sessions.signOutAllCtaIncludingThis")}
             </span>
-            <span className="text-[11px] opacity-90">
-              {t("sessions.signOutAllRedirectHint")}
-            </span>
+            <span className="text-[11px] opacity-90">{t("sessions.signOutAllRedirectHint")}</span>
           </div>
           {revokingMode === "all" ? (
             <Loader2 className="size-4 animate-spin shrink-0" />
@@ -539,47 +532,18 @@ function ConfirmPane({
   );
 }
 
-function DonePane({
-  endedCount,
-  onBack,
-}: {
-  endedCount: number;
-  onBack: () => void;
-}) {
+function SessionsDonePane({ endedCount, onBack }: { endedCount: number; onBack: () => void }) {
   const t = useT();
   return (
-    <div className="flex flex-col items-center text-center gap-4 py-2">
-      <motion.span
-        initial={{ scale: 0.6, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.34, ease: [0.22, 0.61, 0.36, 1] }}
-        className="size-12 rounded-full inline-flex items-center justify-center"
-        style={{ background: "var(--elvix-primary-12)" }}
-      >
-        <CheckCircle2
-          className="size-7"
-          strokeWidth={2.2}
-          style={{ color: "var(--elvix-primary-strong)" }}
-        />
-      </motion.span>
-      <div className="space-y-1 max-w-[300px]">
-        <div className="text-[15px] font-semibold tracking-tight text-fg-1">
-          {endedCount === 0
-            ? t("sessions.doneAlreadyAlone")
-            : t("sessions.doneCount", { count: endedCount })}
-        </div>
-        <div className="text-[12.5px] text-fg-3 leading-[1.55]">
-          {t("sessions.doneFootnote")}
-        </div>
-      </div>
-      <button
-        type="button"
-        onClick={onBack}
-        className="text-[12.5px] font-medium text-fg-2 hover:text-fg-1 underline underline-offset-4 cursor-pointer"
-      >
-        {t("sessions.backToList")}
-      </button>
-    </div>
+    <DonePane
+      title={
+        endedCount === 0
+          ? t("sessions.doneAlreadyAlone")
+          : t("sessions.doneCount", { count: endedCount })
+      }
+      body={t("sessions.doneFootnote")}
+      action={{ label: t("sessions.backToList"), onClick: onBack }}
+    />
   );
 }
 

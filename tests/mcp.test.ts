@@ -13,7 +13,12 @@ const ORIG_FETCH = globalThis.fetch;
 const SAMPLE_MANIFEST = [
   { endpoint: "GET /api/v1/users/{id}", summary: "Read a user", role: "api", adminScope: false },
   { endpoint: "POST /api/v1/users", summary: "Create a user", role: "api", adminScope: true },
-  { endpoint: "DELETE /api/v1/users/{id}", summary: "Delete a user", role: "api", adminScope: true },
+  {
+    endpoint: "DELETE /api/v1/users/{id}",
+    summary: "Delete a user",
+    role: "api",
+    adminScope: true,
+  },
   { endpoint: "GET /api/account/profile", summary: "SDK-only", role: "sdk-only" },
 ];
 
