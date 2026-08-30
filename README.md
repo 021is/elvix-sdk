@@ -24,326 +24,79 @@
 
 Auth is the highest-leverage place to get an integration right or wrong. Roll your own and you ship an insecure copy of OAuth that future-you debugs at 2am. Use a US provider and your German users live under American legal frame. elvix is opinionated so the first answer is the safe answer, and EU-resident so the legal frame matches your customers.
 
-- Passwordless from day one. Email OTP, passkeys, Google.
-- Drop-in React components. One provider, one form, zero boilerplate.
-- Server-side verify in three lines.
-- Console-configured. Brand colors, allowed methods, redirects all live in elvix Console. The SDK reads them at runtime. No prop drilling.
-- Agent-friendly. Ships an MCP server so Claude, Cursor, Codex, and Gemini can integrate elvix without human shepherding.
+- Passwordless from day one — email OTP, passkeys, Google.
+- Drop-in React components. One provider, one form, no boilerplate.
+- Server-side verification of a session token in a single call.
+- Console-configured. Brand colours, allowed sign-in methods and redirects live in the elvix Console; the SDK reads them at runtime, so none of it is hardcoded in your app.
+- Agent-friendly. Ships an MCP server so Claude, Cursor, Codex and Gemini can integrate elvix without hand-holding.
 
-## Install
+## Getting started
 
-```bash
-bun add @elvix.is/sdk
-# or
-npm install @elvix.is/sdk
-```
+**→ [elvix.is/docs/install](https://elvix.is/docs/install)** walks the whole integration, with copyable code for every step.
 
-## Quickstart
+The shape of it: create an application in the Console to get a `clientId`, install the package, wrap your app in the provider, and mount the sign-in form. Everything else — which methods appear, how the card looks, where users land — is Console configuration rather than props.
 
-```tsx
-// app/layout.tsx
-import { ElvixProvider } from "@elvix.is/sdk/react";
+Sign-in and sign-up are the same door. There is no separate registration flow to build; a new user is upserted silently.
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html>
-      <body>
-        <ElvixProvider clientId={process.env.NEXT_PUBLIC_ELVIX_CLIENT_ID!}>
-          {children}
-        </ElvixProvider>
-      </body>
-    </html>
-  );
-}
-```
+## What's in the package
 
-```tsx
-// app/sign-in/page.tsx
-"use client";
+| Import | What it gives you |
+|---|---|
+| `@elvix.is/sdk/react` | The `<Elvix*>` components and hooks |
+| `@elvix.is/sdk/server` | Session-token verification, webhook verification, device login |
+| `@elvix.is/sdk/types` | Shared TypeScript types, no runtime code |
+| `@elvix.is/sdk/mcp` | The MCP server, embeddable in your own host |
 
-import { ElvixSignIn } from "@elvix.is/sdk/react";
-import { useRouter } from "next/navigation";
+**Components** — sign-in, username, identity form, avatar, banner, region, languages, address book, legal entities, sessions, data export, deactivate, leave. Full catalogue with live previews: **[elvix.is/docs/components](https://elvix.is/docs/components)**.
 
-export default function SignInPage() {
-  const router = useRouter();
-  return (
-    <ElvixSignIn
-      onResult={(r) => {
-        if (r.ok) router.push(r.redirect ?? "/dashboard");
-        else console.warn(r.error, r.message);
-      }}
-    />
-  );
-}
-```
+**Server helpers** — verify a session token against elvix on each protected request and get the live user, roles, scopes and memberships back. Because it re-checks on every call, a banned or signed-out user stops verifying within one request, so bans take effect server-side without you writing anything. Details: **[elvix.is/docs/verify-backend](https://elvix.is/docs/verify-backend)**.
 
-```ts
-// app/api/protected/route.ts
-export async function GET(request: Request) {
-  const token = request.headers.get("authorization")?.replace(/^Bearer /, "");
-  if (!token) return new Response("Unauthorized", { status: 401 });
+If you would rather not call elvix on every request, exchange the session token once for a short-lived signed JWT and verify that locally against our JWKS. Same guide covers it.
 
-  const res = await fetch("https://elvix.is/api/v1/verify", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.ELVIX_API_KEY!}`,
-    },
-    body: JSON.stringify({ token }),
-  });
-  const { ok, user, roles } = await res.json();
-  if (!ok) return new Response("Unauthorized", { status: 401 });
-  return Response.json({ hello: user.id, roles });
-}
-```
+## The two rules worth knowing before you ship
 
-That is the entire integration.
+**Cross-origin passkeys must return to the page that launched them.** If your app is on its own domain, a passkey ceremony has to come back to the page holding the sign-in form, not to your final destination. Send the user straight to the dashboard and the passkey registers correctly but the session is never established, so they bounce back to the sign-in gate. The SDK does the right thing by default; this only bites if you override the return URL.
 
-## Post-sign-in: `onResult` + navigation
-
-`onResult` fires **exactly once per sign-in, at the terminal state** — after any in-frame onboarding panes (passkey enrollment, username claim, membership recovery) that the SDK renders itself. The host never sees those intermediate steps, so it is always correct to redirect from `onResult`. The success payload is self-describing:
-
-```ts
-type ElvixSignInResult =
-  | { ok: true; phase: "complete"; method: "google" | "email_otp" | "passkey" | "username"; redirect: string; token?: string }
-  | { ok: false; error: string; message?: string };
-```
-
-- `phase: "complete"` — terminal. Safe to redirect.
-- `method` — the factor that completed sign-in.
-- `redirect` — resolved destination (`redirectAfterSignIn` ?? backend final ?? `/`).
-- `token` — present cross-origin only; verify it server-side with `verifyElvixToken`.
-
-**Who navigates.** By default the SDK navigates to `result.redirect` itself after firing `onResult`. If you want to route yourself (SPA navigation, or to set a session cookie first), pass `navigate={false}` and redirect from `onResult`:
-
-```tsx
-<ElvixSignInForm
-  navigate={false}                 // SDK stays put; host owns routing
-  onResult={(r) => {
-    if (!r.ok) return;
-    if (r.token) setSessionCookie(r.token);  // cross-origin: persist the bearer
-    router.push(r.redirect);                 // SPA navigation
-  }}
-/>
-```
-
-> `onAuthenticated` is **deprecated** — it predates `onResult` carrying `method` + a resolved `redirect`. It still fires, and its presence implies `navigate={false}`. Migrate to `navigate={false}` + `onResult`.
->
-> Migration note (0.7.13): if you previously redirected in `onResult` **without** `onAuthenticated`, add `navigate={false}` — otherwise the SDK and your handler will both navigate.
-
-### Cross-origin passkeys (the one host rule that matters)
-
-A passkey is bound to elvix's RP id (`elvix.is`). On your own origin the browser may refuse the WebAuthn call with **"rp.id cannot be used with the current origin"**. The SDK handles this for you: it tries inline first, and on failure (passkey **sign-in** *and* passkey **enrollment**) it navigates the whole tab to a hosted ceremony on `elvix.is`, runs WebAuthn there where the RP id matches, and returns to **the page it left** with the session token in the URL fragment (`#elvix_token=…`). `<ElvixProvider>` reads + strips that fragment on mount and the SDK fires `onResult` to finish.
-
-**So the only rule for your host: mount the SDK on your sign-in PAGE and finish sign-in in `onResult`. Do not navigate away from the sign-in page until `onResult` fires.**
-
-- The ceremony returns to the page that launched it (your sign-in page, including any `?next=`). If the SDK isn't still mounted there, the returned token is never consumed and the user lands **unauthenticated** — they'll bounce back to your gate even though the passkey was created. This is the #1 integration mistake.
-- Establish your own session from the token **inside `onResult`** (verify it with `verifyElvixToken`, set your cookie), then navigate:
-
-```tsx
-// app/sign-in/page.tsx — keep this mounted; let onResult finish the flow.
-<ElvixSignInForm
-  navigate={false}
-  onResult={async (r) => {
-    if (!r.ok) return setError(r.message);
-    if (r.token) await establishSession(r.token);   // server action → your httpOnly cookie
-    router.replace(r.redirect ?? nextParam ?? "/dashboard");
-  }}
-/>
-```
-
-- Nothing else is required cross-origin — no manifest config, no second redirect handler. If inline WebAuthn happens to work (browsers that honour elvix's Related Origin Requests manifest), there's no hop at all; the same `onResult` fires. Either way your code is identical.
-- **Set `redirectAfterSignIn` to your post-sign-in destination.** It's the *declarative* landing target and it survives the ceremony round-trip (it's a prop, re-applied on mount). `result.redirect` is best-effort and **falls back to `/` after a cross-origin hop** (the backend's per-method redirect lived in state that the full-page navigation wiped). So if you have an intended destination (e.g. a `?next=` your gate set), pass it as `redirectAfterSignIn={next}` rather than relying on `result.redirect ?? next` — otherwise `"/"` wins and the user lands on your home page instead of where they were headed.
-
-### Already signed in? Skip the form (`redirectIfAuthenticated`)
-
-Pass `redirectIfAuthenticated` to send an already-signed-in visitor straight to the dashboard instead of showing them the sign-in form. On mount the SDK probes the session; while it checks it shows a brief loader (no form flash), and if a session exists it fires `onResult` with `method: "session"` + your resolved `redirect` (and navigates unless `navigate={false}`). No session → the form renders as normal.
-
-```tsx
-<ElvixSignInForm
-  redirectIfAuthenticated
-  redirectAfterSignIn={next}
-  onResult={async (r) => {
-    if (!r.ok) return;
-    if (r.token) await establishSession(r.token);  // same handler as a fresh sign-in
-    router.replace(r.redirect);
-  }}
-/>
-```
-
-It's opt-in (default off) so account-switch flows that *want* to show the form to a signed-in user keep working. You can also read the raw state via `useElvixSession()` → `"loading" | "authenticated" | "anonymous"`.
-
-## Presence (automatic)
-
-`<ElvixProvider>` beats a presence heartbeat **automatically** whenever the user is signed in — so they show as **online** on your app's users list in the elvix Console with **zero wiring**. It beats every 30s, pauses on a hidden tab, reports "idle" after 60s without input, and works cross-origin (bearer) or same-origin (cookie). Nothing to mount.
-
-```tsx
-<ElvixProvider clientId={CLIENT_ID}>{children}</ElvixProvider>  // presence is on
-<ElvixProvider clientId={CLIENT_ID} presence={false}>…</ElvixProvider>  // opt out
-```
-
-`<ElvixPresence>` still exists for edge cases (beat for a different `applicationId`, or manual control when you set `presence={false}`), but you no longer need it.
-
-## AI coding agents
-
-elvix ships first-class agent support. Three surfaces:
-
-1. **Discovery via [llmstxt.org](https://llmstxt.org)**
-
-   ```
-   https://elvix.is/llms.txt          index
-   https://elvix.is/llms-full.txt     flat dump of every doc page
-   https://elvix.is/docs/install.md   per-page Markdown twin
-   https://elvix.is/agent-prompt.md   ready-to-paste system prompt
-   ```
-
-2. **OpenAPI for typed REST access**
-
-   ```
-   https://elvix.is/openapi.yaml          full spec
-   https://elvix.is/openapi.roles.json    per-endpoint role + admin scope
-   ```
-
-3. **MCP server bundled with the SDK**
-
-   ```json
-   {
-     "mcpServers": {
-       "elvix": {
-         "command": "npx",
-         "args": ["-y", "-p", "@elvix.is/sdk", "elvix", "mcp"],
-         "env": { "ELVIX_API_KEY": "eak_..." }
-       }
-     }
-   }
-   ```
-
-   Read-only by default. `--admin` opts in to mutation tools. Never logs the bearer token.
-
-   **Tool arguments cannot steer the destination.** Each tool is bound to one
-   `METHOD /path` from the role manifest. Callers supply `params` (values for
-   the `{placeholders}` in that path, percent-encoded server-side), plus
-   optional `body` and `query` — never a path, an origin, or a scheme. The
-   resolved URL is re-checked against the configured origin and redirects are
-   never followed, so the API key cannot leave elvix:
-
-   ```jsonc
-   // get_applications_id_users_uid_sessions_list
-   { "params": { "id": "app_123", "uid": "usr_456" }, "query": { "limit": "20" } }
-   ```
-
-   Upgrading from 0.10.1 or earlier: the free-form `path` argument is gone. An
-   absolute URL passed there used to replace the elvix origin and send your
-   `ELVIX_API_KEY` to that host — see [SECURITY.md](SECURITY.md#advisories).
-   Agents re-read the tool schema on every start, so there is nothing to
-   migrate beyond upgrading.
+**Presence is automatic.** The provider reports a signed-in user as online by itself. You do not need to mount anything extra, and mounting the presence component "to be safe" is the common mistake. Turn it off with a single prop if you do not want it.
 
 ## CLI
 
-The package ships an `elvix` command:
+The package ships an `elvix` command with three subcommands: `doctor` diagnoses an integration and prints a green/red checklist, `login` signs a headless tool into an app via the OAuth 2.0 device flow, and `mcp` launches the MCP server on stdio.
 
-```bash
-# Diagnose an integration — base URL, clientId, verify endpoint, API key.
-ELVIX_CLIENT_ID=client_… npx -p @elvix.is/sdk elvix doctor
+## For AI coding agents
 
-# Sign a CLI / headless tool into an elvix app (OAuth 2.0 device flow).
-ELVIX_CLIENT_ID=client_… npx -p @elvix.is/sdk elvix login
+Point your agent at **[elvix.is/docs/developers](https://elvix.is/docs/developers)**, or give it the MCP server so it can read and manage your elvix tenant directly. It is read-only unless you opt in to mutations, and it needs an API key from the Console.
 
-# Launch the MCP server on stdio.
-ELVIX_API_KEY=eak_… npx -p @elvix.is/sdk elvix mcp
-```
+Each MCP tool is bound to one endpoint. Callers fill in the placeholders of that endpoint's path; they cannot supply a path, host or scheme of their own, and the server refuses to follow redirects. That matters because an agent's context routinely contains untrusted text, and the server holds a live API key.
 
-`elvix doctor` prints a green/red checklist so "why isn't elvix working" is a two-second answer. (`elvix-mcp` is kept as an alias for `elvix mcp`.)
+**If you ran the MCP server on 0.10.1 or earlier, upgrade and rotate that key** — those versions let a tool argument redirect the request and take the key with it. See [SECURITY.md](./SECURITY.md).
 
-`elvix login` runs the OAuth 2.0 device authorization grant (RFC 8628): it prints a verification URL + user code, you approve in a browser, and it stores an `eak_` access token bound to the approving user. This is how a CLI or headless tool signs into an elvix app without an inline browser.
+## Compatibility
 
-Full agent guide: <https://elvix.is/docs/agents>
-
-## Components
-
-Every `<Elvix*>` component the SDK ships. Drop-in React, brand chord from `<ElvixProvider>`, no prop drilling.
-
-- Primitives: `ElvixCard`, `ElvixProvider`
-- Sign-in: `ElvixSignIn`
-- Identity: `ElvixUsername`, `ElvixIdentityForm`, `ElvixAvatar`, `ElvixBanner`, `ElvixRegion`, `ElvixLanguages`
-- Account: `ElvixAddressBook`, `ElvixLegalEntities`, `ElvixSessions`, `ElvixExport`, `ElvixDeactivate`, `ElvixLeave`
-- Hooks: `useElvixApp()`, `useElvixContext()`
-
-Full catalog with previews: <https://elvix.is/docs/components>
-
-## Server helpers
-
-```ts
-import { verifyElvixToken } from "@elvix.is/sdk/server";
-
-const result = await verifyElvixToken({ token, clientId: process.env.ELVIX_CLIENT_ID });
-if (result.ok) {
-  // result.user, result.roles, result.scopes, result.memberships
-  // result.membershipBrands → [{ slug, name, logoUrl }] — full membership
-  //   brand so you render partner branding from the session, not hardcoded
-  //   per slug. `memberships` (slugs) stays for back-compat.
-}
-```
-
-The session token is self-authenticating: it is POSTed as a `Bearer` to `/api/v1/session`, so no API key is needed for verify. `clientId` is optional but recommended (it scopes the verify against the right application). `VerifyOptions` is `{ baseUrl?, timeoutMs? }`.
-
-### Device login (CLI / headless)
-
-For tools that can't open an inline browser, sign in with the OAuth 2.0 device authorization grant (RFC 8628). Request a code, show the user `verificationUriComplete` + `userCode`, poll until they approve, and receive an `eak_` access token bound to the approving user.
-
-```ts
-import { requestDeviceCode, pollDeviceToken } from "@elvix.is/sdk/server";
-
-const code = await requestDeviceCode({ clientId: process.env.ELVIX_CLIENT_ID });
-
-// Show the user where to approve.
-console.log(`Open ${code.verificationUriComplete} and confirm: ${code.userCode}`);
-
-const result = await pollDeviceToken({
-  clientId: process.env.ELVIX_CLIENT_ID,
-  deviceCode: code.deviceCode,
-  interval: code.interval,    // server-provided poll cadence (seconds)
-  expiresIn: code.expiresIn,  // server-provided code lifetime (seconds)
-});
-
-if (result.ok) {
-  // result.accessToken → store the eak_ token
-}
-```
-
-The sign-in methods and branding on the approval card are configured in the elvix Console. The bundled `elvix login` CLI command wraps these two helpers.
-
-## Brand
-
-Deep purple chord: `#5d4dff` (light) and `#8e7dff` (dark). Override per-app from the Console. Set explicit `brand` on `<ElvixProvider>` to win over the Console default.
+React 18+, Next.js 15+ (optional), Node 20+. Published as ESM.
 
 ## Security
 
-- All requests over TLS 1.3.
-- Session cookies `Secure; HttpOnly; SameSite=Lax`.
-- Per-app session TTL + sliding-window renewal, owner-configurable.
-- API keys carry per-key rate limits (60/min, 10000/day default).
-- CSP, CORS, CSRF double-submit, allowedOrigins enforcement all live on `elvix.is`.
-- Disclosure: [elvix.is/contact](https://elvix.is/contact) (subject "Security report").
+TLS 1.3 throughout. Session cookies are `Secure; HttpOnly; SameSite=Lax`, with a per-app TTL and sliding renewal you configure in the Console. API keys carry per-key rate limits. CSP, CORS, CSRF protection and allowed-origin enforcement live on elvix.is.
+
+Found something? Read [SECURITY.md](./SECURITY.md) and report through [elvix.is/contact](https://elvix.is/contact) with the subject "Security report". The form confirms receipt automatically and routes to the maintainer privately. Past advisories are listed in SECURITY.md.
+
+## Brand
+
+Deep purple: `#5d4dff` on light, `#8e7dff` on dark. Override per application from the Console, or set it explicitly on the provider to win over the Console default.
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md). CI runs on every push and must be green before merge.
 
 ## License
 
 MIT. See [LICENSE](./LICENSE).
 
-## Security
-
-Found something? Read [SECURITY.md](./SECURITY.md). Reports go through [elvix.is/contact](https://elvix.is/contact) (mark the subject "Security report"). The form confirms receipt automatically and routes to the maintainer privately.
-
-## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md). PRs welcome — we run CI on every push and require it green before merge.
-
 ## Maintained by
 
-**[edvone](https://edvone.dev)** · Aachen, Germany
-
-elvix is an edvone product.
+**[edvone](https://edvone.dev)** · Aachen, Germany. elvix is an edvone product.
 
 - General enquiries: [edvone.dev/contact](https://edvone.dev/contact)
 - Sales / integration call: [edvone.dev/book](https://edvone.dev/book)
-- Security disclosure: [elvix.is/contact](https://elvix.is/contact) (subject "Security report"; see [SECURITY.md](./SECURITY.md))
+- Security disclosure: [elvix.is/contact](https://elvix.is/contact) (subject "Security report")
