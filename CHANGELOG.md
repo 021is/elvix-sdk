@@ -11,6 +11,17 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Address autocomplete now identifies the application it is spending for.**
+  `<ElvixAddressBook>` and `<ElvixLegalEntities>` send `clientId` on every
+  `/public/api/maps/*` call. The proxy fronts a metered Google Places API on
+  elvix's own key and previously served anyone who could reach it, so spend
+  could be neither attributed nor contained. Requests without a recognised
+  clientId are now refused by the backend.
+
+  **Requires elvix backend ≥ 2026-08-30.** A provider with no `clientId` (it
+  is an optional prop) surfaces `missing_client_id` on `onResult` instead of
+  issuing a request that is certain to 403.
+
 ### Fixed
 
 ## [0.10.2] — 2026-08-30
