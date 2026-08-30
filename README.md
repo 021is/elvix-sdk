@@ -220,6 +220,24 @@ elvix ships first-class agent support. Three surfaces:
 
    Read-only by default. `--admin` opts in to mutation tools. Never logs the bearer token.
 
+   **Tool arguments cannot steer the destination.** Each tool is bound to one
+   `METHOD /path` from the role manifest. Callers supply `params` (values for
+   the `{placeholders}` in that path, percent-encoded server-side), plus
+   optional `body` and `query` — never a path, an origin, or a scheme. The
+   resolved URL is re-checked against the configured origin and redirects are
+   never followed, so the API key cannot leave elvix:
+
+   ```jsonc
+   // get_applications_id_users_uid_sessions_list
+   { "params": { "id": "app_123", "uid": "usr_456" }, "query": { "limit": "20" } }
+   ```
+
+   Upgrading from 0.10.1 or earlier: the free-form `path` argument is gone. An
+   absolute URL passed there used to replace the elvix origin and send your
+   `ELVIX_API_KEY` to that host — see [SECURITY.md](SECURITY.md#advisories).
+   Agents re-read the tool schema on every start, so there is nothing to
+   migrate beyond upgrading.
+
 ## CLI
 
 The package ships an `elvix` command:

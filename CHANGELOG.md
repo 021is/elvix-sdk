@@ -13,6 +13,43 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.10.2] — 2026-08-30
+
+### Security
+
+- **The MCP server no longer lets a tool argument choose the request destination.**
+  Every generated tool accepted a free-form `path`, and the handler built its
+  target with `new URL(args.path ?? tool._meta.path, baseUrl)`. An absolute URL
+  in `path` discards `baseUrl`, so the request — carrying
+  `Authorization: Bearer <ELVIX_API_KEY>` — went to any host the caller named:
+  loopback, an internal service, a cloud metadata endpoint, or an attacker's
+  server. All 88 generated tools shared the handler (24 exposed in the default
+  read-only mode, 64 more under `--admin`).
+
+  This matters because the caller is an LLM. Its context routinely contains
+  untrusted text — a web page, an issue body, a file in the repo — so a prompt
+  injection is a tool call with hostile arguments, and the payload is the
+  operator's elvix API key with whatever tenant management rights it holds.
+
+  Fixed by removing the input rather than validating it. Tools now take
+  `params` — values for the `{placeholders}` in the manifest's own path
+  template, percent-encoded server-side, with `.` and `..` rejected. Defence in
+  depth alongside it: the resolved URL is re-checked against the configured
+  origin, redirects are no longer followed (a 3xx would re-send the bearer to
+  whatever host it named), `baseUrl` must be https unless it is loopback, and
+  every call carries a 30s timeout.
+
+  Agents re-read the tool schema at every start, so upgrading is the whole
+  migration. Reported privately on 2026-08-27 by Xunhang He, who followed
+  [SECURITY.md](SECURITY.md) exactly; 0.10.1 and earlier are deprecated on npm.
+
+### Fixed
+
+- **A broken or unreachable `openapi.roles.json` now fails with a readable
+  error.** The startup fetch ignored the response status and assumed an array,
+  so a 503 or an HTML error page surfaced as `manifest.filter is not a function`
+  instead of naming the URL that failed.
+
 ## [0.10.1] — 2026-07-20
 
 ### Fixed
