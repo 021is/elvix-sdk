@@ -54,6 +54,7 @@ import { MaybeCard } from "./elvix-card";
 import { ElvixInput } from "./elvix-input";
 import { useElvixContext } from "./elvix-provider";
 import { ElvixSaveButton } from "./elvix-save-button";
+import { MAPS_MISSING_CLIENT_ID, mapsUrl } from "./maps-url";
 import { authInit, isSameOrigin } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 
@@ -982,7 +983,12 @@ function SearchView({
     setSearching(true);
     const handle = setTimeout(async () => {
       try {
-        const url = `${ctx.baseUrl}/public/api/maps/autocomplete?q=${encodeURIComponent(q)}&session=${sessionRef.current}`;
+        const url = mapsUrl(ctx, "autocomplete", { q, session: sessionRef.current });
+        if (!url) {
+          setErr(MAPS_MISSING_CLIENT_ID);
+          setSuggestions([]);
+          return;
+        }
         const res = await fetch(url, {
           signal: controller.signal,
           credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit",
@@ -1012,7 +1018,12 @@ function SearchView({
     async (placeId: string) => {
       setPicking(placeId);
       try {
-        const url = `${ctx.baseUrl}/public/api/maps/place-details?placeId=${encodeURIComponent(placeId)}&session=${sessionRef.current}`;
+        const url = mapsUrl(ctx, "place-details", { placeId, session: sessionRef.current });
+        if (!url) {
+          setErr(MAPS_MISSING_CLIENT_ID);
+          setPicking(null);
+          return;
+        }
         const res = await fetch(url, {
           credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit",
         });

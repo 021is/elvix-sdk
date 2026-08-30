@@ -46,6 +46,7 @@ import {
 } from "./legal-entity-primitives";
 import type { LegalEntityType } from "./legal-entity-schema";
 import { newSessionToken, type PlaceDetails, type PlaceSuggestion } from "./legal-entity-types";
+import { MAPS_MISSING_CLIENT_ID, mapsUrl } from "./maps-url";
 import { isSameOrigin } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { localTaxIdMatches, registrationNumberMatches } from "./tax-validation";
@@ -909,13 +910,20 @@ export function PlaceOfBirthView({
     setSearching(true);
     const handle = setTimeout(async () => {
       try {
-        const res = await fetch(
-          `${ctx.baseUrl}/public/api/maps/autocomplete?q=${encodeURIComponent(q)}&session=${sessionRef.current}&types=cities`,
-          {
-            signal: controller.signal,
-            credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit",
-          },
-        );
+        const url = mapsUrl(ctx, "autocomplete", {
+          q,
+          session: sessionRef.current,
+          types: "cities",
+        });
+        if (!url) {
+          setErr(MAPS_MISSING_CLIENT_ID);
+          setSuggestions([]);
+          return;
+        }
+        const res = await fetch(url, {
+          signal: controller.signal,
+          credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit",
+        });
         if (!res.ok) throw new Error(`http ${res.status}`);
         const body = unwrapEnvelope(await res.json()) as {
           ok: boolean;
@@ -1070,13 +1078,16 @@ export function AddressSearchView({
     setSearching(true);
     const handle = setTimeout(async () => {
       try {
-        const res = await fetch(
-          `${ctx.baseUrl}/public/api/maps/autocomplete?q=${encodeURIComponent(q)}&session=${sessionRef.current}`,
-          {
-            signal: controller.signal,
-            credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit",
-          },
-        );
+        const url = mapsUrl(ctx, "autocomplete", { q, session: sessionRef.current });
+        if (!url) {
+          setErr(MAPS_MISSING_CLIENT_ID);
+          setSuggestions([]);
+          return;
+        }
+        const res = await fetch(url, {
+          signal: controller.signal,
+          credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit",
+        });
         if (!res.ok) throw new Error(`http ${res.status}`);
         const body = unwrapEnvelope(await res.json()) as {
           ok: boolean;
@@ -1102,10 +1113,15 @@ export function AddressSearchView({
     async (placeId: string) => {
       setPicking(placeId);
       try {
-        const res = await fetch(
-          `${ctx.baseUrl}/public/api/maps/place-details?placeId=${encodeURIComponent(placeId)}&session=${sessionRef.current}`,
-          { credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit" },
-        );
+        const url = mapsUrl(ctx, "place-details", { placeId, session: sessionRef.current });
+        if (!url) {
+          setErr(MAPS_MISSING_CLIENT_ID);
+          setPicking(null);
+          return;
+        }
+        const res = await fetch(url, {
+          credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit",
+        });
         if (!res.ok) throw new Error(`http ${res.status}`);
         const body = unwrapEnvelope(await res.json()) as { ok: boolean; details: PlaceDetails };
         sessionRef.current = newSessionToken();
