@@ -41,3 +41,35 @@ first message via the form and we'll arrange an out-of-band channel.
 
 The latest minor of @elvix.is/sdk receives security updates. Older
 minors are deprecated; `bun add @elvix.is/sdk@latest` migrates you.
+
+## Advisories
+
+### 0.10.2 — MCP tool arguments could redirect the request and leak the API key
+
+**Affected:** `@elvix.is/sdk` <= 0.10.1, MCP server only (`elvix mcp` /
+`elvix-mcp` / `@elvix.is/sdk/mcp`). React components and server helpers
+are unaffected. **Fixed in 0.10.2.** All earlier versions are deprecated
+on npm.
+
+Every generated MCP tool accepted a free-form `path` argument, and the
+shared handler resolved it with `new URL(args.path ?? tool._meta.path,
+baseUrl)`. An absolute URL supplied as `path` replaces `baseUrl`
+entirely, so the outbound request — which carries
+`Authorization: Bearer <ELVIX_API_KEY>` — went to any host the caller
+named. That reaches loopback and internal services, and it hands the
+API key to an external one.
+
+The caller is an LLM agent, and its context routinely includes untrusted
+text (web pages, issue bodies, repository files). A prompt injection is
+therefore a tool call with attacker-chosen arguments. The impact is
+scoped to the machine running the MCP server and to the API key it was
+started with — there is no exposure of elvix.is itself, and no
+cross-tenant impact.
+
+**If you ran the MCP server with a real key on a version <= 0.10.1,
+rotate that key** (Console → API keys → rotate) and upgrade. Upgrading
+is the entire migration: `path` is gone, replaced by `params`, and
+agents re-read the tool schema on every start.
+
+Reported privately on 2026-08-27 by **Xunhang He**, through this policy's
+contact form. Thanks for the clear write-up and the reproduction.
