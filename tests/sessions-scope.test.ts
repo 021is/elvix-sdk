@@ -19,9 +19,7 @@ describe("sessions scope", () => {
   it("defaults to the provider's app so a customer app cannot get an empty list", () => {
     const appId = resolveSessionsAppId(undefined, "elvix_pub_test_danceclub");
     expect(appId).toBe("elvix_pub_test_danceclub");
-    expect(sessionsBasePath(appId)).toBe(
-      "/api/account/apps/elvix_pub_test_danceclub/sessions",
-    );
+    expect(sessionsBasePath(appId)).toBe("/api/account/apps/elvix_pub_test_danceclub/sessions");
   });
 
   it("lets an explicit appId win over the provider", () => {
