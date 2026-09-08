@@ -4,11 +4,53 @@
  * server when they evolve.
  */
 
+/**
+ * The signed-in user as `POST /api/v1/session` returns them.
+ *
+ * ⚠ Every field below `avatarUrl` is **additive** and therefore optional: a
+ * host pinned to an older elvix gets `undefined`, never a type error. The four
+ * original fields stay required so existing code keeps compiling unchanged.
+ *
+ * The route returned all of this for a long time and the type described four
+ * fields of it, so hosts either re-declared the envelope themselves or silently
+ * lost data they had already paid a round trip for.
+ */
 export type ElvixUser = {
   id: string;
   email: string;
   name?: string;
   avatarUrl?: string;
+
+  /**
+   * Per-application handle, the one hosts build profile URLs from (`/@alice`).
+   * Added to the route in the same change as this field — an older elvix omits
+   * it, which is why it is optional rather than `string | null`.
+   */
+  username?: string | null;
+  /** Same string as `name`; both are returned, pick one and stay with it. */
+  fullName?: string | null;
+  givenName?: string | null;
+  familyName?: string | null;
+  /** BCP-47, from the user's profile, falling back to their region. */
+  locale?: string | null;
+  /** IANA zone, from the user's profile, falling back to their region. */
+  timezone?: string | null;
+};
+
+/**
+ * The user's region, `null` when they have not set one.
+ *
+ * ⚠ Only `country` and `measurementSystem` are guaranteed. The other three are
+ * nullable in elvix's `UserRegion` and always have been — the docs presented
+ * them as plain strings, so a consumer would have coded against a value that
+ * can be absent. Found 2026-09-07 by typing the route against its own schema.
+ */
+export type ElvixRegion = {
+  country: string;
+  uiLocale: string | null;
+  timeZone: string | null;
+  currency: string | null;
+  measurementSystem: string;
 };
 
 export type ElvixVerifyOk = {
@@ -25,6 +67,23 @@ export type ElvixVerifyOk = {
    * field (pre-0.7.20 elvix) or the user has no memberships.
    */
   membershipBrands: { slug: string; name: string; logoUrl: string | null }[];
+
+  /** The application this session belongs to. */
+  applicationId?: string;
+  /** Membership status — `active` here by construction; the route 403s otherwise. */
+  status?: string;
+  region?: ElvixRegion | null;
+  /**
+   * CDN variant inventory. Build a URL directly rather than making another
+   * call: `https://cdn.021.is/elvix/<app>/users/<id>/avatar-<size>.webp?v=<updatedAt>`.
+   * The `updatedAt` epoch is the cache-buster.
+   */
+  avatarSizes?: number[];
+  avatarUpdatedAt?: string | null;
+  bannerSizes?: number[];
+  bannerUpdatedAt?: string | null;
+  /** Session expiry, ISO-8601. */
+  expiresAt?: string;
 };
 
 export type ElvixVerifyErr = {

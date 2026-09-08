@@ -104,12 +104,26 @@ export async function verifyElvixToken(
       ok?: boolean;
       userId?: string;
       email?: string;
+      username?: string | null;
       name?: string | null;
+      fullName?: string | null;
+      givenName?: string | null;
+      familyName?: string | null;
       avatarUrl?: string | null;
+      locale?: string | null;
+      timezone?: string | null;
+      region?: import("./types/index").ElvixRegion | null;
+      applicationId?: string;
+      status?: string;
       roles?: string[];
       scopes?: string[];
       memberships?: string[];
       membershipBrands?: { slug: string; name: string; logoUrl: string | null }[];
+      avatarSizes?: number[];
+      avatarUpdatedAt?: string | null;
+      bannerSizes?: number[];
+      bannerUpdatedAt?: string | null;
+      expiresAt?: string;
       error?: string;
     };
     if (!res.ok || !body.ok || !body.userId) {
@@ -119,6 +133,11 @@ export async function verifyElvixToken(
         message: body.error,
       };
     }
+    // Passed through rather than narrowed: the route already paid for these in
+    // the same round trip, and dropping them forced hosts to re-declare the
+    // envelope by hand. `?? undefined` only where the legacy four are concerned,
+    // so their published types do not change; the additive fields keep `null`
+    // as a meaningful "the user has not set this".
     return {
       ok: true,
       user: {
@@ -126,11 +145,25 @@ export async function verifyElvixToken(
         email: body.email ?? "",
         name: body.name ?? undefined,
         avatarUrl: body.avatarUrl ?? undefined,
+        username: body.username,
+        fullName: body.fullName,
+        givenName: body.givenName,
+        familyName: body.familyName,
+        locale: body.locale,
+        timezone: body.timezone,
       },
       roles: body.roles ?? [],
       scopes: body.scopes ?? [],
       memberships: body.memberships ?? [],
       membershipBrands: body.membershipBrands ?? [],
+      applicationId: body.applicationId,
+      status: body.status,
+      region: body.region,
+      avatarSizes: body.avatarSizes,
+      avatarUpdatedAt: body.avatarUpdatedAt,
+      bannerSizes: body.bannerSizes,
+      bannerUpdatedAt: body.bannerUpdatedAt,
+      expiresAt: body.expiresAt,
     };
   } finally {
     clearTimeout(timer);

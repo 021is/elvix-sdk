@@ -13,6 +13,40 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.11.0] — 2026-09-07
+
+### Added
+
+- **`verifyElvixToken` returns the whole session envelope.** `ElvixUser` gains
+  `username`, `fullName`, `givenName`, `familyName`, `locale` and `timezone`;
+  `ElvixVerifyOk` gains `applicationId`, `status`, `region`, `avatarSizes`,
+  `avatarUpdatedAt`, `bannerSizes`, `bannerUpdatedAt` and `expiresAt`. New
+  `ElvixRegion` type. All additive and optional, so a host pinned to an older
+  elvix gets `undefined` rather than a type error.
+  *`/api/v1/session` had returned all of this for a long time while the type
+  described four fields, so hosts either re-declared the envelope by hand or
+  silently lost data they had already paid a round trip for.*
+- **`username` on the session envelope.** `POST /api/v1/session` now returns the
+  per-app handle. A backend holding only a token previously could not resolve a
+  user's profile URL — the browser could, the server could not.
+
+### Changed
+
+- **`<ElvixSessions>` defaults `appId` to the provider's `clientId`.** A customer
+  app now lists ITS OWN sessions with no prop.
+  *Omitting `appId` used to select the account surface, which a cross-origin app
+  bearer cannot read — the list came back empty with no error, and the SDK docs
+  called this out as a "common past mistake". elvix's own first-party account
+  pages mount the provider without a `clientId`, so they still get the global
+  list and are unaffected.*
+
+### Fixed
+
+- **`ElvixRegion.uiLocale`, `.timeZone` and `.currency` are `string | null`.**
+  They are nullable in elvix and always have been; the published type promised
+  plain strings, so a consumer would have coded against a value that can be
+  absent.
+
 ## [0.10.3] — 2026-08-30
 
 ### Changed

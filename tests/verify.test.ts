@@ -50,6 +50,82 @@ describe("verifyElvixToken", () => {
     }
   });
 
+  it("passes through every additive identity + session field", async () => {
+    // Regression guard. The route returned all of this while `ElvixUser`
+    // described four fields, so hosts either re-declared the envelope by hand
+    // or lost data they had already paid a round trip for. If a future refactor
+    // narrows the mapping again this fails, rather than dropping it silently.
+    mockJson(200, {
+      ok: true,
+      userId: "u_1",
+      email: "a@b.test",
+      username: "alice",
+      name: "Alice Smith",
+      fullName: "Alice Smith",
+      givenName: "Alice",
+      familyName: "Smith",
+      avatarUrl: "https://cdn.021.is/a.webp",
+      locale: "de-DE",
+      timezone: "Europe/Berlin",
+      region: {
+        country: "DE",
+        uiLocale: "de-DE",
+        timeZone: "Europe/Berlin",
+        currency: "EUR",
+        measurementSystem: "metric",
+      },
+      applicationId: "app_1",
+      status: "active",
+      roles: ["user"],
+      scopes: [],
+      memberships: [],
+      avatarSizes: [128, 256, 1200],
+      avatarUpdatedAt: "2026-09-07T00:00:00.000Z",
+      bannerSizes: [768],
+      bannerUpdatedAt: null,
+      expiresAt: "2026-10-07T00:00:00.000Z",
+    });
+    const result = await verifyElvixToken("session_tok");
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    expect(result.user.username).toBe("alice");
+    expect(result.user.givenName).toBe("Alice");
+    expect(result.user.familyName).toBe("Smith");
+    expect(result.user.fullName).toBe("Alice Smith");
+    expect(result.user.locale).toBe("de-DE");
+    expect(result.user.timezone).toBe("Europe/Berlin");
+    expect(result.region?.currency).toBe("EUR");
+    expect(result.applicationId).toBe("app_1");
+    expect(result.status).toBe("active");
+    expect(result.avatarSizes).toEqual([128, 256, 1200]);
+    expect(result.bannerUpdatedAt).toBeNull();
+    expect(result.expiresAt).toBe("2026-10-07T00:00:00.000Z");
+  });
+
+  it("leaves additive fields undefined against an older elvix", async () => {
+    // A host pinned to a server predating these fields must still get a valid
+    // ok:true envelope — undefined, never a throw and never "".
+    mockJson(200, {
+      ok: true,
+      userId: "u_1",
+      email: "a@b.test",
+      roles: [],
+      scopes: [],
+      memberships: [],
+    });
+    const result = await verifyElvixToken("session_tok");
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    expect(result.user.username).toBeUndefined();
+    expect(result.region).toBeUndefined();
+    expect(result.expiresAt).toBeUndefined();
+    // The original four keep their published behaviour.
+    expect(result.user.email).toBe("a@b.test");
+    expect(result.membershipBrands).toEqual([]);
+  });
+
   it("POSTs the token as a Bearer to /api/v1/session", async () => {
     mockJson(200, {
       ok: true,

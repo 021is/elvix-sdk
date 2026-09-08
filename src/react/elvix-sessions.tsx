@@ -99,14 +99,47 @@ export type ElvixSessionsResult =
   | { ok: true; action: ElvixSessionsAction; ended?: number }
   | { ok: false; error: string; message?: string };
 
+/**
+ * Which app's sessions to show: the explicit prop, else the app the provider
+ * is configured for.
+ *
+ * ⚠ The fallback is the whole point. Omitting `appId` on a customer app used to
+ * select the ACCOUNT surface, which a cross-origin app bearer cannot read — so
+ * the list came back empty with no error and the host saw a component that
+ * rendered fine and showed nothing. A customer app always wants its own
+ * sessions; deriving that from the provider makes the wrong thing unreachable
+ * instead of merely documented.
+ *
+ * elvix's own account pages mount `<ElvixProvider>` with no clientId, so this
+ * returns undefined there and the global account list is still selected.
+ *
+ * Exported for the test that pins exactly that pair of behaviours.
+ */
+export function resolveSessionsAppId(
+  explicit: string | undefined,
+  providerClientId: string | undefined,
+): string | undefined {
+  return explicit ?? providerClientId ?? undefined;
+}
+
+/** Endpoint for a scope: one app, or the user's global elvix account. */
+export function sessionsBasePath(appId: string | undefined): string {
+  return appId
+    ? `/api/account/apps/${encodeURIComponent(appId)}/sessions`
+    : "/api/account/sessions";
+}
+
 function ElvixSessionsImpl({
-  appId,
+  appId: appIdProp,
   signInUrl = "/sign-in/account",
   onChanged,
   onResult,
 }: {
-  /** When set, scopes the list to one customer app. When undefined,
-   *  lists `surface="account"` sessions. */
+  /** Scopes the list to one app. **Defaults to the `clientId` on
+   *  `<ElvixProvider>`**, so a customer app gets ITS OWN sessions without
+   *  passing anything. Only elvix's own first-party account surface — which
+   *  mounts the provider with no clientId — falls through to the global
+   *  `surface="account"` list. */
   appId?: string;
   /** Where to send the user after a "sign out everywhere too"
    *  action. Defaults to elvix's account sign-in. */
@@ -118,11 +151,18 @@ function ElvixSessionsImpl({
 }) {
   const ctx = useElvixContext();
   const t = useT();
-  // App-scoped sessions (cross-origin, app bearer) when `appId` is set;
-  // the global account-sessions surface (same-origin cookie) otherwise.
-  const base = appId
-    ? `/api/account/apps/${encodeURIComponent(appId)}/sessions`
-    : "/api/account/sessions";
+  // ⚠ The default is the whole point. Omitting `appId` on a customer app used
+  // to fall through to the ACCOUNT surface — a cross-origin app bearer cannot
+  // read that, so the list came back empty with no error, and the host saw a
+  // working component that showed nothing. A customer app always wants its own
+  // sessions; deriving that from the provider makes the wrong thing unreachable
+  // rather than merely documented. Matches how `<ElvixLeave>` already resolves.
+  //
+  // elvix's own account pages mount `<ElvixProvider>` WITHOUT a clientId, so
+  // `app` is null there and the account surface is still selected — the
+  // first-party behaviour is unchanged.
+  const appId = resolveSessionsAppId(appIdProp, ctx.app?.clientId);
+  const base = sessionsBasePath(appId);
   const [items, setItems] = useState<SessionRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
