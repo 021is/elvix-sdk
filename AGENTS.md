@@ -21,6 +21,20 @@ Public elvix SDK. Lives at github.com/021is/elvix-sdk. npm-published under `@elv
 - **A new field on an envelope type is optional** (`?:`), so a host on an older elvix gets `undefined` rather than a type that lies. Same rule as 0.11's `ElvixUser`.
 - **`<ElvixSaveButton onClick>` cancels the surrounding form's submit.** With both firing, every press ran its action twice (double PATCH, wizard step confirmed twice). Pass `onClick` OR rely on the form's `onSubmit`; either runs once.
 
+## Lint rules turned off, and why
+
+Three biome rules are `off` in `biome.json` because they are wrong for a framework-neutral SDK,
+not because the code was too hard to fix. Every other rule is `error`.
+
+| Rule | Why it is off |
+|---|---|
+| `performance/noImgElement` | It is Next.js's "use `next/image`" rule. The SDK runs in any React host (Next is an optional peer) and builds its own CDN `srcset`. |
+| `suspicious/noDocumentCookie` | The alternative, the Cookie Store API, is missing from Safari before 18.4 and Firefox before 140; `document.cookie` is the portable API. Two call sites, both clearing a cookie on sign-out. |
+| `a11y/noAutofocus` | Every use moves focus into a pane the user just opened (OTP entry, onboarding step, device code), which is WAI-ARIA dialog guidance, not the page-load focus steal the rule targets. |
+
+`noLabelWithoutControl` is on, with `ElvixInput` / `ElvixDateInput` / `ElvixTaxIdInput` declared as
+input components: they render a native `<input>`, which biome cannot see through.
+
 ## Component tests
 
 `bun run test` is vitest. Component tests are `tests/*.test.tsx`, opt into a DOM with
