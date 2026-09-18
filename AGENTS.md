@@ -31,10 +31,16 @@ docs/         agent-consumable Markdown, generated from @021is/agent-docs
 ```bash
 bun install
 bun run lint        # biome: format + the size/complexity gate
+bun run lint:ci     # the CI ratchet: counts must equal .lint-baseline.json
 bun run lint:fix    # auto-fix what is safe
 bun run build       # tsup → dist/
-bun test            # vitest
+bun run test        # vitest (NOT `bun test`, Bun's own runner)
 ```
+
+**What CI enforces** (`ci.yml`, job `test` — the required check on `main`, admins included): the
+biome ratchet (errors and warnings must EQUAL `.lint-baseline.json`; lower the baseline when you
+fix some), typecheck, build, vitest. `publish.yml` calls the same workflow before `npm publish`,
+so a tag cannot ship what a PR would reject. **A red check is never merged.**
 
 ## The size gate
 
