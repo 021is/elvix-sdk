@@ -60,7 +60,7 @@ export { ElvixCard } from "./elvix-card";
 export { ElvixDeactivate } from "./elvix-deactivate";
 export { ElvixDeviceApproval, type ElvixDeviceApprovalProps } from "./elvix-device-approval";
 export { ElvixExport } from "./elvix-export";
-export { ElvixIdentityForm } from "./elvix-identity-form";
+export { ElvixIdentityForm, type Gender, type Pronouns } from "./elvix-identity-form";
 export { ElvixLanguages } from "./elvix-languages";
 export { ElvixLeave } from "./elvix-leave";
 export { ElvixLegalEntities } from "./elvix-legal-entities";
