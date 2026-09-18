@@ -121,89 +121,62 @@ const legalEntityShape = z.object({
  * the per-type required-field gates the wizard enforces at commit
  * time but server-PATCH endpoints don't want.
  */
-export const legalEntitySchema = legalEntityShape.superRefine((val, ctx) => {
-  // Per-type required-field gates. Individual + sole-prop need
-  // DOB + nationality (they're natural persons). Sole-prop + company
-  // need a registration number + issuing body (they're registered
-  // businesses).
+type Shape = z.infer<typeof legalEntityShape>;
+type Report = (path: keyof Shape, message: string) => void;
+
+/** Individual + sole-prop are natural persons: DOB, nationality, place of
+ *  birth, and a legal name of at least two letter-bearing words (given +
+ *  family). Companies may have single-word names ("Apple", "Edvone"). */
+function checkNaturalPerson(val: Shape, report: Report): void {
+  if (!val.dateOfBirth) report("dateOfBirth", "Required");
+  if (!val.nationality) report("nationality", "Required");
+  if (!val.placeOfBirth) report("placeOfBirth", "Required");
+  const words =
+    val.legalName
+      ?.trim()
+      .split(/\s+/)
+      .filter((w) => /\p{L}/u.test(w)) ?? [];
+  if (words.length < 2) report("legalName", "Enter both given name and family name");
+}
+
+/** Tax-id gating mirrors the wizard's TaxIdsView:
+ *    individual → local tax number required, VAT hidden
+ *    sole_prop  → both optional (registration is the canonical business
+ *                 identity for sole props)
+ *    company    → VAT required, local tax number optional
+ *  A supplied local number must match its country's format. */
+function checkTaxIds(val: Shape, report: Report): void {
   // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  const personLike = val.type === "individual" || val.type === "sole_prop";
+  if (val.type === "individual" && !val.taxId?.trim()) report("taxId", "Required");
+  if (val.taxId?.trim() && val.taxCountry && !localTaxIdMatches(val.taxCountry, val.taxId)) {
+    report("taxId", `Doesn't match the expected format for ${val.taxCountry}`);
+  }
   // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  const registered = val.type === "sole_prop" || val.type === "company";
-  if (personLike && !val.dateOfBirth) {
-    ctx.addIssue({ code: "custom", path: ["dateOfBirth"], message: "Required" });
-  }
-  if (personLike && !val.nationality) {
-    ctx.addIssue({ code: "custom", path: ["nationality"], message: "Required" });
-  }
-  if (personLike && !val.placeOfBirth) {
-    ctx.addIssue({ code: "custom", path: ["placeOfBirth"], message: "Required" });
-  }
-  // Natural-person legal name must include at least two letter-bearing
-  // words — given name + family name. Companies are allowed single-
-  // word names ("Apple", "Edvone").
-  if (personLike) {
-    const words =
-      val.legalName
-        ?.trim()
-        .split(/\s+/)
-        .filter((w) => /\p{L}/u.test(w)) ?? [];
-    if (words.length < 2) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["legalName"],
-        message: "Enter both given name and family name",
-      });
-    }
-  }
-  // Tax-id gating mirrors the wizard's TaxIdsView:
-  //   individual → local tax number required, VAT hidden
-  //   sole_prop  → both optional (registration is the canonical
-  //                business identity for sole props)
-  //   company    → VAT required, local tax number optional
-  const taxIdRequired = val.type === "individual";
-  const vatRequired = val.type === "company";
-  if (taxIdRequired && !val.taxId?.trim()) {
-    ctx.addIssue({ code: "custom", path: ["taxId"], message: "Required" });
-  }
-  // Local tax-number format check (per-country). Only enforces when
-  // a value is provided AND the country has a defined format.
-  if (val.taxId?.trim() && val.taxCountry) {
-    if (!localTaxIdMatches(val.taxCountry, val.taxId)) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["taxId"],
-        message: `Doesn't match the expected format for ${val.taxCountry}`,
-      });
-    }
-  }
-  if (vatRequired && !val.vatId?.trim()) {
-    ctx.addIssue({ code: "custom", path: ["vatId"], message: "Required" });
-  }
+  if (val.type === "company" && !val.vatId?.trim()) report("vatId", "Required");
+}
+
+/** Sole-prop + company are registered businesses: a registration number and
+ *  its issuing body. A supplied number must match its country's format. */
+function checkRegistration(val: Shape, report: Report, registered: boolean): void {
   if (registered && !val.registrationNumber) {
-    ctx.addIssue({
-      code: "custom",
-      path: ["registrationNumber"],
-      message: "Required for sole proprietorships and companies",
-    });
+    report("registrationNumber", "Required for sole proprietorships and companies");
   }
   if (registered && !val.registrationBody) {
-    ctx.addIssue({
-      code: "custom",
-      path: ["registrationBody"],
-      message: "Required — the issuing authority",
-    });
+    report("registrationBody", "Required — the issuing authority");
   }
-  // Registration number format check (per-country) when supplied.
-  if (val.registrationNumber?.trim() && val.taxCountry) {
-    if (!registrationNumberMatches(val.taxCountry, val.registrationNumber)) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["registrationNumber"],
-        message: `Doesn't match the expected format for ${val.taxCountry}`,
-      });
-    }
+  const number = val.registrationNumber;
+  if (number?.trim() && val.taxCountry && !registrationNumberMatches(val.taxCountry, number)) {
+    report("registrationNumber", `Doesn't match the expected format for ${val.taxCountry}`);
   }
+}
+
+export const legalEntitySchema = legalEntityShape.superRefine((val, ctx) => {
+  const report: Report = (path, message) => ctx.addIssue({ code: "custom", path: [path], message });
+  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
+  if (val.type === "individual" || val.type === "sole_prop") checkNaturalPerson(val, report);
+  checkTaxIds(val, report);
+  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
+  checkRegistration(val, report, val.type === "sole_prop" || val.type === "company");
 });
 
 export type LegalEntityInput = z.infer<typeof legalEntitySchema>;
