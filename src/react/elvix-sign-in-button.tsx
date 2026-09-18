@@ -1,7 +1,7 @@
 "use client";
 
 import { type CSSProperties, useState } from "react";
-import { useElvixResolvedTheme } from "./elvix-provider";
+import { useElvixBrandPair, useElvixResolvedTheme } from "./elvix-provider";
 import { ElvixShield } from "./elvix-shield";
 import { ElvixSignInForm as ElvixSignIn } from "./elvix-sign-in-form";
 import { type ElvixSizeProps, sizeStyle } from "./size";
@@ -54,11 +54,14 @@ export type ElvixSignInButtonProps = {
   /** Terminal outcome of mode="embed": success (with token) or error. */
   onResult?: (result: ElvixSignInResult) => void;
   /**
-   * Override the brand chord on `variant="filled"`. Defaults to elvix
-   * lavender (#6c5ce7). Pair with `onBrandColor` for the foreground.
+   * Override the brand chord on `variant="filled"`. Defaults to the brand
+   * configured on `<ElvixProvider brand>` or in the Console for the resolved
+   * theme (`brandColor` / `brandColorDark`), then elvix lavender. Pair with
+   * `onBrandColor` for the foreground.
    */
   brandColor?: string;
-  /** Foreground (shield + label) on top of `brandColor`. Defaults to #ffffff. */
+  /** Foreground (shield + label) on top of the brand colour. Defaults to the
+   *  configured `onBrandColor` / `onBrandColorDark`, then #ffffff. */
   onBrandColor?: string;
   /** Content alignment inside the button. Defaults to "center". */
   align?: ElvixSignInButtonAlign;
@@ -193,10 +196,14 @@ export function ElvixSignInButton({
       : "square"
     : shape;
 
-  // Brand override applies on filled variant only; other variants paint
-  // neutral / transparent by design and the override would muddy them.
-  const useBrandOverride = brandColor && variant === "filled";
-  const resolvedOnBrand = onBrandColor ?? "#ffffff";
+  // Brand applies on filled variant only; other variants paint neutral /
+  // transparent by design and the brand would muddy them. An explicit prop
+  // wins; otherwise the provider / Console brand for this theme, so a host
+  // never has to restate colours elvix already holds.
+  const configured = useElvixBrandPair(effectiveTheme);
+  const fill = brandColor ?? configured?.primary;
+  const useBrandOverride = fill && variant === "filled";
+  const resolvedOnBrand = onBrandColor ?? (brandColor ? undefined : configured?.on) ?? "#ffffff";
 
   const style: CSSProperties = {
     display: "inline-flex",
@@ -219,7 +226,7 @@ export function ElvixSignInButton({
           ? `${borderRadius}px`
           : borderRadius
         : RADIUS[effectiveShape],
-    background: useBrandOverride ? brandColor : tone.bg,
+    background: useBrandOverride ? fill : tone.bg,
     color: useBrandOverride ? resolvedOnBrand : tone.color,
     border: tone.border,
     boxShadow: tone.shadow,

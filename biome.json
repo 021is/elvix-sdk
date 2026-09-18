@@ -5,6 +5,7 @@
       "src/**/*.ts",
       "src/**/*.tsx",
       "tests/**/*.ts",
+      "tests/**/*.tsx",
       "scripts/**/*.mjs"
     ]
   },
@@ -83,7 +84,6 @@
         "src/react/elvix-banner.tsx",
         "src/react/elvix-card.tsx",
         "src/react/elvix-deactivate.tsx",
-        "src/react/elvix-identity-form.tsx",
         "src/react/elvix-languages.tsx",
         "src/react/elvix-leave.tsx",
         "src/react/elvix-legal-entities.tsx",

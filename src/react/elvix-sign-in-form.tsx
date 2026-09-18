@@ -47,7 +47,10 @@ import { ElvixLogo } from "./elvix-logo";
 import {
   ElvixSessionStatus,
   useElvixApp,
+  useElvixBrandPair,
   useElvixContext,
+  useElvixHostTheme,
+  useElvixResolvedTheme,
   useElvixSession,
 } from "./elvix-provider";
 import { ElvixRecoverGate } from "./elvix-recover-gate";
@@ -393,14 +396,24 @@ export function ElvixSignInForm(props: AuthFormProps) {
   // Every explicit prop wins (Console live-preview passes unsaved
   // state); context fills in everything the customer omitted.
   const app = useElvixApp();
+  // Theme: explicit prop > the host's theme pinned on <ElvixProvider theme> >
+  // the Console default. The brand pair follows the theme the card actually
+  // renders in ("auto" inherits the page, so it takes the provider's), which
+  // is how a Console `brandColorDark` reaches a dark card with no host props.
+  const hostTheme = useElvixHostTheme();
+  const providerTheme = useElvixResolvedTheme();
+  const theme = props.theme ?? hostTheme ?? (app?.theme as AuthFormProps["theme"]) ?? "light";
+  const brandPair = useElvixBrandPair(
+    theme === Theme.AUTO ? (providerTheme ?? Theme.LIGHT) : theme,
+  );
   const resolved: AuthFormProps = {
     ...props,
     mode: props.mode ?? "interactive",
     appName: props.appName ?? app?.appName ?? "your app",
     logoUrl: props.logoUrl ?? app?.logoUrl ?? null,
     logoUrlDark: props.logoUrlDark ?? app?.logoUrlDark ?? null,
-    brandColor: props.brandColor ?? app?.brandColor ?? "#5d4dff",
-    onBrandColor: props.onBrandColor ?? app?.onBrandColor ?? "#ffffff",
+    brandColor: props.brandColor ?? brandPair?.primary ?? "#5d4dff",
+    onBrandColor: props.onBrandColor ?? (props.brandColor ? undefined : brandPair?.on) ?? "#ffffff",
     methodGoogle: props.methodGoogle ?? app?.methodGoogle ?? false,
     methodGithub: props.methodGithub ?? app?.methodGithub ?? false,
     methodEmailOtp: props.methodEmailOtp ?? app?.methodEmailOtp ?? true,
@@ -415,7 +428,7 @@ export function ElvixSignInForm(props: AuthFormProps) {
       props.socialLayout ?? (app?.socialLayout as AuthFormProps["socialLayout"]) ?? "stacked",
     presentation:
       props.presentation ?? (app?.presentation as AuthFormProps["presentation"]) ?? "card",
-    theme: props.theme ?? (app?.theme as AuthFormProps["theme"]) ?? "light",
+    theme,
     showHeader: props.showHeader ?? app?.showHeader ?? true,
     transparentBg: props.transparentBg ?? app?.transparentBg ?? false,
     signInVerb: props.signInVerb ?? (app?.signInVerb as AuthFormProps["signInVerb"]) ?? "signin",
@@ -428,7 +441,7 @@ export function ElvixSignInForm(props: AuthFormProps) {
   // the form is in preview mode. Customer-host renders (zp.edvone.dev,
   // any production sign-in) default to unframed so the banner never
   // leaks. Hosts can still opt in by passing `framed={true}`.
-  const { framed = resolved.mode === "preview", presentation = "card", theme = "light" } = resolved;
+  const { framed = resolved.mode === "preview", presentation = "card" } = resolved;
 
   // Interactive modal/drawer → a real, trigger-opened overlay (portal, backdrop,
   // Escape + scroll-lock + focus-trap). Preview mode falls through to the inline

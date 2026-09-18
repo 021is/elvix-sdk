@@ -13,7 +13,7 @@
  * Key convention: `"<kind>:<userId>"` via `mediaKey()`, e.g. `"avatar:usr_123"`.
  */
 
-import { useSyncExternalStore } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 export type LiveMedia = {
   /** Rendered CDN variant sizes; empty = no CDN upload. */
@@ -24,43 +24,57 @@ export type LiveMedia = {
   fallbackUrl: string | null;
 };
 
-export const mediaKey = (kind: "avatar" | "banner", userId: string): string => `${kind}:${userId}`;
+export type MediaKind = "avatar" | "banner";
+type Published = { kind: MediaKind; userId: string; state: LiveMedia };
+
+export const mediaKey = (kind: MediaKind, userId: string): string => `${kind}:${userId}`;
 
 const snapshots = new Map<string, LiveMedia>();
 const listeners = new Map<string, Set<() => void>>();
+/** Stores that mirror every publish — the `useUserMedia` cache registers here,
+ *  so a component mounted AFTER a change reads it too. */
+const sinks = new Set<(p: Published) => void>();
+const noop = () => {};
 
 let channel: BroadcastChannel | null = null;
 let channelTried = false;
-function getChannel(): BroadcastChannel | null {
-  if (channelTried) return channel;
+
+/** Open the cross-tab channel (idempotent; a no-op on the server). Every
+ *  reader calls it, so another tab's publish reaches this one instantly. */
+export function ensureLiveChannel(): void {
+  if (channelTried) return;
   channelTried = true;
-  if (typeof window === "undefined" || typeof BroadcastChannel === "undefined") return null;
+  if (typeof window === "undefined" || typeof BroadcastChannel === "undefined") return;
   channel = new BroadcastChannel("elvix-media");
-  channel.onmessage = (e: MessageEvent) => {
-    const data = e.data as { key?: string; state?: LiveMedia } | null;
-    if (data && typeof data.key === "string" && data.state) {
-      snapshots.set(data.key, data.state);
-      notify(data.key);
-    }
+  channel.onmessage = (e: MessageEvent<Published | null>) => {
+    if (e.data?.kind && e.data.userId && e.data.state) apply(e.data);
   };
-  return channel;
 }
 
-function notify(key: string): void {
+/** Mirror every publish (this tab's and other tabs') into another store. */
+export function onMediaPublished(sink: (p: Published) => void): void {
+  sinks.add(sink);
+}
+
+function apply(p: Published): void {
+  const key = mediaKey(p.kind, p.userId);
+  snapshots.set(key, p.state);
+  for (const sink of sinks) sink(p);
   const set = listeners.get(key);
   if (set) for (const cb of set) cb();
 }
 
-/** Publish new media state for `key` (e.g. `mediaKey("avatar", userId)`):
- *  updates same-tab subscribers and broadcasts to other tabs on this origin. */
-export function publishMedia(key: string, state: LiveMedia): void {
-  snapshots.set(key, state);
-  notify(key);
-  getChannel()?.postMessage({ key, state });
+/** Publish a user's new avatar/banner state: updates this tab's readers,
+ *  mounted now or later, and broadcasts to other tabs on this origin. */
+export function publishMedia(kind: MediaKind, userId: string, state: LiveMedia): void {
+  const p = { kind, userId, state };
+  apply(p);
+  ensureLiveChannel();
+  channel?.postMessage(p);
 }
 
 function subscribe(key: string, cb: () => void): () => void {
-  getChannel(); // ensure the cross-tab listener is live
+  ensureLiveChannel();
   let set = listeners.get(key);
   if (!set) {
     set = new Set();
@@ -68,7 +82,8 @@ function subscribe(key: string, cb: () => void): () => void {
   }
   set.add(cb);
   return () => {
-    set?.delete(cb);
+    set.delete(cb);
+    if (set.size === 0) listeners.delete(key);
   };
 }
 
@@ -78,8 +93,9 @@ function subscribe(key: string, cb: () => void): () => void {
  * back to its server-provided props).
  */
 export function useLiveMedia(key: string | null | undefined): LiveMedia | null {
+  const sub = useCallback((cb: () => void) => (key ? subscribe(key, cb) : noop), [key]);
   return useSyncExternalStore(
-    (cb) => (key ? subscribe(key, cb) : () => {}),
+    sub,
     () => (key ? (snapshots.get(key) ?? null) : null),
     () => null,
   );

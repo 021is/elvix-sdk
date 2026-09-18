@@ -26,7 +26,8 @@
  *   - <ElvixAddressBook onResult>
  *   - <ElvixLegalEntities onResult>
  *
- * Hooks: useElvixApp(), useElvixContext()
+ * Hooks: useElvixApp(), useElvixContext(), useElvixAppContext(),
+ *        useElvixRefresh(), useElvixUserMedia(userId?)
  */
 
 export { switchLocale, useFmt, useLocale } from "@021.is/spine-i18n/react";
@@ -72,6 +73,7 @@ export {
   useElvixApp,
   useElvixAppContext,
   useElvixContext,
+  useElvixRefresh,
   useElvixSession,
   useResolvedBaseUrl,
 } from "./elvix-provider";
@@ -133,4 +135,5 @@ export type {
   ElvixTheme,
 } from "./types";
 export { useSignOut } from "./use-sign-out";
+export { type ElvixUserMedia, useElvixUserMedia } from "./user-media";
 export { ELVIX_SDK_VERSION } from "./version";
