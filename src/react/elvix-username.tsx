@@ -88,17 +88,23 @@ export function ElvixUsername(props: ElvixUsernameProps) {
   // ElvixLanguages / ElvixAddressBook (they all self-wrap).
   return (
     <MaybeCard card={props.card} className="h-full">
-      <ElvixUsernameInner
-        appId={appId}
-        appName={appName}
-        current={current}
-        methodUsername={methodUsername}
-        supportUrl={supportUrl}
-        supportEmail={supportEmail}
-        onSuccess={onSuccess}
-        onFail={onFail}
-        onResult={onResult}
-      />
+      {methodUsername ? (
+        <ElvixUsernameInner
+          appId={appId}
+          appName={appName}
+          current={current}
+          onSuccess={onSuccess}
+          onFail={onFail}
+          onResult={onResult}
+        />
+      ) : (
+        <DisabledPane
+          appName={appName}
+          current={current}
+          supportUrl={supportUrl}
+          supportEmail={supportEmail}
+        />
+      )}
     </MaybeCard>
   );
 }
@@ -107,8 +113,18 @@ type ElvixUsernameProps = {
   appId?: string;
   appName?: string;
   current?: string | null;
+  /**
+   * Whether the host app currently has username sign-in enabled. When
+   * `false`, the SDK renders a disabled-state pane explaining that the
+   * app owner turned the feature off and routes the user to the app's
+   * support surface (URL or mailto:), so someone who claimed a username
+   * while it was on understands why the row is no longer editable.
+   * Defaults to the app's Console setting, then `true`.
+   */
   methodUsername?: boolean;
+  /** App's support URL — preferred contact route when set. */
   supportUrl?: string | null;
+  /** App's support email — fallback contact when supportUrl is null. */
   supportEmail?: string | null;
   /** Render inside an <ElvixCard>. Default true; pass false for bare. */
   card?: boolean;
@@ -121,9 +137,6 @@ function ElvixUsernameInner({
   appId,
   appName,
   current,
-  methodUsername = true,
-  supportUrl = null,
-  supportEmail = null,
   onSuccess,
   onFail,
   onResult,
@@ -131,21 +144,6 @@ function ElvixUsernameInner({
   appId: string;
   appName: string;
   current: string | null;
-  /**
-   * Whether the host app currently has username sign-in enabled.
-   * When `false`, the SDK renders a disabled-state pane explaining
-   * that the feature was turned off by the app owner and routes the
-   * user to the app's support surface (URL or mailto:). This still
-   * loads when a user previously claimed a username back when the
-   * feature was on — they need a clear path to understand why the
-   * row is no longer editable. Defaults to `true` so existing
-   * embeds that omit the prop keep working.
-   */
-  methodUsername?: boolean;
-  /** App's support URL — preferred contact route when set. */
-  supportUrl?: string | null;
-  /** App's support email — fallback contact when supportUrl is null. */
-  supportEmail?: string | null;
   /**
    * Fires after a successful PATCH. Host hook — typical uses:
    * refresh data, log analytics, optionally navigate away. If the
@@ -168,16 +166,6 @@ function ElvixUsernameInner({
    */
   onResult?: (result: ElvixUsernameResult) => void;
 }) {
-  if (!methodUsername) {
-    return (
-      <DisabledPane
-        appName={appName}
-        current={current}
-        supportUrl={supportUrl}
-        supportEmail={supportEmail}
-      />
-    );
-  }
   const t = useT();
   const ctx = useElvixContext();
   const refresh = useElvixRefresh();
