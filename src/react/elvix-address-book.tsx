@@ -1223,7 +1223,7 @@ function RecipientChoiceView({
   error: string | null;
 }) {
   const t = useT();
-  const hasOwnName = Boolean(userDisplayName?.trim());
+  const ownName = userDisplayName?.trim();
 
   return (
     <div className="flex h-full flex-col">
@@ -1253,10 +1253,10 @@ function RecipientChoiceView({
       </div>
 
       <div className="flex flex-col gap-2">
-        {hasOwnName && (
+        {ownName && (
           <button
             type="button"
-            onClick={() => onPickMe(userDisplayName!.trim())}
+            onClick={() => onPickMe(ownName)}
             className="group flex w-full items-start gap-3 rounded-[12px] border border-fg-3/15 bg-surface px-4 py-3 text-left shadow-[0_1px_0_rgba(0,0,0,0.02)] transition hover:border-[var(--elvix-primary)] hover:bg-[color-mix(in_srgb,var(--elvix-primary)_6%,transparent)] cursor-pointer"
           >
             <div className="grid size-9 shrink-0 place-items-center rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_15%,transparent)] text-[var(--elvix-primary)]">

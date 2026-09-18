@@ -50,9 +50,7 @@ export function OtpInput({
       if (stripped.length > 1) {
         const fill = stripped.slice(0, OTP_LENGTH - i);
         const next = [...digits];
-        for (let k = 0; k < fill.length; k += 1) {
-          next[i + k] = fill[k]!;
-        }
+        for (const [k, ch] of [...fill].entries()) next[i + k] = ch;
         const merged = next.join("");
         onChange(merged);
         focus(Math.min(i + fill.length, OTP_LENGTH - 1));

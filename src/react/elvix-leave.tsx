@@ -317,8 +317,8 @@ function ElvixLeaveInner({
   }
 
   // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  if (isOwnerInitiated && pane !== "done") {
-    return <OwnerLockedPane appName={appName} deletedAt={localDeletedAt!} daysLeft={daysLeft} />;
+  if (isOwnerInitiated && localDeletedAt && pane !== "done") {
+    return <OwnerLockedPane appName={appName} deletedAt={localDeletedAt} daysLeft={daysLeft} />;
   }
 
   return (

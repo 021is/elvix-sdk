@@ -609,9 +609,9 @@ function appBrand(app: ElvixBootstrapEnvelope | null): ElvixBrand | null {
 }
 
 function withAlpha(hex: string, a: number): string {
-  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
-  if (!m) return hex;
-  const n = Number.parseInt(m[1]!, 16);
+  const digits = /^#?([0-9a-f]{6})$/i.exec(hex.trim())?.[1];
+  if (!digits) return hex;
+  const n = Number.parseInt(digits, 16);
   const r = (n >> 16) & 0xff;
   const g = (n >> 8) & 0xff;
   const b = n & 0xff;

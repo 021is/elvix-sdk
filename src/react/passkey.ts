@@ -30,9 +30,8 @@ function b64urlToBuf(b64url: string): ArrayBuffer {
 
 /** ArrayBuffer → base64url string (no padding). */
 function bufToB64url(buf: ArrayBuffer): string {
-  const bytes = new Uint8Array(buf);
   let bin = "";
-  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]!);
+  for (const byte of new Uint8Array(buf)) bin += String.fromCharCode(byte);
   return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 

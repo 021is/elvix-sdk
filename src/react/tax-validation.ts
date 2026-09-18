@@ -248,8 +248,7 @@ function checksumIT(id: string): boolean {
     Z: 25,
   };
   let sum = 0;
-  for (let i = 0; i < 15; i++) {
-    const ch = id[i]!;
+  for (const [i, ch] of [...id.slice(0, 15)].entries()) {
     const v = (i % 2 === 0 ? odd : even)[ch];
     if (v === undefined) return false;
     sum += v;
@@ -298,7 +297,7 @@ function checksumBRCnpj(cnpj: string): boolean {
   const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
   const weights2 = [6, ...weights1];
   const calc = (slice: string, weights: number[]) => {
-    const sum = slice.split("").reduce((a, d, i) => a + Number(d) * weights[i]!, 0);
+    const sum = weights.reduce((a, w, i) => a + Number(slice[i]) * w, 0);
     const r = sum % 11;
     return r < 2 ? 0 : 11 - r;
   };
@@ -314,7 +313,7 @@ function checksumES(id: string): boolean {
   // NIE prefix X/Y/Z map to 0/1/2 in the numeric computation.
   let numeric = id.slice(0, -1);
   if (/^[XYZ]/.test(numeric)) {
-    numeric = String("XYZ".indexOf(numeric[0]!)) + numeric.slice(1);
+    numeric = String("XYZ".indexOf(numeric.charAt(0))) + numeric.slice(1);
   }
   if (!/^\d{1,8}$/.test(numeric)) return true; // CIF (companies) — skip
   const expected = table[Number(numeric) % 23];
@@ -325,7 +324,7 @@ function checksumES(id: string): boolean {
 function checksumNL(id: string): boolean {
   if (!/^\d{9}$/.test(id)) return false;
   const weights = [9, 8, 7, 6, 5, 4, 3, 2, -1];
-  const sum = id.split("").reduce((a, d, i) => a + Number(d) * weights[i]!, 0);
+  const sum = weights.reduce((a, w, i) => a + Number(id[i]) * w, 0);
   return sum % 11 === 0;
 }
 

@@ -13,7 +13,7 @@
  * from ApplicationUser + User. Keep it server-renderable + cheap.
  */
 
-import { AVATAR_SIZES, type AvatarSize, variantUrl } from "./user-images-types";
+import { AVATAR_SIZES, type AvatarSize, isAvatarSize, variantUrl } from "./user-images-types";
 
 export type AvatarSource =
   | { kind: "custom"; src: string; srcSet: string; sizes: AvatarSize[] }
@@ -36,11 +36,9 @@ export function resolveAvatar(input: AvatarResolverInput): AvatarSource {
   const { appSlug, userId, membership, user } = input;
 
   // 1. Custom uploads
-  const present = membership.avatarSizes.filter((s) =>
-    (AVATAR_SIZES as readonly number[]).includes(s),
-  ) as AvatarSize[];
-  if (present.length > 0) {
-    present.sort((a, b) => a - b);
+  const present = membership.avatarSizes.filter(isAvatarSize).sort((a, b) => a - b);
+  const largest = present.at(-1);
+  if (largest !== undefined) {
     const srcSet = present
       .map((s) => {
         const url = variantUrl({
@@ -57,7 +55,7 @@ export function resolveAvatar(input: AvatarResolverInput): AvatarSource {
       appSlug,
       userId,
       type: "avatar",
-      size: present[present.length - 1]!,
+      size: largest,
       updatedAt: membership.avatarUpdatedAt,
     });
     return { kind: "custom", src, srcSet, sizes: present };
@@ -75,7 +73,10 @@ export function resolveAvatar(input: AvatarResolverInput): AvatarSource {
 export function initialsOf(name?: string | null, email?: string | null): string {
   const source = (name?.trim() || email?.split("@")[0] || "?").trim();
   const parts = source.split(/\s+/).filter(Boolean);
-  if (parts.length >= 2) return (parts[0]![0]! + parts[parts.length - 1]![0]!).toUpperCase();
+  const [first, last] = [parts[0], parts.at(-1)];
+  if (parts.length >= 2 && first && last) {
+    return (first.charAt(0) + last.charAt(0)).toUpperCase();
+  }
   return source.slice(0, 2).toUpperCase();
 }
 
@@ -86,6 +87,11 @@ export function initialsOf(name?: string | null, email?: string | null): string 
  */
 export function pickAvatarSize(displayPx: number): AvatarSize {
   const target = displayPx * 2;
-  for (const s of AVATAR_SIZES) if (s >= target) return s;
-  return AVATAR_SIZES[AVATAR_SIZES.length - 1]!;
+  // Ascending: the first size big enough, else the largest there is.
+  let pick: AvatarSize = AVATAR_SIZES[0];
+  for (const s of AVATAR_SIZES) {
+    pick = s;
+    if (s >= target) break;
+  }
+  return pick;
 }

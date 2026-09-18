@@ -75,10 +75,9 @@ export function ElvixCountrySelect({
       );
     }
     if (!value) return list;
-    const selectedIdx = list.findIndex((co) => co.code === value);
-    if (selectedIdx <= 0) return list;
-    const sel = list[selectedIdx]!;
-    return [sel, ...list.slice(0, selectedIdx), ...list.slice(selectedIdx + 1)];
+    const sel = list.find((co) => co.code === value);
+    if (!sel || sel === list[0]) return list;
+    return [sel, ...list.filter((co) => co !== sel)];
   }, [allow, query, value]);
 
   const selected = findCountry(value);

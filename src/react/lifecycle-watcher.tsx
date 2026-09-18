@@ -115,17 +115,16 @@ export function ElvixLifecycleWatcher({
     // Only viable same-origin (EventSource can't carry the bearer token to
     // a third-party origin). Identifying both `applicationId` + `userId` is
     // required so the stream knows what to scope by.
-    const canSse =
+    if (
       applicationId !== undefined &&
       userId !== undefined &&
       typeof window !== "undefined" &&
       typeof EventSource !== "undefined" &&
-      isSameOrigin(resolvedBaseUrl);
-
-    if (canSse) {
+      isSameOrigin(resolvedBaseUrl)
+    ) {
       const url = new URL(`${resolvedBaseUrl}/api/presence/stream`, window.location.origin);
-      url.searchParams.set("applicationId", applicationId!);
-      url.searchParams.set("userId", userId!);
+      url.searchParams.set("applicationId", applicationId);
+      url.searchParams.set("userId", userId);
       const ev = new EventSource(url.toString());
 
       function onRecord(rec: LifecycleRecord) {
