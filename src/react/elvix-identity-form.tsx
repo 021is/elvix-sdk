@@ -30,7 +30,7 @@
  * State and save live in `useIdentityDraft`; this file is the markup.
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useId, useMemo, useState } from "react";
 import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
 import { ElvixChipGroup } from "./elvix-chip-group";
@@ -150,44 +150,55 @@ function ElvixIdentityFormInner({
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label={t("identity.givenName")} error={errorFor("givenName")}>
-          <ElvixInput
-            type="text"
-            value={draft.givenName}
-            onChange={(e) => setField("givenName", e.target.value)}
-            onBlur={() => markTouched("givenName")}
-            required
-            aria-required
-            autoComplete="given-name"
-            placeholder={t("identity.givenNamePlaceholder")}
-            maxLength={80}
-            hasError={Boolean(errorFor("givenName"))}
-          />
+          {(a11y) => (
+            <ElvixInput
+              {...a11y}
+              type="text"
+              value={draft.givenName}
+              onChange={(e) => setField("givenName", e.target.value)}
+              onBlur={() => markTouched("givenName")}
+              required
+              aria-required
+              autoComplete="given-name"
+              placeholder={t("identity.givenNamePlaceholder")}
+              maxLength={80}
+              hasError={Boolean(errorFor("givenName"))}
+            />
+          )}
         </Field>
         <Field label={optional("identity.familyName")} error={errorFor("familyName")}>
-          <ElvixInput
-            type="text"
-            value={draft.familyName}
-            onChange={(e) => setField("familyName", e.target.value)}
-            onBlur={() => markTouched("familyName")}
-            autoComplete="family-name"
-            placeholder={t("identity.familyNamePlaceholder")}
-            maxLength={80}
-            hasError={Boolean(errorFor("familyName"))}
-          />
+          {(a11y) => (
+            <ElvixInput
+              {...a11y}
+              type="text"
+              value={draft.familyName}
+              onChange={(e) => setField("familyName", e.target.value)}
+              onBlur={() => markTouched("familyName")}
+              autoComplete="family-name"
+              placeholder={t("identity.familyNamePlaceholder")}
+              maxLength={80}
+              hasError={Boolean(errorFor("familyName"))}
+            />
+          )}
         </Field>
       </div>
 
       <Field label={optional("identity.birthdate")} error={errorFor("birthdate")}>
-        <ElvixDateInput
-          value={draft.birthdate}
-          onChange={(v) => setField("birthdate", v)}
-          onBlur={() => markTouched("birthdate")}
-          hasError={Boolean(errorFor("birthdate"))}
-        />
+        {(a11y) => (
+          <ElvixDateInput
+            {...a11y}
+            value={draft.birthdate}
+            onChange={(v) => setField("birthdate", v)}
+            onBlur={() => markTouched("birthdate")}
+            hasError={Boolean(errorFor("birthdate"))}
+          />
+        )}
       </Field>
 
-      <Field label={optional("identity.gender")} error={errorFor("gender")}>
+      <div>
         <ElvixChipGroup
+          legend={optional("identity.gender")}
+          legendClassName={LABEL_CLASS}
           variant="pills"
           options={options.gender}
           value={draft.gender}
@@ -196,16 +207,17 @@ function ElvixIdentityFormInner({
             markTouched("gender");
           }}
         />
-      </Field>
+        <FieldError error={errorFor("gender")} />
+      </div>
 
-      <Field label={t("identity.pronounsOptional")} error={undefined}>
-        <ElvixChipGroup
-          variant="pills"
-          options={options.pronouns}
-          value={draft.pronouns}
-          onChange={(v) => setField("pronouns", v)}
-        />
-      </Field>
+      <ElvixChipGroup
+        legend={t("identity.pronounsOptional")}
+        legendClassName={LABEL_CLASS}
+        variant="pills"
+        options={options.pronouns}
+        value={draft.pronouns}
+        onChange={(v) => setField("pronouns", v)}
+      />
 
       <div className="pt-1">
         <ElvixSaveButton state={state} disabled={!canSave} onClick={save} />
@@ -214,6 +226,12 @@ function ElvixIdentityFormInner({
   );
 }
 
+const LABEL_CLASS = "block text-[13px] font-medium text-fg-2 mb-1.5";
+
+type FieldA11y = { id: string; "aria-invalid": boolean; "aria-describedby"?: string };
+
+/** A labelled single control: the label names it (`htmlFor`), and the error
+ *  is announced with it (`aria-describedby`). The control spreads `a11y`. */
 function Field({
   label,
   error,
@@ -221,16 +239,31 @@ function Field({
 }: {
   label: string;
   error: string | undefined;
-  children: React.ReactNode;
+  children: (a11y: FieldA11y) => ReactNode;
 }) {
+  const id = useId();
+  const errorId = `${id}-error`;
   return (
-    <label className="block">
-      <span className="block text-[13px] font-medium text-fg-2 mb-1.5">{label}</span>
-      {children}
-      {error ? (
-        <span className="block mt-1 text-[12px] text-red-600 dark:text-red-400">{error}</span>
-      ) : null}
-    </label>
+    <div>
+      <label htmlFor={id} className={LABEL_CLASS}>
+        {label}
+      </label>
+      {children({
+        id,
+        "aria-invalid": Boolean(error),
+        "aria-describedby": error ? errorId : undefined,
+      })}
+      <FieldError id={errorId} error={error} />
+    </div>
+  );
+}
+
+function FieldError({ id, error }: { id?: string; error: string | undefined }) {
+  if (!error) return null;
+  return (
+    <span id={id} className="block mt-1 text-[12px] text-red-600 dark:text-red-400">
+      {error}
+    </span>
   );
 }
 
