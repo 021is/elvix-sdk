@@ -133,7 +133,7 @@ export function ElvixChipGroup<T extends string>({
   }
   const cols = columns === 4 ? "grid-cols-4" : columns === 3 ? "grid-cols-3" : "grid-cols-2";
   return (
-    <div className={"grid gap-2 " + cols}>
+    <div className={`grid gap-2 ${cols}`}>
       {options.map((opt) => {
         const selected = value === opt.value;
         return (

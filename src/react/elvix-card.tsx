@@ -374,5 +374,5 @@ export function MaybeCard({
   className?: string;
   children: ReactNode;
 }) {
-  return card ? <ElvixCard className={className}>{children}</ElvixCard> : <>{children}</>;
+  return card ? <ElvixCard className={className}>{children}</ElvixCard> : children;
 }

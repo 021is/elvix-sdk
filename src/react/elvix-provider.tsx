@@ -587,7 +587,7 @@ export function ElvixProvider({
           <div
             data-elvix-theme={effectiveTheme}
             style={cssVars}
-            className={(effectiveTheme === "dark" ? "dark " : "") + "elvix-sdk-root " + className}
+            className={`${effectiveTheme === "dark" ? "dark " : ""}elvix-sdk-root ${className}`}
           >
             {children}
           </div>

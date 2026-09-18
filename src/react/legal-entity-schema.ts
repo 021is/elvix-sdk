@@ -163,7 +163,7 @@ export const legalEntitySchema = legalEntityShape.superRefine((val, ctx) => {
   //   company    → VAT required, local tax number optional
   const taxIdRequired = val.type === "individual";
   const vatRequired = val.type === "company";
-  if (taxIdRequired && (!val.taxId || !val.taxId.trim())) {
+  if (taxIdRequired && !val.taxId?.trim()) {
     ctx.addIssue({ code: "custom", path: ["taxId"], message: "Required" });
   }
   // Local tax-number format check (per-country). Only enforces when
@@ -177,7 +177,7 @@ export const legalEntitySchema = legalEntityShape.superRefine((val, ctx) => {
       });
     }
   }
-  if (vatRequired && (!val.vatId || !val.vatId.trim())) {
+  if (vatRequired && !val.vatId?.trim()) {
     ctx.addIssue({ code: "custom", path: ["vatId"], message: "Required" });
   }
   if (registered && !val.registrationNumber) {

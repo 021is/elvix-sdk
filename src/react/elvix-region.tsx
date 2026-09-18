@@ -1047,7 +1047,7 @@ function WizardHeader({ onBack, backLabel }: { onBack: () => void; backLabel?: s
 
 function Heading({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <h2 className={"mt-2 text-[18px] font-semibold leading-tight text-fg-1 " + className}>
+    <h2 className={`mt-2 text-[18px] font-semibold leading-tight text-fg-1 ${className}`}>
       {children}
     </h2>
   );

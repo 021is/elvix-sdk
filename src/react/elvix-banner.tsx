@@ -354,7 +354,7 @@ function Layer({
       animate="center"
       exit="exit"
       transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
-      className={"absolute inset-0 " + className}
+      className={`absolute inset-0 ${className}`}
     >
       {children}
     </motion.div>

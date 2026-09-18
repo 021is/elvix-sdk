@@ -121,7 +121,7 @@ export function UserAvatar({
     // on a bare <span> it was being dropped, leaving the avatar unnamed.
     <span
       role="img"
-      className={base + " text-fg-1 font-semibold"}
+      className={`${base} text-fg-1 font-semibold`}
       style={{ ...style, background: bg, fontSize: Math.max(10, Math.round(size * 0.4)) }}
       aria-label={user.name ?? user.email ?? "user"}
     >

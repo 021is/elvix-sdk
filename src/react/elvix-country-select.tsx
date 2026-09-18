@@ -101,7 +101,7 @@ export function ElvixCountrySelect({
   };
 
   return (
-    <div className={"w-full " + className}>
+    <div className={`w-full ${className}`}>
       {collapsible && (
         <button
           type="button"
@@ -120,7 +120,7 @@ export function ElvixCountrySelect({
             <span className="text-fg-3">{placeholder}</span>
           )}
           <ChevronDown
-            className={"ml-auto size-4 shrink-0 text-fg-3 transition " + (open ? "rotate-180" : "")}
+            className={`ml-auto size-4 shrink-0 text-fg-3 transition ${open ? "rotate-180" : ""}`}
           />
         </button>
       )}
