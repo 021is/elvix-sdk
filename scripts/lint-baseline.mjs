@@ -36,13 +36,15 @@ for (const kind of ["errors", "warnings"]) {
     console.error(`✖ biome ${kind}: ${now} > baseline ${allowed}. Fix the new ones.`);
     failed = true;
   } else if (now < allowed) {
-    console.error(`✖ biome ${kind}: ${now} < baseline ${allowed}. Lower "${kind}" in .lint-baseline.json to ${now}.`);
+    console.error(
+      `✖ biome ${kind}: ${now} < baseline ${allowed}. Lower "${kind}" in .lint-baseline.json to ${now}.`,
+    );
     failed = true;
   } else {
     console.log(`✓ biome ${kind}: ${now} (baseline ${allowed})`);
   }
 }
 if (failed) {
-  console.error("Run `node_modules/.bin/biome check " + baseline.paths.join(" ") + "` to see them.");
+  console.error(`Run \`node_modules/.bin/biome check ${baseline.paths.join(" ")}\` to see them.`);
   process.exit(1);
 }
