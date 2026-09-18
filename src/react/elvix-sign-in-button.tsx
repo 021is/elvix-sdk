@@ -148,6 +148,37 @@ function shieldColor(variant: ElvixSignInButtonVariant, theme: ElvixSignInButton
   return theme === "light" ? "#0a0a0b" : "#ffffff";
 }
 
+const JUSTIFY: Record<ElvixSignInButtonAlign, CSSProperties["justifyContent"]> = {
+  left: "flex-start",
+  center: "center",
+  right: "flex-end",
+};
+
+/** A number is px; a string is any CSS length; undefined takes the preset. */
+const cssLength = (value: number | string | undefined, preset: number | string) =>
+  value === undefined ? preset : typeof value === "number" ? `${value}px` : value;
+
+/** An icon-only button is round or square, whatever shape was asked for. */
+const iconShape = (shape: ElvixSignInButtonShape): ElvixSignInButtonShape =>
+  shape === "pill" || shape === "circle" ? "circle" : "square";
+
+/** Where redirect mode links: an explicit `href`, else elvix's hosted sign-in
+ *  for this client, carrying `returnUrl` as `?return=`. */
+function signInHref(args: {
+  href?: string;
+  baseUrl: string;
+  clientId?: string;
+  returnUrl?: string;
+}): string {
+  if (args.href) return args.href;
+  const base = args.clientId
+    ? `${args.baseUrl}/sign-in/${args.clientId}`
+    : `${args.baseUrl}/sign-in`;
+  if (!args.returnUrl) return base;
+  const sep = base.includes("?") ? "&" : "?";
+  return `${base}${sep}return=${encodeURIComponent(args.returnUrl)}`;
+}
+
 export function ElvixSignInButton({
   clientId,
   baseUrl = ELVIX_URL,
@@ -190,11 +221,7 @@ export function ElvixSignInButton({
     theme === "light" || theme === "dark" ? theme : (providerTheme ?? "light");
   const tone = variantTone(variant, effectiveTheme);
   const std = SIZE_STANDARD[size];
-  const effectiveShape: ElvixSignInButtonShape = isIcon
-    ? shape === "pill" || shape === "circle"
-      ? "circle"
-      : "square"
-    : shape;
+  const effectiveShape = isIcon ? iconShape(shape) : shape;
 
   // Brand applies on filled variant only; other variants paint neutral /
   // transparent by design and the brand would muddy them. An explicit prop
@@ -208,24 +235,14 @@ export function ElvixSignInButton({
   const style: CSSProperties = {
     display: "inline-flex",
     alignItems: "center",
-    justifyContent: align === "left" ? "flex-start" : align === "right" ? "flex-end" : "center",
+    justifyContent: JUSTIFY[align],
     textAlign: align,
     fontWeight: 500,
-    fontSize:
-      fontSize !== undefined
-        ? typeof fontSize === "number"
-          ? `${fontSize}px`
-          : fontSize
-        : std.font,
+    fontSize: cssLength(fontSize, std.font),
     cursor: "pointer",
     userSelect: "none",
     textDecoration: "none",
-    borderRadius:
-      borderRadius !== undefined
-        ? typeof borderRadius === "number"
-          ? `${borderRadius}px`
-          : borderRadius
-        : RADIUS[effectiveShape],
+    borderRadius: cssLength(borderRadius, RADIUS[effectiveShape]),
     background: useBrandOverride ? fill : tone.bg,
     color: useBrandOverride ? resolvedOnBrand : tone.color,
     border: tone.border,
@@ -277,28 +294,14 @@ export function ElvixSignInButton({
             {content}
           </button>
         )}
-        {embedOpen && (
-          <ElvixSignIn
-            onResult={(r) => {
-              onResult?.(r);
-            }}
-          />
-        )}
+        {embedOpen && <ElvixSignIn onResult={onResult} />}
       </div>
     );
   }
 
-  const destination = (() => {
-    if (href) return href;
-    const base = clientId ? `${baseUrl}/sign-in/${clientId}` : `${baseUrl}/sign-in`;
-    if (!returnUrl) return base;
-    const sep = base.includes("?") ? "&" : "?";
-    return `${base}${sep}return=${encodeURIComponent(returnUrl)}`;
-  })();
-
   return (
     <a
-      href={destination}
+      href={signInHref({ href, baseUrl, clientId, returnUrl })}
       className={className}
       style={style}
       aria-label={isIcon ? resolvedLabel : undefined}
