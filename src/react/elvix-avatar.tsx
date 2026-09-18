@@ -24,15 +24,20 @@ import { ArrowLeft, Camera, Check, Loader2, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Cropper, { type Area } from "react-easy-crop";
 import { useT } from "../locale/use-t";
-import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
+import {
+  useElvixApp,
+  useElvixAppContext,
+  useElvixContext,
+  useElvixRefresh,
+} from "./elvix-provider";
 import { ElvixUserAvatar } from "./elvix-user-avatar";
 import { cropToBlob } from "./image-crop";
-import { mediaKey, publishMedia } from "./live-media";
+import { publishMedia } from "./live-media";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { toast } from "./toast";
 import { UserAvatar, type UserAvatarProps } from "./user-avatar";
-import { useUserMedia } from "./user-media";
+import { type UserMedia, useUserMedia } from "./user-media";
 
 const Variant = {
   BRAND: "brand",
@@ -107,18 +112,20 @@ export function ElvixAvatar(props: Partial<ElvixAvatarProps>) {
     onResult: props.onResult,
     mode: props.mode ?? "edit",
   };
-  // View mode = the read-only display sibling, which subscribes to the live
-  // avatar store and updates the instant an "edit" instance changes the photo.
+  // View mode = the read-only display sibling, which reads the centralized
+  // photo and updates the instant an "edit" instance changes it. Only what the
+  // HOST passed is forwarded: the per-app fallbacks above would pin it to the
+  // empty per-app meta instead.
   if (resolved.mode === "view") {
     return (
       <ElvixUserAvatar
-        appSlug={resolved.appSlug}
-        userId={resolved.userId}
+        appSlug={props.appSlug}
+        userId={props.userId}
         size={resolved.size ?? 40}
         shape={resolved.shape}
         className={resolved.className}
-        membership={resolved.membership}
-        user={resolved.user}
+        membership={props.membership}
+        user={props.user}
       />
     );
   }
@@ -133,35 +140,44 @@ function ElvixAvatarInner({
   ...avatarProps
 }: ElvixAvatarProps) {
   const ctx = useElvixContext();
+  const refresh = useElvixRefresh();
   const t = useT();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [view, setView] = useState<View>("display");
 
-  const [sizes, setSizes] = useState<number[]>(avatarProps.membership.avatarSizes);
-  const [updatedAt, setUpdatedAt] = useState<Date | number>(avatarProps.membership.avatarUpdatedAt);
-  // Track the OAuth-derived fallback URL locally too. Server-rendered
-  // props don't react to client-side removal, so without this the
-  // wizard would still think a Google photo is present even after
-  // the backend cleared `User.avatarUrl` on self-flow DELETE.
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(avatarProps.user?.avatarUrl ?? null);
+  // The photo is CENTRALIZED (elvix-account), not per-app. What the editor
+  // shows is DERIVED every render from the shared `useUserMedia` cache, keyed
+  // by the current user id — so a session that resolves after mount (the id
+  // goes from "preview-user" to the real one) re-derives, and an upload here,
+  // in another tab or on another device lands through the same cache. Before
+  // 0.12 this was copied into state once at mount, which is how /edit showed
+  // the photo on only some reloads and the OLD photo after an upload.
+  const known = applicationId !== "preview" && avatarProps.userId !== "preview-user";
+  const centralized = useUserMedia(known ? avatarProps.userId : null, ctx.baseUrl);
 
-  // The photo is CENTRALIZED (elvix-account), not per-app. Seed the wizard's
-  // initial state from the centralized store — once — so the editor shows the
-  // user's GLOBAL photo no matter which app it's mounted in (a host-passed
-  // per-app `membership` is only the while-loading fallback). Seed-once (not a
-  // live sync) avoids clobbering optimistic state after the user's own edits.
-  const centralized = useUserMedia(
-    applicationId === "preview" ? null : avatarProps.userId,
-    ctx.baseUrl,
-  );
-  const seeded = useRef(false);
-  useEffect(() => {
-    if (!centralized.data || seeded.current) return;
-    seeded.current = true;
-    setSizes(centralized.data.avatar.sizes);
-    setUpdatedAt(centralized.data.avatar.updatedAt ?? 0);
-    setAvatarUrl(centralized.data.avatar.googleUrl);
-  }, [centralized.data]);
+  // This instance's own last write, shown until the cache moves past the value
+  // it was made against (a publish patches it; a stream event replaces it) —
+  // pinning it to that value drops it without an effect. It is the only state
+  // in the docs preview (no network), and covers an upload for a user with no
+  // cache entry to patch.
+  type Own = { sizes: number[]; updatedAt: Date | number; avatarUrl: string | null };
+  const [own, setOwn] = useState<(Own & { base: UserMedia | null }) | null>(null);
+  const override = own?.base === centralized.data ? own : null;
+  const remember = (v: Own) => setOwn({ ...v, base: centralized.data });
+
+  const sizes =
+    override?.sizes ?? centralized.data?.avatar.sizes ?? avatarProps.membership.avatarSizes;
+  const updatedAt =
+    override?.updatedAt ??
+    centralized.data?.avatar.updatedAt ??
+    avatarProps.membership.avatarUpdatedAt;
+  // The OAuth photo is tracked too: after a self-flow DELETE clears
+  // `User.avatarUrl`, the wizard must stop offering to remove a Google photo.
+  const avatarUrl = override
+    ? override.avatarUrl
+    : centralized.data
+      ? centralized.data.avatar.googleUrl
+      : (avatarProps.user?.avatarUrl ?? null);
 
   const liveUser = { ...avatarProps.user, avatarUrl };
   const hasMedia = sizes.length > 0;
@@ -208,10 +224,8 @@ function ElvixAvatarInner({
       // existing display layer render it.
       if (applicationId === "preview") {
         const blobUrl = URL.createObjectURL(blob);
-        setAvatarUrl(blobUrl);
-        setSizes([]);
         const now = Date.now();
-        setUpdatedAt(now);
+        remember({ sizes: [], updatedAt: now, avatarUrl: blobUrl });
         onChange?.({ sizes: [], updatedAt: now });
         onResult?.({ ok: true, sizes: [], updatedAt: new Date(now).toISOString() });
         setView("display");
@@ -236,14 +250,15 @@ function ElvixAvatarInner({
       };
       const nextSizes = body.avatarSizes ?? sizes;
       const nextTs = body.avatarUpdatedAt ? new Date(body.avatarUpdatedAt) : Date.now();
-      setSizes(nextSizes);
-      setUpdatedAt(nextTs);
-      // Broadcast so every read-only avatar (this tab + other tabs) updates now.
-      publishMedia(mediaKey("avatar", avatarProps.userId), {
+      remember({ sizes: nextSizes, updatedAt: nextTs, avatarUrl });
+      // Broadcast so every avatar (this tab + other tabs, mounted now or
+      // later) shows it, then refresh the provider's envelope.
+      publishMedia("avatar", avatarProps.userId, {
         sizes: nextSizes,
         updatedAt: nextTs instanceof Date ? nextTs.getTime() : nextTs,
         fallbackUrl: avatarUrl,
       });
+      void refresh();
       onChange?.({ sizes: nextSizes, updatedAt: nextTs });
       onResult?.({
         ok: true,
@@ -272,10 +287,8 @@ function ElvixAvatarInner({
       // Preview mode: clear the in-memory blob URL — no network call.
       if (applicationId === "preview") {
         if (avatarUrl?.startsWith("blob:")) URL.revokeObjectURL(avatarUrl);
-        setAvatarUrl(null);
-        setSizes([]);
         const now = Date.now();
-        setUpdatedAt(now);
+        remember({ sizes: [], updatedAt: now, avatarUrl: null });
         onChange?.({ sizes: [], updatedAt: now });
         onResult?.({ ok: true, sizes: [], updatedAt: new Date(now).toISOString() });
         setView("display");
@@ -296,8 +309,6 @@ function ElvixAvatarInner({
       };
       const nextSizes = body.avatarSizes ?? [];
       const nextTs = body.avatarUpdatedAt ? new Date(body.avatarUpdatedAt) : Date.now();
-      setSizes(nextSizes);
-      setUpdatedAt(nextTs);
       // Server returns the post-delete `User.avatarUrl` so we mirror
       // exactly what it has. Two-step progressive remove:
       //   step 1 (CDN cleared): server still has the OAuth photo →
@@ -307,16 +318,15 @@ function ElvixAvatarInner({
       // `userAvatarUrl === undefined` would mean the server didn't
       // touch it (admin flow); we keep the existing local value.
       const nextAvatarUrl = body.userAvatarUrl !== undefined ? body.userAvatarUrl : avatarUrl;
-      if (body.userAvatarUrl !== undefined) {
-        setAvatarUrl(body.userAvatarUrl);
-      }
-      // Broadcast the post-remove state so read-only avatars drop to the
-      // fallback / initials immediately.
-      publishMedia(mediaKey("avatar", avatarProps.userId), {
+      remember({ sizes: nextSizes, updatedAt: nextTs, avatarUrl: nextAvatarUrl });
+      // Broadcast the post-remove state so every avatar drops to the
+      // fallback / initials immediately, then refresh the provider's envelope.
+      publishMedia("avatar", avatarProps.userId, {
         sizes: nextSizes,
         updatedAt: nextTs instanceof Date ? nextTs.getTime() : nextTs,
         fallbackUrl: nextAvatarUrl,
       });
+      void refresh();
       onChange?.({ sizes: nextSizes, updatedAt: nextTs });
       onResult?.({
         ok: true,

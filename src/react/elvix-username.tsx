@@ -24,7 +24,12 @@
 import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
 import { ElvixInput } from "./elvix-input";
-import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
+import {
+  useElvixApp,
+  useElvixAppContext,
+  useElvixContext,
+  useElvixRefresh,
+} from "./elvix-provider";
 import { ElvixSaveButton } from "./elvix-save-button";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
@@ -175,6 +180,7 @@ function ElvixUsernameInner({
   }
   const t = useT();
   const ctx = useElvixContext();
+  const refresh = useElvixRefresh();
   const [pane, setPane] = useState<Pane>("edit");
   const [direction, setDirection] = useState<1 | -1>(1);
   const [value, setValue] = useState(current ?? "");
@@ -279,6 +285,9 @@ function ElvixUsernameInner({
         return;
       }
       setPersisted(normalised);
+      // Every consumer of `useElvixAppContext()` (a nav chip, a profile link)
+      // reads the new handle without a reload.
+      void refresh();
       // Host hook fires first. If the host navigates away or unmounts
       // the SDK, the in-frame done pane never renders. If the host
       // doesn't provide a hook (or its hook is a no-op), we fall

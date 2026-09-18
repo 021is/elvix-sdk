@@ -20,14 +20,19 @@ import { ArrowLeft, Camera, Check, Loader2, Pencil, Trash2, X } from "lucide-rea
 import { useCallback, useEffect, useRef, useState } from "react";
 import Cropper, { type Area } from "react-easy-crop";
 import { useT } from "../locale/use-t";
-import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
+import {
+  useElvixApp,
+  useElvixAppContext,
+  useElvixContext,
+  useElvixRefresh,
+} from "./elvix-provider";
 import { cropToBlob } from "./image-crop";
-import { mediaKey, publishMedia } from "./live-media";
+import { publishMedia } from "./live-media";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { toast } from "./toast";
 import { UserBanner, type UserBannerProps } from "./user-banner";
-import { useUserMedia } from "./user-media";
+import { type UserMedia, useUserMedia } from "./user-media";
 
 export type ElvixBannerResult =
   | { ok: true; sizes: number[]; updatedAt: string }
@@ -85,28 +90,35 @@ function ElvixBannerInner({
   ...bannerProps
 }: ElvixBannerProps) {
   const ctx = useElvixContext();
+  const refresh = useElvixRefresh();
   const t = useT();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [view, setView] = useState<View>("display");
 
-  const [sizes, setSizes] = useState<number[]>(bannerProps.membership.bannerSizes);
-  const [updatedAt, setUpdatedAt] = useState<Date | number>(bannerProps.membership.bannerUpdatedAt);
+  // The banner is CENTRALIZED (elvix-account), not per-app, and DERIVED every
+  // render from the shared `useUserMedia` cache — same rules and reasons as
+  // `<ElvixAvatar>`: a late session re-derives, and uploads anywhere land.
+  const known = applicationId !== "preview" && bannerProps.userId !== "preview-user";
+  const centralized = useUserMedia(known ? bannerProps.userId : null, ctx.baseUrl);
 
-  // The banner is CENTRALIZED (elvix-account), not per-app. Seed the wizard's
-  // initial state from the centralized store once so the editor shows the
-  // GLOBAL banner regardless of which app mounts it (a host-passed per-app
-  // `membership` is only the while-loading fallback).
-  const centralized = useUserMedia(
-    applicationId === "preview" ? null : bannerProps.userId,
-    ctx.baseUrl,
-  );
-  const seeded = useRef(false);
-  useEffect(() => {
-    if (!centralized.data || seeded.current) return;
-    seeded.current = true;
-    setSizes(centralized.data.banner.sizes);
-    setUpdatedAt(centralized.data.banner.updatedAt ?? 0);
-  }, [centralized.data]);
+  // This instance's own last write, shown until the cache moves past the
+  // value it was made against (a publish patches it; a stream event replaces
+  // it). Pinning it to that value drops it without an effect.
+  const [own, setOwn] = useState<{
+    base: UserMedia | null;
+    sizes: number[];
+    updatedAt: Date | number;
+  } | null>(null);
+  const override = own?.base === centralized.data ? own : null;
+  const remember = (v: { sizes: number[]; updatedAt: Date | number }) =>
+    setOwn({ ...v, base: centralized.data });
+
+  const sizes =
+    override?.sizes ?? centralized.data?.banner.sizes ?? bannerProps.membership.bannerSizes;
+  const updatedAt =
+    override?.updatedAt ??
+    centralized.data?.banner.updatedAt ??
+    bannerProps.membership.bannerUpdatedAt;
 
   // Preview-mode in-memory blob URL. Set only when the catalog
   // mounts the banner with `applicationId="preview"` — used to
@@ -154,9 +166,8 @@ function ElvixBannerInner({
         const blobUrl = URL.createObjectURL(blob);
         if (previewBlobUrl?.startsWith("blob:")) URL.revokeObjectURL(previewBlobUrl);
         setPreviewBlobUrl(blobUrl);
-        setSizes([]);
         const now = Date.now();
-        setUpdatedAt(now);
+        remember({ sizes: [], updatedAt: now });
         onChange?.({ sizes: [], updatedAt: now });
         onResult?.({ ok: true, sizes: [], updatedAt: new Date(now).toISOString() });
         setView("display");
@@ -181,14 +192,14 @@ function ElvixBannerInner({
       };
       const nextSizes = body.bannerSizes ?? sizes;
       const nextTs = body.bannerUpdatedAt ? new Date(body.bannerUpdatedAt) : Date.now();
-      setSizes(nextSizes);
-      setUpdatedAt(nextTs);
-      // Live update: read-only banners reflect the new image immediately.
-      publishMedia(mediaKey("banner", bannerProps.userId), {
+      remember({ sizes: nextSizes, updatedAt: nextTs });
+      // Live update: every banner, mounted now or later, shows the new image.
+      publishMedia("banner", bannerProps.userId, {
         sizes: nextSizes,
         updatedAt: nextTs instanceof Date ? nextTs.getTime() : nextTs,
         fallbackUrl: null,
       });
+      void refresh();
       onChange?.({ sizes: nextSizes, updatedAt: nextTs });
       onResult?.({
         ok: true,
@@ -218,9 +229,8 @@ function ElvixBannerInner({
       if (applicationId === "preview") {
         if (previewBlobUrl?.startsWith("blob:")) URL.revokeObjectURL(previewBlobUrl);
         setPreviewBlobUrl(null);
-        setSizes([]);
         const now = Date.now();
-        setUpdatedAt(now);
+        remember({ sizes: [], updatedAt: now });
         onChange?.({ sizes: [], updatedAt: now });
         onResult?.({ ok: true, sizes: [], updatedAt: new Date(now).toISOString() });
         setView("display");
@@ -235,13 +245,13 @@ function ElvixBannerInner({
       });
       if (!res.ok) throw new Error("delete_failed");
       const now = Date.now();
-      setSizes([]);
-      setUpdatedAt(now);
-      publishMedia(mediaKey("banner", bannerProps.userId), {
+      remember({ sizes: [], updatedAt: now });
+      publishMedia("banner", bannerProps.userId, {
         sizes: [],
         updatedAt: now,
         fallbackUrl: null,
       });
+      void refresh();
       onChange?.({ sizes: [], updatedAt: now });
       onResult?.({ ok: true, sizes: [], updatedAt: new Date(now).toISOString() });
       setView("display");

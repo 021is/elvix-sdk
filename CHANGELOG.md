@@ -13,6 +13,69 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.12.0] — 2026-09-18
+
+Ten defects DanceClub found moving its profile onto 0.11.0, fixed here so no
+host has to work around them.
+
+### Added
+
+- **`useElvixUserMedia(userId?)`** — a user's centralized photo and banner meta
+  (`hasPhoto`, `avatar`, `banner`, `loading`). Omit `userId` for the signed-in
+  user. The same cached lookup the avatar components use, live across uploads,
+  so hosts stop fetching `/public/api/users/<id>/media-meta` themselves.
+- **`refresh()` on the provider** — `useElvixContext().refresh` and
+  `useElvixRefresh()`. Re-reads the signed-in user's envelope without flashing a
+  signed-out state. `<ElvixUsername>`, `<ElvixIdentityForm>`, `<ElvixAvatar>`,
+  `<ElvixBanner>` and `<ElvixLanguages>` call it after every save, so a new name,
+  handle, photo or language reaches every `useElvixAppContext()` consumer with
+  no reload. *The envelope used to be fetched once per mount.*
+- **Identity summary and languages on `ElvixAppContext.user`** — `givenName`,
+  `familyName`, `pronouns`, `languages`. Optional in the type: an older elvix
+  returns `undefined`. Birthdate and gender are deliberately not exposed; the
+  envelope reaches every allowed origin of every app a user signs into.
+
+### Changed
+
+- **`<ElvixIdentityForm>` requires only the given name.** Family name,
+  birthdate, gender and pronouns are optional and labelled "(optional)". It saves
+  only the fields that changed, a cleared field clears on the server, and once
+  anything changed every error blocking Save is on screen.
+  *It used to require birthdate and gender while labelling only pronouns
+  optional, show errors only after a blur, and send the whole row — so anyone who
+  had never disclosed a birthdate could not change their name, and Save stayed
+  disabled with no visible reason.*
+- **`<ElvixSignInButton>` / `<ElvixSignInForm>` default to the configured
+  brand** — `<ElvixProvider brand>`, else the app's Console brand — in the
+  variant for the theme they render in (`brandColorDark` / `onBrandColorDark` on
+  dark). An explicit colour prop still wins. The form's theme now follows a
+  light/dark `theme` pinned on the provider before the Console default.
+  *Both used a brand only when a host restated it as props, and never the dark
+  variant.*
+
+### Fixed
+
+- **`<ElvixUserAvatar>` / `<ElvixUserBanner>` without `userId` show the
+  signed-in user's photo.** They read the per-app membership meta, empty since
+  the photo was centralized in 0.10, and painted initials for everyone.
+- **`<ElvixAvatar>` / `<ElvixBanner>` follow a session that arrives after
+  mount.** They copied the image into state once; mounted before the session,
+  they asked about `"preview-user"`, got elvix's honest "no photo", and kept it.
+  Both now derive from the shared media cache every render.
+- **An upload reaches components mounted afterwards.** Editors published only
+  to the live store; the media cache kept the old meta, so returning to an editor
+  showed the previous photo until a full reload. Publishing now patches the
+  cache in this tab and, over `BroadcastChannel`, in every other tab.
+- **`<ElvixSaveButton>` fired its action twice inside a form** — once from
+  `onClick`, once from the form's `onSubmit` — double-PATCHing identity saves and
+  confirming legal-entity wizard steps twice. A press now runs exactly once.
+
+### Internal
+
+- Component tests run in jsdom with `@testing-library/react`; each defect above
+  has a test that fails on 0.11.0. CI runs vitest (`bun run test`) — plain
+  `bun test` ignored `vitest.config.ts`.
+
 ## [0.11.0] — 2026-09-07
 
 ### Added

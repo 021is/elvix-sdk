@@ -82,10 +82,17 @@ export function ElvixSaveButton({
       type="submit"
       disabled={isDisabled}
       autoFocus={autoFocus}
-      onClick={() => {
+      onClick={(e) => {
         if (isDisabled) return;
         setPressed(true);
-        onClick?.();
+        if (!onClick) return; // a plain submit: the enclosing form handles it
+        // One press, one save. This is a submit button, so inside a <form>
+        // whose onSubmit runs the same action the press used to fire it
+        // TWICE (two PATCHes, or a wizard step confirmed twice). Enter's
+        // implicit submission also arrives here as a click, so cancelling
+        // the submit leaves exactly one path.
+        e.preventDefault();
+        onClick();
       }}
       style={{
         ...SURFACE_STYLE,

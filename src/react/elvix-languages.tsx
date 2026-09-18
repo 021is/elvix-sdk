@@ -33,7 +33,7 @@ import { type CSSProperties, useCallback, useEffect, useState } from "react";
 import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
 import { ElvixInput } from "./elvix-input";
-import { useElvixContext } from "./elvix-provider";
+import { useElvixContext, useElvixRefresh } from "./elvix-provider";
 import { ElvixSaveButton } from "./elvix-save-button";
 import type { LanguageRecord } from "./language-schema";
 import {
@@ -133,6 +133,14 @@ export function ElvixLanguages({
     onChange?.(body.languages);
   }, [onChange, ctx.baseUrl]);
 
+  // After a write: this list, and the provider's envelope, so a host reading
+  // `useElvixAppContext().user.languages` sees the change too.
+  const refreshContext = useElvixRefresh();
+  const afterSave = useCallback(async () => {
+    await refresh();
+    void refreshContext();
+  }, [refresh, refreshContext]);
+
   useEffect(() => {
     (async () => {
       await refresh();
@@ -199,7 +207,7 @@ export function ElvixLanguages({
       setView("level-pick");
       return;
     }
-    await refresh();
+    await afterSave();
     onResult?.({ ok: true, count: languages.length + 1 });
     resetWizard();
     setView("list");
@@ -229,7 +237,7 @@ export function ElvixLanguages({
       setView("level-pick");
       return;
     }
-    await refresh();
+    await afterSave();
     onResult?.({ ok: true, count: languages.length });
     resetWizard();
     setView("list");
@@ -265,7 +273,7 @@ export function ElvixLanguages({
       return;
     }
     setDeletingId(null);
-    await refresh();
+    await afterSave();
     onResult?.({ ok: true, count: Math.max(0, languages.length - 1) });
     setView(languages.length <= 1 ? "empty" : "list");
   };

@@ -8,9 +8,9 @@ import { useUserMedia } from "./user-media";
 /**
  * `<ElvixUserBanner>` — read-only display banner. Two modes, one component:
  *
- * 1. CURRENT user (no `userId`): hydrates from `<ElvixProvider>` context —
- *    `appSlug` from the bootstrap envelope, `userId` + `membership` from the
- *    per-app `sdk-context` fetch. The host threads nothing.
+ * 1. CURRENT user (no `userId`): the signed-in user from `<ElvixProvider>`
+ *    context, with their centralized banner read exactly like mode 2. The
+ *    host threads nothing.
  *
  *      <ElvixUserBanner />                  // signed-in user, hero width
  *
@@ -31,8 +31,8 @@ export type ElvixUserBannerProps = {
    */
   userId?: string;
   /**
-   * Override the CDN app slug. Rarely needed — by-id mode reads the slug
-   * from the media-meta response; current-user mode from the bootstrap.
+   * Override the CDN app slug. Rarely needed — the slug comes from the
+   * media-meta response (the bootstrap's `urlSlug` with a host `membership`).
    */
   appSlug?: string;
   /**
@@ -69,37 +69,24 @@ export function ElvixUserBanner({
   const appCtx = useElvixAppContext();
   const ctx = useElvixContext();
 
-  // By-id (third-party) mode: an explicit userId the host does NOT already
-  // hold meta for. Fetch the centralized banner standalone.
-  const byId = Boolean(userId) && !membership;
-  const media = useUserMedia(byId ? userId : null, ctx.baseUrl, byId);
+  // Centralized for the signed-in user and by-id alike (see ElvixUserAvatar);
+  // only a host-passed `membership` skips the fetch.
+  const targetId = userId ?? appCtx?.user.id ?? null;
+  const central = Boolean(targetId) && !membership;
+  const media = useUserMedia(central ? targetId : null, ctx.baseUrl, central);
 
-  const resolvedUserId = userId ?? appCtx?.user.id ?? "preview-user";
+  const resolvedUserId = targetId ?? "preview-user";
+  const resolvedAppSlug = membership
+    ? (appSlug ?? app?.urlSlug ?? "preview")
+    : (appSlug ?? media.data?.slug ?? "elvix-account");
+  const resolvedMembership = membership ?? {
+    bannerUpdatedAt: media.data?.banner.updatedAt ?? 0,
+    bannerSizes: media.data?.banner.sizes ?? [],
+  };
 
-  let resolvedAppSlug: string;
-  let resolvedMembership: { bannerUpdatedAt: Date | number; bannerSizes: number[] };
-
-  if (byId) {
-    resolvedAppSlug = appSlug ?? media.data?.slug ?? "elvix-account";
-    resolvedMembership = {
-      bannerUpdatedAt: media.data?.banner.updatedAt ?? 0,
-      bannerSizes: media.data?.banner.sizes ?? [],
-    };
-  } else {
-    resolvedAppSlug = appSlug ?? app?.urlSlug ?? "preview";
-    resolvedMembership =
-      membership ??
-      (appCtx?.membership
-        ? {
-            bannerUpdatedAt: new Date(appCtx.membership.bannerUpdatedAt),
-            bannerSizes: appCtx.membership.bannerSizes,
-          }
-        : { bannerUpdatedAt: 0, bannerSizes: [] });
-  }
-
-  // Live updates: reflect a banner change from <ElvixBanner> immediately
-  // (same tab + other tabs) without a refetch.
-  const live = useLiveMedia(resolvedUserId ? mediaKey("banner", resolvedUserId) : null);
+  // Live updates for the host-passed `membership` path; the centralized path
+  // receives <ElvixBanner> changes through the `useUserMedia` cache.
+  const live = useLiveMedia(membership ? mediaKey("banner", resolvedUserId) : null);
   const finalMembership = live
     ? { bannerUpdatedAt: live.updatedAt, bannerSizes: live.sizes }
     : resolvedMembership;
