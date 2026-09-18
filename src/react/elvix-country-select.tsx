@@ -37,7 +37,7 @@ export type ElvixCountrySelectProps = {
   collapsible?: boolean;
   className?: string;
   /**
-   * Tailwind max-h class for the scrollable listbox. Default
+   * Tailwind max-h class for the scrollable list. Default
    * `max-h-52` (208px). Pickers stacked with other content (e.g.
    * NationalityView's chip row) should shrink it so the surrounding
    * pane's Continue button stays in view.
@@ -148,7 +148,6 @@ export function ElvixCountrySelect({
 
               <ul
                 ref={listRef}
-                role="listbox"
                 className={
                   "mt-2 overflow-y-auto rounded-[10px] border border-fg-3/15 bg-surface [scrollbar-width:none] [&::-webkit-scrollbar]:hidden " +
                   listMaxHeightClass
@@ -179,8 +178,7 @@ export function ElvixCountrySelect({
                       )}
                       <button
                         type="button"
-                        role="option"
-                        aria-selected={isSelected}
+                        aria-pressed={isSelected}
                         onClick={() => pick(co.code)}
                         className={
                           "flex w-full items-center gap-2 px-3 py-2 text-left text-[13.5px] transition cursor-pointer " +

@@ -17,6 +17,9 @@ import {
 } from "react";
 
 const OTP_LENGTH = 6;
+/** The six fixed positions. A box IS its position (it never moves or
+ *  reorders), so the slot number is its stable identity and React key. */
+const SLOTS = Array.from({ length: OTP_LENGTH }, (_, slot) => slot);
 
 export function OtpInput({
   value,
@@ -102,7 +105,7 @@ export function OtpInput({
     // shrinks. `max-w-12` caps the boxes at the original 48px on
     // wide surfaces so they don't bloat on desktop.
     <div className="grid grid-cols-6 gap-2 w-full">
-      {digits.map((d, i) => (
+      {SLOTS.map((i) => (
         <input
           key={i}
           ref={(el) => {
@@ -112,7 +115,7 @@ export function OtpInput({
           inputMode="numeric"
           autoComplete="one-time-code"
           maxLength={OTP_LENGTH}
-          value={d}
+          value={digits[i]}
           disabled={disabled}
           onChange={(e) => onCharChange(i, e)}
           onKeyDown={(e) => onKeyDown(i, e)}
