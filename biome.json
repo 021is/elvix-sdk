@@ -39,35 +39,35 @@
             "max": 4
           }
         },
-        "useOptionalChain": "warn",
-        "noUselessFragments": "warn"
+        "useOptionalChain": "error",
+        "noUselessFragments": "error"
       },
       "suspicious": {
         "noExplicitAny": "error",
-        "noDocumentCookie": "warn",
-        "noArrayIndexKey": "warn"
+        "noDocumentCookie": "off",
+        "noArrayIndexKey": "error"
       },
       "correctness": {
         "noUnusedImports": "error",
         "noUnusedVariables": "error",
         "useExhaustiveDependencies": "warn",
-        "useHookAtTopLevel": "warn"
+        "useHookAtTopLevel": "error"
       },
       "style": {
-        "noNonNullAssertion": "warn",
-        "useTemplate": "warn"
+        "noNonNullAssertion": "error",
+        "useTemplate": "error"
       },
       "performance": {
-        "noImgElement": "warn"
+        "noImgElement": "off"
       },
       "a11y": {
         "noLabelWithoutControl": {
           "level": "error",
           "options": { "inputComponents": ["ElvixInput", "ElvixDateInput", "ElvixTaxIdInput"] }
         },
-        "useSemanticElements": "warn",
-        "noAutofocus": "warn",
-        "noNoninteractiveElementToInteractiveRole": "warn"
+        "useSemanticElements": "error",
+        "noAutofocus": "off",
+        "noNoninteractiveElementToInteractiveRole": "error"
       }
     }
   },
