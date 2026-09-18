@@ -45,7 +45,7 @@ type T = ReturnType<typeof useT>;
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, AtSign, Check, Loader2, Mail, ShieldOff, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { DonePane } from "./done-pane";
 
 const DEBOUNCE_MS = 280;
@@ -387,16 +387,18 @@ function EditPane({
   onSubmit: (e: React.FormEvent) => void;
 }) {
   const t = useT();
+  const inputId = useId();
   const hasError = status === "format_invalid" || status === "taken" || Boolean(serverError);
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div>
-        <label className="block text-[12.5px] font-medium text-fg-2 mb-1.5">
+        <label htmlFor={inputId} className="block text-[12.5px] font-medium text-fg-2 mb-1.5">
           {t("username.label")}
         </label>
         <div className="relative">
           <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-fg-3 pointer-events-none" />
           <ElvixInput
+            id={inputId}
             autoFocus
             inputMode="text"
             autoCapitalize="off"
