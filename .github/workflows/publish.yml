@@ -10,7 +10,13 @@ permissions:
   id-token: write
 
 jobs:
+  # The exact PR gate (lint ratchet, typecheck, build, tests), not a second
+  # copy of it. Publishing only happens if it passes.
+  checks:
+    uses: ./.github/workflows/ci.yml
+
   publish:
+    needs: checks
     runs-on: ubuntu-latest
     steps:
       # Pinned to commit SHAs. See the CI workflow for the upgrade rune.
@@ -24,7 +30,6 @@ jobs:
           registry-url: "https://registry.npmjs.org"
       - run: bun install --frozen-lockfile
       - run: bun run build
-      - run: bun test
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

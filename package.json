@@ -59,6 +59,7 @@
     "build": "node scripts/gen-version.mjs && tsup src/index.ts src/react.ts src/server.ts src/types.ts src/mcp/index.ts src/mcp/bin.ts src/cli/index.ts src/cli/doctor.ts src/cli/login.ts --format esm --dts --clean --external react --external react/jsx-runtime --external react-dom --external next && bun run build:css && node scripts/postbuild.mjs",
     "build:css": "tailwindcss --input src/styles/sdk.css --output dist/styles.css --minify",
     "lint": "biome check src tests",
+    "lint:ci": "node scripts/lint-baseline.mjs",
     "lint:fix": "biome check --write src tests",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

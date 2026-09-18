@@ -1,10 +1,18 @@
 name: CI
 
+# The one definition of "this commit is releasable". Runs on every PR and push
+# to main, and publish.yml CALLS it before publishing, so a tag can never ship
+# something a PR would have rejected.
+#
+# The job is named `test` because that is the required status check on main's
+# branch protection. Renaming it silently drops the requirement.
+
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_call: {}
 
 permissions:
   contents: read
@@ -21,11 +29,12 @@ jobs:
         with:
           bun-version: 1.3.11
       - run: bun install --frozen-lockfile
-      # Formatting plus the size / complexity / dead-code gate. First because
-      # it is the fastest of the four and catches the cheapest mistakes.
-      # Nothing measured function length before this, which is how one
-      # component reached 3,292 lines without anyone noticing.
-      - run: bun run lint
+      # Biome ratchet: errors AND warnings must equal .lint-baseline.json.
+      # Plain `biome check` exits 0 on warnings, which is how 140 of them
+      # passed unseen. Becomes `biome ci --error-on-warnings` at zero.
+      - run: bun run lint:ci
       - run: bun run typecheck
       - run: bun run build
-      - run: bun test
+      # `bun run test` = vitest, the runner the suite is written for. Plain
+      # `bun test` is Bun's own runner and ignores vitest.config.ts.
+      - run: bun run test
