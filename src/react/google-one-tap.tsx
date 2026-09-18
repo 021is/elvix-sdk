@@ -35,6 +35,7 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { isSameOrigin, setElvixToken } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
+import { useStableCallback } from "./use-stable-callback";
 
 const UxMode = {
   POPUP: "popup",
@@ -171,6 +172,48 @@ function loadGisScript(): Promise<void> {
   return scriptPromise;
 }
 
+type GisId = NonNullable<Window["google"]>["accounts"]["id"];
+
+/** One GIS initialisation per page. Always popup `ux_mode`: redirect mode
+ *  would POST the credential to a `login_uri` (the current page) that must be
+ *  pre-registered in Google's Authorized redirect URIs — brittle for every
+ *  /sign-in/* path. Popup mode delivers it to `callback` instead. The "Popup
+ *  window" setting still shapes the UX but never falls back to redirect. */
+function initGis(
+  g: GisId,
+  clientId: string,
+  config: Pick<GoogleOneTapConfig, "autoSelect" | "fedcm" | "hostedDomain">,
+  callback: GisInitConfig["callback"],
+): void {
+  g.initialize({
+    client_id: clientId,
+    callback,
+    auto_select: config.autoSelect,
+    use_fedcm_for_prompt: config.fedcm,
+    ux_mode: "popup",
+    itp_support: true,
+    cancel_on_tap_outside: false,
+    context: "signin",
+    ...(config.hostedDomain ? { hosted_domain: config.hostedDomain } : {}),
+  });
+}
+
+/** Render the GIS button into `slot`, replacing any previous render. GIS caps
+ *  the width at 400px and paints nothing at 0, which some flex/grid layouts
+ *  measure on first commit, so the width is clamped with a 360px fallback. */
+function renderGisButton(g: GisId, slot: HTMLDivElement): void {
+  slot.innerHTML = "";
+  const width = Math.min(400, Math.max(240, slot.clientWidth || 360));
+  g.renderButton(slot, {
+    theme: "outline",
+    size: "large",
+    shape: "rectangular",
+    text: "continue_with",
+    logo_alignment: "left",
+    width,
+  });
+}
+
 export const GoogleOneTap = memo(function GoogleOneTap({
   baseUrl,
   clientId,
@@ -232,10 +275,16 @@ export const GoogleOneTap = memo(function GoogleOneTap({
     },
     [baseUrl, intent, appClientId],
   );
+  // GIS is initialised once per page and keeps the callback it was given;
+  // hand it a stable one that always runs the latest `handleCredential`.
+  const onCredential = useStableCallback(handleCredential);
+  // Primitives, not `config`: a parent may pass a fresh object every render,
+  // and re-running the GIS setup re-prompts One Tap.
+  const { oneTap, autoSelect, fedcm, hostedDomain } = config;
 
   useEffect(() => {
     if (!clientId) return;
-    if (!config.oneTap && !renderButton) return;
+    if (!oneTap && !renderButton) return;
     // Architectural rule: Google Identity Services (GIS) is only loaded
     // when the SDK is HOSTED on the elvix origin itself (e.g. the elvix
     // /sign-in/<clientId> hosted page). On a customer's origin, loading
@@ -250,74 +299,31 @@ export const GoogleOneTap = memo(function GoogleOneTap({
       return;
     }
     let cancelled = false;
-    (async () => {
-      try {
-        await loadGisScript();
-        if (cancelled) return;
+    loadGisScript()
+      .then(() => {
         const g = window.google?.accounts?.id;
-        if (!g) return;
+        if (cancelled || !g) return;
         if (!initialised.current) {
-          // Always use popup ux_mode when GIS is active. Redirect mode
-          // would POST the credential to a `login_uri` (defaults to the
-          // current page URL) that must be pre-registered in Google's
-          // Authorized redirect URIs — adding every /sign-in/* path
-          // there is brittle. Popup mode delivers the credential via
-          // this JS callback instead, no redirect URI involved.
-          // The "Popup window" toggle still controls perceptual UX
-          // (popup vs in-flow when applicable) but never falls back
-          // to redirect mode because of the URI-registration tax.
-          const initConfig: GisInitConfig = {
-            client_id: clientId,
-            callback: handleCredential,
-            auto_select: config.autoSelect,
-            use_fedcm_for_prompt: config.fedcm,
-            ux_mode: "popup",
-            itp_support: true,
-            cancel_on_tap_outside: false,
-            context: "signin",
-          };
-          if (config.hostedDomain) initConfig.hosted_domain = config.hostedDomain;
-          g.initialize(initConfig);
+          initGis(g, clientId, { autoSelect, fedcm, hostedDomain }, onCredential);
           initialised.current = true;
         }
-        if (renderButton && buttonContainerRef?.current) {
-          // Clear any previous render before injecting a fresh button.
-          buttonContainerRef.current.innerHTML = "";
-          // GIS button width has a hard max of 400px. Measure the slot
-          // and clamp so the button never paints blank because the
-          // container was zero-width at first commit (some flex/grid
-          // layouts measure to 0 on the first pass). Falls back to a
-          // safe 360px when the slot can't be measured.
-          const measured = buttonContainerRef.current.clientWidth;
-          const safeWidth = Math.min(400, Math.max(240, measured || 360));
-          g.renderButton(buttonContainerRef.current, {
-            theme: "outline",
-            size: "large",
-            shape: "rectangular",
-            text: "continue_with",
-            logo_alignment: "left",
-            width: safeWidth,
-          });
-        }
-        if (config.oneTap) {
-          g.prompt();
-        }
-      } catch (e) {
-        setErr(e instanceof Error ? e.message : "GIS load failed");
-      }
-    })();
+        const slot = buttonContainerRef?.current;
+        if (renderButton && slot) renderGisButton(g, slot);
+        if (oneTap) g.prompt();
+      })
+      .catch((e: unknown) => setErr(e instanceof Error ? e.message : "GIS load failed"));
     return () => {
       cancelled = true;
     };
   }, [
     clientId,
     baseUrl,
-    config.oneTap,
-    config.autoSelect,
-    config.fedcm,
-    config.hostedDomain,
+    oneTap,
+    autoSelect,
+    fedcm,
+    hostedDomain,
     renderButton,
-    handleCredential,
+    onCredential,
     buttonContainerRef,
   ]);
 
