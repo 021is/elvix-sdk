@@ -14,6 +14,10 @@
  * `PublicKeyCredentialRequestOptionsJSON`; we base64url-decode the challenge +
  * `allowCredentials` ids, call the WebAuthn API, then base64url-encode the
  * assertion back into the `AuthenticationResponseJSON` shape elvix verifies.
+ *
+ * Both ceremonies are the same three steps — `start` (options), the browser
+ * prompt, `finish` (verify) — built from the helpers below. Nothing throws
+ * past a `run*` function: every failure is a `{ ok: false, error }`.
  */
 
 import { authInit, isSameOrigin, setElvixToken } from "./session";
@@ -35,13 +39,55 @@ function bufToB64url(buf: ArrayBuffer): string {
   return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
+type Failure = { ok: false; error: string; message?: string };
+type Step<T> = { ok: true; data: T | undefined } | Failure;
+
+type CredentialDescriptorJSON = { id: string; type: "public-key"; transports?: string[] };
+
+const decodeDescriptors = (list: CredentialDescriptorJSON[] | undefined) =>
+  list?.map((c) => ({
+    id: b64urlToBuf(c.id),
+    type: c.type,
+    transports: c.transports as AuthenticatorTransport[] | undefined,
+  }));
+
+const errorMessage = (e: unknown) => (e instanceof Error ? e.message : undefined);
+
+/**
+ * POST JSON to an elvix route that answers with the Spine envelope. A non-2xx
+ * or `success: false` becomes the envelope's `errorMessage`, else `fallback`;
+ * a network or parse failure becomes `network`.
+ */
+async function postEnvelope<T>(url: string, init: RequestInit, fallback: string): Promise<Step<T>> {
+  try {
+    const res = await fetch(url, { method: "POST", ...init });
+    const body = (await res.json()) as { success?: boolean; data?: T; errorMessage?: string };
+    if (!res.ok || !body.success) return { ok: false, error: body.errorMessage ?? fallback };
+    return { ok: true, data: body.data };
+  } catch (e) {
+    return { ok: false, error: "network", message: errorMessage(e) };
+  }
+}
+
+/** The browser prompt failed. A dismissed or timed-out prompt (NotAllowedError)
+ *  and a programmatic abort are a graceful cancel, never a crash. */
+function ceremonyFailure(e: unknown, code: string): Failure {
+  const name = (e as { name?: string })?.name;
+  if (name === "NotAllowedError" || name === "AbortError") {
+    return { ok: false, error: "passkey_cancelled" };
+  }
+  return { ok: false, error: code, message: errorMessage(e) };
+}
+
+// ─── Sign-in ─────────────────────────────────────────────────────────────────
+
 /** Minimal shape of the options elvix returns from `generateAuthenticationOptions`. */
 type AuthnOptionsJSON = {
   challenge: string;
   timeout?: number;
   rpId?: string;
   userVerification?: UserVerificationRequirement;
-  allowCredentials?: { id: string; type: "public-key"; transports?: string[] }[];
+  allowCredentials?: CredentialDescriptorJSON[];
 };
 
 /** The `AuthenticationResponseJSON` shape elvix's `finish` endpoint expects. */
@@ -62,6 +108,42 @@ type AssertionJSON = {
 export type PasskeySignInResult =
   | { ok: true; redirect?: string; token?: string }
   | { ok: false; error: string; message?: string };
+
+async function promptAssertion(
+  options: AuthnOptionsJSON,
+): Promise<{ ok: true; assertion: AssertionJSON } | Failure> {
+  try {
+    const cred = (await navigator.credentials.get({
+      publicKey: {
+        challenge: b64urlToBuf(options.challenge),
+        timeout: options.timeout,
+        rpId: options.rpId,
+        userVerification: options.userVerification,
+        allowCredentials: decodeDescriptors(options.allowCredentials),
+      },
+    })) as PublicKeyCredential | null;
+    if (!cred) return { ok: false, error: "passkey_cancelled" };
+    const resp = cred.response as AuthenticatorAssertionResponse;
+    return {
+      ok: true,
+      assertion: {
+        id: cred.id,
+        rawId: bufToB64url(cred.rawId),
+        type: "public-key",
+        clientExtensionResults: cred.getClientExtensionResults(),
+        authenticatorAttachment: cred.authenticatorAttachment ?? undefined,
+        response: {
+          clientDataJSON: bufToB64url(resp.clientDataJSON),
+          authenticatorData: bufToB64url(resp.authenticatorData),
+          signature: bufToB64url(resp.signature),
+          userHandle: resp.userHandle ? bufToB64url(resp.userHandle) : undefined,
+        },
+      },
+    };
+  } catch (e) {
+    return ceremonyFailure(e, "passkey_failed");
+  }
+}
 
 /**
  * Run the full cross-origin passkey sign-in against `baseUrl` for `clientId`.
@@ -89,99 +171,36 @@ export async function runPasskeySignIn(
     return { ok: false, error: "passkey_unsupported", message: "This browser can't use passkeys." };
   }
 
-  const credentials: RequestCredentials = isSameOrigin(baseUrl) ? "include" : "omit";
+  const init: RequestInit = {
+    headers: { "content-type": "application/json" },
+    credentials: isSameOrigin(baseUrl) ? "include" : "omit",
+  };
+  const scope = { intent, ...(clientId ? { clientId } : {}) };
 
-  // ── 1. start ──────────────────────────────────────────────────────────────
-  let options: AuthnOptionsJSON;
-  try {
-    const res = await fetch(`${baseUrl}/api/auth/passkey/sign-in/start`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      credentials,
-      body: JSON.stringify({ intent, ...(clientId ? { clientId } : {}) }),
-    });
-    const body = (await res.json()) as {
-      success?: boolean;
-      data?: { options: AuthnOptionsJSON };
-      errorMessage?: string;
-    };
-    if (!res.ok || !body.success || !body.data?.options) {
-      return { ok: false, error: body.errorMessage ?? "passkey_start_failed" };
-    }
-    options = body.data.options;
-  } catch (e) {
-    return { ok: false, error: "network", message: e instanceof Error ? e.message : undefined };
-  }
+  const start = await postEnvelope<{ options: AuthnOptionsJSON }>(
+    `${baseUrl}/api/auth/passkey/sign-in/start`,
+    { ...init, body: JSON.stringify(scope) },
+    "passkey_start_failed",
+  );
+  if (!start.ok) return start;
+  if (!start.data?.options) return { ok: false, error: "passkey_start_failed" };
 
-  // ── 2. browser WebAuthn ─────────────────────────────────────────────────────
-  let assertion: AssertionJSON;
-  try {
-    const publicKey: PublicKeyCredentialRequestOptions = {
-      challenge: b64urlToBuf(options.challenge),
-      timeout: options.timeout,
-      rpId: options.rpId,
-      userVerification: options.userVerification,
-      allowCredentials: options.allowCredentials?.map((c) => ({
-        id: b64urlToBuf(c.id),
-        type: c.type,
-        transports: c.transports as AuthenticatorTransport[] | undefined,
-      })),
-    };
-    const cred = (await navigator.credentials.get({ publicKey })) as PublicKeyCredential | null;
-    if (!cred) return { ok: false, error: "passkey_cancelled" };
+  const prompt = await promptAssertion(start.data.options);
+  if (!prompt.ok) return prompt;
 
-    const resp = cred.response as AuthenticatorAssertionResponse;
-    assertion = {
-      id: cred.id,
-      rawId: bufToB64url(cred.rawId),
-      type: "public-key",
-      clientExtensionResults: cred.getClientExtensionResults(),
-      authenticatorAttachment: cred.authenticatorAttachment ?? undefined,
-      response: {
-        clientDataJSON: bufToB64url(resp.clientDataJSON),
-        authenticatorData: bufToB64url(resp.authenticatorData),
-        signature: bufToB64url(resp.signature),
-        userHandle: resp.userHandle ? bufToB64url(resp.userHandle) : undefined,
-      },
-    };
-  } catch (e) {
-    // NotAllowedError = user dismissed the prompt or it timed out; AbortError =
-    // programmatic abort. Treat both as a graceful cancel, never a crash.
-    const name = (e as { name?: string })?.name;
-    if (name === "NotAllowedError" || name === "AbortError") {
-      return { ok: false, error: "passkey_cancelled" };
-    }
-    return {
-      ok: false,
-      error: "passkey_failed",
-      message: e instanceof Error ? e.message : undefined,
-    };
-  }
-
-  // ── 3. finish ───────────────────────────────────────────────────────────────
-  try {
-    const res = await fetch(`${baseUrl}/api/auth/passkey/sign-in/finish`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      credentials,
-      body: JSON.stringify({ intent, ...(clientId ? { clientId } : {}), ...assertion }),
-    });
-    const body = (await res.json()) as {
-      success?: boolean;
-      data?: { redirect?: string; token?: string };
-      errorMessage?: string;
-    };
-    if (!res.ok || !body.success) {
-      return { ok: false, error: body.errorMessage ?? "passkey_verify_failed" };
-    }
-    // Cross-origin: store the session token returned in the body (no cookie is
-    // set on a third-party origin) so every later SDK call carries it.
-    if (body.data?.token) setElvixToken(body.data.token);
-    return { ok: true, redirect: body.data?.redirect, token: body.data?.token };
-  } catch (e) {
-    return { ok: false, error: "network", message: e instanceof Error ? e.message : undefined };
-  }
+  const finish = await postEnvelope<{ redirect?: string; token?: string }>(
+    `${baseUrl}/api/auth/passkey/sign-in/finish`,
+    { ...init, body: JSON.stringify({ ...scope, ...prompt.assertion }) },
+    "passkey_verify_failed",
+  );
+  if (!finish.ok) return finish;
+  // Cross-origin: store the session token returned in the body (no cookie is
+  // set on a third-party origin) so every later SDK call carries it.
+  if (finish.data?.token) setElvixToken(finish.data.token);
+  return { ok: true, redirect: finish.data?.redirect, token: finish.data?.token };
 }
+
+// ─── Registration ────────────────────────────────────────────────────────────
 
 /** Minimal shape of the options elvix returns from `generateRegistrationOptions`. */
 type RegOptionsJSON = {
@@ -192,7 +211,7 @@ type RegOptionsJSON = {
   timeout?: number;
   attestation?: AttestationConveyancePreference;
   authenticatorSelection?: AuthenticatorSelectionCriteria;
-  excludeCredentials?: { id: string; type: "public-key"; transports?: string[] }[];
+  excludeCredentials?: CredentialDescriptorJSON[];
   extensions?: AuthenticationExtensionsClientInputs;
 };
 
@@ -212,13 +231,55 @@ type AttestationJSON = {
 
 export type PasskeyRegisterResult = { ok: true } | { ok: false; error: string; message?: string };
 
+async function promptAttestation(
+  options: RegOptionsJSON,
+): Promise<{ ok: true; attestation: AttestationJSON } | Failure> {
+  try {
+    const cred = (await navigator.credentials.create({
+      publicKey: {
+        challenge: b64urlToBuf(options.challenge),
+        rp: options.rp,
+        user: {
+          id: b64urlToBuf(options.user.id),
+          name: options.user.name,
+          displayName: options.user.displayName,
+        },
+        pubKeyCredParams: options.pubKeyCredParams,
+        timeout: options.timeout,
+        attestation: options.attestation,
+        authenticatorSelection: options.authenticatorSelection,
+        excludeCredentials: decodeDescriptors(options.excludeCredentials),
+        extensions: options.extensions,
+      },
+    })) as PublicKeyCredential | null;
+    if (!cred) return { ok: false, error: "passkey_cancelled" };
+    const resp = cred.response as AuthenticatorAttestationResponse;
+    return {
+      ok: true,
+      attestation: {
+        id: cred.id,
+        rawId: bufToB64url(cred.rawId),
+        type: "public-key",
+        clientExtensionResults: cred.getClientExtensionResults(),
+        authenticatorAttachment: cred.authenticatorAttachment ?? undefined,
+        response: {
+          clientDataJSON: bufToB64url(resp.clientDataJSON),
+          attestationObject: bufToB64url(resp.attestationObject),
+          transports: resp.getTransports?.() ?? undefined,
+        },
+      },
+    };
+  } catch (e) {
+    return ceremonyFailure(e, "passkey_register_failed");
+  }
+}
+
 /**
  * Onboarding "add a passkey" step, cross-origin aware. Mirrors
  * `runPasskeySignIn` but for `navigator.credentials.create` against the
- * register start/finish routes. Hand-rolled (no `@simplewebauthn/browser`)
- * so the SDK stays lean + MIT-clean. The user is already authenticated at
- * this point, so requests carry the session via `authInit()` (bearer
- * cross-origin, cookie same-origin). User-cancel resolves to
+ * register start/finish routes. The user is already authenticated at this
+ * point, so requests carry the session via `authInit()` (bearer cross-origin,
+ * cookie same-origin). User-cancel resolves to
  * `{ ok:false, error:"passkey_cancelled" }`; nothing throws past here.
  */
 export async function runPasskeyRegister(
@@ -243,101 +304,35 @@ export async function runPasskeyRegister(
     return { ok: false, error: "passkey_unsupported", message: "This browser can't use passkeys." };
   }
 
-  const init = authInit();
-  const reqInit = {
-    headers: { "content-type": "application/json", ...init.headers },
-    credentials: init.credentials,
+  const auth = authInit();
+  const init: RequestInit = {
+    headers: { "content-type": "application/json", ...auth.headers },
+    credentials: auth.credentials,
   };
 
-  // ── 1. start ──────────────────────────────────────────────────────────────
-  let options: RegOptionsJSON;
-  try {
-    const res = await fetch(`${baseUrl}/api/auth/passkey/register/start`, {
-      method: "POST",
-      ...reqInit,
-      body: JSON.stringify(applicationId ? { surface, applicationId } : { surface }),
-    });
-    const body = (await res.json()) as {
-      success?: boolean;
-      data?: { options: RegOptionsJSON };
-      errorMessage?: string;
-    };
-    if (!res.ok || !body.success || !body.data?.options) {
-      return { ok: false, error: body.errorMessage ?? "passkey_register_failed" };
-    }
-    options = body.data.options;
-  } catch (e) {
-    return { ok: false, error: "network", message: e instanceof Error ? e.message : undefined };
-  }
+  const start = await postEnvelope<{ options: RegOptionsJSON }>(
+    `${baseUrl}/api/auth/passkey/register/start`,
+    { ...init, body: JSON.stringify(applicationId ? { surface, applicationId } : { surface }) },
+    "passkey_register_failed",
+  );
+  if (!start.ok) return start;
+  if (!start.data?.options) return { ok: false, error: "passkey_register_failed" };
 
-  // ── 2. browser WebAuthn ─────────────────────────────────────────────────────
-  let attestation: AttestationJSON;
-  try {
-    const publicKey: PublicKeyCredentialCreationOptions = {
-      challenge: b64urlToBuf(options.challenge),
-      rp: options.rp,
-      user: {
-        id: b64urlToBuf(options.user.id),
-        name: options.user.name,
-        displayName: options.user.displayName,
-      },
-      pubKeyCredParams: options.pubKeyCredParams,
-      timeout: options.timeout,
-      attestation: options.attestation,
-      authenticatorSelection: options.authenticatorSelection,
-      excludeCredentials: options.excludeCredentials?.map((c) => ({
-        id: b64urlToBuf(c.id),
-        type: c.type,
-        transports: c.transports as AuthenticatorTransport[] | undefined,
-      })),
-      extensions: options.extensions,
-    };
-    const cred = (await navigator.credentials.create({ publicKey })) as PublicKeyCredential | null;
-    if (!cred) return { ok: false, error: "passkey_cancelled" };
+  const prompt = await promptAttestation(start.data.options);
+  if (!prompt.ok) return prompt;
 
-    const resp = cred.response as AuthenticatorAttestationResponse;
-    attestation = {
-      id: cred.id,
-      rawId: bufToB64url(cred.rawId),
-      type: "public-key",
-      clientExtensionResults: cred.getClientExtensionResults(),
-      authenticatorAttachment: cred.authenticatorAttachment ?? undefined,
-      response: {
-        clientDataJSON: bufToB64url(resp.clientDataJSON),
-        attestationObject: bufToB64url(resp.attestationObject),
-        transports: resp.getTransports?.() ?? undefined,
-      },
-    };
-  } catch (e) {
-    const name = (e as { name?: string })?.name;
-    if (name === "NotAllowedError" || name === "AbortError") {
-      return { ok: false, error: "passkey_cancelled" };
-    }
-    return {
-      ok: false,
-      error: "passkey_register_failed",
-      message: e instanceof Error ? e.message : undefined,
-    };
-  }
-
-  // ── 3. finish ───────────────────────────────────────────────────────────────
-  try {
-    const res = await fetch(`${baseUrl}/api/auth/passkey/register/finish`, {
-      method: "POST",
-      ...reqInit,
+  const finish = await postEnvelope<unknown>(
+    `${baseUrl}/api/auth/passkey/register/finish`,
+    {
+      ...init,
       body: JSON.stringify({
         surface,
         ...(applicationId ? { applicationId } : {}),
         ...(clientId ? { clientId } : {}),
-        response: attestation,
+        response: prompt.attestation,
       }),
-    });
-    const body = (await res.json()) as { success?: boolean; errorMessage?: string };
-    if (!res.ok || !body.success) {
-      return { ok: false, error: body.errorMessage ?? "passkey_register_failed" };
-    }
-    return { ok: true };
-  } catch (e) {
-    return { ok: false, error: "network", message: e instanceof Error ? e.message : undefined };
-  }
+    },
+    "passkey_register_failed",
+  );
+  return finish.ok ? { ok: true } : finish;
 }
