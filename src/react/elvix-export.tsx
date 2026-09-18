@@ -202,7 +202,7 @@ function PreviewPane({ target, go }: { target: ExportTarget; go: (p: Pane, d?: 1
     return () => {
       cancelled = true;
     };
-  }, [target, ctx.baseUrl]);
+  }, [target, ctx.baseUrl, t]);
 
   return (
     // Flex column = scrollable body + pinned CTA. The body owns the

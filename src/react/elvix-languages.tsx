@@ -47,6 +47,7 @@ import {
 } from "./languages";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
+import { useStableCallback } from "./use-stable-callback";
 
 // ─── Public types ────────────────────────────────────────────────────
 
@@ -122,6 +123,9 @@ export function ElvixLanguages({
   const [languages, setLanguages] = useState<LanguageRecord[]>([]);
   const [error, setError] = useState<string | null>(null);
 
+  // Stable, so a host's inline `onChange` cannot re-trigger the load effect
+  // below on every render (it used to: one languages request per render).
+  const emitChange = useStableCallback(onChange);
   const refresh = useCallback(async () => {
     const res = await fetch(`${ctx.baseUrl}/api/account/profile/languages`, {
       cache: "no-store",
@@ -130,8 +134,8 @@ export function ElvixLanguages({
     if (!res.ok) return;
     const body = unwrapEnvelope(await res.json()) as { languages: LanguageRecord[] };
     setLanguages(body.languages);
-    onChange?.(body.languages);
-  }, [onChange, ctx.baseUrl]);
+    emitChange(body.languages);
+  }, [emitChange, ctx.baseUrl]);
 
   // After a write: this list, and the provider's envelope, so a host reading
   // `useElvixAppContext().user.languages` sees the change too.

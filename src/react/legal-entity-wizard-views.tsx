@@ -943,7 +943,7 @@ export function PlaceOfBirthView({
       clearTimeout(handle);
       controller.abort();
     };
-  }, [query, ctx.baseUrl]);
+  }, [query, ctx]);
 
   const pick = useCallback(
     (s: PlaceSuggestion) => {
@@ -1107,7 +1107,7 @@ export function AddressSearchView({
       clearTimeout(handle);
       controller.abort();
     };
-  }, [query, ctx.baseUrl]);
+  }, [query, ctx]);
 
   const pick = useCallback(
     async (placeId: string) => {
@@ -1131,7 +1131,7 @@ export function AddressSearchView({
         setPicking(null);
       }
     },
-    [onPick, ctx.baseUrl],
+    [onPick, ctx],
   );
 
   return (

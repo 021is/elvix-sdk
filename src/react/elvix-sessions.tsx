@@ -174,24 +174,28 @@ function ElvixSessionsImpl({
   const [revokingMode, setRevokingMode] = useState<"none" | "others" | "all">("none");
   const [endedCount, setEndedCount] = useState(0);
 
-  async function load() {
+  // Loads when the list's identity (origin + app) changes. Aborted on change
+  // or unmount so a late response can't overwrite a newer list; a network
+  // failure shows the load error instead of rejecting unhandled.
+  const loadError = t("sessions.errorLoad");
+  useEffect(() => {
+    const ctrl = new AbortController();
     setLoading(true);
     setError(null);
-    try {
-      const res = await fetch(`${ctx.baseUrl}${base}`, { ...authInit() });
-      const body = unwrapEnvelope(await res.json());
-      if (!res.ok || !body.ok) {
-        setError(t("sessions.errorLoad"));
-        return;
-      }
-      setItems(body.sessions ?? []);
-    } finally {
-      setLoading(false);
-    }
-  }
-  useEffect(() => {
-    void load();
-  }, [appId]);
+    fetch(`${ctx.baseUrl}${base}`, { ...authInit(), signal: ctrl.signal })
+      .then(async (res) => {
+        const body = unwrapEnvelope(await res.json());
+        if (!res.ok || !body.ok) setError(loadError);
+        else setItems(body.sessions ?? []);
+      })
+      .catch((e: unknown) => {
+        if ((e as { name?: string })?.name !== "AbortError") setError(loadError);
+      })
+      .finally(() => {
+        if (!ctrl.signal.aborted) setLoading(false);
+      });
+    return () => ctrl.abort();
+  }, [ctx.baseUrl, base, loadError]);
 
   async function revokeOne(id: string) {
     setBusyId(id);

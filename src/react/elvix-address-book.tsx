@@ -57,6 +57,7 @@ import { ElvixSaveButton } from "./elvix-save-button";
 import { MAPS_MISSING_CLIENT_ID, mapsUrl } from "./maps-url";
 import { authInit, isSameOrigin } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
+import { useStableCallback } from "./use-stable-callback";
 
 const ReturnTo = {
   LIST: "list",
@@ -159,6 +160,8 @@ export function ElvixAddressBook({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Stable: a host's inline `onChange` must not re-run the load effect.
+  const emitChange = useStableCallback(onChange);
   const refresh = useCallback(async () => {
     const res = await fetch(`${ctx.baseUrl}/api/account/profile/addresses?kind=${kind}`, {
       cache: "no-store",
@@ -174,17 +177,17 @@ export function ElvixAddressBook({
       return;
     }
     setAddresses(body.addresses);
-    onChange?.(body.addresses);
+    emitChange(body.addresses);
     setLoading(false);
     setView(body.addresses.length === 0 ? "empty" : "list");
-  }, [kind, onChange, ctx.baseUrl]);
+  }, [kind, emitChange, ctx.baseUrl]);
 
+  // Load when the list's identity changes (kind / origin) — not on every
+  // render; after that the wizard owns its view state and refreshes
+  // explicitly after a save or delete.
   useEffect(() => {
-    refresh();
-    // refresh on mount only — wizard owns its own view state from
-    // here on; list refresh happens manually after save / delete.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kind]);
+    void refresh();
+  }, [refresh]);
 
   const openAdd = useCallback(() => {
     setError(null);
@@ -1012,7 +1015,7 @@ function SearchView({
       clearTimeout(handle);
       controller.abort();
     };
-  }, [query, ctx.baseUrl]);
+  }, [query, ctx]);
 
   const pick = useCallback(
     async (placeId: string) => {
@@ -1037,7 +1040,7 @@ function SearchView({
         setPicking(null);
       }
     },
-    [onPick, ctx.baseUrl],
+    [onPick, ctx],
   );
 
   return (

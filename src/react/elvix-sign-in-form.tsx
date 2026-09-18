@@ -72,6 +72,7 @@ import {
 import { unwrapEnvelope } from "./spine-fetch";
 import { toast } from "./toast";
 import type { ElvixSignInMethod, ElvixSignInResult } from "./types";
+import { useStableCallback } from "./use-stable-callback";
 import { isValidUsername } from "./username-rules";
 import { ELVIX_SDK_VERSION } from "./version";
 
@@ -1122,8 +1123,12 @@ function AuthBody({
       // the host opted out.
       finishSignIn(redirect, token);
     },
-    [intent, finalRedirect, finishSignIn, baseUrl],
+    [intent, finalRedirect, finishSignIn],
   );
+  // Stable handles for the one-shot landing effects below, so a new
+  // `applyLanding` or a host's inline `onResult` does not re-run them.
+  const onLanding = useStableCallback(applyLanding);
+  const reportResult = useStableCallback(onResult);
 
   // Drain the queues that ElvixProvider's consumeElvixReturnToken
   // fills when it strips `#elvix_token=...&elvix_landing=...` from the
@@ -1205,7 +1210,7 @@ function AuthBody({
         });
         if (!res.ok) return;
         const body = unwrapEnvelope(await res.json());
-        if (body.ok) applyLanding(body);
+        if (body.ok) onLanding(body);
       } catch {
         // best-effort — if the probe fails we just stay on the identifier
         // step, the user can try again.
@@ -1217,8 +1222,8 @@ function AuthBody({
         window.history.replaceState({}, "", url.toString());
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // Runs once in practice: the param is stripped, so a re-run returns early.
+  }, [isPreview, baseUrl, onLanding]);
 
   // A blocked OAuth REDIRECT (Google/GitHub) bounces the user back here with
   // `?error=` (first-party) or `?elvix_error=` (cross-origin app) and NO token.
@@ -1234,13 +1239,13 @@ function AuthBody({
     if (!code) return;
     const message = humanError(t, code);
     toast.error(message);
-    onResult?.({ ok: false, error: code, message });
+    reportResult({ ok: false, error: code, message });
     const url = new URL(window.location.href);
     url.searchParams.delete("elvix_error");
     url.searchParams.delete("error");
     window.history.replaceState({}, "", url.toString());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // Runs once in practice: the param is stripped, so a re-run returns early.
+  }, [isPreview, t, reportResult]);
 
   // Auto-submit once the OTP input fills to 6 chars (typed or pasted). The
   // ref guards against re-firing for the same 6-char value after a verify
@@ -1477,7 +1482,7 @@ function AuthBody({
     } finally {
       setPasskeyBusy(false);
     }
-  }, [isPreview, passkeyBusy, baseUrl, clientId, applyLanding, reportError, onResult, t]);
+  }, [isPreview, passkeyBusy, baseUrl, clientId, intent, applyLanding, reportError, onResult, t]);
 
   // Debounced live availability check for the username step. AbortController
   // ensures only the latest keystroke's verdict reaches state.

@@ -68,6 +68,7 @@ import {
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { useLegalEntityDraft } from "./use-legal-entity-draft";
+import { useStableCallback } from "./use-stable-callback";
 
 const ReturnTo = {
   LIST: "list",
@@ -117,6 +118,8 @@ export function ElvixLegalEntities({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Stable: a host's inline `onChange` must not re-run the load effect.
+  const emitChange = useStableCallback(onChange);
   const refresh = useCallback(async () => {
     const res = await fetch(`${ctx.baseUrl}/api/account/profile/entities`, {
       cache: "no-store",
@@ -132,15 +135,14 @@ export function ElvixLegalEntities({
       return;
     }
     setEntities(body.entities);
-    onChange?.(body.entities);
+    emitChange(body.entities);
     setLoading(false);
     setView(body.entities.length === 0 ? "empty" : "list");
-  }, [onChange, ctx.baseUrl]);
+  }, [emitChange, ctx.baseUrl]);
 
   useEffect(() => {
-    refresh();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    void refresh();
+  }, [refresh]);
 
   // ─── Wizard state ──────────────────────────────────────────────
   // One draft object rather than eighteen useState calls plus a hand-written

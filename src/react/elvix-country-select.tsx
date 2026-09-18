@@ -21,7 +21,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronDown, Search } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { COUNTRIES, type Country, findCountry } from "./countries";
 
 export type ElvixCountrySelectProps = {
@@ -86,17 +86,20 @@ export function ElvixCountrySelect({
     if (open && collapsible) inputRef.current?.focus();
   }, [open, collapsible]);
 
-  // When the list opens or the value changes, snap the scroll back to
-  // the top so the pinned selected row is in view immediately.
-  useEffect(() => {
-    if (!open) return;
+  // The selected country is pinned to the top, so the top of the list is
+  // where it is: scroll there when the list opens and after each pick.
+  const scrollToTop = useCallback(() => {
     if (listRef.current) listRef.current.scrollTop = 0;
-  }, [open, value]);
+  }, []);
+  useEffect(() => {
+    if (open) scrollToTop();
+  }, [open, scrollToTop]);
 
   const pick = (code: string) => {
     onChange(code);
     setQuery("");
     if (collapsible) setOpen(false);
+    else scrollToTop();
   };
 
   return (

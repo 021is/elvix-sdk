@@ -107,42 +107,63 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
   const held: (() => void)[] = [];
   const patches: unknown[] = [];
 
-  const route = async (url: string, init?: RequestInit): Promise<Response> => {
-    const method = init?.method ?? "GET";
-    if (url.includes("/api/v1/bootstrap/")) return json({ success: true, data: state.bootstrap });
-    if (url.includes("/sdk-context")) {
-      if (state.holdContext) await new Promise<void>((resolve) => held.push(resolve));
-      return state.context
-        ? json({ success: true, data: state.context })
-        : json({ success: false, errorMessage: "unauthenticated" }, 401);
-    }
-    const media = /\/public\/api\/users\/([^/]+)\/media-meta/.exec(url);
-    if (media) {
-      const m = state.media[decodeURIComponent(media[1] ?? "")];
-      return json({
-        ok: true,
-        slug: m?.slug ?? "elvix-account",
-        avatar: m?.avatar ?? { sizes: [], updatedAt: null, googleUrl: null },
-        banner: m?.banner ?? { sizes: [], updatedAt: null },
-      });
-    }
-    if (url.endsWith("/api/account/profile/identity")) {
-      if (method === "PATCH") {
-        const patch = JSON.parse(String(init?.body)) as Record<string, unknown>;
-        patches.push(patch);
-        Object.assign(state.identity, patch);
-        return json({ success: true, data: null });
-      }
+  type Handler = (url: string, init?: RequestInit) => Response | Promise<Response>;
+  const MEDIA = /\/public\/api\/users\/([^/]+)\/media-meta/;
+
+  const sdkContext: Handler = async () => {
+    if (state.holdContext) await new Promise<void>((resolve) => held.push(resolve));
+    return state.context
+      ? json({ success: true, data: state.context })
+      : json({ success: false, errorMessage: "unauthenticated" }, 401);
+  };
+  const mediaMeta: Handler = (url) => {
+    const m = state.media[decodeURIComponent(MEDIA.exec(url)?.[1] ?? "")];
+    return json({
+      ok: true,
+      slug: m?.slug ?? "elvix-account",
+      avatar: m?.avatar ?? { sizes: [], updatedAt: null, googleUrl: null },
+      banner: m?.banner ?? { sizes: [], updatedAt: null },
+    });
+  };
+  const identity: Handler = (_url, init) => {
+    if (init?.method !== "PATCH") {
       return json({ success: true, data: { ok: true, identity: state.identity } });
     }
-    if (url.endsWith("/api/account/self/images/avatar") && method === "PUT") {
-      const updatedAt = Date.now();
-      return json({
-        success: true,
-        data: { avatarSizes: [128, 256], avatarUpdatedAt: new Date(updatedAt).toISOString() },
-      });
-    }
-    return json({ success: false, errorMessage: `unrouted ${method} ${url}` }, 404);
+    const patch = JSON.parse(String(init.body)) as Record<string, unknown>;
+    patches.push(patch);
+    Object.assign(state.identity, patch);
+    return json({ success: true, data: null });
+  };
+  const avatarUpload: Handler = () =>
+    json({
+      success: true,
+      data: { avatarSizes: [128, 256], avatarUpdatedAt: new Date().toISOString() },
+    });
+
+  // First match wins: [method or "*", url test, handler].
+  const routes: [string, (url: string) => boolean, Handler][] = [
+    [
+      "*",
+      (u) => u.includes("/api/v1/bootstrap/"),
+      () => json({ success: true, data: state.bootstrap }),
+    ],
+    ["*", (u) => u.includes("/sdk-context"), sdkContext],
+    ["*", (u) => MEDIA.test(u), mediaMeta],
+    ["*", (u) => u.endsWith("/api/account/profile/identity"), identity],
+    [
+      "GET",
+      (u) => u.endsWith("/api/account/profile/languages"),
+      () => json({ success: true, data: { languages: [] } }),
+    ],
+    ["PUT", (u) => u.endsWith("/api/account/self/images/avatar"), avatarUpload],
+  ];
+
+  const route = async (url: string, init?: RequestInit): Promise<Response> => {
+    const method = init?.method ?? "GET";
+    const hit = routes.find(([m, test]) => (m === "*" || m === method) && test(url));
+    return hit
+      ? hit[2](url, init)
+      : json({ success: false, errorMessage: `unrouted ${method} ${url}` }, 404);
   };
 
   const fetchMock = vi.fn((input: RequestInfo | URL, init?: RequestInit) =>

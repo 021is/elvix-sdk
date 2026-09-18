@@ -311,9 +311,9 @@ export const GoogleOneTap = memo(function GoogleOneTap({
     };
   }, [
     clientId,
+    baseUrl,
     config.oneTap,
     config.autoSelect,
-    config.popup,
     config.fedcm,
     config.hostedDomain,
     renderButton,
