@@ -243,7 +243,7 @@ export function ElvixProvider({
   i18nBase,
   animated = true,
   presence = true,
-  bootstrapRefreshMs = 20_000,
+  bootstrapRefreshMs = 300_000,
   children,
   className = "",
 }: {
@@ -263,20 +263,20 @@ export function ElvixProvider({
   animated?: boolean;
   /**
    * Automatic presence heartbeat. Defaults to `true`. While a clientId is set
-   * and the user is signed in, the provider beats `${baseUrl}/api/presence/
-   * heartbeat` every 30s (pausing on a hidden tab, reporting "idle" after 60s
-   * without input) so the user shows ONLINE on the app's users list in the
-   * elvix Console — every elvix app gets presence for free, no manual
-   * `<ElvixPresence>` mount required. Pass `false` to disable (e.g. a public
-   * marketing page that happens to wrap the provider).
+   * and the user is signed in, `${baseUrl}/api/presence/heartbeat` is beaten
+   * every 30s so the user shows ONLINE on the app's users list in the elvix
+   * Console, with no `<ElvixPresence>` mount. ONE tab per browser beats (the
+   * others hand it their activity), it stops when every tab is hidden, and
+   * it reports "idle" after 60s without input in any tab. Pass `false` to
+   * disable (e.g. a public marketing page that happens to wrap the provider).
    */
   presence?: boolean;
   /**
-   * Real-time bootstrap refresh interval in ms. Defaults to `20_000`. The
-   * provider re-fetches the render envelope on this interval AND when the
-   * tab regains focus, so Console changes to sign-in methods, brand, or
-   * the sign-in gate appear on an OPEN page without a reload. Pass `0` to
-   * disable (mount-only fetch).
+   * Bootstrap refresh interval in ms while the tab is visible. Defaults to
+   * `300_000` (5 minutes). The envelope is also re-fetched whenever the tab
+   * regains focus or visibility, which is when a Console change to sign-in
+   * methods, brand or the gate matters, so a short interval only re-reads
+   * config that rarely changes. `0` loads once, on mount.
    */
   bootstrapRefreshMs?: number;
   /**

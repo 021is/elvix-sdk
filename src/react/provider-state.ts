@@ -11,6 +11,8 @@ import { switchLocale } from "@021.is/spine-i18n/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { bundledEnglishCatalog, fetchCatalog } from "../locale/runtime";
 import type { ElvixAppContext } from "./elvix-provider";
+import { startHeartbeat } from "./presence-heartbeat";
+import { jsonInit, send } from "./profile-request";
 import { authInit } from "./session";
 import type { ElvixBootstrapEnvelope } from "./types";
 
@@ -194,13 +196,9 @@ export function useUserEnvelope(
   return { appContext, sessionStatus, refresh };
 }
 
-const HEARTBEAT_MS = 30_000;
-const IDLE_AFTER_MS = 60_000;
-
 /**
- * Presence: while `enabled`, beat `/api/presence/heartbeat` every 30s so the
- * user shows ONLINE in the Console, reporting "idle" after 60s without input
- * and skipping beats while the tab is hidden.
+ * Presence: while `enabled`, keep the user ONLINE in the Console. One tab
+ * per browser beats, for all of them (`presence-heartbeat.ts`).
  */
 export function usePresenceHeartbeat(opts: {
   enabled: boolean;
@@ -210,35 +208,10 @@ export function usePresenceHeartbeat(opts: {
   const { enabled, applicationId, baseUrl } = opts;
   useEffect(() => {
     if (!enabled || !applicationId || typeof window === "undefined") return;
-    let lastInputAt = Date.now();
-    let cancelled = false;
-    const onInput = () => {
-      lastInputAt = Date.now();
-    };
-    window.addEventListener("mousemove", onInput, { passive: true });
-    window.addEventListener("keydown", onInput, { passive: true });
-    window.addEventListener("focus", onInput);
-    const beat = () => {
-      if (cancelled || document.visibilityState === "hidden") return;
-      const status = Date.now() - lastInputAt > IDLE_AFTER_MS ? "idle" : "online";
-      const init = authInit();
-      // A lost beat does not matter: the next tick catches up.
-      fetch(`${baseUrl}/api/presence/heartbeat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...init.headers },
-        credentials: init.credentials,
-        body: JSON.stringify({ applicationId, status }),
-      }).catch(() => {});
-    };
-    beat();
-    const id = setInterval(beat, HEARTBEAT_MS);
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-      window.removeEventListener("mousemove", onInput);
-      window.removeEventListener("keydown", onInput);
-      window.removeEventListener("focus", onInput);
-    };
+    return startHeartbeat(`elvix-presence|${baseUrl}|${applicationId}`, (status) => {
+      // A lost beat does not matter: the next one catches up.
+      void send(`${baseUrl}/api/presence/heartbeat`, jsonInit("POST", { applicationId, status }));
+    });
   }, [enabled, applicationId, baseUrl]);
 }
 
