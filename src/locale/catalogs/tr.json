@@ -2,6 +2,12 @@
   "locale": "tr",
   "namespaces": {
     "common": {
+      "codeGroupLabel": {
+        "other": "Doğrulama kodu"
+      },
+      "codeDigitLabel": {
+        "other": "{total} basamaktan {n}. basamak"
+      },
       "ok": {
         "other": "Tamam"
       },
@@ -95,6 +101,30 @@
       }
     },
     "signin": {
+      "signingYouIn": {
+        "other": "Giriş yapılıyor…"
+      },
+      "takingYouTo": {
+        "other": "Bir saniye, sizi {app} uygulamasına götürüyoruz."
+      },
+      "gateBadgePrivateBeta": {
+        "other": "Özel beta · yalnızca davetle"
+      },
+      "gateBadgeClosed": {
+        "other": "Kayıtlar kapalı"
+      },
+      "errorEmailArchived": {
+        "other": "Bu e-posta artık giriş için kullanılamaz. Güncel adresinizi kullanın."
+      },
+      "errorPasskeyUnknown": {
+        "other": "Bu geçiş anahtarı elvix'te kayıtlı değil. Başka bir yolla giriş yapın, ardından onu kaldırıp güvenlik ayarlarından yenisini ekleyin."
+      },
+      "errorPasskeyVerifyFailed": {
+        "other": "Bu geçiş anahtarı doğrulanamadı. Başka bir yolla giriş yapın ve güvenlik ayarlarından yeniden ekleyin."
+      },
+      "errorPasskeyExpired": {
+        "other": "Bu geçiş anahtarıyla girişin süresi doldu. Lütfen tekrar deneyin."
+      },
       "title": {
         "other": "{app} uygulamasına oturum aç"
       },
@@ -2287,6 +2317,153 @@
       },
       "recoverDeclineCta": {
         "other": "Şimdi değil, oturumumu kapat"
+      }
+    },
+    "buttons": {
+      "signInWithElvix": {
+        "other": "elvix ile giriş yap"
+      },
+      "continueWithElvix": {
+        "other": "elvix ile devam et"
+      },
+      "signUpWithElvix": {
+        "other": "elvix ile kaydol"
+      },
+      "signIn": {
+        "other": "Giriş yap"
+      },
+      "logIn": {
+        "other": "Oturum aç"
+      },
+      "signOut": {
+        "other": "Çıkış yap"
+      },
+      "logOut": {
+        "other": "Oturumu kapat"
+      },
+      "signOutOfElvix": {
+        "other": "elvix'ten çıkış yap"
+      },
+      "signingOut": {
+        "other": "Çıkış yapılıyor…"
+      }
+    },
+    "passkeys": {
+      "title": {
+        "other": "{app} için geçiş anahtarları"
+      },
+      "body": {
+        "other": "Kimlik avına karşı dayanıklı. Bu geçiş anahtarları yalnızca {app} uygulamasına giriş yapmanızı sağlar. elvix güvenlik ayarlarınızda eklediğiniz geçiş anahtarları burada da çalışır ve orada yönetilir."
+      },
+      "empty": {
+        "other": "{app} için henüz geçiş anahtarı yok. Aşağıdan bir tane ekleyin."
+      },
+      "add": {
+        "other": "{app} için geçiş anahtarı ekle"
+      },
+      "adding": {
+        "other": "Ekleniyor…"
+      },
+      "removeAria": {
+        "other": "{label} öğesini kaldır"
+      },
+      "lastUsed": {
+        "other": "Son kullanım: {date}"
+      },
+      "added": {
+        "other": "Eklenme: {date}"
+      },
+      "synced": {
+        "other": "senkronize"
+      },
+      "thisApp": {
+        "other": "bu uygulama"
+      },
+      "missingAppId": {
+        "other": "Uygulama kimliği eksik."
+      },
+      "deviceApplePlatform": {
+        "other": "Apple platformu geçiş anahtarı"
+      },
+      "devicePasskey": {
+        "other": "Geçiş anahtarı"
+      },
+      "deviceGeneric": {
+        "other": "cihaz"
+      },
+      "errorLoad": {
+        "other": "Geçiş anahtarları yüklenemedi."
+      },
+      "errorNotMember": {
+        "other": "Bu uygulamanın üyesi değilsiniz."
+      },
+      "errorMethodDisabled": {
+        "other": "Bu uygulamada geçiş anahtarları kapalı."
+      },
+      "errorAppNotFound": {
+        "other": "Uygulama bulunamadı."
+      },
+      "errorUnsupported": {
+        "other": "Bu tarayıcı geçiş anahtarlarını desteklemiyor."
+      },
+      "errorRegisterFailed": {
+        "other": "Geçiş anahtarı kaydedilemedi. Tekrar deneyin."
+      },
+      "errorInvalidInput": {
+        "other": "Geçiş anahtarı kurulumu başlatılamadı. Tekrar deneyin."
+      },
+      "errorUnauthenticated": {
+        "other": "Önce giriş yapın, sonra bir geçiş anahtarı ekleyin."
+      },
+      "errorRemoveFailed": {
+        "other": "Geçiş anahtarı kaldırılamadı. Tekrar deneyin."
+      }
+    },
+    "device": {
+      "title": {
+        "other": "Bir cihazı yetkilendir"
+      },
+      "enterCode": {
+        "other": "Terminalinizde gösterilen kodu girin."
+      },
+      "confirmCode": {
+        "other": "Bir cihaz hesabınıza CLI olarak giriş yapmak istiyor. Kodun terminalinizdekiyle aynı olduğunu doğrulayın:"
+      },
+      "approvedTitle": {
+        "other": "Onaylandı"
+      },
+      "approvedBody": {
+        "other": "Terminalinize dönün. Otomatik olarak devam eder."
+      },
+      "approvingTitle": {
+        "other": "Yetkilendiriliyor…"
+      },
+      "approvingBody": {
+        "other": "Cihaz {app} hesabınıza bağlanıyor."
+      },
+      "approvingBodyNoApp": {
+        "other": "Cihaz hesabınıza bağlanıyor."
+      },
+      "failedTitle": {
+        "other": "Onaylanamadı"
+      },
+      "tryAgain": {
+        "other": "Tekrar dene"
+      },
+      "errorNotFound": {
+        "other": "Bu kod bulunamadı. Süresi dolmuş ya da zaten kullanılmış olabilir. Terminalinizden yeniden başlayın."
+      },
+      "errorExpired": {
+        "other": "Bu kodun süresi doldu. Yeni bir kod için girişi terminalinizden yeniden başlatın."
+      },
+      "errorAlreadyApproved": {
+        "other": "Bu kod zaten onaylandı. Terminalinize dönün; devam etmiş olmalı."
+      },
+      "errorMismatch": {
+        "other": "Bu kod doğru görünmüyor. Terminalinizdekiyle tam olarak aynı olduğunu kontrol edin."
+      },
+      "errorGeneric": {
+        "other": "Bir şeyler ters gitti. Kodun süresi dolmuş olabilir. Terminalinizden yeniden başlayın."
       }
     }
   }

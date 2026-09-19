@@ -85,6 +85,8 @@ export type LegalEntityDraftApi = {
   setField: <K extends keyof LegalEntityDraft>(key: K, value: LegalEntityDraft[K]) => void;
   /** Back to blank. One call, so a new field cannot be forgotten here. */
   reset: () => void;
+  /** Blank, then these fields: opening one step to edit an existing entity. */
+  prefill: (fields: Partial<LegalEntityDraft>) => void;
 };
 
 export function useLegalEntityDraft(): LegalEntityDraftApi {
@@ -98,6 +100,10 @@ export function useLegalEntityDraft(): LegalEntityDraftApi {
   );
 
   const reset = useCallback(() => setDraft(emptyDraft()), []);
+  const prefill = useCallback(
+    (fields: Partial<LegalEntityDraft>) => setDraft({ ...emptyDraft(), ...fields }),
+    [],
+  );
 
-  return useMemo(() => ({ draft, setField, reset }), [draft, setField, reset]);
+  return useMemo(() => ({ draft, setField, reset, prefill }), [draft, setField, reset, prefill]);
 }

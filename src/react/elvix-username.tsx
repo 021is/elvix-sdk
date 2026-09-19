@@ -24,7 +24,12 @@
 import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
 import { ElvixInput } from "./elvix-input";
-import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
+import {
+  useElvixApp,
+  useElvixAppContext,
+  useElvixContext,
+  useElvixRefresh,
+} from "./elvix-provider";
 import { ElvixSaveButton } from "./elvix-save-button";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
@@ -40,8 +45,9 @@ type T = ReturnType<typeof useT>;
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, AtSign, Check, Loader2, Mail, ShieldOff, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { DonePane } from "./done-pane";
+import { SlidePane } from "./wizard-panes";
 
 const DEBOUNCE_MS = 280;
 
@@ -83,17 +89,23 @@ export function ElvixUsername(props: ElvixUsernameProps) {
   // ElvixLanguages / ElvixAddressBook (they all self-wrap).
   return (
     <MaybeCard card={props.card} className="h-full">
-      <ElvixUsernameInner
-        appId={appId}
-        appName={appName}
-        current={current}
-        methodUsername={methodUsername}
-        supportUrl={supportUrl}
-        supportEmail={supportEmail}
-        onSuccess={onSuccess}
-        onFail={onFail}
-        onResult={onResult}
-      />
+      {methodUsername ? (
+        <ElvixUsernameInner
+          appId={appId}
+          appName={appName}
+          current={current}
+          onSuccess={onSuccess}
+          onFail={onFail}
+          onResult={onResult}
+        />
+      ) : (
+        <DisabledPane
+          appName={appName}
+          current={current}
+          supportUrl={supportUrl}
+          supportEmail={supportEmail}
+        />
+      )}
     </MaybeCard>
   );
 }
@@ -102,8 +114,18 @@ type ElvixUsernameProps = {
   appId?: string;
   appName?: string;
   current?: string | null;
+  /**
+   * Whether the host app currently has username sign-in enabled. When
+   * `false`, the SDK renders a disabled-state pane explaining that the
+   * app owner turned the feature off and routes the user to the app's
+   * support surface (URL or mailto:), so someone who claimed a username
+   * while it was on understands why the row is no longer editable.
+   * Defaults to the app's Console setting, then `true`.
+   */
   methodUsername?: boolean;
+  /** App's support URL — preferred contact route when set. */
   supportUrl?: string | null;
+  /** App's support email — fallback contact when supportUrl is null. */
   supportEmail?: string | null;
   /** Render inside an <ElvixCard>. Default true; pass false for bare. */
   card?: boolean;
@@ -116,9 +138,6 @@ function ElvixUsernameInner({
   appId,
   appName,
   current,
-  methodUsername = true,
-  supportUrl = null,
-  supportEmail = null,
   onSuccess,
   onFail,
   onResult,
@@ -126,21 +145,6 @@ function ElvixUsernameInner({
   appId: string;
   appName: string;
   current: string | null;
-  /**
-   * Whether the host app currently has username sign-in enabled.
-   * When `false`, the SDK renders a disabled-state pane explaining
-   * that the feature was turned off by the app owner and routes the
-   * user to the app's support surface (URL or mailto:). This still
-   * loads when a user previously claimed a username back when the
-   * feature was on — they need a clear path to understand why the
-   * row is no longer editable. Defaults to `true` so existing
-   * embeds that omit the prop keep working.
-   */
-  methodUsername?: boolean;
-  /** App's support URL — preferred contact route when set. */
-  supportUrl?: string | null;
-  /** App's support email — fallback contact when supportUrl is null. */
-  supportEmail?: string | null;
   /**
    * Fires after a successful PATCH. Host hook — typical uses:
    * refresh data, log analytics, optionally navigate away. If the
@@ -163,18 +167,9 @@ function ElvixUsernameInner({
    */
   onResult?: (result: ElvixUsernameResult) => void;
 }) {
-  if (!methodUsername) {
-    return (
-      <DisabledPane
-        appName={appName}
-        current={current}
-        supportUrl={supportUrl}
-        supportEmail={supportEmail}
-      />
-    );
-  }
   const t = useT();
   const ctx = useElvixContext();
+  const refresh = useElvixRefresh();
   const [pane, setPane] = useState<Pane>("edit");
   const [direction, setDirection] = useState<1 | -1>(1);
   const [value, setValue] = useState(current ?? "");
@@ -279,6 +274,9 @@ function ElvixUsernameInner({
         return;
       }
       setPersisted(normalised);
+      // Every consumer of `useElvixAppContext()` (a nav chip, a profile link)
+      // reads the new handle without a reload.
+      void refresh();
       // Host hook fires first. If the host navigates away or unmounts
       // the SDK, the in-frame done pane never renders. If the host
       // doesn't provide a hook (or its hook is a no-op), we fall
@@ -311,15 +309,7 @@ function ElvixUsernameInner({
     <div className="relative overflow-hidden">
       <AnimatePresence mode="wait" custom={direction}>
         {pane === "edit" && (
-          <motion.div
-            key="edit"
-            custom={direction}
-            variants={paneVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={paneTransition}
-          >
+          <SlidePane key="edit" direction={direction}>
             <EditPane
               value={value}
               setValue={setValue}
@@ -329,18 +319,10 @@ function ElvixUsernameInner({
               canContinue={canContinue}
               onSubmit={goConfirm}
             />
-          </motion.div>
+          </SlidePane>
         )}
         {pane === "confirm" && (
-          <motion.div
-            key="confirm"
-            custom={direction}
-            variants={paneVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={paneTransition}
-          >
+          <SlidePane key="confirm" direction={direction}>
             <ConfirmPane
               current={persisted}
               next={normalised}
@@ -348,24 +330,16 @@ function ElvixUsernameInner({
               onBack={goBackToEdit}
               onConfirm={handleConfirm}
             />
-          </motion.div>
+          </SlidePane>
         )}
         {pane === "done" && (
-          <motion.div
-            key="done"
-            custom={direction}
-            variants={paneVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={paneTransition}
-          >
+          <SlidePane key="done" direction={direction}>
             <UsernameDonePane
               username={persisted ?? normalised}
               appName={appName}
               onChangeAgain={goEditAgain}
             />
-          </motion.div>
+          </SlidePane>
         )}
       </AnimatePresence>
     </div>
@@ -390,16 +364,18 @@ function EditPane({
   onSubmit: (e: React.FormEvent) => void;
 }) {
   const t = useT();
+  const inputId = useId();
   const hasError = status === "format_invalid" || status === "taken" || Boolean(serverError);
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div>
-        <label className="block text-[12.5px] font-medium text-fg-2 mb-1.5">
+        <label htmlFor={inputId} className="block text-[12.5px] font-medium text-fg-2 mb-1.5">
           {t("username.label")}
         </label>
         <div className="relative">
           <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-fg-3 pointer-events-none" />
           <ElvixInput
+            id={inputId}
             autoFocus
             inputMode="text"
             autoCapitalize="off"
@@ -701,11 +677,3 @@ function reasonCopy(t: T, reason: UsernameReason): string | undefined {
       return undefined;
   }
 }
-
-const paneVariants = {
-  enter: (dir: 1 | -1) => ({ x: dir * 24, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (dir: 1 | -1) => ({ x: dir * -24, opacity: 0 }),
-};
-
-const paneTransition = { duration: 0.24, ease: [0.22, 0.61, 0.36, 1] as const };

@@ -9,44 +9,33 @@
  * caller to wrap them in `<ElvixProvider>` first.
  *
  * Inside `<ElvixProvider>` this resolves to the live runtime; outside,
- * it returns a one-shot English-only `t` so no key ever throws.
+ * it returns an English-only `t` so no key ever throws.
  */
 
-import type { Runtime } from "@021.is/spine-i18n";
-// `useRuntime` throws when LocaleProvider is missing, so we read the
-// context directly to detect the absent case before touching the hook.
 import { useT as upstreamUseT } from "@021.is/spine-i18n/react";
-import { useContext, useMemo } from "react";
 import { buildEnglishRuntime } from "./runtime";
 
-// spine-i18n doesn't export its internal context. We can call upstream
-// useT inside a try/catch to know whether a provider is present — but
-// React hooks don't tolerate conditional throws cleanly. The robust
-// alternative: ALWAYS call upstream useT inside a wrapper component
-// nested in our own fallback LocaleProvider when no real one is found.
-//
-// Simpler: catch the throw at call time. `upstreamUseT` returns a
-// memoised `t` from a runtime; if the runtime is missing, calling it
-// throws synchronously. We pre-detect by catching the upstream hook
-// call itself.
+type Translate = (key: string, params?: Record<string, string | number>) => string;
 
-export function useT(): (key: string, params?: Record<string, string | number>) => string {
-  // Always run the upstream hook so React's hook order stays stable.
-  // If it throws (no LocaleProvider in the tree), substitute the
-  // bundled English runtime's translator. The try/catch is around the
-  // hook call itself; React tolerates this because the alternative
-  // path runs a different hook (`useMemo`) but the GUARD here returns
-  // a stable function on every render — React only ever takes the
-  // catch branch outside a LocaleProvider, never toggles.
-  void useContext; // satisfies lints
+// Built once per page, on first use outside a provider. A module value, not a
+// hook: the fallback runs in a `catch`, where calling a hook would change the
+// hook order between renders.
+let englishT: Translate | null = null;
+function englishFallback(): Translate {
+  if (!englishT) {
+    const en = buildEnglishRuntime();
+    englishT = en.t.bind(en);
+  }
+  return englishT;
+}
+
+export function useT(): Translate {
+  // spine-i18n exports no context to probe, so detect a missing
+  // LocaleProvider by the upstream hook throwing. Whether it throws never
+  // changes for a mounted component, so the hook order is stable.
   try {
     return upstreamUseT();
   } catch {
-    // No LocaleProvider — return an English-only translator. Use
-    // useMemo to keep the function identity stable across renders.
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const en = useMemo<Runtime>(() => buildEnglishRuntime(), []);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    return useMemo(() => en.t.bind(en), [en]);
+    return englishFallback();
   }
 }

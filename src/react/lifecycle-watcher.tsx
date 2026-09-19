@@ -2,35 +2,37 @@
 
 /**
  * `<ElvixLifecycleWatcher>` — mount once on any authenticated surface so a
- * banned / paused / deleted member is shown the front door within seconds,
- * not on whatever 401 they happen to hit next.
+ * banned / paused / deleted member is shown the front door as it happens,
+ * not on whatever 401 they hit next.
  *
- * Two transports, one component:
- *
- *   1. SSE (preferred). When `applicationId` + `userId` are provided AND
- *      we're same-origin with `baseUrl` (or `baseUrl` is unset), the
- *      watcher subscribes to `${baseUrl}/api/presence/stream` and reacts
- *      to `user.lifecycle.changed` + `lifecycle.snapshot` events live.
- *      Latency: O(network); no polling traffic at rest. This is what
- *      elvix's own /account + /console layouts use.
- *
- *   2. Polling fallback. When SSE isn't viable (cross-origin host with no
- *      same-origin presence stream; or the caller omits the SSE-required
- *      props), the watcher polls `${baseUrl}/api/v1/session` every
- *      `pollMs` (default 7s). `EventSource` can't carry the bearer token
- *      across origins, so polling is the only honest answer there.
- *
- *   <ElvixLifecycleWatcher baseUrl="https://elvix.is"
+ *   <ElvixLifecycleWatcher
  *     onSignedOut={(reason) => router.replace("/signed-out?reason=" + reason)} />
  *
- * Without `onSignedOut` it reloads the page (the host then re-renders its
- * signed-out state). The local bearer token is cleared via `setElvixToken(null)`
- * before either callback fires.
+ * Two signals:
+ *
+ *   1. Membership status, pushed. Over the shared live stream
+ *      (`live-stream.ts`), same-origin and cross-origin alike: a status other
+ *      than "active" signs the user out at once. Needs the app and user,
+ *      which come from `<ElvixProvider>` (or the props).
+ *
+ *   2. The session itself, checked. A session revoked elsewhere ("sign out
+ *      of other devices") is not a membership change, so `/api/v1/session`
+ *      is asked every `pollMs` (default 60s) while the tab is visible, and
+ *      whenever it becomes visible again. It used to be every 7s, always.
+ *
+ * Only a session seen alive at least once is ever evicted, so mounting the
+ * watcher on a signed-out page cannot reload it in a loop (scar 2026-06-15).
+ *
+ * Without `onSignedOut` it reloads the page. The stored bearer token is
+ * cleared before either happens.
  */
 
 import { useEffect } from "react";
-import { useResolvedBaseUrl } from "./elvix-provider";
+import { useElvixApp, useElvixAppContext, useResolvedBaseUrl } from "./elvix-provider";
+import { LIVE_OPEN, subscribeLive } from "./live-stream";
+import { send } from "./profile-request";
 import { authInit, setElvixToken } from "./session";
+import { useStableCallback } from "./use-stable-callback";
 
 /** Membership states the watcher reacts to. "active" = back to normal. */
 const StatusValue = {
@@ -42,160 +44,103 @@ const StatusValue = {
 } as const;
 type StatusValue = (typeof StatusValue)[keyof typeof StatusValue];
 
-/** Shape of an SSE `user.lifecycle.changed` / `lifecycle.snapshot` payload. */
+/** A `user.lifecycle.changed` / `lifecycle.snapshot` record. */
 type LifecycleRecord = { userId: string; status: StatusValue };
 
+const SESSION_CHECK_MS = 60_000;
+
 export type ElvixLifecycleWatcherProps = {
-  /** elvix origin. Defaults to "https://elvix.is" — the public elvix
-   *  identity host. Override only for self-hosted elvix instances or
-   *  dev mirrors; production consumers never need to pass this. */
+  /** elvix origin. Defaults to the provider's, else "https://elvix.is". */
   baseUrl?: string;
-  /** Poll interval in ms when SSE isn't available. Default 7000. */
+  /** How often the session is re-checked while the tab is visible. Default 60000. */
   pollMs?: number;
-  /**
-   * Application id to subscribe to (SSE mode). When set together with
-   * `userId` AND we're same-origin with `baseUrl`, the watcher opens an
-   * EventSource on `/api/presence/stream` and skips polling entirely.
-   * Omit to force the polling path (the cross-origin SDK case).
-   */
+  /** The app to watch. Defaults to the provider's (`useElvixApp().applicationId`). */
   applicationId?: string;
-  /** User id to watch — SSE filters by this. Required with `applicationId`. */
+  /** The user to watch. Defaults to the signed-in user. */
   userId?: string;
   /** Called once with the reason when the session ends. Defaults to a reload. */
   onSignedOut?: (reason: string) => void;
   /**
-   * Cookie name to clear on revoke (banned / paused / deleted / signed out).
-   * When set, the watcher does `document.cookie = "<name>=; max-age=0; path=/"`
-   * before firing onSignedOut. Pair with the cookie you set in your
-   * sign-in onResult handler so a banned user's cookie can't persist.
+   * Cookie to clear when the session ends (banned / paused / deleted / signed
+   * out), so a host cookie set in the sign-in `onResult` cannot outlive it.
    */
   cookieName?: string;
 };
 
-/**
- * Best-effort same-origin probe: `""` and any string whose origin matches
- * the current `window.location.origin`. SSR-safe (returns false on the
- * server so we never accidentally start an EventSource during render).
- */
-function isSameOrigin(baseUrl: string): boolean {
-  if (typeof window === "undefined") return false;
-  if (!baseUrl) return true;
-  try {
-    return new URL(baseUrl, window.location.origin).origin === window.location.origin;
-  } catch {
-    return false;
-  }
-}
-
 export function ElvixLifecycleWatcher({
   baseUrl,
-  pollMs = 7000,
+  pollMs = SESSION_CHECK_MS,
   applicationId,
   userId,
   onSignedOut,
   cookieName,
 }: ElvixLifecycleWatcherProps): null {
   const resolvedBaseUrl = useResolvedBaseUrl(baseUrl);
+  const providerApp = useElvixApp()?.applicationId;
+  const providerUser = useElvixAppContext()?.user.id;
+  const appId = applicationId ?? providerApp;
+  const watchedUser = userId ?? providerUser;
+  const signedOut = useStableCallback(onSignedOut);
+  const hostHandles = Boolean(onSignedOut);
+
   useEffect(() => {
-    let cancelled = false;
     let fired = false;
-
-    function fire(reason: string) {
-      if (cancelled || fired) return;
+    let alive = false;
+    const fire = (reason: string) => {
+      if (fired) return;
       fired = true;
-      if (cookieName && typeof document !== "undefined") {
-        document.cookie = `${cookieName}=; max-age=0; path=/; samesite=lax`;
-      }
+      if (cookieName) document.cookie = `${cookieName}=; max-age=0; path=/; samesite=lax`;
       setElvixToken(null);
-      if (onSignedOut) onSignedOut(reason);
-      else if (typeof window !== "undefined") window.location.reload();
-    }
-
-    // ── SSE branch ────────────────────────────────────────────────────────
-    // Only viable same-origin (EventSource can't carry the bearer token to
-    // a third-party origin). Identifying both `applicationId` + `userId` is
-    // required so the stream knows what to scope by.
-    const canSse =
-      applicationId !== undefined &&
-      userId !== undefined &&
-      typeof window !== "undefined" &&
-      typeof EventSource !== "undefined" &&
-      isSameOrigin(resolvedBaseUrl);
-
-    if (canSse) {
-      const url = new URL(`${resolvedBaseUrl}/api/presence/stream`, window.location.origin);
-      url.searchParams.set("applicationId", applicationId!);
-      url.searchParams.set("userId", userId!);
-      const ev = new EventSource(url.toString());
-
-      function onRecord(rec: LifecycleRecord) {
-        if (rec.userId !== userId) return;
-        if (rec.status === StatusValue.ACTIVE) return;
-        fire(rec.status);
-      }
-      function handle(e: MessageEvent) {
-        try {
-          onRecord(JSON.parse(e.data) as LifecycleRecord);
-        } catch {
-          // Ignore malformed payloads — the next event re-syncs.
-        }
-      }
-      function handleSnapshot(e: MessageEvent) {
-        try {
-          for (const r of JSON.parse(e.data) as LifecycleRecord[]) onRecord(r);
-        } catch {
-          // Same as above.
-        }
-      }
-      ev.addEventListener("user.lifecycle.changed", handle);
-      ev.addEventListener("lifecycle.snapshot", handleSnapshot);
-
-      return () => {
-        cancelled = true;
-        ev.removeEventListener("user.lifecycle.changed", handle);
-        ev.removeEventListener("lifecycle.snapshot", handleSnapshot);
-        ev.close();
-      };
-    }
-
-    // ── Polling fallback ──────────────────────────────────────────────────
-    // Cross-origin host OR SSE props omitted: poll `/api/v1/session` and
-    // react to !ok. authInit() ferries the bearer token for cross-origin.
-    //
-    // Only evict a session that was ALIVE at least once (`wasOk`). Without
-    // this, mounting the watcher on an unauthenticated page makes the very
-    // first poll `{ok:false}` → fire() → window.location.reload() → an
-    // infinite reload loop that bricks the page. The watcher's job is to
-    // evict a live session that gets revoked mid-use, not to police pages
-    // that never had one. Scar 2026-06-15 (fakeapp /sign-in loop).
-    let wasOk = false;
-    const poll = async () => {
-      try {
-        const init = authInit();
-        const res = await fetch(`${resolvedBaseUrl}/api/v1/session`, {
-          method: "POST",
-          headers: init.headers,
-          credentials: init.credentials,
-        });
-        const body = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
-        if (cancelled || fired) return;
-        if (body.ok) {
-          wasOk = true;
-        } else if (wasOk) {
-          fire(body.error ?? "signed_out");
-        }
-      } catch {
-        // Network blip — keep the session; retry next tick.
-      }
+      if (hostHandles) signedOut(reason);
+      else window.location.reload();
+    };
+    const onRecord = (r: LifecycleRecord) => {
+      if (r.userId === watchedUser && r.status !== StatusValue.ACTIVE) fire(r.status);
     };
 
-    void poll();
-    const id = setInterval(poll, pollMs);
+    const stopLive =
+      appId && watchedUser
+        ? subscribeLive(
+            { baseUrl: resolvedBaseUrl, applicationId: appId, userId: watchedUser },
+            (event) => {
+              // The stream only opens for a live session.
+              if (event.type === LIVE_OPEN) alive = true;
+              else if (event.type === "user.lifecycle.changed") {
+                onRecord(event.data as LifecycleRecord);
+              } else if (event.type === "lifecycle.snapshot") {
+                for (const r of event.data as LifecycleRecord[]) onRecord(r);
+              }
+            },
+          )
+        : () => {};
+
+    const checkSession = async () => {
+      if (fired || document.visibilityState === "hidden") return;
+      const init = authInit();
+      const res = await send(`${resolvedBaseUrl}/api/v1/session`, {
+        method: "POST",
+        headers: init.headers,
+        credentials: init.credentials,
+      });
+      // A network blip keeps the session; the next check retries.
+      if (!res) return;
+      const body = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      if (body.ok) alive = true;
+      else if (alive) fire(body.error ?? "signed_out");
+    };
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void checkSession();
+    };
+    void checkSession();
+    const timer = setInterval(checkSession, pollMs);
+    document.addEventListener("visibilitychange", onVisible);
     return () => {
-      cancelled = true;
-      clearInterval(id);
+      fired = true;
+      stopLive();
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisible);
     };
-  }, [resolvedBaseUrl, pollMs, applicationId, userId, onSignedOut, cookieName]);
+  }, [resolvedBaseUrl, pollMs, appId, watchedUser, cookieName, hostHandles, signedOut]);
 
   return null;
 }

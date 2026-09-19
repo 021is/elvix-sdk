@@ -4,6 +4,7 @@ import {
   needsBusinessSteps,
   needsPersonSteps,
   nextView,
+  previousView,
   View,
   walkFlow,
 } from "../src/react/legal-entity-flow";
@@ -12,10 +13,10 @@ import {
  * Characterization tests for the legal-entity wizard ordering.
  *
  * These were written by reading the sixteen `afterX()` callbacks the
- * component used to carry, BEFORE that logic moved here, so they pin the
- * behaviour that already shipped rather than the behaviour the refactor
- * happens to produce. If a step disappears for one entity type, this is what
- * catches it.
+ * component used to carry, so they pin the behaviour that shipped. Until 0.12
+ * the component kept those callbacks and never called this module, so these
+ * tests guarded a copy; it now routes every step through `nextView` and
+ * `previousView`. If a step disappears for one entity type, this catches it.
  *
  * The product rules being protected:
  *   - a company is never asked for a date of birth or a nationality
@@ -162,5 +163,23 @@ describe("panes that do not advance on their own", () => {
 
   it("sends the contact form to saving", () => {
     expect(nextView(View.CONTACT_INPUT, individual)).toBe(View.SAVING);
+  });
+});
+
+describe("previousView", () => {
+  it("undoes every forward step, for every type", () => {
+    for (const ctx of [individual, soleProp, company]) {
+      const path = walkFlow(ctx);
+      for (const [i, step] of path.entries()) {
+        expect(previousView(step, ctx.type)).toBe(i === 0 ? null : path[i - 1]);
+      }
+    }
+  });
+
+  it("returns from the detours the way they came", () => {
+    expect(previousView(View.VERIFYING_TAX_ID, "company")).toBe(View.TAX_IDS);
+    expect(previousView(View.CONTACT_INPUT, "company")).toBe(View.CONTACT_CHOICE);
+    // Registration is reached past the verification detour, but Back skips it.
+    expect(previousView(View.REGISTRATION, "company")).toBe(View.TAX_IDS);
   });
 });

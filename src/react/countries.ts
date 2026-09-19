@@ -30,7 +30,7 @@ export type Country = {
  * because country pickers can render partial input mid-keystroke.
  */
 export function countryCodeToFlag(code: string): string {
-  if (!code || code.length !== 2) return "";
+  if (code?.length !== 2) return "";
   const A = 0x41;
   const RI_A = 0x1f1e6;
   const up = code.toUpperCase();

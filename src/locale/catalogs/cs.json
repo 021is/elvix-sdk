@@ -3,6 +3,12 @@
   "locale": "cs",
   "namespaces": {
     "common": {
+      "codeGroupLabel": {
+        "other": "Ověřovací kód"
+      },
+      "codeDigitLabel": {
+        "other": "Číslice {n} z {total}"
+      },
       "ok": {
         "other": "OK"
       },
@@ -97,6 +103,30 @@
       }
     },
     "signin": {
+      "signingYouIn": {
+        "other": "Přihlašování…"
+      },
+      "takingYouTo": {
+        "other": "Chvíli strpení, přesměrujeme vás do {app}."
+      },
+      "gateBadgePrivateBeta": {
+        "other": "Soukromá beta · pouze na pozvánku"
+      },
+      "gateBadgeClosed": {
+        "other": "Registrace uzavřena"
+      },
+      "errorEmailArchived": {
+        "other": "Tento e-mail už nelze použít k přihlášení. Použijte svou aktuální adresu."
+      },
+      "errorPasskeyUnknown": {
+        "other": "Tento passkey není v elvix registrován. Přihlaste se jinak, pak ho odeberte a v nastavení zabezpečení přidejte nový."
+      },
+      "errorPasskeyVerifyFailed": {
+        "other": "Tento passkey se nepodařilo ověřit. Přihlaste se jinak a v nastavení zabezpečení ho přidejte znovu."
+      },
+      "errorPasskeyExpired": {
+        "other": "Platnost tohoto přihlášení přes passkey vypršela. Zkuste to prosím znovu."
+      },
       "title": {
         "other": "Přihlaste se do {app}"
       },
@@ -2297,6 +2327,153 @@
       },
       "recoverDeclineCta": {
         "other": "Teď ne, odhlaste mě"
+      }
+    },
+    "buttons": {
+      "signInWithElvix": {
+        "other": "Přihlásit se přes elvix"
+      },
+      "continueWithElvix": {
+        "other": "Pokračovat přes elvix"
+      },
+      "signUpWithElvix": {
+        "other": "Zaregistrovat se přes elvix"
+      },
+      "signIn": {
+        "other": "Přihlásit se"
+      },
+      "logIn": {
+        "other": "Přihlásit"
+      },
+      "signOut": {
+        "other": "Odhlásit se"
+      },
+      "logOut": {
+        "other": "Odhlásit"
+      },
+      "signOutOfElvix": {
+        "other": "Odhlásit se z elvix"
+      },
+      "signingOut": {
+        "other": "Odhlašování…"
+      }
+    },
+    "passkeys": {
+      "title": {
+        "other": "Passkeys pro {app}"
+      },
+      "body": {
+        "other": "Odolné proti phishingu. Tyto passkeys vás přihlásí pouze do {app}. Passkeys přidané v nastavení zabezpečení elvix fungují i zde a spravují se tam."
+      },
+      "empty": {
+        "other": "Pro {app} zatím nemáte žádné passkeys. Přidejte ho níže."
+      },
+      "add": {
+        "other": "Přidat passkey pro {app}"
+      },
+      "adding": {
+        "other": "Přidávání…"
+      },
+      "removeAria": {
+        "other": "Odebrat {label}"
+      },
+      "lastUsed": {
+        "other": "Naposledy použit {date}"
+      },
+      "added": {
+        "other": "Přidán {date}"
+      },
+      "synced": {
+        "other": "synchronizován"
+      },
+      "thisApp": {
+        "other": "tuto aplikaci"
+      },
+      "missingAppId": {
+        "other": "Chybí ID aplikace."
+      },
+      "deviceApplePlatform": {
+        "other": "Passkey platformy Apple"
+      },
+      "devicePasskey": {
+        "other": "Passkey"
+      },
+      "deviceGeneric": {
+        "other": "zařízení"
+      },
+      "errorLoad": {
+        "other": "Passkeys se nepodařilo načíst."
+      },
+      "errorNotMember": {
+        "other": "Nejste členem této aplikace."
+      },
+      "errorMethodDisabled": {
+        "other": "Passkeys jsou v této aplikaci vypnuté."
+      },
+      "errorAppNotFound": {
+        "other": "Aplikace nenalezena."
+      },
+      "errorUnsupported": {
+        "other": "Tento prohlížeč nepodporuje passkeys."
+      },
+      "errorRegisterFailed": {
+        "other": "Passkey se nepodařilo zaregistrovat. Zkuste to znovu."
+      },
+      "errorInvalidInput": {
+        "other": "Nastavení passkey se nepodařilo spustit. Zkuste to znovu."
+      },
+      "errorUnauthenticated": {
+        "other": "Nejdřív se přihlaste a pak přidejte passkey."
+      },
+      "errorRemoveFailed": {
+        "other": "Passkey se nepodařilo odebrat. Zkuste to znovu."
+      }
+    },
+    "device": {
+      "title": {
+        "other": "Autorizovat zařízení"
+      },
+      "enterCode": {
+        "other": "Zadejte kód zobrazený ve vašem terminálu."
+      },
+      "confirmCode": {
+        "other": "Zařízení se chce přihlásit k vašemu účtu jako CLI. Ověřte, že kód odpovídá vašemu terminálu:"
+      },
+      "approvedTitle": {
+        "other": "Schváleno"
+      },
+      "approvedBody": {
+        "other": "Vraťte se do terminálu. Pokračuje automaticky."
+      },
+      "approvingTitle": {
+        "other": "Autorizace…"
+      },
+      "approvingBody": {
+        "other": "Propojování zařízení s vaším účtem {app}."
+      },
+      "approvingBodyNoApp": {
+        "other": "Propojování zařízení s vaším účtem."
+      },
+      "failedTitle": {
+        "other": "Schválení se nezdařilo"
+      },
+      "tryAgain": {
+        "other": "Zkusit znovu"
+      },
+      "errorNotFound": {
+        "other": "Tento kód nebyl nalezen. Možná vypršel nebo už byl použit. Začněte znovu z terminálu."
+      },
+      "errorExpired": {
+        "other": "Platnost kódu vypršela. Spusťte přihlášení znovu z terminálu a získejte nový."
+      },
+      "errorAlreadyApproved": {
+        "other": "Tento kód už byl schválen. Vraťte se do terminálu; už by měl pokračovat."
+      },
+      "errorMismatch": {
+        "other": "Tento kód nevypadá správně. Ověřte, že přesně odpovídá vašemu terminálu."
+      },
+      "errorGeneric": {
+        "other": "Něco se pokazilo. Platnost kódu možná vypršela. Začněte znovu z terminálu."
       }
     }
   }

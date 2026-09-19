@@ -45,6 +45,7 @@ import { DonePane } from "./done-pane";
 import { useElvixContext } from "./elvix-provider";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
+import { SlidePane } from "./wizard-panes";
 
 type TFunction = (key: string, params?: Record<string, string | number>) => string;
 
@@ -150,7 +151,6 @@ function ElvixSessionsImpl({
   onResult?: (result: ElvixSessionsResult) => void;
 }) {
   const ctx = useElvixContext();
-  const t = useT();
   // ⚠ The default is the whole point. Omitting `appId` on a customer app used
   // to fall through to the ACCOUNT surface — a cross-origin app bearer cannot
   // read that, so the list came back empty with no error, and the host saw a
@@ -162,107 +162,18 @@ function ElvixSessionsImpl({
   // `app` is null there and the account surface is still selected — the
   // first-party behaviour is unchanged.
   const appId = resolveSessionsAppId(appIdProp, ctx.app?.clientId);
-  const base = sessionsBasePath(appId);
-  const [items, setItems] = useState<SessionRow[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [busyId, setBusyId] = useState<string | null>(null);
+  const list = useSessionsList({ baseUrl: ctx.baseUrl, appId, signInUrl, onChanged, onResult });
+  const { items, loading, error, setError, busyId, revokingMode, endedCount } = list;
 
   const [pane, setPane] = useState<Pane>("list");
   const [direction, setDirection] = useState<1 | -1>(1);
-  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  const [revokingMode, setRevokingMode] = useState<"none" | "others" | "all">("none");
-  const [endedCount, setEndedCount] = useState(0);
-
-  async function load() {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(`${ctx.baseUrl}${base}`, { ...authInit() });
-      const body = unwrapEnvelope(await res.json());
-      if (!res.ok || !body.ok) {
-        setError(t("sessions.errorLoad"));
-        return;
-      }
-      setItems(body.sessions ?? []);
-    } finally {
-      setLoading(false);
-    }
-  }
-  useEffect(() => {
-    void load();
-  }, [appId]);
-
-  async function revokeOne(id: string) {
-    setBusyId(id);
-    setError(null);
-    try {
-      const res = await fetch(`${ctx.baseUrl}${base}/${id}/revoke`, {
-        method: "POST",
-        ...authInit(),
-      });
-      if (!res.ok) {
-        const msg = t("sessions.errorRevoke");
-        setError(msg);
-        onResult?.({
-          ok: false,
-          error: "revoke_failed",
-          message: msg,
-        });
-        return;
-      }
-      setItems((prev) => prev.filter((s) => s.id !== id));
-      onChanged?.();
-      onResult?.({ ok: true, action: ElvixSessionsAction.REVOKE_ONE, ended: 1 });
-    } finally {
-      setBusyId(null);
-    }
-  }
-
-  async function massRevoke(mode: Mode) {
-    setRevokingMode(mode);
-    setError(null);
-    try {
-      const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}${base}/revoke-all`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...auth.headers },
-        credentials: auth.credentials,
-        // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-        body: JSON.stringify({ appId, includeCurrent: mode === "all" }),
-      });
-      const body = unwrapEnvelope(await res.json()) as { ok?: boolean; ended?: number };
-      if (!res.ok || !body.ok) {
-        const msg = t("sessions.errorMassRevoke");
-        setError(msg);
-        onResult?.({
-          ok: false,
-          error: "mass_revoke_failed",
-          message: msg,
-        });
-        return;
-      }
-      setEndedCount(body.ended ?? 0);
-      onChanged?.();
-      onResult?.({
-        ok: true,
-        action:
-          mode === "all" ? ElvixSessionsAction.SIGN_OUT_ALL : ElvixSessionsAction.SIGN_OUT_OTHERS,
-        ended: body.ended ?? 0,
-      });
-      if (mode === "all") {
-        // Current session is gone — push to sign-in. `replace` so
-        // browser back doesn't return to a now-401 surface.
-        window.location.replace(signInUrl);
-        return;
-      }
-      setItems((prev) => prev.filter((s) => s.isCurrent));
-      setDirection(1);
-      setPane("done");
-    } finally {
-      setRevokingMode("none");
-    }
-  }
+  const go = (next: Pane, dir: 1 | -1) => {
+    setDirection(dir);
+    setPane(next);
+  };
+  const massRevoke = async (mode: Mode) => {
+    if (await list.massRevoke(mode)) go("done", 1);
+  };
 
   if (loading) {
     return (
@@ -279,80 +190,164 @@ function ElvixSessionsImpl({
     <div className="relative overflow-hidden">
       <AnimatePresence mode="wait" custom={direction}>
         {pane === "list" && (
-          <motion.div
-            key="list"
-            custom={direction}
-            variants={paneVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={paneTransition}
-          >
+          <SlidePane key="list" direction={direction}>
             <ListPane
               items={items}
               busyId={busyId}
               error={error}
               othersCount={othersCount}
               hasCurrent={hasCurrent}
-              onRevokeOne={revokeOne}
+              onRevokeOne={list.revokeOne}
               onMassRevoke={() => {
-                setDirection(1);
-                setPane("confirm");
+                go("confirm", 1);
                 setError(null);
               }}
             />
-          </motion.div>
+          </SlidePane>
         )}
 
         {pane === "confirm" && (
-          <motion.div
-            key="confirm"
-            custom={direction}
-            variants={paneVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={paneTransition}
-          >
+          <SlidePane key="confirm" direction={direction}>
             <ConfirmPane
               othersCount={othersCount}
               hasCurrent={hasCurrent}
               revokingMode={revokingMode}
               error={error}
               onBack={() => {
-                setDirection(-1);
-                setPane("list");
+                go("list", -1);
                 setError(null);
               }}
               onSignOutOthers={() => void massRevoke("others")}
               onSignOutAll={() => void massRevoke("all")}
             />
-          </motion.div>
+          </SlidePane>
         )}
 
         {pane === "done" && (
-          <motion.div
-            key="done"
-            custom={direction}
-            variants={paneVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={paneTransition}
-          >
-            <SessionsDonePane
-              endedCount={endedCount}
-              onBack={() => {
-                setDirection(-1);
-                setPane("list");
-                setEndedCount(0);
-              }}
-            />
-          </motion.div>
+          <SlidePane key="done" direction={direction}>
+            <SessionsDonePane endedCount={endedCount} onBack={() => go("list", -1)} />
+          </SlidePane>
         )}
       </AnimatePresence>
     </div>
   );
+}
+
+/**
+ * The session list and its two actions. The list loads when its identity
+ * (origin + app) changes, aborted on change or unmount so a late response
+ * can't overwrite a newer list; a network failure shows the load error
+ * instead of rejecting unhandled.
+ */
+function useSessionsList(args: {
+  baseUrl: string;
+  appId: string | undefined;
+  signInUrl: string;
+  onChanged?: () => void;
+  onResult?: (result: ElvixSessionsResult) => void;
+}) {
+  const { baseUrl, appId, signInUrl, onChanged, onResult } = args;
+  const t = useT();
+  const base = sessionsBasePath(appId);
+  const [items, setItems] = useState<SessionRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
+  const [revokingMode, setRevokingMode] = useState<"none" | "others" | "all">("none");
+  const [endedCount, setEndedCount] = useState(0);
+
+  const loadError = t("sessions.errorLoad");
+  useEffect(() => {
+    const ctrl = new AbortController();
+    setLoading(true);
+    setError(null);
+    fetch(`${baseUrl}${base}`, { ...authInit(), signal: ctrl.signal })
+      .then(async (res) => {
+        const body = unwrapEnvelope(await res.json());
+        if (!res.ok || !body.ok) setError(loadError);
+        else setItems(body.sessions ?? []);
+      })
+      .catch((e: unknown) => {
+        if ((e as { name?: string })?.name !== "AbortError") setError(loadError);
+      })
+      .finally(() => {
+        if (!ctrl.signal.aborted) setLoading(false);
+      });
+    return () => ctrl.abort();
+  }, [baseUrl, base, loadError]);
+
+  const fail = (error: string, message: string) => {
+    setError(message);
+    onResult?.({ ok: false, error, message });
+  };
+
+  async function revokeOne(id: string) {
+    setBusyId(id);
+    setError(null);
+    try {
+      const res = await fetch(`${baseUrl}${base}/${id}/revoke`, { method: "POST", ...authInit() });
+      if (!res.ok) return fail("revoke_failed", t("sessions.errorRevoke"));
+      setItems((prev) => prev.filter((s) => s.id !== id));
+      onChanged?.();
+      onResult?.({ ok: true, action: ElvixSessionsAction.REVOKE_ONE, ended: 1 });
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  /** Ends other sessions (or all, then leaves for sign-in). Resolves true when
+   *  the others were ended and the done pane should show. */
+  async function massRevoke(mode: Mode): Promise<boolean> {
+    setRevokingMode(mode);
+    setError(null);
+    // LEGACY: spine-lint-disable-next-line spine/enum-over-string
+    const all = mode === "all";
+    try {
+      const auth = authInit();
+      const res = await fetch(`${baseUrl}${base}/revoke-all`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...auth.headers },
+        credentials: auth.credentials,
+        body: JSON.stringify({ appId, includeCurrent: all }),
+      });
+      const body = unwrapEnvelope(await res.json()) as { ok?: boolean; ended?: number };
+      if (!res.ok || !body.ok) {
+        fail("mass_revoke_failed", t("sessions.errorMassRevoke"));
+        return false;
+      }
+      const ended = body.ended ?? 0;
+      setEndedCount(ended);
+      onChanged?.();
+      onResult?.({
+        ok: true,
+        action: all ? ElvixSessionsAction.SIGN_OUT_ALL : ElvixSessionsAction.SIGN_OUT_OTHERS,
+        ended,
+      });
+      if (all) {
+        // The current session is gone too: go to sign-in. `replace` so the
+        // back button doesn't return to a now-401 surface.
+        window.location.replace(signInUrl);
+        return false;
+      }
+      setItems((prev) => prev.filter((s) => s.isCurrent));
+      return true;
+    } finally {
+      setRevokingMode("none");
+    }
+  }
+
+  return {
+    items,
+    loading,
+    error,
+    setError,
+    busyId,
+    revokingMode,
+    endedCount,
+    revokeOne,
+    massRevoke,
+  };
 }
 
 function ListPane({
@@ -643,13 +638,6 @@ function formatRelative(iso: string, t: TFunction): string {
     month: "short",
   });
 }
-
-const paneVariants = {
-  enter: (dir: 1 | -1) => ({ x: dir * 24, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (dir: 1 | -1) => ({ x: dir * -24, opacity: 0 }),
-};
-const paneTransition = { duration: 0.24, ease: [0.22, 0.61, 0.36, 1] as const };
 
 /**
  * Public export. Wraps the implementation in <ElvixCard> by default;

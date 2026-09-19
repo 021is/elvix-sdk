@@ -7,31 +7,24 @@
  * rest, plus an in-place mini-wizard whose panes live inside the
  * banner's frame (rounded 3:1 rect). No modals.
  *
- * Pane flow (all rendered inside the banner box):
- *   display       → tap "Edit"
- *   choice        → Replace | Remove
- *   cropping      → react-easy-crop fills the banner frame
- *   remove-confirm → Yes | Cancel
- *   working       → spinner
+ * Pane flow (all rendered inside the banner box; the upload / crop /
+ * remove logic is `use-image-editor.ts`, shared with the avatar):
+ *   display  → Edit opens the file picker; Remove is an in-place two-step
+ *              (Trash → red Check) that never leaves this layer
+ *   cropping → react-easy-crop fills the banner frame
+ *   working  → spinner
  */
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Camera, Check, Loader2, Pencil, Trash2, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Cropper, { type Area } from "react-easy-crop";
 import { useT } from "../locale/use-t";
-import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
-import { cropToBlob } from "./image-crop";
-import { mediaKey, publishMedia } from "./live-media";
-import { authInit } from "./session";
-import { unwrapEnvelope } from "./spine-fetch";
-import { toast } from "./toast";
+import { useElvixApp, useElvixAppContext } from "./elvix-provider";
+import { EditorView, ImageKind, type ImageResult, useImageEditor } from "./use-image-editor";
 import { UserBanner, type UserBannerProps } from "./user-banner";
-import { useUserMedia } from "./user-media";
 
-export type ElvixBannerResult =
-  | { ok: true; sizes: number[]; updatedAt: string }
-  | { ok: false; error: string; message?: string };
+export type ElvixBannerResult = ImageResult;
 
 export type ElvixBannerProps = UserBannerProps & {
   applicationId: string;
@@ -43,16 +36,6 @@ export type ElvixBannerProps = UserBannerProps & {
    *  rendered banner sizes + updatedAt only (no image bytes). */
   onResult?: (result: ElvixBannerResult) => void;
 };
-
-// Choice + remove-confirm panes retired. Edit goes straight to the
-// file picker; Remove uses an in-place two-step (Trash → red Check)
-// inside the same button so we never leave the display layer.
-const View = {
-  DISPLAY: "display",
-  CROPPING: "cropping",
-  WORKING: "working",
-} as const;
-type View = (typeof View)[keyof typeof View];
 
 export function ElvixBanner(props: Partial<ElvixBannerProps>) {
   const app = useElvixApp();
@@ -84,174 +67,25 @@ function ElvixBannerInner({
   onResult,
   ...bannerProps
 }: ElvixBannerProps) {
-  const ctx = useElvixContext();
   const t = useT();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [view, setView] = useState<View>("display");
-
-  const [sizes, setSizes] = useState<number[]>(bannerProps.membership.bannerSizes);
-  const [updatedAt, setUpdatedAt] = useState<Date | number>(bannerProps.membership.bannerUpdatedAt);
-
-  // The banner is CENTRALIZED (elvix-account), not per-app. Seed the wizard's
-  // initial state from the centralized store once so the editor shows the
-  // GLOBAL banner regardless of which app mounts it (a host-passed per-app
-  // `membership` is only the while-loading fallback).
-  const centralized = useUserMedia(
-    applicationId === "preview" ? null : bannerProps.userId,
-    ctx.baseUrl,
-  );
-  const seeded = useRef(false);
-  useEffect(() => {
-    if (!centralized.data || seeded.current) return;
-    seeded.current = true;
-    setSizes(centralized.data.banner.sizes);
-    setUpdatedAt(centralized.data.banner.updatedAt ?? 0);
-  }, [centralized.data]);
-
-  // Preview-mode in-memory blob URL. Set only when the catalog
-  // mounts the banner with `applicationId="preview"` — used to
-  // render the uploaded image without a CDN round-trip. Cleared on
-  // remove. Real customer surfaces never populate this.
-  const [previewBlobUrl, setPreviewBlobUrl] = useState<string | null>(null);
-  const hasMedia = sizes.length > 0 || previewBlobUrl !== null;
-
-  const [source, setSource] = useState<string | null>(null);
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [pixels, setPixels] = useState<Area | null>(null);
-
-  const onCropComplete = useCallback((_: Area, p: Area) => setPixels(p), []);
-
-  const openPicker = () => fileInputRef.current?.click();
-
-  const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (!file) return;
-    if (source) URL.revokeObjectURL(source);
-    setSource(URL.createObjectURL(file));
-    setCrop({ x: 0, y: 0 });
-    setZoom(1);
-    setPixels(null);
-    setView("cropping");
-  };
-
-  const cancelEdit = () => {
-    if (source) URL.revokeObjectURL(source);
-    setSource(null);
-    setPixels(null);
-    setView("display");
-  };
-
-  const handleUpload = async () => {
-    if (!source || !pixels) return;
-    setView("working");
-    try {
-      const blob = await cropToBlob(source, pixels, 2400, 0.92);
-
-      // Preview mode: stash a blob URL locally and skip the network.
-      if (applicationId === "preview") {
-        const blobUrl = URL.createObjectURL(blob);
-        if (previewBlobUrl?.startsWith("blob:")) URL.revokeObjectURL(previewBlobUrl);
-        setPreviewBlobUrl(blobUrl);
-        setSizes([]);
-        const now = Date.now();
-        setUpdatedAt(now);
-        onChange?.({ sizes: [], updatedAt: now });
-        onResult?.({ ok: true, sizes: [], updatedAt: new Date(now).toISOString() });
-        setView("display");
-        if (source) URL.revokeObjectURL(source);
-        setSource(null);
-        return;
-      }
-
-      const fd = new FormData();
-      fd.append("file", blob, "banner.jpg");
-      const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/self/images/banner`, {
-        method: "PUT",
-        body: fd,
-        headers: auth.headers,
-        credentials: auth.credentials,
-      });
-      if (!res.ok) throw new Error("upload_failed");
-      const body = unwrapEnvelope(await res.json().catch(() => ({}))) as {
-        bannerSizes?: number[];
-        bannerUpdatedAt?: string;
-      };
-      const nextSizes = body.bannerSizes ?? sizes;
-      const nextTs = body.bannerUpdatedAt ? new Date(body.bannerUpdatedAt) : Date.now();
-      setSizes(nextSizes);
-      setUpdatedAt(nextTs);
-      // Live update: read-only banners reflect the new image immediately.
-      publishMedia(mediaKey("banner", bannerProps.userId), {
-        sizes: nextSizes,
-        updatedAt: nextTs instanceof Date ? nextTs.getTime() : nextTs,
-        fallbackUrl: null,
-      });
-      onChange?.({ sizes: nextSizes, updatedAt: nextTs });
-      onResult?.({
-        ok: true,
-        sizes: nextSizes,
-        updatedAt: new Date(nextTs).toISOString(),
-      });
-      setView("display");
-    } catch {
-      const msg = t("banner.errorUpload");
-      toast.error(msg);
-      onResult?.({
-        ok: false,
-        error: "upload_failed",
-        message: msg,
-      });
-      setView("cropping");
-    } finally {
-      if (source) URL.revokeObjectURL(source);
-      setSource(null);
-    }
-  };
-
-  const handleRemove = async () => {
-    setView("working");
-    try {
-      // Preview mode: clear the local blob URL.
-      if (applicationId === "preview") {
-        if (previewBlobUrl?.startsWith("blob:")) URL.revokeObjectURL(previewBlobUrl);
-        setPreviewBlobUrl(null);
-        setSizes([]);
-        const now = Date.now();
-        setUpdatedAt(now);
-        onChange?.({ sizes: [], updatedAt: now });
-        onResult?.({ ok: true, sizes: [], updatedAt: new Date(now).toISOString() });
-        setView("display");
-        return;
-      }
-
-      const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/self/images/banner`, {
-        method: "DELETE",
-        headers: auth.headers,
-        credentials: auth.credentials,
-      });
-      if (!res.ok) throw new Error("delete_failed");
-      const now = Date.now();
-      setSizes([]);
-      setUpdatedAt(now);
-      publishMedia(mediaKey("banner", bannerProps.userId), {
-        sizes: [],
-        updatedAt: now,
-        fallbackUrl: null,
-      });
-      onChange?.({ sizes: [], updatedAt: now });
-      onResult?.({ ok: true, sizes: [], updatedAt: new Date(now).toISOString() });
-      setView("display");
-    } catch {
-      const msg = t("banner.errorRemove");
-      toast.error(msg);
-      onResult?.({ ok: false, error: "delete_failed", message: msg });
-      setView("display");
-    }
-  };
+  const editor = useImageEditor({
+    kind: ImageKind.BANNER,
+    applicationId,
+    userId: bannerProps.userId,
+    initial: {
+      sizes: bannerProps.membership.bannerSizes,
+      updatedAt: bannerProps.membership.bannerUpdatedAt,
+      fallbackUrl: null,
+    },
+    errors: { upload: "banner.errorUpload", remove: "banner.errorRemove" },
+    removeFailView: EditorView.DISPLAY,
+    onChange,
+    onResult,
+  });
+  const { view, media, cropper } = editor;
+  // `fallbackUrl` is only ever the docs preview's in-memory upload.
+  const previewBlobUrl = media.fallbackUrl;
+  const hasMedia = media.sizes.length > 0 || previewBlobUrl !== null;
 
   return (
     // Outer wrapper locks the 3:1 aspect so every layer (display,
@@ -272,43 +106,43 @@ function ElvixBannerInner({
         />
       )}
       <AnimatePresence initial={false} mode="wait">
-        {view === "display" ? (
+        {view === EditorView.DISPLAY ? (
           <DisplayLayer
             key="display"
             // Render from the CENTRALIZED slug (elvix-account) — the photo lives
             // there, not under the per-app bootstrap slug. Without this the CDN
             // URL points at <app>/users/... and 404s.
-            bannerProps={{ ...bannerProps, appSlug: centralized.data?.slug ?? bannerProps.appSlug }}
-            sizes={sizes}
-            updatedAt={updatedAt}
+            bannerProps={{ ...bannerProps, appSlug: editor.slug ?? bannerProps.appSlug }}
+            sizes={media.sizes}
+            updatedAt={media.updatedAt}
             hasMedia={hasMedia}
-            onEdit={openPicker}
-            onRemove={handleRemove}
+            onEdit={editor.openPicker}
+            onRemove={editor.remove}
           />
-        ) : view === "cropping" ? (
+        ) : view === EditorView.CROPPING ? (
           <CropLayer
             key="crop"
-            source={source}
-            crop={crop}
-            zoom={zoom}
-            onCropChange={setCrop}
-            onZoomChange={setZoom}
-            onCropComplete={onCropComplete}
-            onCancel={cancelEdit}
-            onConfirm={handleUpload}
-            disabled={!pixels}
+            source={cropper.source}
+            crop={cropper.crop}
+            zoom={cropper.zoom}
+            onCropChange={cropper.setCrop}
+            onZoomChange={cropper.setZoom}
+            onCropComplete={cropper.onCropComplete}
+            onCancel={editor.cancelCrop}
+            onConfirm={editor.upload}
+            disabled={!cropper.pixels}
             cornerRadius={cornerRadius}
           />
-        ) : view === "working" ? (
+        ) : (
           <WorkingLayer key="working" />
-        ) : null}
+        )}
       </AnimatePresence>
 
       <input
-        ref={fileInputRef}
+        ref={editor.fileInputRef}
         type="file"
         accept="image/png,image/jpeg,image/webp,image/gif"
-        onChange={onFile}
+        onChange={editor.onFile}
         className="sr-only"
       />
     </div>
@@ -344,7 +178,7 @@ function Layer({
       animate="center"
       exit="exit"
       transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
-      className={"absolute inset-0 " + className}
+      className={`absolute inset-0 ${className}`}
     >
       {children}
     </motion.div>

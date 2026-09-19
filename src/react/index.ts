@@ -26,7 +26,8 @@
  *   - <ElvixAddressBook onResult>
  *   - <ElvixLegalEntities onResult>
  *
- * Hooks: useElvixApp(), useElvixContext()
+ * Hooks: useElvixApp(), useElvixContext(), useElvixAppContext(),
+ *        useElvixRefresh(), useElvixUserMedia(userId?)
  */
 
 export { switchLocale, useFmt, useLocale } from "@021.is/spine-i18n/react";
@@ -59,7 +60,7 @@ export { ElvixCard } from "./elvix-card";
 export { ElvixDeactivate } from "./elvix-deactivate";
 export { ElvixDeviceApproval, type ElvixDeviceApprovalProps } from "./elvix-device-approval";
 export { ElvixExport } from "./elvix-export";
-export { ElvixIdentityForm } from "./elvix-identity-form";
+export { ElvixIdentityForm, type Gender, type Pronouns } from "./elvix-identity-form";
 export { ElvixLanguages } from "./elvix-languages";
 export { ElvixLeave } from "./elvix-leave";
 export { ElvixLegalEntities } from "./elvix-legal-entities";
@@ -72,6 +73,7 @@ export {
   useElvixApp,
   useElvixAppContext,
   useElvixContext,
+  useElvixRefresh,
   useElvixSession,
   useResolvedBaseUrl,
 } from "./elvix-provider";
@@ -102,12 +104,34 @@ export { ElvixUserAvatar, type ElvixUserAvatarProps } from "./elvix-user-avatar"
 export { ElvixUserBanner, type ElvixUserBannerProps } from "./elvix-user-banner";
 // Identity
 export { ElvixUsername } from "./elvix-username";
-export type { UseUserListResult } from "./hooks";
-// Live gate — poll-based so it works cross-origin (EventSource can't carry the
-// bearer). Roles/scopes/memberships update within ~7s; the watcher signs the
-// user out within ~7s of a ban/pause/delete.
-export { useUserMemberships, useUserRoles, useUserScopes } from "./hooks";
+// Live, read-only access: what the app's admins granted the signed-in user.
+// Pushed over one shared stream per user (works cross-origin with the bearer);
+// the watcher signs the user out on a ban / pause / delete as it happens.
+export type {
+  ElvixAccessItem,
+  ElvixMembershipsState,
+  ElvixRolesState,
+  ElvixScopesState,
+  UseUserListResult,
+} from "./hooks";
+export {
+  useElvixMemberships,
+  useElvixRoles,
+  useElvixScopes,
+  useUserMemberships,
+  useUserRoles,
+  useUserScopes,
+} from "./hooks";
 export { ElvixLifecycleWatcher } from "./lifecycle-watcher";
+// Read-only profile: who is signed in, and labels for rendering them.
+export {
+  type ElvixLanguageName,
+  type ElvixSignedInUser,
+  ElvixUserStatus,
+  useElvixLanguageNames,
+  useElvixPronounsLabel,
+  useElvixUser,
+} from "./profile-hooks";
 // Cross-origin session token (stored by ElvixSignIn, sent as a bearer by every
 // SDK call when the app is embedded on its own origin).
 // `consumeElvixReturnToken` picks up the token elvix's Google redirect-callback
@@ -133,4 +157,5 @@ export type {
   ElvixTheme,
 } from "./types";
 export { useSignOut } from "./use-sign-out";
+export { type ElvixUserMedia, useElvixUserMedia } from "./user-media";
 export { ELVIX_SDK_VERSION } from "./version";

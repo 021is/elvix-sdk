@@ -85,8 +85,9 @@ export function resolveCopy(
 
 /** Replace `{token}` placeholders. Unknown tokens are left untouched. */
 export function fillCopy(template: string, tokens: Record<string, string>): string {
+  // Own keys only: `in` would also match `{toString}` off the prototype.
   return template.replace(/\{(\w+)\}/g, (whole, key: string) =>
-    key in tokens ? tokens[key]! : whole,
+    Object.hasOwn(tokens, key) ? (tokens[key] ?? whole) : whole,
   );
 }
 

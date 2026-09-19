@@ -5,7 +5,7 @@
  * empty placeholder.
  */
 
-import { BANNER_SIZES, type BannerSize, variantUrl } from "./user-images-types";
+import { BANNER_SIZES, type BannerSize, isBannerSize, variantUrl } from "./user-images-types";
 
 export type BannerSource =
   | { kind: "custom"; src: string; srcSet: string; sizes: BannerSize[] }
@@ -20,12 +20,10 @@ export type BannerResolverInput = {
 export function resolveBanner(input: BannerResolverInput): BannerSource {
   const { appSlug, userId, membership } = input;
 
-  const present = membership.bannerSizes.filter((s) =>
-    (BANNER_SIZES as readonly number[]).includes(s),
-  ) as BannerSize[];
-  if (present.length === 0) return { kind: "empty" };
+  const present = membership.bannerSizes.filter(isBannerSize).sort((a, b) => a - b);
+  const largest = present.at(-1);
+  if (largest === undefined) return { kind: "empty" };
 
-  present.sort((a, b) => a - b);
   const srcSet = present
     .map((s) => {
       const url = variantUrl({
@@ -42,7 +40,7 @@ export function resolveBanner(input: BannerResolverInput): BannerSource {
     appSlug,
     userId,
     type: "banner",
-    size: present[present.length - 1]!,
+    size: largest,
     updatedAt: membership.bannerUpdatedAt,
   });
   return { kind: "custom", src, srcSet, sizes: present };
@@ -50,6 +48,11 @@ export function resolveBanner(input: BannerResolverInput): BannerSource {
 
 export function pickBannerSize(displayPx: number): BannerSize {
   const target = displayPx * 2;
-  for (const s of BANNER_SIZES) if (s >= target) return s;
-  return BANNER_SIZES[BANNER_SIZES.length - 1]!;
+  // Ascending: the first size big enough, else the largest there is.
+  let pick: BannerSize = BANNER_SIZES[0];
+  for (const s of BANNER_SIZES) {
+    pick = s;
+    if (s >= target) break;
+  }
+  return pick;
 }

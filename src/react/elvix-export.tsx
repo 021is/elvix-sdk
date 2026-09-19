@@ -202,7 +202,7 @@ function PreviewPane({ target, go }: { target: ExportTarget; go: (p: Pane, d?: 1
     return () => {
       cancelled = true;
     };
-  }, [target, ctx.baseUrl]);
+  }, [target, ctx.baseUrl, t]);
 
   return (
     // Flex column = scrollable body + pinned CTA. The body owns the
@@ -245,8 +245,8 @@ function PreviewPane({ target, go }: { target: ExportTarget; go: (p: Pane, d?: 1
           <p className="text-[12px] text-red-500 leading-tight">{err}</p>
         ) : (
           <ul className="space-y-1.5">
-            {sections.map((s, i) => (
-              <li key={i} className="flex items-start gap-2 text-[12.5px] text-fg-2 leading-[1.55]">
+            {sections.map((s) => (
+              <li key={s} className="flex items-start gap-2 text-[12.5px] text-fg-2 leading-[1.55]">
                 <span
                   aria-hidden
                   className="mt-1 size-1.5 rounded-full shrink-0"

@@ -15,8 +15,12 @@ import {
   useEffect,
   useRef,
 } from "react";
+import { useT } from "../locale/use-t";
 
 const OTP_LENGTH = 6;
+/** The six fixed positions. A box IS its position (it never moves or
+ *  reorders), so the slot number is its stable identity and React key. */
+const SLOTS = Array.from({ length: OTP_LENGTH }, (_, slot) => slot);
 
 export function OtpInput({
   value,
@@ -29,6 +33,7 @@ export function OtpInput({
   disabled?: boolean;
   autoFocus?: boolean;
 }) {
+  const t = useT();
   const refs = useRef<(HTMLInputElement | null)[]>([]);
   const digits = Array.from({ length: OTP_LENGTH }, (_, i) => value[i] ?? "");
 
@@ -50,9 +55,7 @@ export function OtpInput({
       if (stripped.length > 1) {
         const fill = stripped.slice(0, OTP_LENGTH - i);
         const next = [...digits];
-        for (let k = 0; k < fill.length; k += 1) {
-          next[i + k] = fill[k]!;
-        }
+        for (const [k, ch] of [...fill].entries()) next[i + k] = ch;
         const merged = next.join("");
         onChange(merged);
         focus(Math.min(i + fill.length, OTP_LENGTH - 1));
@@ -103,10 +106,14 @@ export function OtpInput({
     // `aspect-square` keeps each box visually balanced as width
     // shrinks. `max-w-12` caps the boxes at the original 48px on
     // wide surfaces so they don't bloat on desktop.
-    <div className="grid grid-cols-6 gap-2 w-full">
-      {digits.map((d, i) => (
+    <fieldset
+      className="grid grid-cols-6 gap-2 w-full min-w-0 border-0 p-0 m-0"
+      aria-label={t("common.codeGroupLabel")}
+    >
+      {SLOTS.map((i) => (
         <input
           key={i}
+          aria-label={t("common.codeDigitLabel", { n: i + 1, total: OTP_LENGTH })}
           ref={(el) => {
             refs.current[i] = el;
           }}
@@ -114,7 +121,7 @@ export function OtpInput({
           inputMode="numeric"
           autoComplete="one-time-code"
           maxLength={OTP_LENGTH}
-          value={d}
+          value={digits[i]}
           disabled={disabled}
           onChange={(e) => onCharChange(i, e)}
           onKeyDown={(e) => onKeyDown(i, e)}
@@ -123,6 +130,6 @@ export function OtpInput({
           className="w-full aspect-square min-w-0 max-w-12 mx-auto text-center text-[20px] font-semibold tabular-nums rounded-[10px] bg-surface border border-border-base text-fg-1 focus:outline-none focus:border-[#8e7dff] focus:ring-2 focus:ring-[#8e7dff]/20 transition disabled:opacity-50"
         />
       ))}
-    </div>
+    </fieldset>
   );
 }

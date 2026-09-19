@@ -3,6 +3,12 @@
   "locale": "fr",
   "namespaces": {
     "common": {
+      "codeGroupLabel": {
+        "other": "Code de vérification"
+      },
+      "codeDigitLabel": {
+        "other": "Chiffre {n} sur {total}"
+      },
       "ok": {
         "other": "OK"
       },
@@ -96,6 +102,30 @@
       }
     },
     "signin": {
+      "signingYouIn": {
+        "other": "Connexion en cours…"
+      },
+      "takingYouTo": {
+        "other": "Un instant, nous vous redirigeons vers {app}."
+      },
+      "gateBadgePrivateBeta": {
+        "other": "Bêta privée · sur invitation"
+      },
+      "gateBadgeClosed": {
+        "other": "Inscriptions fermées"
+      },
+      "errorEmailArchived": {
+        "other": "Cette adresse e-mail n'est plus utilisable pour se connecter. Utilisez votre adresse actuelle."
+      },
+      "errorPasskeyUnknown": {
+        "other": "Cette clé d'accès n'est pas enregistrée chez elvix. Connectez-vous autrement, puis supprimez-la et ajoutez-en une nouvelle dans les paramètres de sécurité."
+      },
+      "errorPasskeyVerifyFailed": {
+        "other": "Cette clé d'accès n'a pas pu être vérifiée. Connectez-vous autrement, puis ajoutez-la à nouveau dans les paramètres de sécurité."
+      },
+      "errorPasskeyExpired": {
+        "other": "Cette connexion par clé d'accès a expiré. Veuillez réessayer."
+      },
       "title": {
         "other": "Connectez-vous à {app}"
       },
@@ -247,7 +277,7 @@
         "other": "Clé d'accès"
       },
       "legalIntro": {
-        "other": "En continuant, vous acceptez les"
+        "other": "En continuant, vous acceptez les documents de {app} :"
       },
       "termsOfService": {
         "other": "Conditions d'utilisation"
@@ -2288,6 +2318,153 @@
       },
       "recoverDeclineCta": {
         "other": "Pas maintenant, me déconnecter"
+      }
+    },
+    "buttons": {
+      "signInWithElvix": {
+        "other": "Se connecter avec elvix"
+      },
+      "continueWithElvix": {
+        "other": "Continuer avec elvix"
+      },
+      "signUpWithElvix": {
+        "other": "S'inscrire avec elvix"
+      },
+      "signIn": {
+        "other": "Se connecter"
+      },
+      "logIn": {
+        "other": "Connexion"
+      },
+      "signOut": {
+        "other": "Se déconnecter"
+      },
+      "logOut": {
+        "other": "Déconnexion"
+      },
+      "signOutOfElvix": {
+        "other": "Se déconnecter d'elvix"
+      },
+      "signingOut": {
+        "other": "Déconnexion…"
+      }
+    },
+    "passkeys": {
+      "title": {
+        "other": "Clés d'accès pour {app}"
+      },
+      "body": {
+        "other": "Résistantes au phishing. Ces clés d'accès ne vous connectent qu'à {app}. Les clés d'accès ajoutées dans vos paramètres de sécurité elvix fonctionnent aussi ici et se gèrent là-bas."
+      },
+      "empty": {
+        "other": "Aucune clé d'accès pour {app} pour l'instant. Ajoutez-en une ci-dessous."
+      },
+      "add": {
+        "other": "Ajouter une clé d'accès pour {app}"
+      },
+      "adding": {
+        "other": "Ajout…"
+      },
+      "removeAria": {
+        "other": "Supprimer {label}"
+      },
+      "lastUsed": {
+        "other": "Utilisée le {date}"
+      },
+      "added": {
+        "other": "Ajoutée le {date}"
+      },
+      "synced": {
+        "other": "synchronisée"
+      },
+      "thisApp": {
+        "other": "cette application"
+      },
+      "missingAppId": {
+        "other": "Identifiant d'application manquant."
+      },
+      "deviceApplePlatform": {
+        "other": "Clé d'accès de la plateforme Apple"
+      },
+      "devicePasskey": {
+        "other": "Clé d'accès"
+      },
+      "deviceGeneric": {
+        "other": "appareil"
+      },
+      "errorLoad": {
+        "other": "Impossible de charger les clés d'accès."
+      },
+      "errorNotMember": {
+        "other": "Vous n'êtes pas membre de cette application."
+      },
+      "errorMethodDisabled": {
+        "other": "Les clés d'accès sont désactivées pour cette application."
+      },
+      "errorAppNotFound": {
+        "other": "Application introuvable."
+      },
+      "errorUnsupported": {
+        "other": "Ce navigateur ne prend pas en charge les clés d'accès."
+      },
+      "errorRegisterFailed": {
+        "other": "Impossible d'enregistrer la clé d'accès. Réessayez."
+      },
+      "errorInvalidInput": {
+        "other": "Impossible de lancer la configuration de la clé d'accès. Réessayez."
+      },
+      "errorUnauthenticated": {
+        "other": "Connectez-vous d'abord, puis ajoutez une clé d'accès."
+      },
+      "errorRemoveFailed": {
+        "other": "Impossible de supprimer la clé d'accès. Réessayez."
+      }
+    },
+    "device": {
+      "title": {
+        "other": "Autoriser un appareil"
+      },
+      "enterCode": {
+        "other": "Saisissez le code affiché dans votre terminal."
+      },
+      "confirmCode": {
+        "other": "Un appareil veut se connecter à votre compte en tant que CLI. Vérifiez que le code correspond à votre terminal :"
+      },
+      "approvedTitle": {
+        "other": "Autorisé"
+      },
+      "approvedBody": {
+        "other": "Revenez à votre terminal. La suite se fait automatiquement."
+      },
+      "approvingTitle": {
+        "other": "Autorisation…"
+      },
+      "approvingBody": {
+        "other": "Association de l'appareil à votre compte {app}."
+      },
+      "approvingBodyNoApp": {
+        "other": "Association de l'appareil à votre compte."
+      },
+      "failedTitle": {
+        "other": "Autorisation impossible"
+      },
+      "tryAgain": {
+        "other": "Réessayer"
+      },
+      "errorNotFound": {
+        "other": "Ce code est introuvable. Il a peut-être expiré ou déjà été utilisé. Recommencez depuis votre terminal."
+      },
+      "errorExpired": {
+        "other": "Ce code a expiré. Relancez la connexion depuis votre terminal pour en obtenir un nouveau."
+      },
+      "errorAlreadyApproved": {
+        "other": "Ce code a déjà été autorisé. Revenez à votre terminal ; il devrait avoir continué."
+      },
+      "errorMismatch": {
+        "other": "Ce code ne semble pas correct. Vérifiez qu'il correspond exactement à votre terminal."
+      },
+      "errorGeneric": {
+        "other": "Une erreur s'est produite. Le code a peut-être expiré. Recommencez depuis votre terminal."
       }
     }
   }

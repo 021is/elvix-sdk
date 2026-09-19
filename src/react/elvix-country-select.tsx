@@ -21,7 +21,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronDown, Search } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { COUNTRIES, type Country, findCountry } from "./countries";
 
 export type ElvixCountrySelectProps = {
@@ -37,7 +37,7 @@ export type ElvixCountrySelectProps = {
   collapsible?: boolean;
   className?: string;
   /**
-   * Tailwind max-h class for the scrollable listbox. Default
+   * Tailwind max-h class for the scrollable list. Default
    * `max-h-52` (208px). Pickers stacked with other content (e.g.
    * NationalityView's chip row) should shrink it so the surrounding
    * pane's Continue button stays in view.
@@ -75,10 +75,9 @@ export function ElvixCountrySelect({
       );
     }
     if (!value) return list;
-    const selectedIdx = list.findIndex((co) => co.code === value);
-    if (selectedIdx <= 0) return list;
-    const sel = list[selectedIdx]!;
-    return [sel, ...list.slice(0, selectedIdx), ...list.slice(selectedIdx + 1)];
+    const sel = list.find((co) => co.code === value);
+    if (!sel || sel === list[0]) return list;
+    return [sel, ...list.filter((co) => co !== sel)];
   }, [allow, query, value]);
 
   const selected = findCountry(value);
@@ -87,21 +86,24 @@ export function ElvixCountrySelect({
     if (open && collapsible) inputRef.current?.focus();
   }, [open, collapsible]);
 
-  // When the list opens or the value changes, snap the scroll back to
-  // the top so the pinned selected row is in view immediately.
-  useEffect(() => {
-    if (!open) return;
+  // The selected country is pinned to the top, so the top of the list is
+  // where it is: scroll there when the list opens and after each pick.
+  const scrollToTop = useCallback(() => {
     if (listRef.current) listRef.current.scrollTop = 0;
-  }, [open, value]);
+  }, []);
+  useEffect(() => {
+    if (open) scrollToTop();
+  }, [open, scrollToTop]);
 
   const pick = (code: string) => {
     onChange(code);
     setQuery("");
     if (collapsible) setOpen(false);
+    else scrollToTop();
   };
 
   return (
-    <div className={"w-full " + className}>
+    <div className={`w-full ${className}`}>
       {collapsible && (
         <button
           type="button"
@@ -120,7 +122,7 @@ export function ElvixCountrySelect({
             <span className="text-fg-3">{placeholder}</span>
           )}
           <ChevronDown
-            className={"ml-auto size-4 shrink-0 text-fg-3 transition " + (open ? "rotate-180" : "")}
+            className={`ml-auto size-4 shrink-0 text-fg-3 transition ${open ? "rotate-180" : ""}`}
           />
         </button>
       )}
@@ -149,7 +151,6 @@ export function ElvixCountrySelect({
 
               <ul
                 ref={listRef}
-                role="listbox"
                 className={
                   "mt-2 overflow-y-auto rounded-[10px] border border-fg-3/15 bg-surface [scrollbar-width:none] [&::-webkit-scrollbar]:hidden " +
                   listMaxHeightClass
@@ -180,8 +181,7 @@ export function ElvixCountrySelect({
                       )}
                       <button
                         type="button"
-                        role="option"
-                        aria-selected={isSelected}
+                        aria-pressed={isSelected}
                         onClick={() => pick(co.code)}
                         className={
                           "flex w-full items-center gap-2 px-3 py-2 text-left text-[13.5px] transition cursor-pointer " +

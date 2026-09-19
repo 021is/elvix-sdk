@@ -1,7 +1,9 @@
 "use client";
 
 import { type CSSProperties, useState } from "react";
-import { useElvixResolvedTheme } from "./elvix-provider";
+import { useT } from "../locale/use-t";
+import { cssLength } from "./css-length";
+import { useElvixBrandPair, useElvixResolvedTheme } from "./elvix-provider";
 import { ElvixShield } from "./elvix-shield";
 import { ElvixSignInForm as ElvixSignIn } from "./elvix-sign-in-form";
 import { type ElvixSizeProps, sizeStyle } from "./size";
@@ -54,11 +56,14 @@ export type ElvixSignInButtonProps = {
   /** Terminal outcome of mode="embed": success (with token) or error. */
   onResult?: (result: ElvixSignInResult) => void;
   /**
-   * Override the brand chord on `variant="filled"`. Defaults to elvix
-   * lavender (#6c5ce7). Pair with `onBrandColor` for the foreground.
+   * Override the brand chord on `variant="filled"`. Defaults to the brand
+   * configured on `<ElvixProvider brand>` or in the Console for the resolved
+   * theme (`brandColor` / `brandColorDark`), then elvix lavender. Pair with
+   * `onBrandColor` for the foreground.
    */
   brandColor?: string;
-  /** Foreground (shield + label) on top of `brandColor`. Defaults to #ffffff. */
+  /** Foreground (shield + label) on top of the brand colour. Defaults to the
+   *  configured `onBrandColor` / `onBrandColorDark`, then #ffffff. */
   onBrandColor?: string;
   /** Content alignment inside the button. Defaults to "center". */
   align?: ElvixSignInButtonAlign;
@@ -77,13 +82,14 @@ export type ElvixSignInButtonProps = {
  * Merged last into the root element so an explicit width/height wins.
  */ & ElvixSizeProps;
 
+/** Catalog keys of the preset labels. */
 const PRESET_LABEL: Record<ElvixSignInPreset, string> = {
-  "sign-in-with-elvix": "Sign in with elvix",
-  "continue-with-elvix": "Continue with elvix",
-  "sign-up-with-elvix": "Sign up with elvix",
-  "sign-in": "Sign in",
-  "log-in": "Log in",
-  continue: "Continue",
+  "sign-in-with-elvix": "buttons.signInWithElvix",
+  "continue-with-elvix": "buttons.continueWithElvix",
+  "sign-up-with-elvix": "buttons.signUpWithElvix",
+  "sign-in": "buttons.signIn",
+  "log-in": "buttons.logIn",
+  continue: "common.continue",
 };
 
 const SIZE_STANDARD: Record<
@@ -145,6 +151,33 @@ function shieldColor(variant: ElvixSignInButtonVariant, theme: ElvixSignInButton
   return theme === "light" ? "#0a0a0b" : "#ffffff";
 }
 
+const JUSTIFY: Record<ElvixSignInButtonAlign, CSSProperties["justifyContent"]> = {
+  left: "flex-start",
+  center: "center",
+  right: "flex-end",
+};
+
+/** An icon-only button is round or square, whatever shape was asked for. */
+const iconShape = (shape: ElvixSignInButtonShape): ElvixSignInButtonShape =>
+  shape === "pill" || shape === "circle" ? "circle" : "square";
+
+/** Where redirect mode links: an explicit `href`, else elvix's hosted sign-in
+ *  for this client, carrying `returnUrl` as `?return=`. */
+function signInHref(args: {
+  href?: string;
+  baseUrl: string;
+  clientId?: string;
+  returnUrl?: string;
+}): string {
+  if (args.href) return args.href;
+  const base = args.clientId
+    ? `${args.baseUrl}/sign-in/${args.clientId}`
+    : `${args.baseUrl}/sign-in`;
+  if (!args.returnUrl) return base;
+  const sep = base.includes("?") ? "&" : "?";
+  return `${base}${sep}return=${encodeURIComponent(args.returnUrl)}`;
+}
+
 export function ElvixSignInButton({
   clientId,
   baseUrl = ELVIX_URL,
@@ -173,10 +206,11 @@ export function ElvixSignInButton({
   minHeight,
   maxHeight,
 }: ElvixSignInButtonProps) {
+  const t = useT();
   const sized = sizeStyle({ width, height, minWidth, maxWidth, minHeight, maxHeight });
   const [embedOpen, setEmbedOpen] = useState(false);
   const isIcon = type === "icon";
-  const resolvedLabel = label ?? PRESET_LABEL[preset];
+  const resolvedLabel = label ?? t(PRESET_LABEL[preset]);
   // Theme-aware: an explicit light/dark prop wins; otherwise adopt the
   // <ElvixProvider>'s resolved theme (which folds "auto" against the system
   // scheme), falling back to "light" outside a provider. Prevents the old
@@ -187,39 +221,29 @@ export function ElvixSignInButton({
     theme === "light" || theme === "dark" ? theme : (providerTheme ?? "light");
   const tone = variantTone(variant, effectiveTheme);
   const std = SIZE_STANDARD[size];
-  const effectiveShape: ElvixSignInButtonShape = isIcon
-    ? shape === "pill" || shape === "circle"
-      ? "circle"
-      : "square"
-    : shape;
+  const effectiveShape = isIcon ? iconShape(shape) : shape;
 
-  // Brand override applies on filled variant only; other variants paint
-  // neutral / transparent by design and the override would muddy them.
-  const useBrandOverride = brandColor && variant === "filled";
-  const resolvedOnBrand = onBrandColor ?? "#ffffff";
+  // Brand applies on filled variant only; other variants paint neutral /
+  // transparent by design and the brand would muddy them. An explicit prop
+  // wins; otherwise the provider / Console brand for this theme, so a host
+  // never has to restate colours elvix already holds.
+  const configured = useElvixBrandPair(effectiveTheme);
+  const fill = brandColor ?? configured?.primary;
+  const useBrandOverride = fill && variant === "filled";
+  const resolvedOnBrand = onBrandColor ?? (brandColor ? undefined : configured?.on) ?? "#ffffff";
 
   const style: CSSProperties = {
     display: "inline-flex",
     alignItems: "center",
-    justifyContent: align === "left" ? "flex-start" : align === "right" ? "flex-end" : "center",
+    justifyContent: JUSTIFY[align],
     textAlign: align,
     fontWeight: 500,
-    fontSize:
-      fontSize !== undefined
-        ? typeof fontSize === "number"
-          ? `${fontSize}px`
-          : fontSize
-        : std.font,
+    fontSize: cssLength(fontSize, std.font),
     cursor: "pointer",
     userSelect: "none",
     textDecoration: "none",
-    borderRadius:
-      borderRadius !== undefined
-        ? typeof borderRadius === "number"
-          ? `${borderRadius}px`
-          : borderRadius
-        : RADIUS[effectiveShape],
-    background: useBrandOverride ? brandColor : tone.bg,
+    borderRadius: cssLength(borderRadius, RADIUS[effectiveShape]),
+    background: useBrandOverride ? fill : tone.bg,
     color: useBrandOverride ? resolvedOnBrand : tone.color,
     border: tone.border,
     boxShadow: tone.shadow,
@@ -270,28 +294,14 @@ export function ElvixSignInButton({
             {content}
           </button>
         )}
-        {embedOpen && (
-          <ElvixSignIn
-            onResult={(r) => {
-              onResult?.(r);
-            }}
-          />
-        )}
+        {embedOpen && <ElvixSignIn onResult={onResult} />}
       </div>
     );
   }
 
-  const destination = (() => {
-    if (href) return href;
-    const base = clientId ? `${baseUrl}/sign-in/${clientId}` : `${baseUrl}/sign-in`;
-    if (!returnUrl) return base;
-    const sep = base.includes("?") ? "&" : "?";
-    return `${base}${sep}return=${encodeURIComponent(returnUrl)}`;
-  })();
-
   return (
     <a
-      href={destination}
+      href={signInHref({ href, baseUrl, clientId, returnUrl })}
       className={className}
       style={style}
       aria-label={isIcon ? resolvedLabel : undefined}

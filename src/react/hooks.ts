@@ -1,24 +1,113 @@
 "use client";
 
 /**
- * Live role / scope / membership hooks. Each polls the caller's own
- * (applicationId, userId) every ~7s and exposes the current slugs, so when an
- * elvix admin attaches or detaches a role/scope/membership the host sees it
- * within a few seconds — no logout, no token swap.
+ * Read-only hooks for what an elvix admin granted the signed-in user in this
+ * app: roles, scopes, memberships.
  *
- *   const { slugs } = useUserRoles({ applicationId, userId, baseUrl });
- *   if (slugs.includes("admin")) showAdminMenu();
+ *   const { roles, has } = useElvixRoles();
+ *   if (has("admin")) showAdminMenu();
+ *   roles.map((r) => <Badge key={r.id}>{r.name}</Badge>);
  *
- * Polling (not SSE) because EventSource can't carry the bearer token a
- * cross-origin embed relies on. `authInit()` attaches the bearer when present
- * (cross-origin) or sends the cookie (same-origin).
+ * Inside `<ElvixProvider clientId>` they need no arguments: the app and user
+ * come from the provider. They update live (a change in the Console reaches
+ * the page within about a second, over one shared stream, with no polling;
+ * see `access-store.ts`), and every component reading the same list shares
+ * one request.
+ *
+ * There is deliberately no setter. Roles, scopes and memberships are
+ * assigned by the app's admins in the Console, the management API or the
+ * MCP, never by the user they describe.
  */
 
-import { useCallback, useEffect, useState } from "react";
-import { useResolvedBaseUrl } from "./elvix-provider";
-import { authInit } from "./session";
+import { useCallback, useMemo, useSyncExternalStore } from "react";
+import {
+  AccessKind,
+  type AccessSnapshot,
+  accessSnapshot,
+  type ElvixAccessItem,
+  EMPTY_ACCESS,
+  refreshAccess,
+  subscribeAccess,
+} from "./access-store";
+import {
+  ElvixSessionStatus,
+  useElvixApp,
+  useElvixAppContext,
+  useElvixContext,
+  useElvixSession,
+  useResolvedBaseUrl,
+} from "./elvix-provider";
+import type { LiveTarget } from "./live-stream";
 
-const POLL_MS = 7000;
+export type { ElvixAccessItem };
+
+const LOADING: AccessSnapshot = { ...EMPTY_ACCESS, loading: true };
+
+type AccessState = AccessSnapshot & {
+  /** Whether the user holds `slug`. */
+  has: (slug: string) => boolean;
+  /** Re-read now, for a host that knows something changed. */
+  refresh: () => Promise<void>;
+};
+
+function useAccess(target: LiveTarget | null, kind: AccessKind, safetyMs?: number): AccessState {
+  const subscribe = useCallback(
+    (onChange: () => void) =>
+      target ? subscribeAccess(target, kind, onChange, safetyMs) : () => {},
+    [target, kind, safetyMs],
+  );
+  const getSnapshot = useCallback(() => accessSnapshot(target, kind), [target, kind]);
+  const snapshot = useSyncExternalStore(subscribe, getSnapshot, () => LOADING);
+  const has = useCallback((slug: string) => snapshot.slugs.includes(slug), [snapshot.slugs]);
+  const refresh = useCallback(() => refreshAccess(target, kind), [target, kind]);
+  return useMemo(() => ({ ...snapshot, has, refresh }), [snapshot, has, refresh]);
+}
+
+/** The provider's app and signed-in user; `null` when either is unknown. */
+function useProviderTarget(): { target: LiveTarget | null; pending: boolean } {
+  const { baseUrl } = useElvixContext();
+  const applicationId = useElvixApp()?.applicationId;
+  const userId = useElvixAppContext()?.user.id;
+  const pending = useElvixSession() === ElvixSessionStatus.LOADING;
+  const target = useMemo(
+    () => (applicationId && userId ? { baseUrl, applicationId, userId } : null),
+    [baseUrl, applicationId, userId],
+  );
+  return { target, pending };
+}
+
+function useProviderAccess(kind: AccessKind): AccessState {
+  const { target, pending } = useProviderTarget();
+  const state = useAccess(target, kind);
+  // Signed out: empty and settled. Session still resolving: loading.
+  return !target && pending ? { ...state, loading: true } : state;
+}
+
+export type ElvixRolesState = Omit<AccessState, "items"> & { roles: ElvixAccessItem[] };
+export type ElvixScopesState = Omit<AccessState, "items"> & { scopes: ElvixAccessItem[] };
+export type ElvixMembershipsState = Omit<AccessState, "items"> & {
+  memberships: ElvixAccessItem[];
+};
+
+/** The signed-in user's roles in this app, with their Console names. */
+export function useElvixRoles(): ElvixRolesState {
+  const { items, ...rest } = useProviderAccess(AccessKind.ROLES);
+  return { ...rest, roles: items };
+}
+
+/** The signed-in user's scopes in this app. */
+export function useElvixScopes(): ElvixScopesState {
+  const { items, ...rest } = useProviderAccess(AccessKind.SCOPES);
+  return { ...rest, scopes: items };
+}
+
+/** The signed-in user's memberships (tiers) in this app, with their logos. */
+export function useElvixMemberships(): ElvixMembershipsState {
+  const { items, ...rest } = useProviderAccess(AccessKind.MEMBERSHIPS);
+  return { ...rest, memberships: items };
+}
+
+// ─── Explicit-target hooks (pre-0.12 API) ────────────────────────────
 
 export type UseUserListResult = {
   slugs: string[];
@@ -28,66 +117,36 @@ export type UseUserListResult = {
 };
 
 type Opts = {
+  /** The app's id; the internal id from `useElvixApp().applicationId`. */
   applicationId: string;
+  /** The signed-in user; the lists are always the caller's own. */
   userId: string;
-  /** elvix origin. Defaults to "https://elvix.is" — the public elvix
-   *  identity host. Override only for self-hosted elvix instances or
-   *  dev mirrors; production consumers never need to pass this. */
+  /** elvix origin. Defaults to the provider's, else "https://elvix.is". */
   baseUrl?: string;
-  /** Poll interval in ms. Default 7000. */
+  /**
+   * Safety re-read interval in ms. Changes arrive over the live stream, so
+   * this only matters where the stream cannot connect. Default 5 minutes.
+   */
   pollMs?: number;
 };
 
-function useUserList(kind: "roles" | "scopes" | "memberships", opts: Opts): UseUserListResult {
-  const { applicationId, pollMs = POLL_MS } = opts;
-  const resolvedBaseUrl = useResolvedBaseUrl(opts.baseUrl);
-  const [slugs, setSlugs] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const refresh = useCallback(async () => {
-    // Host hasn't supplied applicationId yet (e.g. useElvixApp() bootstrap
-    // hasn't resolved). Stay in `loading` and skip the fetch — calling
-    // /api/me/<kind>?applicationId= would 400.
-    if (!applicationId) {
-      setSlugs([]);
-      setLoading(true);
-      setError(null);
-      return;
-    }
-    setError(null);
-    try {
-      const res = await fetch(
-        `${resolvedBaseUrl}/api/me/${kind}?applicationId=${encodeURIComponent(applicationId)}`,
-        authInit(),
-      );
-      const json = (await res.json().catch(() => ({}))) as {
-        success?: boolean;
-        data?: { slugs?: string[] };
-        errorMessage?: string;
-      };
-      if (!res.ok || json.success === false) {
-        setError(json.errorMessage ?? `http_${res.status}`);
-        return;
-      }
-      setSlugs(json.data?.slugs ?? []);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "network");
-    } finally {
-      setLoading(false);
-    }
-  }, [applicationId, resolvedBaseUrl, kind]);
-
-  useEffect(() => {
-    refresh();
-    const id = setInterval(refresh, pollMs);
-    return () => clearInterval(id);
-  }, [refresh, pollMs]);
-
-  return { slugs, loading, error, refresh };
+function useUserList(kind: AccessKind, opts: Opts): UseUserListResult {
+  const baseUrl = useResolvedBaseUrl(opts.baseUrl);
+  const { applicationId, userId, pollMs } = opts;
+  const target = useMemo(
+    () => (applicationId && userId ? { baseUrl, applicationId, userId } : null),
+    [baseUrl, applicationId, userId],
+  );
+  const { slugs, loading, error, refresh } = useAccess(target, kind, pollMs);
+  // Without an app id yet (bootstrap still resolving) the list is pending.
+  return { slugs, loading: target ? loading : true, error, refresh };
 }
 
-export const useUserRoles = (opts: Opts): UseUserListResult => useUserList("roles", opts);
-export const useUserScopes = (opts: Opts): UseUserListResult => useUserList("scopes", opts);
+/** Slugs only, for an explicit app and user. Prefer `useElvixRoles()`. */
+export const useUserRoles = (opts: Opts): UseUserListResult => useUserList(AccessKind.ROLES, opts);
+/** Slugs only, for an explicit app and user. Prefer `useElvixScopes()`. */
+export const useUserScopes = (opts: Opts): UseUserListResult =>
+  useUserList(AccessKind.SCOPES, opts);
+/** Slugs only, for an explicit app and user. Prefer `useElvixMemberships()`. */
 export const useUserMemberships = (opts: Opts): UseUserListResult =>
-  useUserList("memberships", opts);
+  useUserList(AccessKind.MEMBERSHIPS, opts);

@@ -3,8 +3,8 @@
 /**
  * Presentational primitives shared by every legal-entity pane.
  *
- * These are the small pieces the wizard repeats: the animated pane wrapper,
- * the header with its back arrow, a heading, a subtitle, a choice card, and
+ * These are the small pieces the wizard repeats: the header with its back
+ * arrow, a heading, a subtitle, a choice card, and
  * the rows a detail view is built from. None of them own state or talk to the
  * API, which is what makes them safe to reuse and boring to read.
  *
@@ -39,39 +39,6 @@ export const Phase = {
   SETTLED: "settled",
 } as const;
 export type Phase = (typeof Phase)[keyof typeof Phase];
-
-/** Cross-fade used by every pane transition (matches ElvixAddressBook). */
-export const paneVariants = {
-  enter: { opacity: 0, y: 6, filter: "blur(4px)" },
-  center: { opacity: 1, y: 0, filter: "blur(0px)" },
-  exit: { opacity: 0, y: -4, filter: "blur(4px)" },
-};
-
-/** Softens the top and bottom edges of a scrolling list. */
-export const FADE_MASK =
-  "linear-gradient(to bottom, transparent 0, rgba(0,0,0,0.4) 12px, black 28px, black calc(100% - 28px), rgba(0,0,0,0.4) calc(100% - 12px), transparent 100%)";
-
-export function Pane({
-  children,
-  fadeEdges = false,
-}: {
-  children: React.ReactNode;
-  fadeEdges?: boolean;
-}) {
-  return (
-    <motion.div
-      variants={paneVariants}
-      initial="enter"
-      animate="center"
-      exit="exit"
-      transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
-      className="absolute inset-0 overflow-y-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      style={fadeEdges ? { maskImage: FADE_MASK, WebkitMaskImage: FADE_MASK } : undefined}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 export function EmptyState({ onAdd }: { onAdd: () => void }) {
   const t = useT();

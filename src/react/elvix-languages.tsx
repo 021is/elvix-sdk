@@ -18,7 +18,7 @@
  * POST, DB has a unique constraint).
  */
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
   Check,
@@ -29,11 +29,10 @@ import {
   Search,
   Trash2,
 } from "lucide-react";
-import { type CSSProperties, useCallback, useEffect, useState } from "react";
+import { type CSSProperties, useState } from "react";
 import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
 import { ElvixInput } from "./elvix-input";
-import { useElvixContext } from "./elvix-provider";
 import { ElvixSaveButton } from "./elvix-save-button";
 import type { LanguageRecord } from "./language-schema";
 import {
@@ -45,14 +44,10 @@ import {
   type LanguageLevel,
   MAX_LANGUAGES_PER_USER,
 } from "./languages";
-import { authInit } from "./session";
-import { unwrapEnvelope } from "./spine-fetch";
+import { type ElvixLanguagesResult, useLanguagesEditor, View } from "./use-languages-editor";
+import { FADE_MASK, FadePane } from "./wizard-panes";
 
-// ─── Public types ────────────────────────────────────────────────────
-
-export type ElvixLanguagesResult =
-  | { ok: true; count: number }
-  | { ok: false; error: string; message?: string };
+export type { ElvixLanguagesResult };
 
 export type ElvixLanguagesProps = {
   /** Render inside an <ElvixCard>. Default true; pass false for bare (no chrome). */
@@ -66,47 +61,6 @@ export type ElvixLanguagesProps = {
   onResult?: (result: ElvixLanguagesResult) => void;
 };
 
-const View = {
-  LOADING: "loading",
-  EMPTY: "empty",
-  LIST: "list",
-  LANGUAGE_PICK: "language-pick",
-  LEVEL_PICK: "level-pick",
-  SAVING: "saving",
-  DELETE_CONFIRM: "delete-confirm",
-  DELETING: "deleting",
-} as const;
-type View = (typeof View)[keyof typeof View];
-
-// ─── Pane transition (matches ElvixLegalEntities) ────────────────────
-
-const paneVariants = {
-  enter: { opacity: 0, y: 6, filter: "blur(4px)" },
-  center: { opacity: 1, y: 0, filter: "blur(0px)" },
-  exit: { opacity: 0, y: -4, filter: "blur(4px)" },
-};
-
-const FADE_MASK =
-  "linear-gradient(to bottom, transparent 0, rgba(0,0,0,0.4) 12px, black 28px, black calc(100% - 28px), rgba(0,0,0,0.4) calc(100% - 12px), transparent 100%)";
-
-function Pane({ children, fadeEdges = false }: { children: React.ReactNode; fadeEdges?: boolean }) {
-  return (
-    <motion.div
-      variants={paneVariants}
-      initial="enter"
-      animate="center"
-      exit="exit"
-      transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
-      className="absolute inset-0 overflow-y-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      style={fadeEdges ? { maskImage: FADE_MASK, WebkitMaskImage: FADE_MASK } : undefined}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-// ─── Component ───────────────────────────────────────────────────────
-
 export function ElvixLanguages({
   height,
   minHeight,
@@ -116,161 +70,9 @@ export function ElvixLanguages({
   onResult,
   card,
 }: ElvixLanguagesProps) {
-  const ctx = useElvixContext();
   const t = useT();
-  const [view, setView] = useState<View>("loading");
-  const [languages, setLanguages] = useState<LanguageRecord[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  const refresh = useCallback(async () => {
-    const res = await fetch(`${ctx.baseUrl}/api/account/profile/languages`, {
-      cache: "no-store",
-      ...authInit(),
-    });
-    if (!res.ok) return;
-    const body = unwrapEnvelope(await res.json()) as { languages: LanguageRecord[] };
-    setLanguages(body.languages);
-    onChange?.(body.languages);
-  }, [onChange, ctx.baseUrl]);
-
-  useEffect(() => {
-    (async () => {
-      await refresh();
-      // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-      setView((v) => (v === "loading" ? ("fallback-decide" as View) : v));
-    })();
-  }, [refresh]);
-
-  // Decide initial pane once after first load (avoid stomping if user
-  // has already navigated).
-  useEffect(() => {
-    if (view !== ("fallback-decide" as View)) return;
-    setView(languages.length === 0 ? "empty" : "list");
-  }, [view, languages.length]);
-
-  // ─── Add-flow state ────────────────────────────────────────────
-  const [pickedCode, setPickedCode] = useState<string | null>(null);
-  const [pickedLevel, setPickedLevel] = useState<LanguageLevel>("INTERMEDIATE");
-  const [editingId, setEditingId] = useState<string | null>(null);
-
-  const resetWizard = () => {
-    setPickedCode(null);
-    setPickedLevel("INTERMEDIATE");
-    setEditingId(null);
-  };
-
-  const openAdd = () => {
-    resetWizard();
-    setError(null);
-    setView("language-pick");
-  };
-
-  const closeAdd = () => {
-    resetWizard();
-    setView(languages.length === 0 ? "empty" : "list");
-  };
-
-  const onPickLanguage = (code: string) => {
-    setPickedCode(code);
-    setPickedLevel("INTERMEDIATE");
-    setView("level-pick");
-  };
-
-  const onPickLevel = (level: LanguageLevel) => {
-    setPickedLevel(level);
-  };
-
-  const commitAdd = async () => {
-    if (!pickedCode) return;
-    setView("saving");
-    const auth = authInit();
-    const res = await fetch(`${ctx.baseUrl}/api/account/profile/languages`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...auth.headers },
-      credentials: auth.credentials,
-      body: JSON.stringify({ code: pickedCode, level: pickedLevel }),
-    });
-    if (!res.ok) {
-      const body = unwrapEnvelope(await res.json().catch(() => ({}))) as {
-        error?: string;
-      };
-      setError(body.error ?? "save_failed");
-      onResult?.({ ok: false, error: body.error ?? "save_failed" });
-      setView("level-pick");
-      return;
-    }
-    await refresh();
-    onResult?.({ ok: true, count: languages.length + 1 });
-    resetWizard();
-    setView("list");
-  };
-
-  // ─── Edit-flow: tap a list row → re-enter level-pick in edit mode ─
-  const openEdit = (record: LanguageRecord) => {
-    setPickedCode(record.code);
-    setPickedLevel(record.level);
-    setEditingId(record.id);
-    setView("level-pick");
-  };
-
-  const commitEdit = async () => {
-    if (!editingId) return;
-    setView("saving");
-    const auth = authInit();
-    const res = await fetch(`${ctx.baseUrl}/api/account/profile/languages?id=${editingId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", ...auth.headers },
-      credentials: auth.credentials,
-      body: JSON.stringify({ level: pickedLevel }),
-    });
-    if (!res.ok) {
-      setError("save_failed");
-      onResult?.({ ok: false, error: "save_failed" });
-      setView("level-pick");
-      return;
-    }
-    await refresh();
-    onResult?.({ ok: true, count: languages.length });
-    resetWizard();
-    setView("list");
-  };
-
-  const onLevelConfirm = () => {
-    if (editingId) void commitEdit();
-    else void commitAdd();
-  };
-
-  // ─── Delete confirmation ───────────────────────────────────────
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const deletingRecord = languages.find((l) => l.id === deletingId) ?? null;
-  const askDelete = (id: string) => {
-    setDeletingId(id);
-    setView("delete-confirm");
-  };
-  const cancelDelete = () => {
-    setDeletingId(null);
-    setView(languages.length === 0 ? "empty" : "list");
-  };
-  const confirmDelete = async () => {
-    if (!deletingId) return;
-    setView("deleting");
-    const res = await fetch(`${ctx.baseUrl}/api/account/profile/languages?id=${deletingId}`, {
-      method: "DELETE",
-      ...authInit(),
-    });
-    if (!res.ok) {
-      setError("delete_failed");
-      onResult?.({ ok: false, error: "delete_failed" });
-      setView("delete-confirm");
-      return;
-    }
-    setDeletingId(null);
-    await refresh();
-    onResult?.({ ok: true, count: Math.max(0, languages.length - 1) });
-    setView(languages.length <= 1 ? "empty" : "list");
-  };
-
-  // ─── Frame sizing ──────────────────────────────────────────────
+  const editor = useLanguagesEditor({ onChange, onResult });
+  const { view } = editor;
   const frameStyle: CSSProperties = {
     width: typeof width === "number" ? `${width}px` : width,
     ...(height
@@ -282,79 +84,82 @@ export function ElvixLanguages({
         }),
   };
 
-  const atCap = languages.length >= MAX_LANGUAGES_PER_USER;
-  const pickedLanguage = pickedCode ? findLanguage(pickedCode) : null;
-  const editing = Boolean(editingId);
-
   return (
     <div style={frameStyle} className="mx-auto">
       <MaybeCard card={card} className="h-full">
         <div className="relative h-full overflow-hidden">
           <AnimatePresence initial={false}>
-            {view === "loading" || view === ("fallback-decide" as View) ? (
-              <Pane key="loading">
+            {view === View.LOADING ? (
+              <FadePane key="loading">
                 <div className="grid h-full place-items-center text-fg-3 text-sm">
                   {t("common.loading")}
                 </div>
-              </Pane>
-            ) : view === "empty" ? (
-              <Pane key="empty">
-                <EmptyState onAdd={openAdd} />
-              </Pane>
-            ) : view === "list" ? (
-              <Pane key="list" fadeEdges>
-                <ListView
-                  languages={languages}
-                  atCap={atCap}
-                  onAdd={openAdd}
-                  onOpen={openEdit}
-                  onDelete={askDelete}
-                />
-              </Pane>
-            ) : view === "language-pick" ? (
-              <Pane key="language-pick">
-                <LanguagePickView
-                  onPick={onPickLanguage}
-                  onBack={closeAdd}
-                  takenCodes={languages.map((l) => l.code)}
-                />
-              </Pane>
-            ) : view === "level-pick" ? (
-              <Pane key="level-pick">
-                <LevelPickView
-                  language={pickedLanguage}
-                  selected={pickedLevel}
-                  onSelect={onPickLevel}
-                  onConfirm={onLevelConfirm}
-                  onBack={editing ? () => setView("list") : () => setView("language-pick")}
-                  saveLabel={editing ? t("languages.saveLevel") : t("common.continue")}
-                  error={error}
-                />
-              </Pane>
-            ) : view === "saving" ? (
-              <Pane key="saving">
-                <SavingView
-                  label={editing ? t("languages.updatingLevel") : t("languages.addingLanguage")}
-                />
-              </Pane>
-            ) : view === "delete-confirm" ? (
-              <Pane key="delete-confirm">
-                <DeleteConfirmView
-                  record={deletingRecord}
-                  onCancel={cancelDelete}
-                  onConfirm={confirmDelete}
-                />
-              </Pane>
-            ) : view === "deleting" ? (
-              <Pane key="deleting">
-                <SavingView label={t("languages.removing")} />
-              </Pane>
-            ) : null}
+              </FadePane>
+            ) : (
+              <FadePane key={view} fadeEdges={view === View.LIST}>
+                <LanguagesPane editor={editor} />
+              </FadePane>
+            )}
           </AnimatePresence>
         </div>
       </MaybeCard>
     </div>
   );
+}
+
+function LanguagesPane({ editor }: { editor: ReturnType<typeof useLanguagesEditor> }) {
+  const t = useT();
+  const { languages, editing } = editor;
+  switch (editor.view) {
+    case View.EMPTY:
+      return <EmptyState onAdd={editor.openAdd} />;
+    case View.LIST:
+      return (
+        <ListView
+          languages={languages}
+          atCap={languages.length >= MAX_LANGUAGES_PER_USER}
+          onAdd={editor.openAdd}
+          onOpen={editor.openEdit}
+          onDelete={editor.askDelete}
+        />
+      );
+    case View.LANGUAGE_PICK:
+      return (
+        <LanguagePickView
+          onPick={editor.pickLanguage}
+          onBack={editor.closeAdd}
+          takenCodes={languages.map((l) => l.code)}
+        />
+      );
+    case View.LEVEL_PICK:
+      return (
+        <LevelPickView
+          language={editor.pickedCode ? findLanguage(editor.pickedCode) : null}
+          selected={editor.pickedLevel}
+          onSelect={editor.setLevel}
+          onConfirm={() => void editor.confirmLevel()}
+          onBack={editor.backFromLevel}
+          saveLabel={editing ? t("languages.saveLevel") : t("common.continue")}
+          error={editor.error}
+        />
+      );
+    case View.SAVING:
+      return (
+        <SavingView
+          label={editing ? t("languages.updatingLevel") : t("languages.addingLanguage")}
+        />
+      );
+    case View.DELETE_CONFIRM:
+      return (
+        <DeleteConfirmView
+          record={editor.deletingRecord}
+          onCancel={editor.cancelDelete}
+          onConfirm={editor.confirmDelete}
+        />
+      );
+    default:
+      return <SavingView label={t("languages.removing")} />;
+  }
 }
 
 // ─── Sub-views ───────────────────────────────────────────────────────
@@ -704,7 +509,7 @@ function WizardHeader({ onBack, backLabel }: { onBack: () => void; backLabel?: s
 
 function Heading({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <h2 className={"mt-2 text-[18px] font-semibold leading-tight text-fg-1 " + className}>
+    <h2 className={`mt-2 text-[18px] font-semibold leading-tight text-fg-1 ${className}`}>
       {children}
     </h2>
   );

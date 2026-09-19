@@ -3,6 +3,12 @@
   "locale": "el",
   "namespaces": {
     "common": {
+      "codeGroupLabel": {
+        "other": "Κωδικός επαλήθευσης"
+      },
+      "codeDigitLabel": {
+        "other": "Ψηφίο {n} από {total}"
+      },
       "ok": {
         "other": "Εντάξει"
       },
@@ -96,6 +102,30 @@
       }
     },
     "signin": {
+      "signingYouIn": {
+        "other": "Γίνεται σύνδεση…"
+      },
+      "takingYouTo": {
+        "other": "Μια στιγμή, σας μεταφέρουμε στο {app}."
+      },
+      "gateBadgePrivateBeta": {
+        "other": "Ιδιωτική beta · μόνο με πρόσκληση"
+      },
+      "gateBadgeClosed": {
+        "other": "Οι εγγραφές είναι κλειστές"
+      },
+      "errorEmailArchived": {
+        "other": "Αυτό το email δεν μπορεί πλέον να χρησιμοποιηθεί για σύνδεση. Χρησιμοποιήστε την τρέχουσα διεύθυνσή σας."
+      },
+      "errorPasskeyUnknown": {
+        "other": "Αυτό το passkey δεν είναι καταχωρισμένο στο elvix. Συνδεθείτε με άλλον τρόπο, έπειτα αφαιρέστε το και προσθέστε νέο στις ρυθμίσεις ασφαλείας."
+      },
+      "errorPasskeyVerifyFailed": {
+        "other": "Δεν ήταν δυνατή η επαλήθευση αυτού του passkey. Συνδεθείτε με άλλον τρόπο και προσθέστε το ξανά στις ρυθμίσεις ασφαλείας."
+      },
+      "errorPasskeyExpired": {
+        "other": "Αυτή η σύνδεση με passkey έληξε. Δοκιμάστε ξανά."
+      },
       "title": {
         "other": "Σύνδεση στο {app}"
       },
@@ -247,7 +277,7 @@
         "other": "Passkey"
       },
       "legalIntro": {
-        "other": "Συνεχίζοντας, συμφωνείτε με τους"
+        "other": "Συνεχίζοντας, αποδέχεστε τα έγγραφα του {app}:"
       },
       "termsOfService": {
         "other": "Όρους Παροχής Υπηρεσιών"
@@ -2288,6 +2318,153 @@
       },
       "recoverDeclineCta": {
         "other": "Όχι τώρα, αποσυνδεθείτε με"
+      }
+    },
+    "buttons": {
+      "signInWithElvix": {
+        "other": "Σύνδεση με elvix"
+      },
+      "continueWithElvix": {
+        "other": "Συνέχεια με elvix"
+      },
+      "signUpWithElvix": {
+        "other": "Εγγραφή με elvix"
+      },
+      "signIn": {
+        "other": "Σύνδεση"
+      },
+      "logIn": {
+        "other": "Είσοδος"
+      },
+      "signOut": {
+        "other": "Αποσύνδεση"
+      },
+      "logOut": {
+        "other": "Έξοδος"
+      },
+      "signOutOfElvix": {
+        "other": "Αποσύνδεση από το elvix"
+      },
+      "signingOut": {
+        "other": "Γίνεται αποσύνδεση…"
+      }
+    },
+    "passkeys": {
+      "title": {
+        "other": "Passkeys για το {app}"
+      },
+      "body": {
+        "other": "Προστασία από phishing. Αυτά τα passkeys σας συνδέουν μόνο στο {app}. Τα passkeys που προσθέσατε στις ρυθμίσεις ασφαλείας του elvix λειτουργούν και εδώ και τα διαχειρίζεστε εκεί."
+      },
+      "empty": {
+        "other": "Δεν υπάρχουν ακόμη passkeys για το {app}. Προσθέστε ένα παρακάτω."
+      },
+      "add": {
+        "other": "Προσθήκη passkey για το {app}"
+      },
+      "adding": {
+        "other": "Προσθήκη…"
+      },
+      "removeAria": {
+        "other": "Αφαίρεση {label}"
+      },
+      "lastUsed": {
+        "other": "Τελευταία χρήση: {date}"
+      },
+      "added": {
+        "other": "Προστέθηκε: {date}"
+      },
+      "synced": {
+        "other": "συγχρονισμένο"
+      },
+      "thisApp": {
+        "other": "αυτή την εφαρμογή"
+      },
+      "missingAppId": {
+        "other": "Λείπει το αναγνωριστικό εφαρμογής."
+      },
+      "deviceApplePlatform": {
+        "other": "Passkey πλατφόρμας Apple"
+      },
+      "devicePasskey": {
+        "other": "Passkey"
+      },
+      "deviceGeneric": {
+        "other": "συσκευή"
+      },
+      "errorLoad": {
+        "other": "Δεν ήταν δυνατή η φόρτωση των passkeys."
+      },
+      "errorNotMember": {
+        "other": "Δεν είστε μέλος αυτής της εφαρμογής."
+      },
+      "errorMethodDisabled": {
+        "other": "Τα passkeys είναι απενεργοποιημένα σε αυτή την εφαρμογή."
+      },
+      "errorAppNotFound": {
+        "other": "Η εφαρμογή δεν βρέθηκε."
+      },
+      "errorUnsupported": {
+        "other": "Αυτό το πρόγραμμα περιήγησης δεν υποστηρίζει passkeys."
+      },
+      "errorRegisterFailed": {
+        "other": "Δεν ήταν δυνατή η καταχώριση του passkey. Δοκιμάστε ξανά."
+      },
+      "errorInvalidInput": {
+        "other": "Δεν ήταν δυνατή η έναρξη της ρύθμισης passkey. Δοκιμάστε ξανά."
+      },
+      "errorUnauthenticated": {
+        "other": "Συνδεθείτε πρώτα και έπειτα προσθέστε ένα passkey."
+      },
+      "errorRemoveFailed": {
+        "other": "Δεν ήταν δυνατή η αφαίρεση του passkey. Δοκιμάστε ξανά."
+      }
+    },
+    "device": {
+      "title": {
+        "other": "Εξουσιοδότηση συσκευής"
+      },
+      "enterCode": {
+        "other": "Εισαγάγετε τον κωδικό που εμφανίζεται στο τερματικό σας."
+      },
+      "confirmCode": {
+        "other": "Μια συσκευή θέλει να συνδεθεί στον λογαριασμό σας ως CLI. Επιβεβαιώστε ότι ο κωδικός ταιριάζει με το τερματικό σας:"
+      },
+      "approvedTitle": {
+        "other": "Εγκρίθηκε"
+      },
+      "approvedBody": {
+        "other": "Επιστρέψτε στο τερματικό σας. Συνεχίζει αυτόματα."
+      },
+      "approvingTitle": {
+        "other": "Εξουσιοδότηση…"
+      },
+      "approvingBody": {
+        "other": "Η συσκευή συνδέεται με τον λογαριασμό σας στο {app}."
+      },
+      "approvingBodyNoApp": {
+        "other": "Η συσκευή συνδέεται με τον λογαριασμό σας."
+      },
+      "failedTitle": {
+        "other": "Δεν ήταν δυνατή η έγκριση"
+      },
+      "tryAgain": {
+        "other": "Δοκιμάστε ξανά"
+      },
+      "errorNotFound": {
+        "other": "Ο κωδικός δεν βρέθηκε. Ίσως έληξε ή χρησιμοποιήθηκε ήδη. Ξεκινήστε ξανά από το τερματικό σας."
+      },
+      "errorExpired": {
+        "other": "Ο κωδικός έληξε. Ξεκινήστε ξανά τη σύνδεση από το τερματικό σας για να λάβετε νέο."
+      },
+      "errorAlreadyApproved": {
+        "other": "Ο κωδικός έχει ήδη εγκριθεί. Επιστρέψτε στο τερματικό σας· θα πρέπει να έχει συνεχίσει."
+      },
+      "errorMismatch": {
+        "other": "Ο κωδικός δεν φαίνεται σωστός. Ελέγξτε ότι ταιριάζει ακριβώς με το τερματικό σας."
+      },
+      "errorGeneric": {
+        "other": "Κάτι πήγε στραβά. Ο κωδικός ίσως έληξε. Ξεκινήστε ξανά από το τερματικό σας."
       }
     }
   }

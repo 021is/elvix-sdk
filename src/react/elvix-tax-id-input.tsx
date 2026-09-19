@@ -84,7 +84,7 @@ export function ElvixTaxIdInput({
   const state = computeState(value, country);
 
   return (
-    <div className={"relative w-full " + (className ?? "")}>
+    <div className={`relative w-full ${className ?? ""}`}>
       <ElvixInput
         type="text"
         value={value}

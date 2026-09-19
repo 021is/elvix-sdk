@@ -25,6 +25,7 @@
 
 import { Check, Loader2, MonitorSmartphone, ShieldAlert } from "lucide-react";
 import { type ReactNode, useEffect, useState } from "react";
+import { useT } from "../locale/use-t";
 import { approveDevice } from "./device-approve";
 import { ElvixProvider, useElvixApp } from "./elvix-provider";
 import { ElvixSignInForm } from "./elvix-sign-in-form";
@@ -73,8 +74,8 @@ function DeviceApprovalInner({
   onApproved,
   onError,
 }: ElvixDeviceApprovalProps) {
-  const app = useElvixApp();
-  const appName = app?.appName ?? "your account";
+  const t = useT();
+  const appName = useElvixApp()?.appName;
   const origin = baseUrl ?? DEFAULT_BASE_URL;
 
   const [userCode, setUserCode] = useState<string | null>(code ?? null);
@@ -111,8 +112,8 @@ function DeviceApprovalInner({
         <Glyph tone="brand">
           <MonitorSmartphone size={19} />
         </Glyph>
-        <Title>Authorize a device</Title>
-        <Sub>Enter the code shown in your terminal.</Sub>
+        <Title>{t("device.title")}</Title>
+        <Sub>{t("device.enterCode")}</Sub>
         <form
           className="elvix-otp-form"
           onSubmit={(e) => {
@@ -131,7 +132,7 @@ function DeviceApprovalInner({
             autoComplete="off"
           />
           <button type="submit" className="elvix-btn elvix-btn-primary">
-            Continue
+            {t("common.continue")}
           </button>
         </form>
       </Surface>
@@ -144,8 +145,8 @@ function DeviceApprovalInner({
         <Glyph tone="emerald">
           <Check size={20} />
         </Glyph>
-        <Title>Approved</Title>
-        <Sub>Return to your terminal. It continues automatically.</Sub>
+        <Title>{t("device.approvedTitle")}</Title>
+        <Sub>{t("device.approvedBody")}</Sub>
       </Surface>
     );
   }
@@ -156,8 +157,10 @@ function DeviceApprovalInner({
         <Glyph tone="brand">
           <Loader2 size={19} className="animate-spin" />
         </Glyph>
-        <Title>Authorizing…</Title>
-        <Sub>Linking the device to your {appName} account.</Sub>
+        <Title>{t("device.approvingTitle")}</Title>
+        <Sub>
+          {appName ? t("device.approvingBody", { app: appName }) : t("device.approvingBodyNoApp")}
+        </Sub>
       </Surface>
     );
   }
@@ -168,14 +171,14 @@ function DeviceApprovalInner({
         <Glyph tone="rose">
           <ShieldAlert size={19} />
         </Glyph>
-        <Title>Could not approve</Title>
-        <Sub>{humanizeApprovalError(error)}</Sub>
+        <Title>{t("device.failedTitle")}</Title>
+        <Sub>{t(APPROVAL_ERRORS[error ?? ""] ?? "device.errorGeneric")}</Sub>
         <button
           type="button"
           className="elvix-btn elvix-btn-primary"
           onClick={() => setPhase(Phase.SIGNIN)}
         >
-          Try again
+          {t("device.tryAgain")}
         </button>
       </Surface>
     );
@@ -190,8 +193,7 @@ function DeviceApprovalInner({
       navigate={false}
       belowHeading={
         <p className="elvix-muted" style={{ fontSize: 13, lineHeight: 1.5, marginTop: 4 }}>
-          A device wants to sign in to your account as a CLI. Confirm the code matches your
-          terminal: <code style={{ fontWeight: 600 }}>{userCode}</code>
+          {t("device.confirmCode")} <code style={{ fontWeight: 600 }}>{userCode}</code>
         </p>
       }
       onAuthenticated={(r) => {
@@ -202,25 +204,16 @@ function DeviceApprovalInner({
 }
 
 /**
- * Turn a raw device-approval error code into a human sentence. The backend
- * returns machine codes (`not_found`, `expired`, …); a user should never see
- * one. Mirrors the actionable-error work in the sign-in form (SDK 0.9.6).
+ * The backend's device-approval codes (`not_found`, `expired`, …) as catalog
+ * keys: a user should never see a machine code.
  */
-function humanizeApprovalError(code: string | null): string {
-  switch (code) {
-    case "not_found":
-      return "That code wasn't found. It may have expired or already been used. Start again from your terminal.";
-    case "expired":
-      return "That code has expired. Start the sign-in again from your terminal for a fresh one.";
-    case "already_approved":
-      return "That code was already approved. Return to your terminal — it should have continued.";
-    case "code_mismatch":
-    case "invalid":
-      return "That code doesn't look right. Check it matches your terminal exactly.";
-    default:
-      return "Something went wrong. The code may have expired — start again from your terminal.";
-  }
-}
+const APPROVAL_ERRORS: Record<string, string> = {
+  not_found: "device.errorNotFound",
+  expired: "device.errorExpired",
+  already_approved: "device.errorAlreadyApproved",
+  code_mismatch: "device.errorMismatch",
+  invalid: "device.errorMismatch",
+};
 
 /* ── Presentational bits (state panes; the sign-in pane is ElvixSignInForm) ── */
 

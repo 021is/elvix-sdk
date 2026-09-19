@@ -49,6 +49,13 @@ Sign-in and sign-up are the same door. There is no separate registration flow to
 
 **Components** — sign-in, username, identity form, avatar, banner, region, languages, address book, legal entities, sessions, data export, deactivate, leave. Full catalogue with live previews: **[elvix.is/docs/components](https://elvix.is/docs/components)**.
 
+**Hooks** — read-only, current without polling. Read these instead of calling elvix yourself:
+
+- `useElvixUser()` — the signed-in user (display name with fallbacks, username, identity summary, languages) and `loading` / `signed-in` / `signed-out`. Every SDK editor refreshes it after a save; `useElvixRefresh()` does it on demand.
+- `useElvixRoles()` / `useElvixScopes()` / `useElvixMemberships()` — what the app's admins granted the user, with names; `has("admin")` for checks. Changes in the Console arrive live. There is no setter: users cannot change their own access.
+- `useElvixPronounsLabel(pronouns)` and `useElvixLanguageNames()` — ready-to-render labels in the SDK's locale.
+- `useElvixUserMedia(userId?)` — "does this user have a photo", from the same cache the avatars use.
+
 **Server helpers** — verify a session token against elvix on each protected request and get the live user, roles, scopes and memberships back. Because it re-checks on every call, a banned or signed-out user stops verifying within one request, so bans take effect server-side without you writing anything. Details: **[elvix.is/docs/verify-backend](https://elvix.is/docs/verify-backend)**.
 
 If you would rather not call elvix on every request, exchange the session token once for a short-lived signed JWT and verify that locally against our JWKS. Same guide covers it.

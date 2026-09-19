@@ -7,12 +7,12 @@
  * an in-place mini-wizard that lives entirely inside the avatar's
  * circle. No modals. No size changes between states.
  *
- * Pane flow (all rendered inside the circle, icons only):
- *   display        → tap the bottom half-circle hint
- *   choice         → ◯ Replace | ◯ Remove (icon-only)
- *   cropping       → react-easy-crop fills the circle
- *   remove-confirm → X | ✓
- *   working        → spinner
+ * Pane flow (all rendered inside the circle, icons only; the upload /
+ * crop / remove logic is `use-image-editor.ts`, shared with the banner):
+ *   display  → tap the bottom half-circle hint
+ *   choice   → ◯ Replace | ◯ Remove (tap twice to confirm)
+ *   cropping → react-easy-crop fills the circle
+ *   working  → spinner
  *
  * All panes use a top-left ArrowLeft back affordance matching the
  * other elvix wizards. Buttons are icon-only because the circle is
@@ -21,18 +21,13 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Camera, Check, Loader2, Trash2 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Cropper, { type Area } from "react-easy-crop";
 import { useT } from "../locale/use-t";
-import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
+import { useElvixApp, useElvixAppContext } from "./elvix-provider";
 import { ElvixUserAvatar } from "./elvix-user-avatar";
-import { cropToBlob } from "./image-crop";
-import { mediaKey, publishMedia } from "./live-media";
-import { authInit } from "./session";
-import { unwrapEnvelope } from "./spine-fetch";
-import { toast } from "./toast";
+import { EditorView, ImageKind, type ImageResult, useImageEditor } from "./use-image-editor";
 import { UserAvatar, type UserAvatarProps } from "./user-avatar";
-import { useUserMedia } from "./user-media";
 
 const Variant = {
   BRAND: "brand",
@@ -41,9 +36,7 @@ const Variant = {
 } as const;
 type Variant = (typeof Variant)[keyof typeof Variant];
 
-export type ElvixAvatarResult =
-  | { ok: true; sizes: number[]; updatedAt: string }
-  | { ok: false; error: string; message?: string };
+export type ElvixAvatarResult = ImageResult;
 
 /**
  * Two modes, one component:
@@ -72,16 +65,6 @@ export type ElvixAvatarProps = Omit<UserAvatarProps, "size"> & {
   onResult?: (result: ElvixAvatarResult) => void;
 };
 
-// Remove-confirm pane retired — Trash inside the choice ring fires
-// the delete directly, no double-confirm.
-const View = {
-  DISPLAY: "display",
-  CHOICE: "choice",
-  CROPPING: "cropping",
-  WORKING: "working",
-} as const;
-type View = (typeof View)[keyof typeof View];
-
 export function ElvixAvatar(props: Partial<ElvixAvatarProps>) {
   const app = useElvixApp();
   const appCtx = useElvixAppContext();
@@ -107,18 +90,20 @@ export function ElvixAvatar(props: Partial<ElvixAvatarProps>) {
     onResult: props.onResult,
     mode: props.mode ?? "edit",
   };
-  // View mode = the read-only display sibling, which subscribes to the live
-  // avatar store and updates the instant an "edit" instance changes the photo.
+  // View mode = the read-only display sibling, which reads the centralized
+  // photo and updates the instant an "edit" instance changes it. Only what the
+  // HOST passed is forwarded: the per-app fallbacks above would pin it to the
+  // empty per-app meta instead.
   if (resolved.mode === "view") {
     return (
       <ElvixUserAvatar
-        appSlug={resolved.appSlug}
-        userId={resolved.userId}
+        appSlug={props.appSlug}
+        userId={props.userId}
         size={resolved.size ?? 40}
         shape={resolved.shape}
         className={resolved.className}
-        membership={resolved.membership}
-        user={resolved.user}
+        membership={props.membership}
+        user={props.user}
       />
     );
   }
@@ -132,271 +117,78 @@ function ElvixAvatarInner({
   onResult,
   ...avatarProps
 }: ElvixAvatarProps) {
-  const ctx = useElvixContext();
-  const t = useT();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [view, setView] = useState<View>("display");
-
-  const [sizes, setSizes] = useState<number[]>(avatarProps.membership.avatarSizes);
-  const [updatedAt, setUpdatedAt] = useState<Date | number>(avatarProps.membership.avatarUpdatedAt);
-  // Track the OAuth-derived fallback URL locally too. Server-rendered
-  // props don't react to client-side removal, so without this the
-  // wizard would still think a Google photo is present even after
-  // the backend cleared `User.avatarUrl` on self-flow DELETE.
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(avatarProps.user?.avatarUrl ?? null);
-
-  // The photo is CENTRALIZED (elvix-account), not per-app. Seed the wizard's
-  // initial state from the centralized store — once — so the editor shows the
-  // user's GLOBAL photo no matter which app it's mounted in (a host-passed
-  // per-app `membership` is only the while-loading fallback). Seed-once (not a
-  // live sync) avoids clobbering optimistic state after the user's own edits.
-  const centralized = useUserMedia(
-    applicationId === "preview" ? null : avatarProps.userId,
-    ctx.baseUrl,
-  );
-  const seeded = useRef(false);
-  useEffect(() => {
-    if (!centralized.data || seeded.current) return;
-    seeded.current = true;
-    setSizes(centralized.data.avatar.sizes);
-    setUpdatedAt(centralized.data.avatar.updatedAt ?? 0);
-    setAvatarUrl(centralized.data.avatar.googleUrl);
-  }, [centralized.data]);
-
-  const liveUser = { ...avatarProps.user, avatarUrl };
-  const hasMedia = sizes.length > 0;
-  const hasRemovable = hasMedia || Boolean(avatarUrl);
-
-  const [source, setSource] = useState<string | null>(null);
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [pixels, setPixels] = useState<Area | null>(null);
-
-  const onCropComplete = useCallback((_: Area, p: Area) => setPixels(p), []);
-
-  const openPicker = () => fileInputRef.current?.click();
-
-  const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (!file) return;
-    if (source) URL.revokeObjectURL(source);
-    setSource(URL.createObjectURL(file));
-    setCrop({ x: 0, y: 0 });
-    setZoom(1);
-    setPixels(null);
-    setView("cropping");
+  const editor = useImageEditor({
+    kind: ImageKind.AVATAR,
+    applicationId,
+    userId: avatarProps.userId,
+    initial: {
+      sizes: avatarProps.membership.avatarSizes,
+      updatedAt: avatarProps.membership.avatarUpdatedAt,
+      fallbackUrl: avatarProps.user?.avatarUrl ?? null,
+    },
+    errors: { upload: "avatar.uploadFailed", remove: "avatar.removeFailed" },
+    removeFailView: EditorView.CHOICE,
+    onChange,
+    onResult,
+  });
+  const { view, setView, media, cropper } = editor;
+  const hasMedia = media.sizes.length > 0;
+  // Rendered from the centralized slug (elvix-account): the photo lives
+  // there, not under the per-app bootstrap slug.
+  const shown = {
+    ...avatarProps,
+    user: { ...avatarProps.user, avatarUrl: media.fallbackUrl },
+    appSlug: editor.slug ?? avatarProps.appSlug,
   };
-
-  const cancelEdit = () => {
-    if (source) URL.revokeObjectURL(source);
-    setSource(null);
-    setPixels(null);
-    setView("display");
-  };
-
-  const handleUpload = async () => {
-    if (!source || !pixels) return;
-    setView("working");
-    try {
-      const blob = await cropToBlob(source, pixels, 2400, 0.92);
-
-      // Preview mode: keep the upload entirely in-memory. The docs
-      // catalog mounts every demo with `applicationId="preview"` (set
-      // by `<PreviewShell>`) — short-circuit the network call, stash
-      // a blob URL as the OAuth-fallback avatarUrl, and let the
-      // existing display layer render it.
-      if (applicationId === "preview") {
-        const blobUrl = URL.createObjectURL(blob);
-        setAvatarUrl(blobUrl);
-        setSizes([]);
-        const now = Date.now();
-        setUpdatedAt(now);
-        onChange?.({ sizes: [], updatedAt: now });
-        onResult?.({ ok: true, sizes: [], updatedAt: new Date(now).toISOString() });
-        setView("display");
-        if (source) URL.revokeObjectURL(source);
-        setSource(null);
-        return;
-      }
-
-      const fd = new FormData();
-      fd.append("file", blob, "avatar.jpg");
-      const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/self/images/avatar`, {
-        method: "PUT",
-        body: fd,
-        headers: auth.headers,
-        credentials: auth.credentials,
-      });
-      if (!res.ok) throw new Error("upload_failed");
-      const body = unwrapEnvelope(await res.json().catch(() => ({}))) as {
-        avatarSizes?: number[];
-        avatarUpdatedAt?: string;
-      };
-      const nextSizes = body.avatarSizes ?? sizes;
-      const nextTs = body.avatarUpdatedAt ? new Date(body.avatarUpdatedAt) : Date.now();
-      setSizes(nextSizes);
-      setUpdatedAt(nextTs);
-      // Broadcast so every read-only avatar (this tab + other tabs) updates now.
-      publishMedia(mediaKey("avatar", avatarProps.userId), {
-        sizes: nextSizes,
-        updatedAt: nextTs instanceof Date ? nextTs.getTime() : nextTs,
-        fallbackUrl: avatarUrl,
-      });
-      onChange?.({ sizes: nextSizes, updatedAt: nextTs });
-      onResult?.({
-        ok: true,
-        sizes: nextSizes,
-        updatedAt: new Date(nextTs).toISOString(),
-      });
-      setView("display");
-    } catch {
-      const msg = t("avatar.uploadFailed");
-      toast.error(msg);
-      onResult?.({
-        ok: false,
-        error: "upload_failed",
-        message: msg,
-      });
-      setView("cropping");
-    } finally {
-      if (source) URL.revokeObjectURL(source);
-      setSource(null);
-    }
-  };
-
-  const handleRemove = async () => {
-    setView("working");
-    try {
-      // Preview mode: clear the in-memory blob URL — no network call.
-      if (applicationId === "preview") {
-        if (avatarUrl?.startsWith("blob:")) URL.revokeObjectURL(avatarUrl);
-        setAvatarUrl(null);
-        setSizes([]);
-        const now = Date.now();
-        setUpdatedAt(now);
-        onChange?.({ sizes: [], updatedAt: now });
-        onResult?.({ ok: true, sizes: [], updatedAt: new Date(now).toISOString() });
-        setView("display");
-        return;
-      }
-
-      const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/self/images/avatar`, {
-        method: "DELETE",
-        headers: auth.headers,
-        credentials: auth.credentials,
-      });
-      if (!res.ok) throw new Error("delete_failed");
-      const body = unwrapEnvelope(await res.json().catch(() => ({}))) as {
-        avatarSizes?: number[];
-        avatarUpdatedAt?: string;
-        userAvatarUrl?: string | null;
-      };
-      const nextSizes = body.avatarSizes ?? [];
-      const nextTs = body.avatarUpdatedAt ? new Date(body.avatarUpdatedAt) : Date.now();
-      setSizes(nextSizes);
-      setUpdatedAt(nextTs);
-      // Server returns the post-delete `User.avatarUrl` so we mirror
-      // exactly what it has. Two-step progressive remove:
-      //   step 1 (CDN cleared): server still has the OAuth photo →
-      //     userAvatarUrl arrives populated → preview falls back to it.
-      //   step 2 (OAuth cleared after CDN was already empty):
-      //     userAvatarUrl arrives null → preview drops to initials.
-      // `userAvatarUrl === undefined` would mean the server didn't
-      // touch it (admin flow); we keep the existing local value.
-      const nextAvatarUrl = body.userAvatarUrl !== undefined ? body.userAvatarUrl : avatarUrl;
-      if (body.userAvatarUrl !== undefined) {
-        setAvatarUrl(body.userAvatarUrl);
-      }
-      // Broadcast the post-remove state so read-only avatars drop to the
-      // fallback / initials immediately.
-      publishMedia(mediaKey("avatar", avatarProps.userId), {
-        sizes: nextSizes,
-        updatedAt: nextTs instanceof Date ? nextTs.getTime() : nextTs,
-        fallbackUrl: nextAvatarUrl,
-      });
-      onChange?.({ sizes: nextSizes, updatedAt: nextTs });
-      onResult?.({
-        ok: true,
-        sizes: nextSizes,
-        updatedAt: new Date(nextTs).toISOString(),
-      });
-      setView("display");
-    } catch {
-      const msg = t("avatar.removeFailed");
-      toast.error(msg);
-      onResult?.({
-        ok: false,
-        error: "delete_failed",
-        message: msg,
-      });
-      setView("choice");
-    }
-  };
+  const photo = { size, sizes: media.sizes, updatedAt: media.updatedAt, hasMedia };
 
   return (
     <div className="relative shrink-0 rounded-full" style={{ width: size, height: size }}>
       <AnimatePresence initial={false}>
-        {view === "display" ? (
+        {view === EditorView.DISPLAY ? (
           <DisplayLayer
             key="display"
-            avatarProps={{
-              ...avatarProps,
-              user: liveUser,
-              appSlug: centralized.data?.slug ?? avatarProps.appSlug,
-            }}
-            size={size}
-            sizes={sizes}
-            updatedAt={updatedAt}
-            hasMedia={hasMedia}
-            onTap={() => setView("choice")}
+            avatarProps={shown}
+            {...photo}
+            onTap={() => setView(EditorView.CHOICE)}
           />
-        ) : view === "choice" ? (
+        ) : view === EditorView.CHOICE ? (
           <ChoiceLayer
             key="choice"
-            size={size}
-            avatarProps={{
-              ...avatarProps,
-              user: liveUser,
-              appSlug: centralized.data?.slug ?? avatarProps.appSlug,
-            }}
-            sizes={sizes}
-            updatedAt={updatedAt}
-            hasMedia={hasMedia}
-            hasRemovable={hasRemovable}
+            avatarProps={shown}
+            {...photo}
+            hasRemovable={hasMedia || Boolean(media.fallbackUrl)}
             onReplace={() => {
-              setView("display");
-              requestAnimationFrame(openPicker);
+              setView(EditorView.DISPLAY);
+              requestAnimationFrame(editor.openPicker);
             }}
-            onRemove={handleRemove}
-            onBack={() => setView("display")}
+            onRemove={editor.remove}
+            onBack={() => setView(EditorView.DISPLAY)}
           />
-        ) : view === "cropping" ? (
+        ) : view === EditorView.CROPPING ? (
           <CropLayer
             key="crop"
             size={size}
-            source={source}
-            crop={crop}
-            zoom={zoom}
-            onCropChange={setCrop}
-            onZoomChange={setZoom}
-            onCropComplete={onCropComplete}
-            onBack={cancelEdit}
-            onConfirm={handleUpload}
-            disabled={!pixels}
+            source={cropper.source}
+            crop={cropper.crop}
+            zoom={cropper.zoom}
+            onCropChange={cropper.setCrop}
+            onZoomChange={cropper.setZoom}
+            onCropComplete={cropper.onCropComplete}
+            onBack={editor.cancelCrop}
+            onConfirm={editor.upload}
+            disabled={!cropper.pixels}
           />
-        ) : view === "working" ? (
+        ) : (
           <WorkingLayer key="working" />
-        ) : null}
+        )}
       </AnimatePresence>
 
       <input
-        ref={fileInputRef}
+        ref={editor.fileInputRef}
         type="file"
         accept="image/png,image/jpeg,image/webp,image/gif"
-        onChange={onFile}
+        onChange={editor.onFile}
         className="sr-only"
       />
     </div>
@@ -516,12 +308,6 @@ function IconButton({
   );
 }
 
-/** Blurred backdrop layer — sits behind the action buttons in the
- *  choice + remove-confirm panes. Uses the existing `<UserAvatar>`
- *  render so the bg shows the current photo (or the user's initials
- *  fallback) without re-implementing avatar resolution. Scaled +
- *  blurred + tinted so the buttons on top stay legible regardless
- *  of source contrast. */
 /** Two-step in-place confirm: first click arms (Trash → red Check),
  *  second click commits. Auto-disarms after 2.4s of inactivity so a
  *  half-pressed delete doesn't sit dangerously primed forever. */
@@ -581,6 +367,9 @@ export function ArmableRemoveButton({
   );
 }
 
+/** Blurred backdrop behind the choice pane's buttons: the current photo
+ *  (or the initials fallback) via `<UserAvatar>`, scaled, blurred and
+ *  tinted so the buttons on top stay legible on any source. */
 function BlurredBackdrop({
   avatarProps,
   size,
