@@ -98,6 +98,30 @@
       }
     },
     "signin": {
+      "signingYouIn": {
+        "other": "Logowanie…"
+      },
+      "takingYouTo": {
+        "other": "Chwileczkę, przenosimy cię do {app}."
+      },
+      "gateBadgePrivateBeta": {
+        "other": "Prywatna beta · tylko z zaproszeniem"
+      },
+      "gateBadgeClosed": {
+        "other": "Rejestracja zamknięta"
+      },
+      "errorEmailArchived": {
+        "other": "Tego adresu e-mail nie można już używać do logowania. Użyj swojego obecnego adresu."
+      },
+      "errorPasskeyUnknown": {
+        "other": "Ten klucz dostępu nie jest zarejestrowany w elvix. Zaloguj się w inny sposób, a potem usuń go i dodaj nowy w ustawieniach bezpieczeństwa."
+      },
+      "errorPasskeyVerifyFailed": {
+        "other": "Nie udało się zweryfikować tego klucza dostępu. Zaloguj się w inny sposób i dodaj go ponownie w ustawieniach bezpieczeństwa."
+      },
+      "errorPasskeyExpired": {
+        "other": "To logowanie kluczem dostępu wygasło. Spróbuj ponownie."
+      },
       "title": {
         "other": "Zaloguj się do {app}"
       },
@@ -2306,6 +2330,153 @@
       },
       "recoverDeclineCta": {
         "other": "Nie teraz, wyloguj mnie"
+      }
+    },
+    "buttons": {
+      "signInWithElvix": {
+        "other": "Zaloguj się przez elvix"
+      },
+      "continueWithElvix": {
+        "other": "Kontynuuj z elvix"
+      },
+      "signUpWithElvix": {
+        "other": "Zarejestruj się przez elvix"
+      },
+      "signIn": {
+        "other": "Zaloguj się"
+      },
+      "logIn": {
+        "other": "Zaloguj"
+      },
+      "signOut": {
+        "other": "Wyloguj się"
+      },
+      "logOut": {
+        "other": "Wyloguj"
+      },
+      "signOutOfElvix": {
+        "other": "Wyloguj się z elvix"
+      },
+      "signingOut": {
+        "other": "Wylogowywanie…"
+      }
+    },
+    "passkeys": {
+      "title": {
+        "other": "Klucze dostępu do {app}"
+      },
+      "body": {
+        "other": "Odporne na phishing. Te klucze dostępu logują cię tylko do {app}. Klucze dodane w ustawieniach bezpieczeństwa elvix też tu działają i tam się nimi zarządza."
+      },
+      "empty": {
+        "other": "Brak kluczy dostępu do {app}. Dodaj pierwszy poniżej."
+      },
+      "add": {
+        "other": "Dodaj klucz dostępu do {app}"
+      },
+      "adding": {
+        "other": "Dodawanie…"
+      },
+      "removeAria": {
+        "other": "Usuń {label}"
+      },
+      "lastUsed": {
+        "other": "Ostatnio użyty {date}"
+      },
+      "added": {
+        "other": "Dodany {date}"
+      },
+      "synced": {
+        "other": "zsynchronizowany"
+      },
+      "thisApp": {
+        "other": "tej aplikacji"
+      },
+      "missingAppId": {
+        "other": "Brak identyfikatora aplikacji."
+      },
+      "deviceApplePlatform": {
+        "other": "Klucz dostępu platformy Apple"
+      },
+      "devicePasskey": {
+        "other": "Klucz dostępu"
+      },
+      "deviceGeneric": {
+        "other": "urządzenie"
+      },
+      "errorLoad": {
+        "other": "Nie udało się wczytać kluczy dostępu."
+      },
+      "errorNotMember": {
+        "other": "Nie jesteś członkiem tej aplikacji."
+      },
+      "errorMethodDisabled": {
+        "other": "Klucze dostępu są wyłączone w tej aplikacji."
+      },
+      "errorAppNotFound": {
+        "other": "Nie znaleziono aplikacji."
+      },
+      "errorUnsupported": {
+        "other": "Ta przeglądarka nie obsługuje kluczy dostępu."
+      },
+      "errorRegisterFailed": {
+        "other": "Nie udało się zarejestrować klucza dostępu. Spróbuj ponownie."
+      },
+      "errorInvalidInput": {
+        "other": "Nie udało się rozpocząć konfiguracji klucza dostępu. Spróbuj ponownie."
+      },
+      "errorUnauthenticated": {
+        "other": "Najpierw się zaloguj, a potem dodaj klucz dostępu."
+      },
+      "errorRemoveFailed": {
+        "other": "Nie udało się usunąć klucza dostępu. Spróbuj ponownie."
+      }
+    },
+    "device": {
+      "title": {
+        "other": "Autoryzuj urządzenie"
+      },
+      "enterCode": {
+        "other": "Wpisz kod widoczny w terminalu."
+      },
+      "confirmCode": {
+        "other": "Urządzenie chce zalogować się na twoje konto jako CLI. Sprawdź, czy kod zgadza się z terminalem:"
+      },
+      "approvedTitle": {
+        "other": "Zatwierdzono"
+      },
+      "approvedBody": {
+        "other": "Wróć do terminala. Będzie kontynuować automatycznie."
+      },
+      "approvingTitle": {
+        "other": "Autoryzowanie…"
+      },
+      "approvingBody": {
+        "other": "Łączenie urządzenia z twoim kontem {app}."
+      },
+      "approvingBodyNoApp": {
+        "other": "Łączenie urządzenia z twoim kontem."
+      },
+      "failedTitle": {
+        "other": "Nie udało się zatwierdzić"
+      },
+      "tryAgain": {
+        "other": "Spróbuj ponownie"
+      },
+      "errorNotFound": {
+        "other": "Nie znaleziono tego kodu. Mógł wygasnąć lub zostać już użyty. Zacznij od nowa w terminalu."
+      },
+      "errorExpired": {
+        "other": "Ten kod wygasł. Rozpocznij logowanie od nowa w terminalu, aby dostać nowy."
+      },
+      "errorAlreadyApproved": {
+        "other": "Ten kod został już zatwierdzony. Wróć do terminala; powinien już kontynuować."
+      },
+      "errorMismatch": {
+        "other": "Ten kod wygląda na nieprawidłowy. Sprawdź, czy dokładnie zgadza się z terminalem."
+      },
+      "errorGeneric": {
+        "other": "Coś poszło nie tak. Kod mógł wygasnąć. Zacznij od nowa w terminalu."
       }
     }
   }

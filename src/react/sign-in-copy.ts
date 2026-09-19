@@ -5,26 +5,21 @@
 
 export type Translator = (key: string, params?: Record<string, string | number>) => string;
 
-/**
- * Translate-or-fallback wrapper. `useT()` returns the key itself when
- * the catalog is missing the translation, so we trap that case and
- * paint the bundled English string instead of leaking the raw key to
- * a customer. This lets the SDK ship new error codes ahead of the i18n
- * catalogs without surfacing `signin.errorGatePrivateBeta` to users.
- */
-export function tOrFallback(t: Translator, key: string, fallback: string): string {
-  const out = t(key);
-  return out === key ? fallback : out;
-}
-
 export function formatRetry(t: Translator, seconds: number): string {
   if (seconds < 60) return t("common.durationSeconds", { seconds });
   const m = Math.ceil(seconds / 60);
   return m === 1 ? t("common.durationOneMinute") : t("common.durationMinutes", { minutes: m });
 }
 
-/** Codes whose copy is a plain catalog key. */
-const PLAIN_ERRORS: Record<string, string> = {
+/**
+ * Server error codes to catalog keys. Beyond the factor errors: the
+ * signinGate refusals, the account-state guards
+ * (lib/signin-account-state.ts) and the passkey outcomes, which otherwise
+ * all read "Something went wrong". `unknown_credential` is a passkey the
+ * keychain still offers but elvix has no record of (a stale credential), so
+ * its copy gives the way out.
+ */
+const ERROR_KEYS: Record<string, string> = {
   invalid_code: "signin.errorInvalidCode",
   expired: "signin.errorExpired",
   send_failed: "signin.errorSendFailed",
@@ -32,50 +27,15 @@ const PLAIN_ERRORS: Record<string, string> = {
   user_banned: "signin.errorUserBanned",
   username_not_found: "signin.errorUsernameNotFound",
   method_disabled: "signin.errorMethodDisabled",
-};
-
-/**
- * Codes the catalogs may not carry yet, with their bundled English:
- * the signinGate refusals, the account-state guards
- * (lib/signin-account-state.ts), and the passkey outcomes. Without these
- * every host saw "Something went wrong" instead of the real reason.
- * `unknown_credential` is a passkey the keychain still offers but elvix has
- * no record of (a stale credential), so the copy gives the way out.
- */
-const FALLBACK_ERRORS: Record<string, [key: string, english: string]> = {
-  gate_private_beta: [
-    "signin.errorGatePrivateBeta",
-    "This app is in private beta. Ask the owner for an invite.",
-  ],
-  gate_closed: [
-    "signin.errorGateClosed",
-    "Sign-ups are closed. Only existing members can sign in.",
-  ],
-  gate_blocked: ["signin.errorGateBlocked", "Your account isn't approved for this app yet."],
-  user_deleted: [
-    "signin.errorUserDeleted",
-    "This account was deleted. Contact support if you need it back.",
-  ],
-  email_archived: [
-    "signin.errorEmailArchived",
-    "This email was retired from sign-in. Use your current address.",
-  ],
-  unknown_credential: [
-    "signin.errorPasskeyUnknown",
-    "This passkey isn't registered with elvix. Sign in another way, then remove it and add a new one in Security settings.",
-  ],
-  verify_failed: [
-    "signin.errorPasskeyVerifyFailed",
-    "That passkey couldn't be verified. Sign in another way, then re-add it in Security settings.",
-  ],
-  not_verified: [
-    "signin.errorPasskeyVerifyFailed",
-    "That passkey couldn't be verified. Sign in another way, then re-add it in Security settings.",
-  ],
-  challenge_invalid: [
-    "signin.errorPasskeyExpired",
-    "This passkey sign-in expired. Please try again.",
-  ],
+  gate_private_beta: "signin.errorGatePrivateBeta",
+  gate_closed: "signin.errorGateClosed",
+  gate_blocked: "signin.errorGateBlocked",
+  user_deleted: "signin.errorUserDeleted",
+  email_archived: "signin.errorEmailArchived",
+  unknown_credential: "signin.errorPasskeyUnknown",
+  verify_failed: "signin.errorPasskeyVerifyFailed",
+  not_verified: "signin.errorPasskeyVerifyFailed",
+  challenge_invalid: "signin.errorPasskeyExpired",
 };
 
 export function humanError(t: Translator, code?: string, retryAfterSeconds?: number): string {
@@ -89,11 +49,7 @@ export function humanError(t: Translator, code?: string, retryAfterSeconds?: num
       ? t("signin.errorTooManyWithRetry", { retry: formatRetry(t, retryAfterSeconds) })
       : t("signin.errorTooMany");
   }
-  const plain = code ? PLAIN_ERRORS[code] : undefined;
-  if (plain) return t(plain);
-  const fallback = code ? FALLBACK_ERRORS[code] : undefined;
-  if (fallback) return tOrFallback(t, fallback[0], fallback[1]);
-  return t("signin.errorGeneric");
+  return t((code && ERROR_KEYS[code]) || "signin.errorGeneric");
 }
 
 // Reason codes mirror /api/onboarding/username/check.

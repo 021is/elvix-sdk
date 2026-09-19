@@ -1,6 +1,7 @@
 "use client";
 
 import { type CSSProperties, useState } from "react";
+import { useT } from "../locale/use-t";
 import { cssLength } from "./css-length";
 import { useElvixBrandPair, useElvixResolvedTheme } from "./elvix-provider";
 import { ElvixShield } from "./elvix-shield";
@@ -81,13 +82,14 @@ export type ElvixSignInButtonProps = {
  * Merged last into the root element so an explicit width/height wins.
  */ & ElvixSizeProps;
 
+/** Catalog keys of the preset labels. */
 const PRESET_LABEL: Record<ElvixSignInPreset, string> = {
-  "sign-in-with-elvix": "Sign in with elvix",
-  "continue-with-elvix": "Continue with elvix",
-  "sign-up-with-elvix": "Sign up with elvix",
-  "sign-in": "Sign in",
-  "log-in": "Log in",
-  continue: "Continue",
+  "sign-in-with-elvix": "buttons.signInWithElvix",
+  "continue-with-elvix": "buttons.continueWithElvix",
+  "sign-up-with-elvix": "buttons.signUpWithElvix",
+  "sign-in": "buttons.signIn",
+  "log-in": "buttons.logIn",
+  continue: "common.continue",
 };
 
 const SIZE_STANDARD: Record<
@@ -204,10 +206,11 @@ export function ElvixSignInButton({
   minHeight,
   maxHeight,
 }: ElvixSignInButtonProps) {
+  const t = useT();
   const sized = sizeStyle({ width, height, minWidth, maxWidth, minHeight, maxHeight });
   const [embedOpen, setEmbedOpen] = useState(false);
   const isIcon = type === "icon";
-  const resolvedLabel = label ?? PRESET_LABEL[preset];
+  const resolvedLabel = label ?? t(PRESET_LABEL[preset]);
   // Theme-aware: an explicit light/dark prop wins; otherwise adopt the
   // <ElvixProvider>'s resolved theme (which folds "auto" against the system
   // scheme), falling back to "light" outside a provider. Prevents the old

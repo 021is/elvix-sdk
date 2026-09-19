@@ -3,6 +3,7 @@
 import { Loader2, LogOut } from "lucide-react";
 import type * as React from "react";
 import type { ReactNode } from "react";
+import { useT } from "../locale/use-t";
 import { cssLength } from "./css-length";
 import { useElvixBrandPair, useElvixResolvedTheme } from "./elvix-provider";
 import { useSignOut } from "./use-sign-out";
@@ -29,11 +30,12 @@ export const ElvixSignOutPreset = {
 } as const;
 export type ElvixSignOutPreset = (typeof ElvixSignOutPreset)[keyof typeof ElvixSignOutPreset];
 
+/** Catalog keys of the preset labels. */
 const PRESET_LABEL: Record<ElvixSignOutPreset, string> = {
-  "sign-out": "Sign out",
-  "log-out": "Log out",
-  "sign-out-of-elvix": "Sign out of elvix",
-  "sign-out-of-app": "Sign out",
+  "sign-out": "buttons.signOut",
+  "log-out": "buttons.logOut",
+  "sign-out-of-elvix": "buttons.signOutOfElvix",
+  "sign-out-of-app": "buttons.signOut",
 };
 
 /**
@@ -317,13 +319,14 @@ export function ElvixSignOutButton({
   cookieName = "elvix_token",
   onResult,
 }: ElvixSignOutButtonProps) {
+  const t = useT();
   const { run: doSignOut, busy } = useSignOut({ redirectAfterSignOut, cookieName });
   const { fill, onFill } = useBrandFill({ tone, variant, theme, brandColor, onBrandColor });
 
   const isIconOnly = type === "icon";
   const handleClick = async () => onResult?.(await doSignOut());
   const iconNode = <SignOutGlyph busy={busy} show={showIcon} icon={icon} px={ICON_SIZE[size]} />;
-  const liveLabel = busy ? "Signing out…" : (label ?? PRESET_LABEL[preset]);
+  const liveLabel = busy ? t("buttons.signingOut") : (label ?? t(PRESET_LABEL[preset]));
 
   // Headless: the host owns the element; we just hand over `signOut` + `busy`.
   if (typeof children === "function") {

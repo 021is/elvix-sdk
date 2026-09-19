@@ -30,7 +30,6 @@ import {
   OAuthProvider,
   oauthStartHref,
   type Translator,
-  tOrFallback,
   usernameReasonLabel,
 } from "./sign-in-copy";
 import { unwrapEnvelope } from "./spine-fetch";
@@ -181,9 +180,7 @@ function BrandMark({ p }: { p: AuthFormProps }) {
 function GateBadge({ gate, t }: { gate: string | undefined; t: Translator }) {
   if (!gate || gate === "public") return null;
   const isBeta = gate === "private_beta";
-  const label = isBeta
-    ? tOrFallback(t, "signin.gateBadgePrivateBeta", "Private beta · invite only")
-    : tOrFallback(t, "signin.gateBadgeClosed", "Sign-ups closed");
+  const label = isBeta ? t("signin.gateBadgePrivateBeta") : t("signin.gateBadgeClosed");
   return (
     <span
       className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
@@ -293,12 +290,13 @@ export function AuthenticatingPane({
   brandColor?: string;
   appName?: string;
 }) {
+  const t = useT();
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-8">
       <Loader2 className="size-7 animate-spin" style={{ color: brandColor }} />
-      <div className="text-[13.5px] font-medium text-fg-1">Signing you in…</div>
+      <div className="text-[13.5px] font-medium text-fg-1">{t("signin.signingYouIn")}</div>
       <div className="text-[12px] text-fg-3">
-        Hold on a second, taking you to {appName || "your app"}.
+        {t("signin.takingYouTo", { app: appName || t("signin.appNameFallback") })}
       </div>
     </div>
   );

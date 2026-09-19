@@ -858,7 +858,7 @@ function AuthBody(p: AuthFormProps) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-10">
         <Loader2 className="size-5 animate-spin text-fg-3" />
-        <p className="text-[13px] text-fg-3">Signing you in…</p>
+        <p className="text-[13px] text-fg-3">{t("signin.signingYouIn")}</p>
       </div>
     );
   }

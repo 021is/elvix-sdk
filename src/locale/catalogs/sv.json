@@ -96,6 +96,30 @@
       }
     },
     "signin": {
+      "signingYouIn": {
+        "other": "Loggar in…"
+      },
+      "takingYouTo": {
+        "other": "Ett ögonblick, vi tar dig till {app}."
+      },
+      "gateBadgePrivateBeta": {
+        "other": "Privat beta · endast inbjudna"
+      },
+      "gateBadgeClosed": {
+        "other": "Registreringen är stängd"
+      },
+      "errorEmailArchived": {
+        "other": "Den här e-postadressen kan inte längre användas för inloggning. Använd din nuvarande adress."
+      },
+      "errorPasskeyUnknown": {
+        "other": "Den här passkeyn är inte registrerad hos elvix. Logga in på ett annat sätt, ta sedan bort den och lägg till en ny i säkerhetsinställningarna."
+      },
+      "errorPasskeyVerifyFailed": {
+        "other": "Passkeyn kunde inte verifieras. Logga in på ett annat sätt och lägg till den igen i säkerhetsinställningarna."
+      },
+      "errorPasskeyExpired": {
+        "other": "Den här inloggningen med passkey har gått ut. Försök igen."
+      },
       "title": {
         "other": "Logga in på {app}"
       },
@@ -2288,6 +2312,153 @@
       },
       "recoverDeclineCta": {
         "other": "Inte nu, logga ut mig"
+      }
+    },
+    "buttons": {
+      "signInWithElvix": {
+        "other": "Logga in med elvix"
+      },
+      "continueWithElvix": {
+        "other": "Fortsätt med elvix"
+      },
+      "signUpWithElvix": {
+        "other": "Registrera dig med elvix"
+      },
+      "signIn": {
+        "other": "Logga in"
+      },
+      "logIn": {
+        "other": "Logga in"
+      },
+      "signOut": {
+        "other": "Logga ut"
+      },
+      "logOut": {
+        "other": "Logga ut"
+      },
+      "signOutOfElvix": {
+        "other": "Logga ut från elvix"
+      },
+      "signingOut": {
+        "other": "Loggar ut…"
+      }
+    },
+    "passkeys": {
+      "title": {
+        "other": "Passkeys för {app}"
+      },
+      "body": {
+        "other": "Skyddade mot nätfiske. De här passkeys loggar bara in dig i {app}. Passkeys som du lagt till i säkerhetsinställningarna för elvix fungerar också här och hanteras där."
+      },
+      "empty": {
+        "other": "Inga passkeys för {app} ännu. Lägg till en nedan."
+      },
+      "add": {
+        "other": "Lägg till en passkey för {app}"
+      },
+      "adding": {
+        "other": "Lägger till…"
+      },
+      "removeAria": {
+        "other": "Ta bort {label}"
+      },
+      "lastUsed": {
+        "other": "Senast använd {date}"
+      },
+      "added": {
+        "other": "Tillagd {date}"
+      },
+      "synced": {
+        "other": "synkad"
+      },
+      "thisApp": {
+        "other": "den här appen"
+      },
+      "missingAppId": {
+        "other": "App-id saknas."
+      },
+      "deviceApplePlatform": {
+        "other": "Passkey för Apple-plattformen"
+      },
+      "devicePasskey": {
+        "other": "Passkey"
+      },
+      "deviceGeneric": {
+        "other": "enhet"
+      },
+      "errorLoad": {
+        "other": "Det gick inte att läsa in passkeys."
+      },
+      "errorNotMember": {
+        "other": "Du är inte medlem i den här appen."
+      },
+      "errorMethodDisabled": {
+        "other": "Passkeys är avstängda för den här appen."
+      },
+      "errorAppNotFound": {
+        "other": "Appen hittades inte."
+      },
+      "errorUnsupported": {
+        "other": "Den här webbläsaren stöder inte passkeys."
+      },
+      "errorRegisterFailed": {
+        "other": "Det gick inte att registrera passkeyn. Försök igen."
+      },
+      "errorInvalidInput": {
+        "other": "Det gick inte att starta konfigurationen av passkeyn. Försök igen."
+      },
+      "errorUnauthenticated": {
+        "other": "Logga in först och lägg sedan till en passkey."
+      },
+      "errorRemoveFailed": {
+        "other": "Det gick inte att ta bort passkeyn. Försök igen."
+      }
+    },
+    "device": {
+      "title": {
+        "other": "Godkänn en enhet"
+      },
+      "enterCode": {
+        "other": "Ange koden som visas i din terminal."
+      },
+      "confirmCode": {
+        "other": "En enhet vill logga in på ditt konto som CLI. Kontrollera att koden stämmer med din terminal:"
+      },
+      "approvedTitle": {
+        "other": "Godkänd"
+      },
+      "approvedBody": {
+        "other": "Gå tillbaka till din terminal. Den fortsätter automatiskt."
+      },
+      "approvingTitle": {
+        "other": "Godkänner…"
+      },
+      "approvingBody": {
+        "other": "Kopplar enheten till ditt {app}-konto."
+      },
+      "approvingBodyNoApp": {
+        "other": "Kopplar enheten till ditt konto."
+      },
+      "failedTitle": {
+        "other": "Det gick inte att godkänna"
+      },
+      "tryAgain": {
+        "other": "Försök igen"
+      },
+      "errorNotFound": {
+        "other": "Koden hittades inte. Den kan ha gått ut eller redan använts. Börja om från din terminal."
+      },
+      "errorExpired": {
+        "other": "Koden har gått ut. Starta inloggningen igen från din terminal för att få en ny."
+      },
+      "errorAlreadyApproved": {
+        "other": "Koden är redan godkänd. Gå tillbaka till din terminal; den borde redan ha fortsatt."
+      },
+      "errorMismatch": {
+        "other": "Koden ser inte rätt ut. Kontrollera att den stämmer exakt med din terminal."
+      },
+      "errorGeneric": {
+        "other": "Något gick fel. Koden kan ha gått ut. Börja om från din terminal."
       }
     }
   }

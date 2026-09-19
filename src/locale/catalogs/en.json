@@ -96,6 +96,30 @@
       }
     },
     "signin": {
+      "signingYouIn": {
+        "other": "Signing you in…"
+      },
+      "takingYouTo": {
+        "other": "Hold on a second, taking you to {app}."
+      },
+      "gateBadgePrivateBeta": {
+        "other": "Private beta · invite only"
+      },
+      "gateBadgeClosed": {
+        "other": "Sign-ups closed"
+      },
+      "errorEmailArchived": {
+        "other": "This email was retired from sign-in. Use your current address."
+      },
+      "errorPasskeyUnknown": {
+        "other": "This passkey isn't registered with elvix. Sign in another way, then remove it and add a new one in Security settings."
+      },
+      "errorPasskeyVerifyFailed": {
+        "other": "That passkey couldn't be verified. Sign in another way, then re-add it in Security settings."
+      },
+      "errorPasskeyExpired": {
+        "other": "This passkey sign-in expired. Please try again."
+      },
       "title": {
         "other": "Sign in to {app}"
       },
@@ -2288,6 +2312,153 @@
       },
       "recoverDeclineCta": {
         "other": "Not now, sign me out"
+      }
+    },
+    "buttons": {
+      "signInWithElvix": {
+        "other": "Sign in with elvix"
+      },
+      "continueWithElvix": {
+        "other": "Continue with elvix"
+      },
+      "signUpWithElvix": {
+        "other": "Sign up with elvix"
+      },
+      "signIn": {
+        "other": "Sign in"
+      },
+      "logIn": {
+        "other": "Log in"
+      },
+      "signOut": {
+        "other": "Sign out"
+      },
+      "logOut": {
+        "other": "Log out"
+      },
+      "signOutOfElvix": {
+        "other": "Sign out of elvix"
+      },
+      "signingOut": {
+        "other": "Signing out…"
+      }
+    },
+    "passkeys": {
+      "title": {
+        "other": "Passkeys for {app}"
+      },
+      "body": {
+        "other": "Phishing-proof. These passkeys can only sign you in to {app}. Account-level passkeys you added in your elvix security settings work here too and are managed there."
+      },
+      "empty": {
+        "other": "No passkeys for {app} yet. Add one below."
+      },
+      "add": {
+        "other": "Add a passkey for {app}"
+      },
+      "adding": {
+        "other": "Adding…"
+      },
+      "removeAria": {
+        "other": "Remove {label}"
+      },
+      "lastUsed": {
+        "other": "Last used {date}"
+      },
+      "added": {
+        "other": "Added {date}"
+      },
+      "synced": {
+        "other": "synced"
+      },
+      "thisApp": {
+        "other": "this app"
+      },
+      "missingAppId": {
+        "other": "Missing app id."
+      },
+      "deviceApplePlatform": {
+        "other": "Apple platform passkey"
+      },
+      "devicePasskey": {
+        "other": "Passkey"
+      },
+      "deviceGeneric": {
+        "other": "device"
+      },
+      "errorLoad": {
+        "other": "Couldn't load passkeys."
+      },
+      "errorNotMember": {
+        "other": "You're not a member of this app."
+      },
+      "errorMethodDisabled": {
+        "other": "Passkeys are disabled for this app."
+      },
+      "errorAppNotFound": {
+        "other": "App not found."
+      },
+      "errorUnsupported": {
+        "other": "This browser doesn't support passkeys."
+      },
+      "errorRegisterFailed": {
+        "other": "Couldn't register the passkey. Try again."
+      },
+      "errorInvalidInput": {
+        "other": "Couldn't start passkey setup. Try again."
+      },
+      "errorUnauthenticated": {
+        "other": "Sign in first, then add a passkey."
+      },
+      "errorRemoveFailed": {
+        "other": "Couldn't remove the passkey. Try again."
+      }
+    },
+    "device": {
+      "title": {
+        "other": "Authorize a device"
+      },
+      "enterCode": {
+        "other": "Enter the code shown in your terminal."
+      },
+      "confirmCode": {
+        "other": "A device wants to sign in to your account as a CLI. Confirm the code matches your terminal:"
+      },
+      "approvedTitle": {
+        "other": "Approved"
+      },
+      "approvedBody": {
+        "other": "Return to your terminal. It continues automatically."
+      },
+      "approvingTitle": {
+        "other": "Authorizing…"
+      },
+      "approvingBody": {
+        "other": "Linking the device to your {app} account."
+      },
+      "approvingBodyNoApp": {
+        "other": "Linking the device to your account."
+      },
+      "failedTitle": {
+        "other": "Could not approve"
+      },
+      "tryAgain": {
+        "other": "Try again"
+      },
+      "errorNotFound": {
+        "other": "That code wasn't found. It may have expired or already been used. Start again from your terminal."
+      },
+      "errorExpired": {
+        "other": "That code has expired. Start the sign-in again from your terminal for a fresh one."
+      },
+      "errorAlreadyApproved": {
+        "other": "That code was already approved. Return to your terminal; it should have continued."
+      },
+      "errorMismatch": {
+        "other": "That code doesn't look right. Check it matches your terminal exactly."
+      },
+      "errorGeneric": {
+        "other": "Something went wrong. The code may have expired. Start again from your terminal."
       }
     }
   }

@@ -95,6 +95,30 @@
       }
     },
     "signin": {
+      "signingYouIn": {
+        "other": "Accesso in corso…"
+      },
+      "takingYouTo": {
+        "other": "Un attimo, ti portiamo su {app}."
+      },
+      "gateBadgePrivateBeta": {
+        "other": "Beta privata · solo su invito"
+      },
+      "gateBadgeClosed": {
+        "other": "Iscrizioni chiuse"
+      },
+      "errorEmailArchived": {
+        "other": "Questa email non può più essere usata per accedere. Usa il tuo indirizzo attuale."
+      },
+      "errorPasskeyUnknown": {
+        "other": "Questa passkey non è registrata su elvix. Accedi in un altro modo, poi rimuovila e aggiungine una nuova nelle impostazioni di sicurezza."
+      },
+      "errorPasskeyVerifyFailed": {
+        "other": "Non è stato possibile verificare quella passkey. Accedi in un altro modo e aggiungila di nuovo nelle impostazioni di sicurezza."
+      },
+      "errorPasskeyExpired": {
+        "other": "Questo accesso con passkey è scaduto. Riprova."
+      },
       "title": {
         "other": "Accedi a {app}"
       },
@@ -2287,6 +2311,153 @@
       },
       "recoverDeclineCta": {
         "other": "Non ora, disconnettimi"
+      }
+    },
+    "buttons": {
+      "signInWithElvix": {
+        "other": "Accedi con elvix"
+      },
+      "continueWithElvix": {
+        "other": "Continua con elvix"
+      },
+      "signUpWithElvix": {
+        "other": "Registrati con elvix"
+      },
+      "signIn": {
+        "other": "Accedi"
+      },
+      "logIn": {
+        "other": "Entra"
+      },
+      "signOut": {
+        "other": "Esci"
+      },
+      "logOut": {
+        "other": "Disconnetti"
+      },
+      "signOutOfElvix": {
+        "other": "Esci da elvix"
+      },
+      "signingOut": {
+        "other": "Uscita in corso…"
+      }
+    },
+    "passkeys": {
+      "title": {
+        "other": "Passkey per {app}"
+      },
+      "body": {
+        "other": "A prova di phishing. Queste passkey ti fanno accedere solo a {app}. Le passkey aggiunte nelle impostazioni di sicurezza di elvix funzionano anche qui e si gestiscono lì."
+      },
+      "empty": {
+        "other": "Ancora nessuna passkey per {app}. Aggiungine una qui sotto."
+      },
+      "add": {
+        "other": "Aggiungi una passkey per {app}"
+      },
+      "adding": {
+        "other": "Aggiunta in corso…"
+      },
+      "removeAria": {
+        "other": "Rimuovi {label}"
+      },
+      "lastUsed": {
+        "other": "Ultimo uso il {date}"
+      },
+      "added": {
+        "other": "Aggiunta il {date}"
+      },
+      "synced": {
+        "other": "sincronizzata"
+      },
+      "thisApp": {
+        "other": "questa app"
+      },
+      "missingAppId": {
+        "other": "ID dell'app mancante."
+      },
+      "deviceApplePlatform": {
+        "other": "Passkey della piattaforma Apple"
+      },
+      "devicePasskey": {
+        "other": "Passkey"
+      },
+      "deviceGeneric": {
+        "other": "dispositivo"
+      },
+      "errorLoad": {
+        "other": "Impossibile caricare le passkey."
+      },
+      "errorNotMember": {
+        "other": "Non sei membro di questa app."
+      },
+      "errorMethodDisabled": {
+        "other": "Le passkey sono disattivate per questa app."
+      },
+      "errorAppNotFound": {
+        "other": "App non trovata."
+      },
+      "errorUnsupported": {
+        "other": "Questo browser non supporta le passkey."
+      },
+      "errorRegisterFailed": {
+        "other": "Impossibile registrare la passkey. Riprova."
+      },
+      "errorInvalidInput": {
+        "other": "Impossibile avviare la configurazione della passkey. Riprova."
+      },
+      "errorUnauthenticated": {
+        "other": "Prima accedi, poi aggiungi una passkey."
+      },
+      "errorRemoveFailed": {
+        "other": "Impossibile rimuovere la passkey. Riprova."
+      }
+    },
+    "device": {
+      "title": {
+        "other": "Autorizza un dispositivo"
+      },
+      "enterCode": {
+        "other": "Inserisci il codice mostrato nel tuo terminale."
+      },
+      "confirmCode": {
+        "other": "Un dispositivo vuole accedere al tuo account come CLI. Verifica che il codice corrisponda al tuo terminale:"
+      },
+      "approvedTitle": {
+        "other": "Autorizzato"
+      },
+      "approvedBody": {
+        "other": "Torna al terminale. Continua automaticamente."
+      },
+      "approvingTitle": {
+        "other": "Autorizzazione in corso…"
+      },
+      "approvingBody": {
+        "other": "Collegamento del dispositivo al tuo account {app}."
+      },
+      "approvingBodyNoApp": {
+        "other": "Collegamento del dispositivo al tuo account."
+      },
+      "failedTitle": {
+        "other": "Impossibile autorizzare"
+      },
+      "tryAgain": {
+        "other": "Riprova"
+      },
+      "errorNotFound": {
+        "other": "Codice non trovato. Potrebbe essere scaduto o già usato. Ricomincia dal terminale."
+      },
+      "errorExpired": {
+        "other": "Il codice è scaduto. Riavvia l'accesso dal terminale per ottenerne uno nuovo."
+      },
+      "errorAlreadyApproved": {
+        "other": "Il codice è già stato autorizzato. Torna al terminale; dovrebbe aver già proseguito."
+      },
+      "errorMismatch": {
+        "other": "Il codice non sembra corretto. Verifica che corrisponda esattamente al tuo terminale."
+      },
+      "errorGeneric": {
+        "other": "Qualcosa è andato storto. Il codice potrebbe essere scaduto. Ricomincia dal terminale."
       }
     }
   }

@@ -95,6 +95,30 @@
       }
     },
     "signin": {
+      "signingYouIn": {
+        "other": "Bezig met aanmelden…"
+      },
+      "takingYouTo": {
+        "other": "Een ogenblik, we brengen u naar {app}."
+      },
+      "gateBadgePrivateBeta": {
+        "other": "Private bèta · alleen op uitnodiging"
+      },
+      "gateBadgeClosed": {
+        "other": "Registratie gesloten"
+      },
+      "errorEmailArchived": {
+        "other": "Dit e-mailadres kan niet meer worden gebruikt om aan te melden. Gebruik uw huidige adres."
+      },
+      "errorPasskeyUnknown": {
+        "other": "Deze passkey is niet bij elvix geregistreerd. Meld u op een andere manier aan, verwijder hem en voeg een nieuwe toe in de beveiligingsinstellingen."
+      },
+      "errorPasskeyVerifyFailed": {
+        "other": "Die passkey kon niet worden geverifieerd. Meld u op een andere manier aan en voeg hem opnieuw toe in de beveiligingsinstellingen."
+      },
+      "errorPasskeyExpired": {
+        "other": "Deze aanmelding met passkey is verlopen. Probeer het opnieuw."
+      },
       "title": {
         "other": "Aanmelden bij {app}"
       },
@@ -246,7 +270,7 @@
         "other": "Passkey"
       },
       "legalIntro": {
-        "other": "Door door te gaan, gaat u akkoord met de"
+        "other": "Door verder te gaan, gaat u akkoord met de documenten van {app}:"
       },
       "termsOfService": {
         "other": "Servicevoorwaarden"
@@ -2287,6 +2311,153 @@
       },
       "recoverDeclineCta": {
         "other": "Niet nu, meld mij af"
+      }
+    },
+    "buttons": {
+      "signInWithElvix": {
+        "other": "Aanmelden met elvix"
+      },
+      "continueWithElvix": {
+        "other": "Doorgaan met elvix"
+      },
+      "signUpWithElvix": {
+        "other": "Registreren met elvix"
+      },
+      "signIn": {
+        "other": "Aanmelden"
+      },
+      "logIn": {
+        "other": "Inloggen"
+      },
+      "signOut": {
+        "other": "Afmelden"
+      },
+      "logOut": {
+        "other": "Uitloggen"
+      },
+      "signOutOfElvix": {
+        "other": "Afmelden bij elvix"
+      },
+      "signingOut": {
+        "other": "Bezig met afmelden…"
+      }
+    },
+    "passkeys": {
+      "title": {
+        "other": "Passkeys voor {app}"
+      },
+      "body": {
+        "other": "Bestand tegen phishing. Met deze passkeys meldt u zich alleen aan bij {app}. Passkeys die u in uw elvix-beveiligingsinstellingen hebt toegevoegd, werken hier ook en worden daar beheerd."
+      },
+      "empty": {
+        "other": "Nog geen passkeys voor {app}. Voeg er hieronder een toe."
+      },
+      "add": {
+        "other": "Passkey toevoegen voor {app}"
+      },
+      "adding": {
+        "other": "Bezig met toevoegen…"
+      },
+      "removeAria": {
+        "other": "{label} verwijderen"
+      },
+      "lastUsed": {
+        "other": "Laatst gebruikt op {date}"
+      },
+      "added": {
+        "other": "Toegevoegd op {date}"
+      },
+      "synced": {
+        "other": "gesynchroniseerd"
+      },
+      "thisApp": {
+        "other": "deze app"
+      },
+      "missingAppId": {
+        "other": "App-id ontbreekt."
+      },
+      "deviceApplePlatform": {
+        "other": "Apple-platformpasskey"
+      },
+      "devicePasskey": {
+        "other": "Passkey"
+      },
+      "deviceGeneric": {
+        "other": "apparaat"
+      },
+      "errorLoad": {
+        "other": "Passkeys konden niet worden geladen."
+      },
+      "errorNotMember": {
+        "other": "U bent geen lid van deze app."
+      },
+      "errorMethodDisabled": {
+        "other": "Passkeys zijn uitgeschakeld voor deze app."
+      },
+      "errorAppNotFound": {
+        "other": "App niet gevonden."
+      },
+      "errorUnsupported": {
+        "other": "Deze browser ondersteunt geen passkeys."
+      },
+      "errorRegisterFailed": {
+        "other": "De passkey kon niet worden geregistreerd. Probeer het opnieuw."
+      },
+      "errorInvalidInput": {
+        "other": "Het instellen van de passkey kon niet worden gestart. Probeer het opnieuw."
+      },
+      "errorUnauthenticated": {
+        "other": "Meld u eerst aan en voeg daarna een passkey toe."
+      },
+      "errorRemoveFailed": {
+        "other": "De passkey kon niet worden verwijderd. Probeer het opnieuw."
+      }
+    },
+    "device": {
+      "title": {
+        "other": "Een apparaat autoriseren"
+      },
+      "enterCode": {
+        "other": "Voer de code in die in uw terminal wordt getoond."
+      },
+      "confirmCode": {
+        "other": "Een apparaat wil zich als CLI bij uw account aanmelden. Controleer of de code overeenkomt met uw terminal:"
+      },
+      "approvedTitle": {
+        "other": "Goedgekeurd"
+      },
+      "approvedBody": {
+        "other": "Ga terug naar uw terminal. Het gaat automatisch verder."
+      },
+      "approvingTitle": {
+        "other": "Bezig met autoriseren…"
+      },
+      "approvingBody": {
+        "other": "Het apparaat wordt gekoppeld aan uw {app}-account."
+      },
+      "approvingBodyNoApp": {
+        "other": "Het apparaat wordt gekoppeld aan uw account."
+      },
+      "failedTitle": {
+        "other": "Goedkeuren mislukt"
+      },
+      "tryAgain": {
+        "other": "Opnieuw proberen"
+      },
+      "errorNotFound": {
+        "other": "Die code is niet gevonden. Hij is misschien verlopen of al gebruikt. Begin opnieuw vanuit uw terminal."
+      },
+      "errorExpired": {
+        "other": "Die code is verlopen. Start het aanmelden opnieuw vanuit uw terminal voor een nieuwe code."
+      },
+      "errorAlreadyApproved": {
+        "other": "Die code is al goedgekeurd. Ga terug naar uw terminal; die zou al verder moeten zijn gegaan."
+      },
+      "errorMismatch": {
+        "other": "Die code lijkt niet te kloppen. Controleer of hij precies overeenkomt met uw terminal."
+      },
+      "errorGeneric": {
+        "other": "Er ging iets mis. De code is misschien verlopen. Begin opnieuw vanuit uw terminal."
       }
     }
   }

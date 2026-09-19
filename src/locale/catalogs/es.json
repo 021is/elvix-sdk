@@ -96,6 +96,30 @@
       }
     },
     "signin": {
+      "signingYouIn": {
+        "other": "Iniciando sesión…"
+      },
+      "takingYouTo": {
+        "other": "Un momento, te llevamos a {app}."
+      },
+      "gateBadgePrivateBeta": {
+        "other": "Beta privada · solo con invitación"
+      },
+      "gateBadgeClosed": {
+        "other": "Registro cerrado"
+      },
+      "errorEmailArchived": {
+        "other": "Este correo ya no se puede usar para iniciar sesión. Usa tu dirección actual."
+      },
+      "errorPasskeyUnknown": {
+        "other": "Esta clave de acceso no está registrada en elvix. Inicia sesión de otra forma, elimínala y añade una nueva en los ajustes de seguridad."
+      },
+      "errorPasskeyVerifyFailed": {
+        "other": "No se pudo verificar esa clave de acceso. Inicia sesión de otra forma y vuelve a añadirla en los ajustes de seguridad."
+      },
+      "errorPasskeyExpired": {
+        "other": "Este inicio de sesión con clave de acceso ha caducado. Inténtalo de nuevo."
+      },
       "title": {
         "other": "Inicia sesión en {app}"
       },
@@ -247,7 +271,7 @@
         "other": "Clave de acceso"
       },
       "legalIntro": {
-        "other": "Al continuar, aceptas los"
+        "other": "Al continuar, aceptas los documentos de {app}:"
       },
       "termsOfService": {
         "other": "Términos del Servicio"
@@ -2288,6 +2312,153 @@
       },
       "recoverDeclineCta": {
         "other": "Ahora no, cierra mi sesión"
+      }
+    },
+    "buttons": {
+      "signInWithElvix": {
+        "other": "Iniciar sesión con elvix"
+      },
+      "continueWithElvix": {
+        "other": "Continuar con elvix"
+      },
+      "signUpWithElvix": {
+        "other": "Registrarse con elvix"
+      },
+      "signIn": {
+        "other": "Iniciar sesión"
+      },
+      "logIn": {
+        "other": "Entrar"
+      },
+      "signOut": {
+        "other": "Cerrar sesión"
+      },
+      "logOut": {
+        "other": "Salir"
+      },
+      "signOutOfElvix": {
+        "other": "Cerrar sesión en elvix"
+      },
+      "signingOut": {
+        "other": "Cerrando sesión…"
+      }
+    },
+    "passkeys": {
+      "title": {
+        "other": "Claves de acceso para {app}"
+      },
+      "body": {
+        "other": "A prueba de phishing. Estas claves de acceso solo te conectan a {app}. Las claves que añadiste en los ajustes de seguridad de elvix también funcionan aquí y se gestionan allí."
+      },
+      "empty": {
+        "other": "Aún no hay claves de acceso para {app}. Añade una abajo."
+      },
+      "add": {
+        "other": "Añadir una clave de acceso para {app}"
+      },
+      "adding": {
+        "other": "Añadiendo…"
+      },
+      "removeAria": {
+        "other": "Eliminar {label}"
+      },
+      "lastUsed": {
+        "other": "Usada por última vez el {date}"
+      },
+      "added": {
+        "other": "Añadida el {date}"
+      },
+      "synced": {
+        "other": "sincronizada"
+      },
+      "thisApp": {
+        "other": "esta aplicación"
+      },
+      "missingAppId": {
+        "other": "Falta el id de la aplicación."
+      },
+      "deviceApplePlatform": {
+        "other": "Clave de acceso de la plataforma Apple"
+      },
+      "devicePasskey": {
+        "other": "Clave de acceso"
+      },
+      "deviceGeneric": {
+        "other": "dispositivo"
+      },
+      "errorLoad": {
+        "other": "No se pudieron cargar las claves de acceso."
+      },
+      "errorNotMember": {
+        "other": "No eres miembro de esta aplicación."
+      },
+      "errorMethodDisabled": {
+        "other": "Las claves de acceso están desactivadas en esta aplicación."
+      },
+      "errorAppNotFound": {
+        "other": "Aplicación no encontrada."
+      },
+      "errorUnsupported": {
+        "other": "Este navegador no admite claves de acceso."
+      },
+      "errorRegisterFailed": {
+        "other": "No se pudo registrar la clave de acceso. Inténtalo de nuevo."
+      },
+      "errorInvalidInput": {
+        "other": "No se pudo iniciar la configuración de la clave de acceso. Inténtalo de nuevo."
+      },
+      "errorUnauthenticated": {
+        "other": "Primero inicia sesión y luego añade una clave de acceso."
+      },
+      "errorRemoveFailed": {
+        "other": "No se pudo eliminar la clave de acceso. Inténtalo de nuevo."
+      }
+    },
+    "device": {
+      "title": {
+        "other": "Autorizar un dispositivo"
+      },
+      "enterCode": {
+        "other": "Introduce el código que aparece en tu terminal."
+      },
+      "confirmCode": {
+        "other": "Un dispositivo quiere iniciar sesión en tu cuenta como CLI. Confirma que el código coincide con tu terminal:"
+      },
+      "approvedTitle": {
+        "other": "Autorizado"
+      },
+      "approvedBody": {
+        "other": "Vuelve a tu terminal. Continúa automáticamente."
+      },
+      "approvingTitle": {
+        "other": "Autorizando…"
+      },
+      "approvingBody": {
+        "other": "Vinculando el dispositivo a tu cuenta de {app}."
+      },
+      "approvingBodyNoApp": {
+        "other": "Vinculando el dispositivo a tu cuenta."
+      },
+      "failedTitle": {
+        "other": "No se pudo autorizar"
+      },
+      "tryAgain": {
+        "other": "Intentar de nuevo"
+      },
+      "errorNotFound": {
+        "other": "No se encontró ese código. Puede que haya caducado o que ya se haya usado. Empieza de nuevo desde tu terminal."
+      },
+      "errorExpired": {
+        "other": "Ese código ha caducado. Vuelve a iniciar sesión desde tu terminal para obtener uno nuevo."
+      },
+      "errorAlreadyApproved": {
+        "other": "Ese código ya fue autorizado. Vuelve a tu terminal; ya debería haber continuado."
+      },
+      "errorMismatch": {
+        "other": "Ese código no parece correcto. Comprueba que coincide exactamente con tu terminal."
+      },
+      "errorGeneric": {
+        "other": "Algo salió mal. Puede que el código haya caducado. Empieza de nuevo desde tu terminal."
       }
     }
   }
