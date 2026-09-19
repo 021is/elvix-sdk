@@ -9,6 +9,7 @@
  * session arrived.
  */
 import { vi } from "vitest";
+import { defaultsFor } from "../../src/react/regions";
 
 export const BASE = "https://elvix.test";
 export const CLIENT_ID = "elvix_pub_test_abc";
@@ -30,6 +31,8 @@ export type FakeElvixState = {
   sessions: { id: string; isCurrent: boolean; [k: string]: unknown }[];
   addresses: { id: string; kind: string; isDefault: boolean; [k: string]: unknown }[];
   languages: { id: string; code: string; level: string }[];
+  /** `null` = the user has not set a region yet. */
+  region: Record<string, unknown> | null;
 };
 
 const json = (body: unknown, status = 200) =>
@@ -67,6 +70,17 @@ export function sampleContext(userId = "usr_1", overrides: Record<string, unknow
   };
 }
 
+/** A region record with the country's cascaded defaults. */
+export function regionFor(country: string) {
+  return {
+    id: "reg_1",
+    country,
+    ...defaultsFor(country),
+    createdAt: new Date(0).toISOString(),
+    updatedAt: new Date(0).toISOString(),
+  };
+}
+
 export function photo(updatedAt: number): Media {
   return {
     slug: "elvix-account",
@@ -86,6 +100,69 @@ export function stubColorScheme(scheme: "light" | "dark") {
       removeEventListener: () => {},
     }),
   });
+}
+
+type Handler = (url: string, init?: RequestInit) => Response | Promise<Response>;
+type Route = [method: string, test: (url: string) => boolean, handler: Handler];
+
+const idParam = (url: string) => new URL(url).searchParams.get("id");
+
+/** The profile editors' endpoints: addresses, languages, region. Writes are
+ *  recorded in `patches` in order. */
+function profileRoutes(state: FakeElvixState, patches: unknown[]): Route[] {
+  const bodyOf = (init?: RequestInit) => {
+    const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
+    patches.push(body);
+    return body;
+  };
+
+  const addresses: Handler = (url, init) => {
+    const method = init?.method ?? "GET";
+    if (method === "GET") {
+      const kind = new URL(url).searchParams.get("kind");
+      const list = state.addresses.filter((a) => a.kind === kind);
+      return json({ success: true, data: { ok: true, addresses: list } });
+    }
+    const id = idParam(url);
+    if (method === "DELETE") {
+      state.addresses = state.addresses.filter((a) => a.id !== id);
+    } else if (method === "POST") {
+      state.addresses.push({ ...bodyOf(init), id: `addr_${state.addresses.length + 1}` } as never);
+    } else {
+      Object.assign(state.addresses.find((a) => a.id === id) ?? {}, bodyOf(init));
+    }
+    return json({ success: true, data: { ok: true } });
+  };
+
+  const languages: Handler = (url, init) => {
+    const method = init?.method ?? "GET";
+    const id = idParam(url);
+    if (method === "DELETE") {
+      state.languages = state.languages.filter((l) => l.id !== id);
+    } else if (method === "POST") {
+      const { code, level } = bodyOf(init) as { code: string; level: string };
+      state.languages.push({ id: `lang_${code}`, code, level });
+    } else if (method === "PATCH") {
+      Object.assign(state.languages.find((l) => l.id === id) ?? {}, bodyOf(init));
+    }
+    return json({ success: true, data: { languages: state.languages } });
+  };
+
+  // PUT sets a country and cascades its defaults, as the server does.
+  const region: Handler = (_url, init) => {
+    const method = init?.method ?? "GET";
+    if (method === "PUT") state.region = regionFor(String(bodyOf(init).country));
+    if (method === "PATCH") {
+      state.region = { ...(state.region ?? regionFor("DE")), ...bodyOf(init) };
+    }
+    return json({ success: true, data: { region: state.region } });
+  };
+
+  return [
+    ["*", (u) => u.includes("/api/account/profile/addresses"), addresses],
+    ["*", (u) => u.includes("/api/account/profile/languages"), languages],
+    ["*", (u) => u.includes("/api/account/profile/region"), region],
+  ];
 }
 
 export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
@@ -108,12 +185,11 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
     sessions: [],
     addresses: [],
     languages: [],
+    region: null,
     ...initial,
   };
   const held: (() => void)[] = [];
   const patches: unknown[] = [];
-
-  type Handler = (url: string, init?: RequestInit) => Response | Promise<Response>;
   const MEDIA = /\/public\/api\/users\/([^/]+)\/media-meta/;
 
   const sdkContext: Handler = async () => {
@@ -157,52 +233,8 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
     return json({ success: true, data: { ok: true, ended } });
   };
 
-  const ADDRESSES = "/api/account/profile/addresses";
-  const addressId = (url: string) => new URL(url).searchParams.get("id");
-  const addresses: Handler = (url, init) => {
-    const method = init?.method ?? "GET";
-    if (method === "GET") {
-      const kind = new URL(url).searchParams.get("kind");
-      const list = state.addresses.filter((a) => a.kind === kind);
-      return json({ success: true, data: { ok: true, addresses: list } });
-    }
-    const id = addressId(url);
-    if (method === "DELETE") {
-      state.addresses = state.addresses.filter((a) => a.id !== id);
-      return json({ success: true, data: { ok: true } });
-    }
-    const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
-    patches.push(body);
-    if (method === "POST") {
-      state.addresses.push({ ...body, id: `addr_${state.addresses.length + 1}` } as never);
-    } else {
-      const target = state.addresses.find((a) => a.id === id);
-      if (target) Object.assign(target, body);
-    }
-    return json({ success: true, data: { ok: true } });
-  };
-
-  const LANGUAGES = "/api/account/profile/languages";
-  const languages: Handler = (url, init) => {
-    const method = init?.method ?? "GET";
-    const id = new URL(url).searchParams.get("id");
-    if (method === "DELETE") {
-      state.languages = state.languages.filter((l) => l.id !== id);
-    } else if (method !== "GET") {
-      const body = JSON.parse(String(init?.body)) as { code?: string; level: string };
-      patches.push(body);
-      if (method === "POST") {
-        state.languages.push({ id: `lang_${body.code}`, code: body.code ?? "", level: body.level });
-      } else {
-        const target = state.languages.find((l) => l.id === id);
-        if (target) target.level = body.level;
-      }
-    }
-    return json({ success: true, data: { languages: state.languages } });
-  };
-
   // First match wins: [method or "*", url test, handler].
-  const routes: [string, (url: string) => boolean, Handler][] = [
+  const routes: Route[] = [
     [
       "*",
       (u) => u.includes("/api/v1/bootstrap/"),
@@ -211,8 +243,7 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
     ["*", (u) => u.includes("/sdk-context"), sdkContext],
     ["*", (u) => MEDIA.test(u), mediaMeta],
     ["*", (u) => u.endsWith("/api/account/profile/identity"), identity],
-    ["*", (u) => u.includes(ADDRESSES), addresses],
-    ["*", (u) => u.includes(LANGUAGES), languages],
+    ...profileRoutes(state, patches),
     ["PUT", (u) => u.endsWith("/api/account/self/images/avatar"), avatarUpload],
     ["POST", (u) => u.endsWith("/revoke-all"), revokeAll],
     ["POST", (u) => /\/sessions\/[^/]+\/revoke$/.test(u), revokeOne],

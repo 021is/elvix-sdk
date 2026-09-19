@@ -87,7 +87,6 @@
         "src/react/elvix-deactivate.tsx",
         "src/react/elvix-leave.tsx",
         "src/react/elvix-legal-entities.tsx",
-        "src/react/elvix-region.tsx",
         "src/react/elvix-sign-in-form.tsx",
         "src/react/legal-entity-wizard-views.tsx"
       ],

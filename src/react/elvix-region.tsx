@@ -18,16 +18,15 @@
 
 import { AnimatePresence } from "framer-motion";
 import { ArrowLeft, Check, ChevronRight, Globe, Loader2, Pencil, Search } from "lucide-react";
-import { type CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
+import { type CSSProperties, useMemo, useState } from "react";
 import { useT } from "../locale/use-t";
 import { findCountry } from "./countries";
 import { MaybeCard } from "./elvix-card";
 import { ElvixCountrySelect } from "./elvix-country-select";
 import { ElvixInput } from "./elvix-input";
-import { useElvixContext } from "./elvix-provider";
 import { ElvixSaveButton } from "./elvix-save-button";
 import { findLanguage, LANGUAGES } from "./languages";
-import type { RegionPatchInput, RegionRecord } from "./region-schema";
+import type { RegionRecord } from "./region-schema";
 import {
   CURRENCIES,
   DATE_FORMAT_META,
@@ -49,15 +48,10 @@ import {
   TIME_FORMATS,
   type TimeFormat,
 } from "./regions";
-import { authInit } from "./session";
-import { unwrapEnvelope } from "./spine-fetch";
+import { type ElvixRegionResult, useRegionEditor, View } from "./use-region-editor";
 import { FADE_MASK, FadePane } from "./wizard-panes";
 
-// ─── Public types ────────────────────────────────────────────────────
-
-export type ElvixRegionResult =
-  | { ok: true; country: string; locale: string }
-  | { ok: false; error: string; message?: string };
+export type { ElvixRegionResult };
 
 export type ElvixRegionProps = {
   /** Render inside an <ElvixCard>. Default true; pass false for bare (no chrome). */
@@ -72,26 +66,6 @@ export type ElvixRegionProps = {
   onResult?: (result: ElvixRegionResult) => void;
 };
 
-const View = {
-  LOADING: "loading",
-  EMPTY: "empty",
-  COUNTRY_PICK: "country-pick",
-  COUNTRY_PICK_CASCADE_CONFIRM: "country-pick-cascade-confirm",
-  DETAIL: "detail",
-  EDIT_UI_LOCALE: "edit-ui-locale",
-  EDIT_TIME_ZONE: "edit-time-zone",
-  EDIT_TIME_FORMAT: "edit-time-format",
-  EDIT_DATE_FORMAT: "edit-date-format",
-  EDIT_NUMBER_FORMAT: "edit-number-format",
-  EDIT_CURRENCY: "edit-currency",
-  EDIT_MEASUREMENT: "edit-measurement",
-  EDIT_FIRST_DAY: "edit-first-day",
-  SAVING: "saving",
-} as const;
-type View = (typeof View)[keyof typeof View];
-
-// ─── Component ───────────────────────────────────────────────────────
-
 export function ElvixRegion({
   height,
   minHeight,
@@ -101,109 +75,9 @@ export function ElvixRegion({
   onResult,
   card,
 }: ElvixRegionProps) {
-  const ctx = useElvixContext();
   const t = useT();
-  const [view, setView] = useState<View>("loading");
-  const [region, setRegion] = useState<RegionRecord | null>(null);
-
-  const refresh = useCallback(async () => {
-    const res = await fetch(`${ctx.baseUrl}/api/account/profile/region`, {
-      cache: "no-store",
-      ...authInit(),
-    });
-    if (!res.ok) return;
-    const body = unwrapEnvelope(await res.json()) as { region: RegionRecord | null };
-    setRegion(body.region);
-    onChange?.(body.region);
-  }, [onChange, ctx.baseUrl]);
-
-  useEffect(() => {
-    (async () => {
-      await refresh();
-      // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-      setView((v) => (v === "loading" ? ("decide" as View) : v));
-    })();
-  }, [refresh]);
-
-  useEffect(() => {
-    if (view !== ("decide" as View)) return;
-    setView(region ? "detail" : "empty");
-  }, [view, region]);
-
-  // ─── Add flow: country pick → save with cascade ────────────────
-  const onPickCountry = async (country: string) => {
-    setView("saving");
-    const auth = authInit();
-    const res = await fetch(`${ctx.baseUrl}/api/account/profile/region`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json", ...auth.headers },
-      credentials: auth.credentials,
-      body: JSON.stringify({ country }),
-    });
-    if (res.ok) {
-      await refresh();
-      setView("detail");
-      onResult?.({ ok: true, country, locale: region?.uiLocale ?? "" });
-    } else {
-      setView("country-pick");
-      onResult?.({ ok: false, error: "save_failed", message: t("region.errorSaveFailed") });
-    }
-  };
-
-  // ─── Edit flow: single-field PATCH ─────────────────────────────
-  const patch = async (partial: RegionPatchInput) => {
-    setView("saving");
-    const auth = authInit();
-    const res = await fetch(`${ctx.baseUrl}/api/account/profile/region`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", ...auth.headers },
-      credentials: auth.credentials,
-      body: JSON.stringify(partial),
-    });
-    if (res.ok) {
-      await refresh();
-      onResult?.({ ok: true, country: region?.country ?? "", locale: region?.uiLocale ?? "" });
-    } else {
-      onResult?.({ ok: false, error: "save_failed", message: t("region.errorSaveFailed") });
-    }
-    setView("detail");
-  };
-
-  // ─── Country re-pick: cascade-reset confirm ────────────────────
-  const [pendingCountry, setPendingCountry] = useState<string | null>(null);
-  const onCountryReEdit = (next: string) => {
-    if (!region) {
-      void onPickCountry(next);
-      return;
-    }
-    setPendingCountry(next);
-    setView("country-pick-cascade-confirm");
-  };
-  const confirmCascadeReset = async () => {
-    if (!pendingCountry) return;
-    setView("saving");
-    const auth = authInit();
-    const res = await fetch(`${ctx.baseUrl}/api/account/profile/region`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json", ...auth.headers },
-      credentials: auth.credentials,
-      body: JSON.stringify({ country: pendingCountry }),
-    });
-    if (res.ok) {
-      await refresh();
-      onResult?.({ ok: true, country: pendingCountry, locale: region?.uiLocale ?? "" });
-    } else {
-      onResult?.({ ok: false, error: "save_failed", message: t("region.errorSaveFailed") });
-    }
-    setPendingCountry(null);
-    setView("detail");
-  };
-  const cancelCascade = () => {
-    setPendingCountry(null);
-    setView("detail");
-  };
-
-  // ─── Frame sizing ──────────────────────────────────────────────
+  const editor = useRegionEditor({ onChange, onResult });
+  const { view } = editor;
   const frameStyle: CSSProperties = {
     width: typeof width === "number" ? `${width}px` : width,
     ...(height
@@ -220,135 +94,154 @@ export function ElvixRegion({
       <MaybeCard card={card} className="h-full">
         <div className="relative h-full overflow-hidden">
           <AnimatePresence initial={false}>
-            {view === "loading" || view === ("decide" as View) ? (
+            {view === View.LOADING ? (
               <FadePane key="loading">
                 <div className="grid h-full place-items-center text-fg-3 text-sm">
                   {t("common.loading")}
                 </div>
               </FadePane>
-            ) : view === "empty" ? (
-              <FadePane key="empty">
-                <EmptyState onPick={() => setView("country-pick")} />
+            ) : (
+              <FadePane key={view} fadeEdges={view === View.DETAIL}>
+                <RegionPane editor={editor} />
               </FadePane>
-            ) : view === "country-pick" ? (
-              <FadePane key="country-pick">
-                <CountryPickView
-                  initial={region?.country ?? null}
-                  onPick={(c) => (region ? onCountryReEdit(c) : onPickCountry(c))}
-                  onBack={() => setView(region ? "detail" : "empty")}
-                />
-              </FadePane>
-            ) : view === "country-pick-cascade-confirm" ? (
-              <FadePane key="cascade-confirm">
-                <CascadeConfirmView
-                  current={region}
-                  next={pendingCountry}
-                  onCancel={cancelCascade}
-                  onConfirm={confirmCascadeReset}
-                />
-              </FadePane>
-            ) : view === "detail" ? (
-              <FadePane key="detail" fadeEdges>
-                <DetailView
-                  region={region}
-                  onEditCountry={() => setView("country-pick")}
-                  onEditUiLocale={() => setView("edit-ui-locale")}
-                  onEditTimeZone={() => setView("edit-time-zone")}
-                  onEditTimeFormat={() => setView("edit-time-format")}
-                  onEditDateFormat={() => setView("edit-date-format")}
-                  onEditNumberFormat={() => setView("edit-number-format")}
-                  onEditCurrency={() => setView("edit-currency")}
-                  onEditMeasurement={() => setView("edit-measurement")}
-                  onEditFirstDay={() => setView("edit-first-day")}
-                />
-              </FadePane>
-            ) : view === "edit-ui-locale" ? (
-              <FadePane key="edit-ui-locale">
-                <UiLocaleEditView
-                  current={region?.uiLocale ?? null}
-                  onSave={(uiLocale) => void patch({ uiLocale })}
-                  onBack={() => setView("detail")}
-                />
-              </FadePane>
-            ) : view === "edit-time-zone" ? (
-              <FadePane key="edit-time-zone">
-                <TimeZoneEditView
-                  country={region?.country ?? ""}
-                  current={region?.timeZone ?? null}
-                  onSave={(timeZone) => void patch({ timeZone })}
-                  onBack={() => setView("detail")}
-                />
-              </FadePane>
-            ) : view === "edit-time-format" ? (
-              <FadePane key="edit-time-format">
-                <ChoiceEditView<TimeFormat>
-                  title={t("region.timeFormat")}
-                  options={TIME_FORMATS}
-                  meta={TIME_FORMAT_META}
-                  current={region?.timeFormat as TimeFormat}
-                  onSave={(timeFormat) => void patch({ timeFormat })}
-                  onBack={() => setView("detail")}
-                />
-              </FadePane>
-            ) : view === "edit-date-format" ? (
-              <FadePane key="edit-date-format">
-                <ChoiceEditView<DateFormat>
-                  title={t("region.dateFormat")}
-                  options={DATE_FORMATS}
-                  meta={DATE_FORMAT_META}
-                  current={region?.dateFormat as DateFormat}
-                  onSave={(dateFormat) => void patch({ dateFormat })}
-                  onBack={() => setView("detail")}
-                />
-              </FadePane>
-            ) : view === "edit-number-format" ? (
-              <FadePane key="edit-number-format">
-                <ChoiceEditView<NumberFormat>
-                  title={t("region.numberFormat")}
-                  options={NUMBER_FORMATS}
-                  meta={NUMBER_FORMAT_META}
-                  current={region?.numberFormat as NumberFormat}
-                  onSave={(numberFormat) => void patch({ numberFormat })}
-                  onBack={() => setView("detail")}
-                />
-              </FadePane>
-            ) : view === "edit-currency" ? (
-              <FadePane key="edit-currency">
-                <CurrencyEditView
-                  current={region?.currency ?? null}
-                  onSave={(currency) => void patch({ currency })}
-                  onBack={() => setView("detail")}
-                />
-              </FadePane>
-            ) : view === "edit-measurement" ? (
-              <FadePane key="edit-measurement">
-                <ChoiceEditView<MeasurementSystem>
-                  title={t("region.unitsLabel")}
-                  options={MEASUREMENT_SYSTEMS}
-                  meta={MEASUREMENT_META}
-                  current={region?.measurementSystem as MeasurementSystem}
-                  onSave={(measurementSystem) => void patch({ measurementSystem })}
-                  onBack={() => setView("detail")}
-                />
-              </FadePane>
-            ) : view === "edit-first-day" ? (
-              <FadePane key="edit-first-day">
-                <FirstDayEditView
-                  current={(region?.firstDayOfWeek ?? 1) as DayOfWeek}
-                  onSave={(firstDayOfWeek) => void patch({ firstDayOfWeek })}
-                  onBack={() => setView("detail")}
-                />
-              </FadePane>
-            ) : view === "saving" ? (
-              <FadePane key="saving">
-                <SavingView />
-              </FadePane>
-            ) : null}
+            )}
           </AnimatePresence>
         </div>
       </MaybeCard>
     </div>
   );
+}
+
+type Editor = ReturnType<typeof useRegionEditor>;
+
+function RegionPane({ editor }: { editor: Editor }) {
+  const { region, show } = editor;
+  switch (editor.view) {
+    case View.EMPTY:
+      return <EmptyState onPick={() => show(View.COUNTRY_PICK)} />;
+    case View.COUNTRY_PICK:
+      return (
+        <CountryPickView
+          initial={region?.country ?? null}
+          onPick={editor.pickCountry}
+          onBack={() => show(region ? View.DETAIL : View.EMPTY)}
+        />
+      );
+    case View.COUNTRY_PICK_CASCADE_CONFIRM:
+      return (
+        <CascadeConfirmView
+          current={region}
+          next={editor.pendingCountry}
+          onCancel={editor.cancelCascade}
+          onConfirm={editor.confirmCascade}
+        />
+      );
+    case View.DETAIL:
+      return (
+        <DetailView
+          region={region}
+          onEditCountry={() => show(View.COUNTRY_PICK)}
+          onEditUiLocale={() => show(View.EDIT_UI_LOCALE)}
+          onEditTimeZone={() => show(View.EDIT_TIME_ZONE)}
+          onEditTimeFormat={() => show(View.EDIT_TIME_FORMAT)}
+          onEditDateFormat={() => show(View.EDIT_DATE_FORMAT)}
+          onEditNumberFormat={() => show(View.EDIT_NUMBER_FORMAT)}
+          onEditCurrency={() => show(View.EDIT_CURRENCY)}
+          onEditMeasurement={() => show(View.EDIT_MEASUREMENT)}
+          onEditFirstDay={() => show(View.EDIT_FIRST_DAY)}
+        />
+      );
+    case View.SAVING:
+      return <SavingView />;
+    default:
+      return <FieldEditPane editor={editor} />;
+  }
+}
+
+/** One field of the detail view, edited alone and PATCHed alone. */
+function FieldEditPane({ editor }: { editor: Editor }) {
+  const t = useT();
+  const { region, patch } = editor;
+  const back = () => editor.show(View.DETAIL);
+  switch (editor.view) {
+    case View.EDIT_UI_LOCALE:
+      return (
+        <UiLocaleEditView
+          current={region?.uiLocale ?? null}
+          onSave={(uiLocale) => patch({ uiLocale })}
+          onBack={back}
+        />
+      );
+    case View.EDIT_TIME_ZONE:
+      return (
+        <TimeZoneEditView
+          country={region?.country ?? ""}
+          current={region?.timeZone ?? null}
+          onSave={(timeZone) => patch({ timeZone })}
+          onBack={back}
+        />
+      );
+    case View.EDIT_TIME_FORMAT:
+      return (
+        <ChoiceEditView<TimeFormat>
+          title={t("region.timeFormat")}
+          options={TIME_FORMATS}
+          meta={TIME_FORMAT_META}
+          current={region?.timeFormat as TimeFormat}
+          onSave={(timeFormat) => patch({ timeFormat })}
+          onBack={back}
+        />
+      );
+    case View.EDIT_DATE_FORMAT:
+      return (
+        <ChoiceEditView<DateFormat>
+          title={t("region.dateFormat")}
+          options={DATE_FORMATS}
+          meta={DATE_FORMAT_META}
+          current={region?.dateFormat as DateFormat}
+          onSave={(dateFormat) => patch({ dateFormat })}
+          onBack={back}
+        />
+      );
+    case View.EDIT_NUMBER_FORMAT:
+      return (
+        <ChoiceEditView<NumberFormat>
+          title={t("region.numberFormat")}
+          options={NUMBER_FORMATS}
+          meta={NUMBER_FORMAT_META}
+          current={region?.numberFormat as NumberFormat}
+          onSave={(numberFormat) => patch({ numberFormat })}
+          onBack={back}
+        />
+      );
+    case View.EDIT_CURRENCY:
+      return (
+        <CurrencyEditView
+          current={region?.currency ?? null}
+          onSave={(currency) => patch({ currency })}
+          onBack={back}
+        />
+      );
+    case View.EDIT_MEASUREMENT:
+      return (
+        <ChoiceEditView<MeasurementSystem>
+          title={t("region.unitsLabel")}
+          options={MEASUREMENT_SYSTEMS}
+          meta={MEASUREMENT_META}
+          current={region?.measurementSystem as MeasurementSystem}
+          onSave={(measurementSystem) => patch({ measurementSystem })}
+          onBack={back}
+        />
+      );
+    default:
+      return (
+        <FirstDayEditView
+          current={(region?.firstDayOfWeek ?? 1) as DayOfWeek}
+          onSave={(firstDayOfWeek) => patch({ firstDayOfWeek })}
+          onBack={back}
+        />
+      );
+  }
 }
 
 // ─── Sub-views ───────────────────────────────────────────────────────
