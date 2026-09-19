@@ -37,7 +37,25 @@ export type FakeElvixState = {
   /** `null` = the user has not set a region yet. */
   region: Record<string, unknown> | null;
   passkeys: { id: string; [k: string]: unknown }[];
+  /** What `/api/me/<kind>` answers for the signed-in user. */
+  access: Record<"roles" | "scopes" | "memberships", AccessItem[]>;
 };
+
+export type AccessItem = {
+  id: string;
+  slug: string;
+  name: string;
+  isSystem: boolean;
+  isDefault: boolean;
+};
+
+export const accessItem = (slug: string, name = slug): AccessItem => ({
+  id: `id_${slug}`,
+  slug,
+  name,
+  isSystem: false,
+  isDefault: false,
+});
 
 export const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -203,6 +221,47 @@ function profileRoutes(state: FakeElvixState, patches: unknown[]): Route[] {
   ];
 }
 
+/**
+ * The live-access endpoints: `/api/me/<kind>`, `/api/v1/session`, and
+ * `/api/presence/stream` as a real streamed response whose writers land in
+ * `streams`, so a test can push Server-Sent Events into every open one.
+ */
+function liveRoutes(state: FakeElvixState, streams: Set<(frame: string) => void>): Route[] {
+  const encoder = new TextEncoder();
+  const stream: Handler = (_url, init) => {
+    let write: (frame: string) => void = () => {};
+    const body = new ReadableStream<Uint8Array>({
+      start(controller) {
+        write = (frame) => controller.enqueue(encoder.encode(frame));
+        streams.add(write);
+        init?.signal?.addEventListener("abort", () => {
+          streams.delete(write);
+          controller.error(new DOMException("aborted", "AbortError"));
+        });
+      },
+      cancel() {
+        streams.delete(write);
+      },
+    });
+    return new Response(body, { headers: { "content-type": "text/event-stream" } });
+  };
+  const me =
+    (kind: keyof FakeElvixState["access"]): Handler =>
+    () =>
+      state.context
+        ? json({ success: true, data: { [kind]: state.access[kind] } })
+        : json({ success: false, errorMessage: "unauthenticated" }, 401);
+  const session: Handler = () =>
+    state.context ? json({ ok: true }) : json({ ok: false, error: "invalid_token" }, 401);
+  return [
+    ["GET", (u) => u.includes("/api/presence/stream"), stream],
+    ["GET", (u) => u.includes("/api/me/roles"), me("roles")],
+    ["GET", (u) => u.includes("/api/me/scopes"), me("scopes")],
+    ["GET", (u) => u.includes("/api/me/memberships"), me("memberships")],
+    ["POST", (u) => u.endsWith("/api/v1/session"), session],
+  ];
+}
+
 /** `extra` routes are tried first, for endpoints one test file owns. */
 export function installFakeElvix(initial: Partial<FakeElvixState> = {}, extra: Route[] = []) {
   const state: FakeElvixState = {
@@ -227,10 +286,12 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}, extra: R
     languages: [],
     region: null,
     passkeys: [],
+    access: { roles: [], scopes: [], memberships: [] },
     ...initial,
   };
   const held: (() => void)[] = [];
   const patches: unknown[] = [];
+  const streams = new Set<(frame: string) => void>();
   const MEDIA = /\/public\/api\/users\/([^/]+)\/media-meta/;
 
   const sdkContext: Handler = async () => {
@@ -286,6 +347,7 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}, extra: R
     ["*", (u) => MEDIA.test(u), mediaMeta],
     ["*", (u) => u.endsWith("/api/account/profile/identity"), identity],
     ...profileRoutes(state, patches),
+    ...liveRoutes(state, streams),
     ["PUT", (u) => u.endsWith("/api/account/self/images/avatar"), avatarUpload],
     ["POST", (u) => u.endsWith("/revoke-all"), revokeAll],
     ["POST", (u) => /\/sessions\/[^/]+\/revoke$/.test(u), revokeOne],
@@ -319,6 +381,12 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}, extra: R
       state.holdContext = false;
       for (const resolve of held.splice(0)) resolve();
     },
+    /** Push one Server-Sent Event into every open presence stream. */
+    push(event: string, data: unknown) {
+      for (const write of streams) write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+    },
+    /** How many presence streams are open right now. */
+    openStreams: () => streams.size,
     calls(fragment: string) {
       return fetchMock.mock.calls.filter(([u]) => String(u).includes(fragment)).length;
     },

@@ -104,11 +104,24 @@ export { ElvixUserAvatar, type ElvixUserAvatarProps } from "./elvix-user-avatar"
 export { ElvixUserBanner, type ElvixUserBannerProps } from "./elvix-user-banner";
 // Identity
 export { ElvixUsername } from "./elvix-username";
-export type { UseUserListResult } from "./hooks";
-// Live gate — poll-based so it works cross-origin (EventSource can't carry the
-// bearer). Roles/scopes/memberships update within ~7s; the watcher signs the
-// user out within ~7s of a ban/pause/delete.
-export { useUserMemberships, useUserRoles, useUserScopes } from "./hooks";
+// Live, read-only access: what the app's admins granted the signed-in user.
+// Pushed over one shared stream per user (works cross-origin with the bearer);
+// the watcher signs the user out on a ban / pause / delete as it happens.
+export type {
+  ElvixAccessItem,
+  ElvixMembershipsState,
+  ElvixRolesState,
+  ElvixScopesState,
+  UseUserListResult,
+} from "./hooks";
+export {
+  useElvixMemberships,
+  useElvixRoles,
+  useElvixScopes,
+  useUserMemberships,
+  useUserRoles,
+  useUserScopes,
+} from "./hooks";
 export { ElvixLifecycleWatcher } from "./lifecycle-watcher";
 // Cross-origin session token (stored by ElvixSignIn, sent as a bearer by every
 // SDK call when the app is embedded on its own origin).
