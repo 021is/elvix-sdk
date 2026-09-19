@@ -81,8 +81,7 @@
   "overrides": [
     {
       "includes": [
-        "src/react/elvix-sign-in-form.tsx",
-        "src/react/legal-entity-wizard-views.tsx"
+        "src/react/elvix-sign-in-form.tsx"
       ],
       "linter": {
         "rules": {

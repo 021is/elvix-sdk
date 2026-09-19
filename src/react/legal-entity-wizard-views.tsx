@@ -449,66 +449,24 @@ export function TaxIdsView({
   onBack: () => void;
 }) {
   const t = useT();
-  // Per-type required-field gates:
-  //
-  //   Individual → only the local tax number (Steuernummer/NINO/…) is
-  //                relevant and REQUIRED. VAT is hidden — natural
-  //                persons don't hold a VAT ID.
-  //   Sole prop  → both shown but BOTH OPTIONAL. The registered
-  //                business identity comes from the next pane
-  //                (registration number + issuing authority); local
-  //                tax number is only relevant if the user wants it
-  //                on invoices, VAT only if they're VAT-registered.
-  //   Company    → both shown; VAT required (live-validated); local
-  //                tax number optional (some jurisdictions issue
-  //                only one).
   const isIndividual = entityType === "individual";
-  const isSoleProp = entityType === "sole_prop";
-  const isCompany = entityType === "company";
+  // Natural persons hold no VAT id; a company must have one.
   const showVat = !isIndividual;
-  const taxIdRequired = isIndividual;
-  const vatRequired = isCompany;
-  void isSoleProp;
-
-  const trimmedTax = taxId.trim();
-  const trimmedVat = vatId.trim();
-
-  // Local tax number format gate, in addition to required/optional.
-  // Lenient when empty AND not required; strict when non-empty AND
-  // the country has a known format.
-  const taxIdFormatOk = trimmedTax.length === 0 ? true : localTaxIdMatches(country, trimmedTax);
-
-  let blockReason: string | null = null;
-  if (taxIdRequired && trimmedTax.length === 0) {
-    blockReason = t("legalEntities.blockReasonTaxIdRequired");
-  } else if (trimmedTax.length > 0 && !taxIdFormatOk) {
-    blockReason = t("legalEntities.blockReasonTaxIdFormat", {
-      country: findCountry(country)?.name ?? country,
-      hint: taxIdFormatHint(country, t),
-    });
-  } else if (showVat) {
-    if (vatRequired && trimmedVat.length === 0) {
-      blockReason = t("legalEntities.blockReasonVatRequired");
-    } else if (trimmedVat.length > 0) {
-      // The input now runs a synchronous client-side format check
-      // and emits `invalid` for bad format, `format` for OK format.
-      // The Verifying pane (next step) is where the actual authority
-      // call happens.
-      // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-      if (vatValidation.level === "invalid") {
-        blockReason = t("legalEntities.blockReasonVatFormat");
-      }
-    }
-  }
+  const vatRequired = entityType === "company";
+  const taxIdFormatOk = !taxId.trim() || localTaxIdMatches(country, taxId.trim());
+  const blockReason = taxIdsBlockReason(
+    { type: entityType, country, taxId, vatId, vatLevel: vatValidation.level },
+    t,
+  );
   const canContinue = blockReason === null;
-
+  const countryName = findCountry(country)?.name;
   const subtitleCopy = isIndividual
     ? t("legalEntities.taxIdsSubtitleIndividual", {
-        country: findCountry(country)?.name ?? t("legalEntities.taxIdsSubtitleIndividualFallback"),
+        country: countryName ?? t("legalEntities.taxIdsSubtitleIndividualFallback"),
       })
-    : isCompany
+    : vatRequired
       ? t("legalEntities.taxIdsSubtitleCompany", {
-          authority: findCountry(country)?.name ?? t("legalEntities.taxIdsSubtitleCompanyFallback"),
+          authority: countryName ?? t("legalEntities.taxIdsSubtitleCompanyFallback"),
         })
       : t("legalEntities.taxIdsSubtitleSoleProp");
 
@@ -527,7 +485,7 @@ export function TaxIdsView({
         <label className="block">
           <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
             {t("legalEntities.localTaxNumberLabel")}
-            {taxIdRequired ? "" : t("common.optionalSuffix")}
+            {isIndividual ? "" : t("common.optionalSuffix")}
           </span>
           <ElvixInput
             type="text"
@@ -536,7 +494,7 @@ export function TaxIdsView({
             placeholder={taxIdPlaceholder(country)}
             maxLength={40}
             autoFocus={isIndividual}
-            hasError={trimmedTax.length > 0 && !taxIdFormatOk}
+            hasError={!taxIdFormatOk}
           />
         </label>
         {showVat && (
@@ -568,9 +526,48 @@ export function TaxIdsView({
           className="!w-auto !px-5"
         />
       </div>
-      <span className="sr-only">{vatValidation.level}</span>
     </form>
   );
+}
+
+/**
+ * Why the tax-identifiers pane cannot continue yet, worded; `null` when it
+ * can. Per type:
+ *
+ *   Individual → the local tax number (Steuernummer, NINO, …) is required;
+ *                there is no VAT id.
+ *   Sole prop  → both optional: the business identity comes from the
+ *                registration pane next, VAT only if VAT-registered.
+ *   Company    → VAT required; the local number is optional (some
+ *                jurisdictions issue only one).
+ *
+ * A number that is entered must match the country's format either way. The
+ * VAT input checks its format as the user types (`invalid`); the verifying
+ * pane after this one asks the authority.
+ */
+export function taxIdsBlockReason(
+  v: {
+    type: LegalEntityType | null;
+    country: string;
+    taxId: string;
+    vatId: string;
+    vatLevel: TaxIdValidationState["level"];
+  },
+  t: ReturnType<typeof useT>,
+): string | null {
+  const tax = v.taxId.trim();
+  const vat = v.vatId.trim();
+  if (v.type === "individual" && !tax) return t("legalEntities.blockReasonTaxIdRequired");
+  if (tax && !localTaxIdMatches(v.country, tax)) {
+    return t("legalEntities.blockReasonTaxIdFormat", {
+      country: findCountry(v.country)?.name ?? v.country,
+      hint: taxIdFormatHint(v.country, t),
+    });
+  }
+  if (v.type === "individual") return null;
+  if (v.type === "company" && !vat) return t("legalEntities.blockReasonVatRequired");
+  if (vat && v.vatLevel === "invalid") return t("legalEntities.blockReasonVatFormat");
+  return null;
 }
 
 /**
