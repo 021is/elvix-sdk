@@ -6,14 +6,7 @@
  * request. Plain navigation is a `dispatch` in the component.
  */
 
-import { useCallback, useEffect, useReducer, useState } from "react";
-import {
-  createAddress,
-  deleteAddress,
-  listAddresses,
-  type Outcome,
-  updateAddress,
-} from "./address-book-api";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import {
   type DefaultIntent,
   draftToInput,
@@ -22,7 +15,10 @@ import {
 } from "./address-book-wizard";
 import type { AddressInput, AddressKind, AddressRecord } from "./address-schema";
 import { useElvixContext } from "./elvix-provider";
+import { type Outcome, profileCollection } from "./profile-request";
 import { useStableCallback } from "./use-stable-callback";
+
+type AddressApi = ReturnType<typeof profileCollection<AddressRecord, AddressInput>>;
 
 export type ElvixAddressBookResult =
   | { ok: true; count: number }
@@ -37,7 +33,7 @@ type Options = {
 /** One address kind, loaded when the kind or origin changes and reloaded
  *  on demand after a write. `onLoaded` gets every fresh list. */
 function useAddressList(
-  baseUrl: string,
+  api: AddressApi,
   kind: AddressKind,
   onLoaded: (list: AddressRecord[]) => void,
 ) {
@@ -46,14 +42,14 @@ function useAddressList(
 
   const refresh = useCallback(
     async (signal?: AbortSignal) => {
-      const list = await listAddresses(baseUrl, kind, signal);
+      const list = await api.list(`?kind=${kind}`, signal);
       if (signal?.aborted) return;
       setLoading(false);
       if (!list) return;
       setAddresses(list);
       onLoaded(list);
     },
-    [baseUrl, kind, onLoaded],
+    [api, kind, onLoaded],
   );
 
   useEffect(() => {
@@ -76,6 +72,10 @@ function flipDefault(list: AddressRecord[], kind: AddressKind, { id, setting }: 
 
 export function useAddressBook({ kind, onChange, onResult }: Options) {
   const { baseUrl } = useElvixContext();
+  const api = useMemo(
+    () => profileCollection<AddressRecord, AddressInput>(baseUrl, "addresses"),
+    [baseUrl],
+  );
   const [state, dispatch] = useReducer(wizardReducer, INITIAL_WIZARD);
   const emitChange = useStableCallback(onChange);
   const emitResult = useStableCallback(onResult);
@@ -86,7 +86,7 @@ export function useAddressBook({ kind, onChange, onResult }: Options) {
     },
     [emitChange],
   );
-  const { addresses, setAddresses, loading, refresh } = useAddressList(baseUrl, kind, onLoaded);
+  const { addresses, setAddresses, loading, refresh } = useAddressList(api, kind, onLoaded);
   const count = addresses.length;
   const { draft, editing, inspectingId, deletingId, defaultIntent } = state;
   const editTarget = editing ? inspectingId : null;
@@ -101,12 +101,12 @@ export function useAddressBook({ kind, onChange, onResult }: Options) {
   const patch = useCallback(
     async (id: string, partial: Partial<AddressInput>) => {
       dispatch({ type: "saving" });
-      const out = await updateAddress(baseUrl, id, partial);
+      const out = await api.update(id, partial);
       report(out, "patch_failed", count);
       await refresh();
       dispatch({ type: "patched", error: out.ok ? null : out.error });
     },
-    [baseUrl, count, refresh, report],
+    [api, count, refresh, report],
   );
 
   /** The end of the add flow: POST the assembled address. */
@@ -115,7 +115,7 @@ export function useAddressBook({ kind, onChange, onResult }: Options) {
       const input = draftToInput(kind, draft, notes);
       if (!input) return;
       dispatch({ type: "saving" });
-      const out = await createAddress(baseUrl, input);
+      const out = await api.create(input);
       if (!out.ok) {
         report(out, "save_failed", count);
         dispatch({ type: "saveFailed", message: out.error });
@@ -125,7 +125,7 @@ export function useAddressBook({ kind, onChange, onResult }: Options) {
       await refresh();
       report(out, "save_failed", count + 1);
     },
-    [baseUrl, kind, draft, count, refresh, report],
+    [api, kind, draft, count, refresh, report],
   );
 
   const confirmLine2 = useCallback(
@@ -181,7 +181,7 @@ export function useAddressBook({ kind, onChange, onResult }: Options) {
   const confirmDelete = useCallback(async () => {
     if (!deletingId) return;
     dispatch({ type: "deleting" });
-    const out = await deleteAddress(baseUrl, deletingId);
+    const out = await api.remove(deletingId);
     if (!out.ok) {
       emitResult({ ok: false, error: out.error });
       dispatch({ type: "deleteFailed", error: out.error });
@@ -190,7 +190,7 @@ export function useAddressBook({ kind, onChange, onResult }: Options) {
     dispatch({ type: "deleted" });
     await refresh();
     emitResult({ ok: true, count: Math.max(0, count - 1) });
-  }, [baseUrl, deletingId, count, refresh, emitResult]);
+  }, [api, deletingId, count, refresh, emitResult]);
 
   // The warning pane was the confirmation, so the flip is optimistic; a
   // failed PATCH reloads the server's truth.
@@ -198,11 +198,9 @@ export function useAddressBook({ kind, onChange, onResult }: Options) {
     if (!defaultIntent) return;
     setAddresses((prev) => flipDefault(prev, kind, defaultIntent));
     dispatch({ type: "defaultApplied" });
-    const out = await updateAddress(baseUrl, defaultIntent.id, {
-      isDefault: defaultIntent.setting,
-    });
+    const out = await api.update(defaultIntent.id, { isDefault: defaultIntent.setting });
     if (!out.ok) await refresh();
-  }, [baseUrl, kind, defaultIntent, setAddresses, refresh]);
+  }, [api, kind, defaultIntent, setAddresses, refresh]);
 
   const closeWizard = useCallback(() => dispatch({ type: "loaded", count }), [count]);
 

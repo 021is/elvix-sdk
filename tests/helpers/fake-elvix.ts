@@ -32,6 +32,7 @@ export type FakeElvixState = {
   holdContext: boolean;
   sessions: { id: string; isCurrent: boolean; [k: string]: unknown }[];
   addresses: { id: string; kind: string; isDefault: boolean; [k: string]: unknown }[];
+  entities: { id: string; kind?: string; isDefault: boolean; [k: string]: unknown }[];
   languages: { id: string; code: string; level: string }[];
   /** `null` = the user has not set a region yet. */
   region: Record<string, unknown> | null;
@@ -110,7 +111,8 @@ type Route = [method: string, test: (url: string) => boolean, handler: Handler];
 
 const idParam = (url: string) => new URL(url).searchParams.get("id");
 
-/** The profile editors' endpoints: addresses, languages, region. Writes are
+/** The profile editors' endpoints: addresses, legal entities, languages,
+ *  region, plus app passkeys and the membership challenge. Writes are
  *  recorded in `patches` in order. */
 function profileRoutes(state: FakeElvixState, patches: unknown[]): Route[] {
   const bodyOf = (init?: RequestInit) => {
@@ -119,23 +121,27 @@ function profileRoutes(state: FakeElvixState, patches: unknown[]): Route[] {
     return body;
   };
 
-  const addresses: Handler = (url, init) => {
-    const method = init?.method ?? "GET";
-    if (method === "GET") {
-      const kind = new URL(url).searchParams.get("kind");
-      const list = state.addresses.filter((a) => a.kind === kind);
-      return json({ success: true, data: { ok: true, addresses: list } });
-    }
-    const id = idParam(url);
-    if (method === "DELETE") {
-      state.addresses = state.addresses.filter((a) => a.id !== id);
-    } else if (method === "POST") {
-      state.addresses.push({ ...bodyOf(init), id: `addr_${state.addresses.length + 1}` } as never);
-    } else {
-      Object.assign(state.addresses.find((a) => a.id === id) ?? {}, bodyOf(init));
-    }
-    return json({ success: true, data: { ok: true } });
-  };
+  /** A `profileCollection` resource: list under its own key, writes by `?id=`.
+   *  The address list is filtered by `?kind=`, as the server does. */
+  const collection =
+    (key: "addresses" | "entities"): Handler =>
+    (url, init) => {
+      const method = init?.method ?? "GET";
+      const id = idParam(url);
+      if (method === "GET") {
+        const kind = new URL(url).searchParams.get("kind");
+        const list = state[key].filter((row) => !kind || row.kind === kind);
+        return json({ success: true, data: { ok: true, [key]: list } });
+      }
+      if (method === "DELETE") {
+        state[key] = state[key].filter((row) => row.id !== id) as never;
+      } else if (method === "POST") {
+        state[key].push({ ...bodyOf(init), id: `${key}_${state[key].length + 1}` } as never);
+      } else {
+        Object.assign(state[key].find((row) => row.id === id) ?? {}, bodyOf(init));
+      }
+      return json({ success: true, data: { ok: true } });
+    };
 
   const languages: Handler = (url, init) => {
     const method = init?.method ?? "GET";
@@ -190,7 +196,8 @@ function profileRoutes(state: FakeElvixState, patches: unknown[]): Route[] {
     ["*", (u) => /\/api\/account\/apps\/[^/]+\/passkeys/.test(u), passkeys],
     ["POST", (u) => u.endsWith("/membership/challenge"), challenge],
     ["POST", (u) => u.endsWith("/membership"), membership],
-    ["*", (u) => u.includes("/api/account/profile/addresses"), addresses],
+    ["*", (u) => u.includes("/api/account/profile/addresses"), collection("addresses")],
+    ["*", (u) => u.includes("/api/account/profile/entities"), collection("entities")],
     ["*", (u) => u.includes("/api/account/profile/languages"), languages],
     ["*", (u) => u.includes("/api/account/profile/region"), region],
   ];
@@ -215,6 +222,7 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
     holdContext: false,
     sessions: [],
     addresses: [],
+    entities: [],
     languages: [],
     region: null,
     passkeys: [],

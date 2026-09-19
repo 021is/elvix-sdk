@@ -131,6 +131,19 @@ function afterTaxIdentifiers(ctx: FlowContext): View {
 }
 
 /**
+ * The pane the add flow's Back button returns to, or `null` at the first
+ * step. Derived from the forward order, so the two cannot disagree. The
+ * verification detour and the contact form are left the way they came.
+ */
+export function previousView(current: View, type: LegalEntityType | null): View | null {
+  if (current === View.VERIFYING_TAX_ID) return View.TAX_IDS;
+  if (current === View.CONTACT_INPUT) return View.CONTACT_CHOICE;
+  const path = walkFlow({ type, hasVatId: false });
+  const at = path.indexOf(current);
+  return at > 0 ? (path[at - 1] ?? null) : null;
+}
+
+/**
  * The full pane sequence for an entity type, in order.
  *
  * Used by the tests to assert an entire journey rather than one hop at a

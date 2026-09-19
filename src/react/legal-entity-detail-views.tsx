@@ -18,13 +18,13 @@ import { formatIsoDate, humanType, renderNationality } from "./legal-entity-copy
 import {
   DetailRow,
   DetailSection,
-  FADE_MASK,
   Heading,
   Subtitle,
   typeIcon,
   WizardHeader,
 } from "./legal-entity-primitives";
 import type { LegalEntityRecord, LegalEntityType } from "./legal-entity-schema";
+import { FADE_MASK } from "./wizard-panes";
 
 export function ListView({
   entities,
