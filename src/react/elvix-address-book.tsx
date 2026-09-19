@@ -33,7 +33,7 @@
  * grid reflows but the outer frame is theirs to size.
  */
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
   Building2,
@@ -58,6 +58,7 @@ import { MAPS_MISSING_CLIENT_ID, mapsUrl } from "./maps-url";
 import { authInit, isSameOrigin } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { useStableCallback } from "./use-stable-callback";
+import { FadePane } from "./wizard-panes";
 
 const ReturnTo = {
   LIST: "list",
@@ -197,13 +198,6 @@ export function ElvixAddressBook({
   const closeWizard = useCallback(() => {
     setView(addresses.length === 0 ? "empty" : "list");
   }, [addresses.length]);
-
-  // Direction the wizard is animating in (+1 forward, -1 back).
-  // Framer-motion `custom` value — the Pane variants read it to slide
-  // new panes IN from the right (or left when backtracking) and OUT
-  // to the opposite side. Old "per-Pane direction prop" approach
-  // produced inconsistent transitions; this is the standard pattern.
-  const [navDir, setNavDir] = useState<1 | -1>(1);
 
   // Wizard state carried through the multi-step add flow.
   const [searchSeed, setSearchSeed] = useState<PlaceDetails | null>(null);
@@ -528,7 +522,6 @@ export function ElvixAddressBook({
   const askDefaultChange = useCallback(
     (id: string, setting: boolean, returnTo: ReturnTo = "list") => {
       setDefaultIntent({ id, setting, returnTo });
-      setNavDir(1);
       setView("default-confirm");
     },
     [],
@@ -536,7 +529,6 @@ export function ElvixAddressBook({
   const cancelDefaultChange = useCallback(() => {
     const back = defaultIntent?.returnTo ?? "list";
     setDefaultIntent(null);
-    setNavDir(-1);
     setView(back);
   }, [defaultIntent]);
   const confirmDefaultChange = useCallback(async () => {
@@ -553,7 +545,6 @@ export function ElvixAddressBook({
         return a;
       }),
     );
-    setNavDir(-1);
     setView(returnTo);
     setDefaultIntent(null);
     const auth = authInit();
@@ -581,19 +572,19 @@ export function ElvixAddressBook({
     <div style={frameStyle} className="mx-auto">
       <MaybeCard card={card} className="h-full">
         <div className="relative h-full overflow-hidden">
-          <AnimatePresence custom={navDir} initial={false}>
+          <AnimatePresence initial={false}>
             {loading ? (
-              <Pane key="loading" dir={navDir}>
+              <FadePane key="loading">
                 <div className="grid h-full place-items-center text-fg-3 text-sm">
                   {t("common.loading")}
                 </div>
-              </Pane>
+              </FadePane>
             ) : view === "empty" ? (
-              <Pane key="empty" dir={navDir}>
+              <FadePane key="empty">
                 <EmptyState kind={kind} onAdd={openAdd} />
-              </Pane>
+              </FadePane>
             ) : view === "list" ? (
-              <Pane key="list" dir={navDir} fadeEdges>
+              <FadePane key="list" fadeEdges>
                 <ListView
                   kind={kind}
                   addresses={addresses}
@@ -602,31 +593,31 @@ export function ElvixAddressBook({
                   onToggleDefault={(id, current) => askDefaultChange(id, !current, "list")}
                   onAdd={openAdd}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "search" ? (
-              <Pane key="search" dir={navDir}>
+              <FadePane key="search">
                 <SearchView kind={kind} onPick={advanceToReview} onBack={closeWizard} />
-              </Pane>
+              </FadePane>
             ) : view === "review" ? (
-              <Pane key="review" dir={navDir}>
+              <FadePane key="review">
                 <ReviewView
                   kind={kind}
                   details={searchSeed}
                   onConfirm={advanceToAptFloor}
                   onChange={reopenSearch}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "apt-floor" ? (
-              <Pane key="apt-floor" dir={navDir}>
+              <FadePane key="apt-floor">
                 <AptFloorView
                   kind={kind}
                   initial={pickedLine2}
                   onConfirm={onConfirmAptFloor}
                   onBack={editingMode ? cancelEdit : () => setView("review")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "recipient-choice" ? (
-              <Pane key="recipient-choice" dir={navDir}>
+              <FadePane key="recipient-choice">
                 <RecipientChoiceView
                   kind={kind}
                   userDisplayName={userDisplayName ?? null}
@@ -636,36 +627,36 @@ export function ElvixAddressBook({
                   onBack={() => setView("apt-floor")}
                   error={error}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "recipient-custom" ? (
-              <Pane key="recipient-custom" dir={navDir}>
+              <FadePane key="recipient-custom">
                 <RecipientCustomView
                   kind={kind}
                   initial={pickedRecipient}
                   onConfirm={onConfirmCustom}
                   onBack={editingMode ? cancelEdit : () => setView("recipient-choice")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "recipient-business-name" ? (
-              <Pane key="biz-name" dir={navDir}>
+              <FadePane key="biz-name">
                 <RecipientBusinessNameView
                   kind={kind}
                   initial={pickedCompany}
                   onConfirm={onConfirmBusinessName}
                   onBack={editingMode ? cancelEdit : () => setView("recipient-choice")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "recipient-business-contact" ? (
-              <Pane key="biz-contact" dir={navDir}>
+              <FadePane key="biz-contact">
                 <RecipientBusinessContactView
                   kind={kind}
                   companyName={pickedCompany}
                   onConfirm={onConfirmBusinessContact}
                   onBack={() => setView("recipient-business-name")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "note-choice" ? (
-              <Pane key="note-choice" dir={navDir}>
+              <FadePane key="note-choice">
                 <NoteChoiceView
                   kind={kind}
                   onYes={onNotesYes}
@@ -673,22 +664,22 @@ export function ElvixAddressBook({
                   onBack={() => setView("recipient-choice")}
                   error={error}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "note-input" ? (
-              <Pane key="note-input" dir={navDir}>
+              <FadePane key="note-input">
                 <NoteInputView
                   kind={kind}
                   initial={pickedNotes ?? ""}
                   onConfirm={onNotesConfirm}
                   onBack={editingMode ? cancelEdit : () => setView("note-choice")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "saving" ? (
-              <Pane key="saving" dir={navDir}>
+              <FadePane key="saving">
                 <SavingView label={t("addressBook.savingLabel")} />
-              </Pane>
+              </FadePane>
             ) : view === "detail" ? (
-              <Pane key="detail" dir={navDir}>
+              <FadePane key="detail">
                 <DetailView
                   kind={kind}
                   address={inspectingAddress}
@@ -711,9 +702,9 @@ export function ElvixAddressBook({
                     inspectingAddress && editNotes(inspectingAddress.deliveryNotes ?? null)
                   }
                 />
-              </Pane>
+              </FadePane>
             ) : view === "default-confirm" ? (
-              <Pane key="default-confirm" dir={navDir}>
+              <FadePane key="default-confirm">
                 <DefaultConfirmView
                   kind={kind}
                   address={defaultIntentAddress}
@@ -722,9 +713,9 @@ export function ElvixAddressBook({
                   onCancel={cancelDefaultChange}
                   onConfirm={confirmDefaultChange}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "delete-confirm" ? (
-              <Pane key="delete-confirm" dir={navDir}>
+              <FadePane key="delete-confirm">
                 <DeleteConfirmView
                   kind={kind}
                   address={deletingAddress}
@@ -732,11 +723,11 @@ export function ElvixAddressBook({
                   onCancel={cancelDelete}
                   onConfirm={confirmDelete}
                 />
-              </Pane>
+              </FadePane>
             ) : (
-              <Pane key="deleting" dir={navDir}>
+              <FadePane key="deleting">
                 <SavingView label={t("addressBook.deletingLabel")} />
-              </Pane>
+              </FadePane>
             )}
           </AnimatePresence>
         </div>
@@ -746,51 +737,6 @@ export function ElvixAddressBook({
 }
 
 // ─── Frame helpers ────────────────────────────────────────────────────
-
-// Cross-fade with a small vertical lift. Direction-agnostic, plays
-// the same on forward + back navigation, no per-Pane direction state
-// to thread. Matches the Stripe / Linear / Vercel sheet-style
-// transition; reads as wizard "step changed", not "panel slid".
-const paneVariants = {
-  enter: { opacity: 0, y: 6, filter: "blur(4px)" },
-  center: { opacity: 1, y: 0, filter: "blur(0px)" },
-  exit: { opacity: 0, y: -4, filter: "blur(4px)" },
-};
-
-// Mask gradient that fades the top + bottom edges of a scroll
-// container so long lists dissolve into the chrome rather than
-// ending on a hard edge. Applied to panes where the whole pane is
-// scrollable content (List). Panes with their own fixed header /
-// footer (Detail, Search, etc.) opt out by passing `fadeEdges={false}`.
-const FADE_MASK =
-  "linear-gradient(to bottom, transparent 0, rgba(0,0,0,0.4) 12px, black 28px, black calc(100% - 28px), rgba(0,0,0,0.4) calc(100% - 12px), transparent 100%)";
-
-function Pane({
-  children,
-  // Kept as a prop for API stability across the AnimatePresence
-  // children — value is unused now that variants don't read it.
-  dir,
-  fadeEdges = false,
-}: {
-  children: React.ReactNode;
-  dir: number;
-  fadeEdges?: boolean;
-}) {
-  void dir;
-  return (
-    <motion.div
-      variants={paneVariants}
-      initial="enter"
-      animate="center"
-      exit="exit"
-      transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
-      className="absolute inset-0 overflow-y-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      style={fadeEdges ? { maskImage: FADE_MASK, WebkitMaskImage: FADE_MASK } : undefined}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 // ─── Sub-views ────────────────────────────────────────────────────────
 

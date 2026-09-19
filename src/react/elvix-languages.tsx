@@ -18,7 +18,7 @@
  * POST, DB has a unique constraint).
  */
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
   Check,
@@ -48,6 +48,7 @@ import {
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { useStableCallback } from "./use-stable-callback";
+import { FADE_MASK, FadePane } from "./wizard-panes";
 
 // ─── Public types ────────────────────────────────────────────────────
 
@@ -78,33 +79,6 @@ const View = {
   DELETING: "deleting",
 } as const;
 type View = (typeof View)[keyof typeof View];
-
-// ─── Pane transition (matches ElvixLegalEntities) ────────────────────
-
-const paneVariants = {
-  enter: { opacity: 0, y: 6, filter: "blur(4px)" },
-  center: { opacity: 1, y: 0, filter: "blur(0px)" },
-  exit: { opacity: 0, y: -4, filter: "blur(4px)" },
-};
-
-const FADE_MASK =
-  "linear-gradient(to bottom, transparent 0, rgba(0,0,0,0.4) 12px, black 28px, black calc(100% - 28px), rgba(0,0,0,0.4) calc(100% - 12px), transparent 100%)";
-
-function Pane({ children, fadeEdges = false }: { children: React.ReactNode; fadeEdges?: boolean }) {
-  return (
-    <motion.div
-      variants={paneVariants}
-      initial="enter"
-      animate="center"
-      exit="exit"
-      transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
-      className="absolute inset-0 overflow-y-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      style={fadeEdges ? { maskImage: FADE_MASK, WebkitMaskImage: FADE_MASK } : undefined}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 // ─── Component ───────────────────────────────────────────────────────
 
@@ -304,17 +278,17 @@ export function ElvixLanguages({
         <div className="relative h-full overflow-hidden">
           <AnimatePresence initial={false}>
             {view === "loading" || view === ("fallback-decide" as View) ? (
-              <Pane key="loading">
+              <FadePane key="loading">
                 <div className="grid h-full place-items-center text-fg-3 text-sm">
                   {t("common.loading")}
                 </div>
-              </Pane>
+              </FadePane>
             ) : view === "empty" ? (
-              <Pane key="empty">
+              <FadePane key="empty">
                 <EmptyState onAdd={openAdd} />
-              </Pane>
+              </FadePane>
             ) : view === "list" ? (
-              <Pane key="list" fadeEdges>
+              <FadePane key="list" fadeEdges>
                 <ListView
                   languages={languages}
                   atCap={atCap}
@@ -322,17 +296,17 @@ export function ElvixLanguages({
                   onOpen={openEdit}
                   onDelete={askDelete}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "language-pick" ? (
-              <Pane key="language-pick">
+              <FadePane key="language-pick">
                 <LanguagePickView
                   onPick={onPickLanguage}
                   onBack={closeAdd}
                   takenCodes={languages.map((l) => l.code)}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "level-pick" ? (
-              <Pane key="level-pick">
+              <FadePane key="level-pick">
                 <LevelPickView
                   language={pickedLanguage}
                   selected={pickedLevel}
@@ -342,25 +316,25 @@ export function ElvixLanguages({
                   saveLabel={editing ? t("languages.saveLevel") : t("common.continue")}
                   error={error}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "saving" ? (
-              <Pane key="saving">
+              <FadePane key="saving">
                 <SavingView
                   label={editing ? t("languages.updatingLevel") : t("languages.addingLanguage")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "delete-confirm" ? (
-              <Pane key="delete-confirm">
+              <FadePane key="delete-confirm">
                 <DeleteConfirmView
                   record={deletingRecord}
                   onCancel={cancelDelete}
                   onConfirm={confirmDelete}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "deleting" ? (
-              <Pane key="deleting">
+              <FadePane key="deleting">
                 <SavingView label={t("languages.removing")} />
-              </Pane>
+              </FadePane>
             ) : null}
           </AnimatePresence>
         </div>

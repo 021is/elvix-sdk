@@ -21,7 +21,7 @@ import { MaybeCard } from "./elvix-card";
  * `onSuccess`/`onFail` hooks. Never navigates.
  */
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { ArrowLeft, Eye, EyeOff, Loader2, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useT } from "../locale/use-t";
@@ -31,6 +31,7 @@ import { ElvixSaveButton } from "./elvix-save-button";
 import { OtpInput } from "./otp-input";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
+import { SlidePane } from "./wizard-panes";
 
 const State = {
   INACTIVE: "inactive",
@@ -295,28 +296,12 @@ function ElvixDeactivateInner({
     <div className="relative overflow-hidden">
       <AnimatePresence mode="wait" custom={direction}>
         {pane === "warn1" && (
-          <motion.div
-            key="warn1"
-            custom={direction}
-            variants={paneVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={paneTransition}
-          >
+          <SlidePane key="warn1" direction={direction}>
             <Warn1Pane appName={appName} onContinue={() => go("warn2", 1)} />
-          </motion.div>
+          </SlidePane>
         )}
         {pane === "warn2" && (
-          <motion.div
-            key="warn2"
-            custom={direction}
-            variants={paneVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={paneTransition}
-          >
+          <SlidePane key="warn2" direction={direction}>
             <Warn2Pane
               onBack={() => go("warn1", -1)}
               onContinue={() => {
@@ -324,18 +309,10 @@ function ElvixDeactivateInner({
               }}
               requesting={requesting}
             />
-          </motion.div>
+          </SlidePane>
         )}
         {pane === "otp" && (
-          <motion.div
-            key="otp"
-            custom={direction}
-            variants={paneVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={paneTransition}
-          >
+          <SlidePane key="otp" direction={direction}>
             <OtpPane
               appName={appName}
               deliveredTo={deliveredTo}
@@ -351,18 +328,10 @@ function ElvixDeactivateInner({
               onResend={requestChallenge}
               actionLabel={t("deactivate.confirmCta")}
             />
-          </motion.div>
+          </SlidePane>
         )}
         {pane === "reactivate" && (
-          <motion.div
-            key="reactivate"
-            custom={direction}
-            variants={paneVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={paneTransition}
-          >
+          <SlidePane key="reactivate" direction={direction}>
             <ReactivatePane
               appName={appName}
               inactivatedBy={inactivatedBy}
@@ -370,18 +339,10 @@ function ElvixDeactivateInner({
               serverError={serverError}
               onConfirm={submitReactivate}
             />
-          </motion.div>
+          </SlidePane>
         )}
         {pane === "done" && (
-          <motion.div
-            key="done"
-            custom={direction}
-            variants={paneVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={paneTransition}
-          >
+          <SlidePane key="done" direction={direction}>
             <DeactivateDonePane
               appName={appName}
               kind={isInactive ? "deactivated" : "reactivated"}
@@ -393,7 +354,7 @@ function ElvixDeactivateInner({
                 go(isInactive ? "reactivate" : "warn1", -1);
               }}
             />
-          </motion.div>
+          </SlidePane>
         )}
       </AnimatePresence>
     </div>
@@ -658,14 +619,6 @@ export function OtpPane({
     </form>
   );
 }
-
-const paneVariants = {
-  enter: (dir: 1 | -1) => ({ x: dir * 24, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (dir: 1 | -1) => ({ x: dir * -24, opacity: 0 }),
-};
-
-const paneTransition = { duration: 0.24, ease: [0.22, 0.61, 0.36, 1] as const };
 
 /**
  * Public export. Wraps the implementation in <ElvixCard> by default;

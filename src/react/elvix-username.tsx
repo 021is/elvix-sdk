@@ -47,6 +47,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, AtSign, Check, Loader2, Mail, ShieldOff, X } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { DonePane } from "./done-pane";
+import { SlidePane } from "./wizard-panes";
 
 const DEBOUNCE_MS = 280;
 
@@ -308,15 +309,7 @@ function ElvixUsernameInner({
     <div className="relative overflow-hidden">
       <AnimatePresence mode="wait" custom={direction}>
         {pane === "edit" && (
-          <motion.div
-            key="edit"
-            custom={direction}
-            variants={paneVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={paneTransition}
-          >
+          <SlidePane key="edit" direction={direction}>
             <EditPane
               value={value}
               setValue={setValue}
@@ -326,18 +319,10 @@ function ElvixUsernameInner({
               canContinue={canContinue}
               onSubmit={goConfirm}
             />
-          </motion.div>
+          </SlidePane>
         )}
         {pane === "confirm" && (
-          <motion.div
-            key="confirm"
-            custom={direction}
-            variants={paneVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={paneTransition}
-          >
+          <SlidePane key="confirm" direction={direction}>
             <ConfirmPane
               current={persisted}
               next={normalised}
@@ -345,24 +330,16 @@ function ElvixUsernameInner({
               onBack={goBackToEdit}
               onConfirm={handleConfirm}
             />
-          </motion.div>
+          </SlidePane>
         )}
         {pane === "done" && (
-          <motion.div
-            key="done"
-            custom={direction}
-            variants={paneVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={paneTransition}
-          >
+          <SlidePane key="done" direction={direction}>
             <UsernameDonePane
               username={persisted ?? normalised}
               appName={appName}
               onChangeAgain={goEditAgain}
             />
-          </motion.div>
+          </SlidePane>
         )}
       </AnimatePresence>
     </div>
@@ -700,11 +677,3 @@ function reasonCopy(t: T, reason: UsernameReason): string | undefined {
       return undefined;
   }
 }
-
-const paneVariants = {
-  enter: (dir: 1 | -1) => ({ x: dir * 24, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (dir: 1 | -1) => ({ x: dir * -24, opacity: 0 }),
-};
-
-const paneTransition = { duration: 0.24, ease: [0.22, 0.61, 0.36, 1] as const };

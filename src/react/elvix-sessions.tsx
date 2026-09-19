@@ -39,12 +39,13 @@ import {
   Tablet,
   Trash2,
 } from "lucide-react";
-import { type ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useT } from "../locale/use-t";
 import { DonePane } from "./done-pane";
 import { useElvixContext } from "./elvix-provider";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
+import { SlidePane } from "./wizard-panes";
 
 type TFunction = (key: string, params?: Record<string, string | number>) => string;
 
@@ -189,7 +190,7 @@ function ElvixSessionsImpl({
     <div className="relative overflow-hidden">
       <AnimatePresence mode="wait" custom={direction}>
         {pane === "list" && (
-          <Slide key="list" direction={direction}>
+          <SlidePane key="list" direction={direction}>
             <ListPane
               items={items}
               busyId={busyId}
@@ -202,11 +203,11 @@ function ElvixSessionsImpl({
                 setError(null);
               }}
             />
-          </Slide>
+          </SlidePane>
         )}
 
         {pane === "confirm" && (
-          <Slide key="confirm" direction={direction}>
+          <SlidePane key="confirm" direction={direction}>
             <ConfirmPane
               othersCount={othersCount}
               hasCurrent={hasCurrent}
@@ -219,32 +220,16 @@ function ElvixSessionsImpl({
               onSignOutOthers={() => void massRevoke("others")}
               onSignOutAll={() => void massRevoke("all")}
             />
-          </Slide>
+          </SlidePane>
         )}
 
         {pane === "done" && (
-          <Slide key="done" direction={direction}>
+          <SlidePane key="done" direction={direction}>
             <SessionsDonePane endedCount={endedCount} onBack={() => go("list", -1)} />
-          </Slide>
+          </SlidePane>
         )}
       </AnimatePresence>
     </div>
-  );
-}
-
-/** One pane of the sliding wizard. */
-function Slide({ direction, children }: { direction: 1 | -1; children: ReactNode }) {
-  return (
-    <motion.div
-      custom={direction}
-      variants={paneVariants}
-      initial="enter"
-      animate="center"
-      exit="exit"
-      transition={paneTransition}
-    >
-      {children}
-    </motion.div>
   );
 }
 
@@ -653,13 +638,6 @@ function formatRelative(iso: string, t: TFunction): string {
     month: "short",
   });
 }
-
-const paneVariants = {
-  enter: (dir: 1 | -1) => ({ x: dir * 24, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (dir: 1 | -1) => ({ x: dir * -24, opacity: 0 }),
-};
-const paneTransition = { duration: 0.24, ease: [0.22, 0.61, 0.36, 1] as const };
 
 /**
  * Public export. Wraps the implementation in <ElvixCard> by default;

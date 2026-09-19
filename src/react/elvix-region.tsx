@@ -16,7 +16,7 @@
  * because it cascades. Other fields PATCH only themselves.
  */
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { ArrowLeft, Check, ChevronRight, Globe, Loader2, Pencil, Search } from "lucide-react";
 import { type CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
 import { useT } from "../locale/use-t";
@@ -51,6 +51,7 @@ import {
 } from "./regions";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
+import { FADE_MASK, FadePane } from "./wizard-panes";
 
 // ─── Public types ────────────────────────────────────────────────────
 
@@ -88,33 +89,6 @@ const View = {
   SAVING: "saving",
 } as const;
 type View = (typeof View)[keyof typeof View];
-
-// ─── Pane transition (matches other wizards) ─────────────────────────
-
-const paneVariants = {
-  enter: { opacity: 0, y: 6, filter: "blur(4px)" },
-  center: { opacity: 1, y: 0, filter: "blur(0px)" },
-  exit: { opacity: 0, y: -4, filter: "blur(4px)" },
-};
-
-const FADE_MASK =
-  "linear-gradient(to bottom, transparent 0, rgba(0,0,0,0.4) 12px, black 28px, black calc(100% - 28px), rgba(0,0,0,0.4) calc(100% - 12px), transparent 100%)";
-
-function Pane({ children, fadeEdges = false }: { children: React.ReactNode; fadeEdges?: boolean }) {
-  return (
-    <motion.div
-      variants={paneVariants}
-      initial="enter"
-      animate="center"
-      exit="exit"
-      transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
-      className="absolute inset-0 overflow-y-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      style={fadeEdges ? { maskImage: FADE_MASK, WebkitMaskImage: FADE_MASK } : undefined}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 // ─── Component ───────────────────────────────────────────────────────
 
@@ -247,34 +221,34 @@ export function ElvixRegion({
         <div className="relative h-full overflow-hidden">
           <AnimatePresence initial={false}>
             {view === "loading" || view === ("decide" as View) ? (
-              <Pane key="loading">
+              <FadePane key="loading">
                 <div className="grid h-full place-items-center text-fg-3 text-sm">
                   {t("common.loading")}
                 </div>
-              </Pane>
+              </FadePane>
             ) : view === "empty" ? (
-              <Pane key="empty">
+              <FadePane key="empty">
                 <EmptyState onPick={() => setView("country-pick")} />
-              </Pane>
+              </FadePane>
             ) : view === "country-pick" ? (
-              <Pane key="country-pick">
+              <FadePane key="country-pick">
                 <CountryPickView
                   initial={region?.country ?? null}
                   onPick={(c) => (region ? onCountryReEdit(c) : onPickCountry(c))}
                   onBack={() => setView(region ? "detail" : "empty")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "country-pick-cascade-confirm" ? (
-              <Pane key="cascade-confirm">
+              <FadePane key="cascade-confirm">
                 <CascadeConfirmView
                   current={region}
                   next={pendingCountry}
                   onCancel={cancelCascade}
                   onConfirm={confirmCascadeReset}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "detail" ? (
-              <Pane key="detail" fadeEdges>
+              <FadePane key="detail" fadeEdges>
                 <DetailView
                   region={region}
                   onEditCountry={() => setView("country-pick")}
@@ -287,26 +261,26 @@ export function ElvixRegion({
                   onEditMeasurement={() => setView("edit-measurement")}
                   onEditFirstDay={() => setView("edit-first-day")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "edit-ui-locale" ? (
-              <Pane key="edit-ui-locale">
+              <FadePane key="edit-ui-locale">
                 <UiLocaleEditView
                   current={region?.uiLocale ?? null}
                   onSave={(uiLocale) => void patch({ uiLocale })}
                   onBack={() => setView("detail")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "edit-time-zone" ? (
-              <Pane key="edit-time-zone">
+              <FadePane key="edit-time-zone">
                 <TimeZoneEditView
                   country={region?.country ?? ""}
                   current={region?.timeZone ?? null}
                   onSave={(timeZone) => void patch({ timeZone })}
                   onBack={() => setView("detail")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "edit-time-format" ? (
-              <Pane key="edit-time-format">
+              <FadePane key="edit-time-format">
                 <ChoiceEditView<TimeFormat>
                   title={t("region.timeFormat")}
                   options={TIME_FORMATS}
@@ -315,9 +289,9 @@ export function ElvixRegion({
                   onSave={(timeFormat) => void patch({ timeFormat })}
                   onBack={() => setView("detail")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "edit-date-format" ? (
-              <Pane key="edit-date-format">
+              <FadePane key="edit-date-format">
                 <ChoiceEditView<DateFormat>
                   title={t("region.dateFormat")}
                   options={DATE_FORMATS}
@@ -326,9 +300,9 @@ export function ElvixRegion({
                   onSave={(dateFormat) => void patch({ dateFormat })}
                   onBack={() => setView("detail")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "edit-number-format" ? (
-              <Pane key="edit-number-format">
+              <FadePane key="edit-number-format">
                 <ChoiceEditView<NumberFormat>
                   title={t("region.numberFormat")}
                   options={NUMBER_FORMATS}
@@ -337,17 +311,17 @@ export function ElvixRegion({
                   onSave={(numberFormat) => void patch({ numberFormat })}
                   onBack={() => setView("detail")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "edit-currency" ? (
-              <Pane key="edit-currency">
+              <FadePane key="edit-currency">
                 <CurrencyEditView
                   current={region?.currency ?? null}
                   onSave={(currency) => void patch({ currency })}
                   onBack={() => setView("detail")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "edit-measurement" ? (
-              <Pane key="edit-measurement">
+              <FadePane key="edit-measurement">
                 <ChoiceEditView<MeasurementSystem>
                   title={t("region.unitsLabel")}
                   options={MEASUREMENT_SYSTEMS}
@@ -356,19 +330,19 @@ export function ElvixRegion({
                   onSave={(measurementSystem) => void patch({ measurementSystem })}
                   onBack={() => setView("detail")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "edit-first-day" ? (
-              <Pane key="edit-first-day">
+              <FadePane key="edit-first-day">
                 <FirstDayEditView
                   current={(region?.firstDayOfWeek ?? 1) as DayOfWeek}
                   onSave={(firstDayOfWeek) => void patch({ firstDayOfWeek })}
                   onBack={() => setView("detail")}
                 />
-              </Pane>
+              </FadePane>
             ) : view === "saving" ? (
-              <Pane key="saving">
+              <FadePane key="saving">
                 <SavingView />
-              </Pane>
+              </FadePane>
             ) : null}
           </AnimatePresence>
         </div>
