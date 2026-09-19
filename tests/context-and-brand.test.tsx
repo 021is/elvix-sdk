@@ -79,6 +79,23 @@ describe("#9 refresh()", () => {
   });
 });
 
+describe("bootstrap refresh", () => {
+  it("returning to the tab reloads the bootstrap at most once, not per event", async () => {
+    const fake = installFakeElvix();
+    render(
+      <ElvixProvider clientId={CLIENT_ID} baseUrl={BASE} presence={false}>
+        <span />
+      </ElvixProvider>,
+    );
+    await waitFor(() => expect(fake.calls("/api/v1/bootstrap/")).toBe(1));
+    // A tab return fires both; the mount load was just now, so neither refetches.
+    window.dispatchEvent(new Event("focus"));
+    document.dispatchEvent(new Event("visibilitychange"));
+    await act(() => new Promise((r) => setTimeout(r, 20)));
+    expect(fake.calls("/api/v1/bootstrap/")).toBe(1);
+  });
+});
+
 describe("#7/#10 identity summary and languages", () => {
   it("passes the new fields through to hosts", async () => {
     installFakeElvix({

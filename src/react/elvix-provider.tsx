@@ -1,24 +1,31 @@
 "use client";
 
-import { LocaleProvider, switchLocale } from "@021.is/spine-i18n/react";
+import { LocaleProvider } from "@021.is/spine-i18n/react";
 import { MotionConfig } from "framer-motion";
 import {
   type CSSProperties,
   createContext,
   type ReactNode,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
-  useState,
 } from "react";
-import { buildEnglishRuntime, bundledEnglishCatalog, fetchCatalog } from "../locale/runtime";
+import { buildEnglishRuntime } from "../locale/runtime";
 import type { Pronouns } from "./identity-schema";
 import type { LanguageLevel } from "./languages";
-import { authInit, consumeElvixReturnToken } from "./session";
+import {
+  DEFAULT_LOCALE,
+  ElvixSessionStatus,
+  useBootstrap,
+  useCatalogLocale,
+  usePresenceHeartbeat,
+  useSystemDark,
+  useUserEnvelope,
+} from "./provider-state";
+import { consumeElvixReturnToken } from "./session";
 import type { ElvixBootstrapEnvelope, ElvixBrand, ElvixTheme } from "./types";
 
-const DEFAULT_LOCALE = "en";
+export { ElvixSessionStatus } from "./provider-state";
 
 /**
  * Per-app user envelope returned by
@@ -90,23 +97,6 @@ const ELVIX_DEFAULT_BRAND: ElvixBrand = {
 };
 
 const DEFAULT_BASE_URL = "https://elvix.is";
-
-const BOOTSTRAP_URL = (baseUrl: string, clientId: string) =>
-  `${baseUrl}/api/v1/bootstrap/${encodeURIComponent(clientId)}`;
-
-/**
- * Resolution state of the per-app session probe (`sdk-context`). Lets a
- * consumer distinguish "still checking" from "definitely no session" — the
- * `appContext` field alone is `null` for both. Used by `redirectIfAuthenticated`
- * on the sign-in surfaces so they don't flash the form before a known-signed-in
- * user is redirected.
- */
-export const ElvixSessionStatus = {
-  LOADING: "loading",
-  AUTHENTICATED: "authenticated",
-  ANONYMOUS: "anonymous",
-} as const;
-export type ElvixSessionStatus = (typeof ElvixSessionStatus)[keyof typeof ElvixSessionStatus];
 
 type ElvixContextValue = {
   clientId: string | undefined;
@@ -307,242 +297,36 @@ export function ElvixProvider({
   className?: string;
 }) {
   const resolvedBaseUrl = baseUrl ?? DEFAULT_BASE_URL;
-  const resolvedLocale = locale ?? DEFAULT_LOCALE;
-  // `initial` is locked at LocaleProvider mount; later locale swaps go
-  // through `switchLocale(...)` which fires a CustomEvent the provider
-  // listens for. So the `useEffect` below dispatches that event whenever
-  // `locale` changes — the next render after the dispatch sees the new
-  // runtime and every nested `useT()` returns the matched-locale string.
+  // `initial` is locked at LocaleProvider mount; later swaps go through
+  // `switchLocale(...)` inside useCatalogLocale, and the next render sees the
+  // new runtime in every nested `useT()`.
   const initialRuntime = useMemo(() => buildEnglishRuntime(), []);
+  useCatalogLocale(locale ?? DEFAULT_LOCALE, i18nBase);
 
-  useEffect(() => {
-    if (resolvedLocale === DEFAULT_LOCALE) {
-      // Snap straight back to bundled English — no network.
-      switchLocale({ primary: bundledEnglishCatalog(), fallback: null });
-      return;
-    }
-    let cancelled = false;
-    void fetchCatalog(resolvedLocale, i18nBase).then((primary) => {
-      if (cancelled) return;
-      if (!primary) {
-        // Fetch failed; fall back to English silently.
-        switchLocale({ primary: bundledEnglishCatalog(), fallback: null });
-        return;
-      }
-      // Bundled `en` stays in the fallback chain so any missing key in
-      // the target catalog falls through to English instead of showing
-      // the raw key.
-      switchLocale({ primary, fallback: bundledEnglishCatalog() });
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [resolvedLocale, i18nBase]);
-  const [app, setApp] = useState<ElvixBootstrapEnvelope | null>(null);
-  const [appError, setAppError] = useState<string | null>(null);
-  const [appContext, setAppContext] = useState<ElvixAppContext | null>(null);
-  const [sessionStatus, setSessionStatus] = useState<ElvixSessionStatus>(
-    ElvixSessionStatus.LOADING,
-  );
-  const [systemDark, setSystemDark] = useState(false);
-
-  // Cross-origin Google redirect return: if elvix bounced the user back here
-  // with `#elvix_token=<token>` in the fragment, store it and strip it from
-  // the URL before anything else runs. Runs once on mount; no-op when there's
-  // no fragment token (the common case) or on the server.
+  // Cross-origin Google redirect return: store `#elvix_token=<token>` and
+  // strip it from the URL before anything else runs. No-op without one.
   useEffect(() => {
     consumeElvixReturnToken();
   }, []);
 
-  // Fetch the public render envelope. Extracted so both the initial mount
-  // effect AND the real-time refresh (interval + focus) call the same path.
-  const loadBootstrap = useCallback(
-    async (signal?: AbortSignal) => {
-      if (!clientId) {
-        setApp(null);
-        setAppError(null);
-        return;
-      }
-      try {
-        const r = await fetch(BOOTSTRAP_URL(resolvedBaseUrl, clientId), { signal });
-        // Read body once; tolerate non-JSON 403/404/5xx (CORS-blocked
-        // preflights serve no body). Without this branch the SDK silently
-        // failed with `body=null` and `<ElvixSignIn>` rendered an empty card.
-        let body: { success?: boolean; data?: unknown; errorMessage?: string } | null = null;
-        try {
-          body = await r.json();
-        } catch {
-          body = null;
-        }
-        if (r.ok && body?.success && body.data) {
-          setApp(body.data as ElvixBootstrapEnvelope);
-          setAppError(null);
-        } else if (r.status === 404) {
-          setAppError("client_id_not_found");
-        } else if (r.status === 403) {
-          setAppError(body?.errorMessage ?? "origin_not_allowed");
-        } else {
-          setAppError(body?.errorMessage ?? `bootstrap_failed_${r.status}`);
-        }
-      } catch (e: unknown) {
-        if ((e as { name?: string })?.name === "AbortError") return;
-        // Network failures (DNS, CORS preflight blocked, offline) surface
-        // so <ElvixSignIn> shows a visible pane instead of an empty card.
-        setAppError(e instanceof Error ? e.message : "network_error");
-      }
-    },
-    [clientId, resolvedBaseUrl],
-  );
+  const { app, appError } = useBootstrap(clientId, resolvedBaseUrl, bootstrapRefreshMs);
+  const { appContext, sessionStatus, refresh } = useUserEnvelope(clientId, resolvedBaseUrl);
 
-  // Initial bootstrap load.
-  useEffect(() => {
-    const ctrl = new AbortController();
-    void loadBootstrap(ctrl.signal);
-    return () => ctrl.abort();
-  }, [loadBootstrap]);
+  // Every elvix app gets presence for free, no <ElvixPresence> mount; only for
+  // a signed-in user (the route requires a session). presence={false} opts out.
+  usePresenceHeartbeat({
+    enabled: presence && sessionStatus === ElvixSessionStatus.AUTHENTICATED,
+    applicationId: app?.applicationId ?? null,
+    baseUrl: resolvedBaseUrl,
+  });
 
-  // Real-time bootstrap refresh: re-fetch on an interval and when the tab
-  // regains focus, so Console changes (sign-in methods, brand, gate) appear
-  // on an open page with no reload. This is why elvix feels live. Disable
-  // with bootstrapRefreshMs={0}.
-  useEffect(() => {
-    if (!clientId || !bootstrapRefreshMs || typeof window === "undefined") return;
-    const refresh = () => {
-      if (document.visibilityState !== "hidden") void loadBootstrap();
-    };
-    const id = setInterval(refresh, bootstrapRefreshMs);
-    window.addEventListener("focus", refresh);
-    document.addEventListener("visibilitychange", refresh);
-    return () => {
-      clearInterval(id);
-      window.removeEventListener("focus", refresh);
-      document.removeEventListener("visibilitychange", refresh);
-    };
-  }, [clientId, bootstrapRefreshMs, loadBootstrap]);
-
-  // Per-app user envelope. Carries the session cookie same-origin, the bearer
-  // cross-origin (via authInit). A non-OK response is the no-session case —
-  // silent; the ported identity / account components fall back to their empty
-  // / "not signed in" surface. Shared by the mount effect and `refresh()`.
-  const loadAppContext = useCallback(
-    async (signal?: AbortSignal) => {
-      if (!clientId) {
-        setAppContext(null);
-        setSessionStatus(ElvixSessionStatus.ANONYMOUS);
-        return;
-      }
-      try {
-        const r = await fetch(
-          `${resolvedBaseUrl}/api/account/apps/${encodeURIComponent(clientId)}/sdk-context`,
-          { ...authInit(), signal },
-        );
-        const body = r.ok ? await r.json() : null;
-        if (body?.success && body?.data) {
-          setAppContext(body.data as ElvixAppContext);
-          setSessionStatus(ElvixSessionStatus.AUTHENTICATED);
-        } else {
-          setAppContext(null);
-          setSessionStatus(ElvixSessionStatus.ANONYMOUS);
-        }
-      } catch (e: unknown) {
-        if ((e as { name?: string })?.name === "AbortError") return;
-        setAppContext(null);
-        setSessionStatus(ElvixSessionStatus.ANONYMOUS);
-      }
-    },
-    [clientId, resolvedBaseUrl],
-  );
-
-  useEffect(() => {
-    setSessionStatus(ElvixSessionStatus.LOADING);
-    const ctrl = new AbortController();
-    void loadAppContext(ctrl.signal);
-    return () => ctrl.abort();
-  }, [loadAppContext]);
-
-  // No LOADING flip on refresh: consumers keep rendering the old envelope
-  // until the new one lands, instead of flashing their signed-out state.
-  const refresh = useCallback(() => loadAppContext(), [loadAppContext]);
-
-  // Automatic presence heartbeat. While the user is signed in (sessionStatus
-  // AUTHENTICATED), beat /api/presence/heartbeat every 30s so they show ONLINE
-  // on the app's users list in the Console — every elvix app gets presence for
-  // free, no manual <ElvixPresence> mount. Pauses on a hidden tab; reports
-  // "idle" after 60s without input. Gated on AUTHENTICATED so anonymous sign-in
-  // pages never beat (the route requires a session anyway). authInit() sends the
-  // bearer cross-origin and the cookie same-origin. Disable with presence={false}.
-  const presenceAppId = app?.applicationId ?? null;
-  useEffect(() => {
-    if (!presence) return;
-    if (!presenceAppId) return;
-    if (sessionStatus !== ElvixSessionStatus.AUTHENTICATED) return;
-    if (typeof window === "undefined") return;
-    let lastInputAt = Date.now();
-    let cancelled = false;
-    const onInput = () => {
-      lastInputAt = Date.now();
-    };
-    window.addEventListener("mousemove", onInput, { passive: true });
-    window.addEventListener("keydown", onInput, { passive: true });
-    window.addEventListener("focus", onInput);
-    const beat = async () => {
-      if (cancelled || document.visibilityState === "hidden") return;
-      const status = Date.now() - lastInputAt > 60_000 ? "idle" : "online";
-      const init = authInit();
-      try {
-        await fetch(`${resolvedBaseUrl}/api/presence/heartbeat`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", ...init.headers },
-          credentials: init.credentials,
-          body: JSON.stringify({ applicationId: presenceAppId, status }),
-        });
-      } catch {
-        // Network blips don't matter — the next tick catches up.
-      }
-    };
-    void beat();
-    const id = setInterval(() => void beat(), 30_000);
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-      window.removeEventListener("mousemove", onInput);
-      window.removeEventListener("keydown", onInput);
-      window.removeEventListener("focus", onInput);
-    };
-  }, [presence, presenceAppId, sessionStatus, resolvedBaseUrl]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    setSystemDark(mq.matches);
-    const sync = (e: MediaQueryListEvent) => setSystemDark(e.matches);
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
-
-  const effectiveTheme: "light" | "dark" = useMemo(() => {
-    if (theme === "light") return "light";
-    if (theme === "dark") return "dark";
-    return systemDark ? "dark" : "light";
-  }, [theme, systemDark]);
+  const systemDark = useSystemDark();
+  const effectiveTheme: "light" | "dark" =
+    theme === "light" || theme === "dark" ? theme : systemDark ? "dark" : "light";
 
   const configuredBrand = useMemo(() => brand ?? appBrand(app), [brand, app]);
   const pair = (configuredBrand ?? ELVIX_DEFAULT_BRAND)[effectiveTheme];
-
-  const cssVars: CSSProperties = useMemo(
-    () =>
-      ({
-        "--elvix-primary": pair.primary,
-        "--elvix-on-primary": pair.on,
-        "--elvix-primary-8": withAlpha(pair.primary, 0.08),
-        "--elvix-primary-12": withAlpha(pair.primary, 0.12),
-        "--elvix-primary-20": withAlpha(pair.primary, 0.2),
-        "--elvix-primary-35": withAlpha(pair.primary, 0.35),
-        "--elvix-primary-55": withAlpha(pair.primary, 0.55),
-        "--elvix-primary-strong": pair.primary,
-      }) as CSSProperties,
-    [pair.primary, pair.on],
-  );
+  const cssVars = useMemo(() => brandCssVars(pair.primary, pair.on), [pair.primary, pair.on]);
 
   const value: ElvixContextValue = useMemo(
     () => ({
@@ -606,6 +390,20 @@ function appBrand(app: ElvixBootstrapEnvelope | null): ElvixBrand | null {
       on: app.onBrandColorDark ?? app.onBrandColor,
     },
   };
+}
+
+/** The brand CSS custom properties every SDK surface paints with. */
+function brandCssVars(primary: string, on: string): CSSProperties {
+  return {
+    "--elvix-primary": primary,
+    "--elvix-on-primary": on,
+    "--elvix-primary-8": withAlpha(primary, 0.08),
+    "--elvix-primary-12": withAlpha(primary, 0.12),
+    "--elvix-primary-20": withAlpha(primary, 0.2),
+    "--elvix-primary-35": withAlpha(primary, 0.35),
+    "--elvix-primary-55": withAlpha(primary, 0.55),
+    "--elvix-primary-strong": primary,
+  } as CSSProperties;
 }
 
 function withAlpha(hex: string, a: number): string {
