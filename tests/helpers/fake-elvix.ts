@@ -28,6 +28,7 @@ export type FakeElvixState = {
   /** Set to hold the next sdk-context response until `release()` is called. */
   holdContext: boolean;
   sessions: { id: string; isCurrent: boolean; [k: string]: unknown }[];
+  addresses: { id: string; kind: string; isDefault: boolean; [k: string]: unknown }[];
 };
 
 const json = (body: unknown, status = 200) =>
@@ -104,6 +105,7 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
     identity: {},
     holdContext: false,
     sessions: [],
+    addresses: [],
     ...initial,
   };
   const held: (() => void)[] = [];
@@ -153,6 +155,31 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
     return json({ success: true, data: { ok: true, ended } });
   };
 
+  const ADDRESSES = "/api/account/profile/addresses";
+  const addressId = (url: string) => new URL(url).searchParams.get("id");
+  const addresses: Handler = (url, init) => {
+    const method = init?.method ?? "GET";
+    if (method === "GET") {
+      const kind = new URL(url).searchParams.get("kind");
+      const list = state.addresses.filter((a) => a.kind === kind);
+      return json({ success: true, data: { ok: true, addresses: list } });
+    }
+    const id = addressId(url);
+    if (method === "DELETE") {
+      state.addresses = state.addresses.filter((a) => a.id !== id);
+      return json({ success: true, data: { ok: true } });
+    }
+    const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
+    patches.push(body);
+    if (method === "POST") {
+      state.addresses.push({ ...body, id: `addr_${state.addresses.length + 1}` } as never);
+    } else {
+      const target = state.addresses.find((a) => a.id === id);
+      if (target) Object.assign(target, body);
+    }
+    return json({ success: true, data: { ok: true } });
+  };
+
   // First match wins: [method or "*", url test, handler].
   const routes: [string, (url: string) => boolean, Handler][] = [
     [
@@ -163,6 +190,7 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
     ["*", (u) => u.includes("/sdk-context"), sdkContext],
     ["*", (u) => MEDIA.test(u), mediaMeta],
     ["*", (u) => u.endsWith("/api/account/profile/identity"), identity],
+    ["*", (u) => u.includes(ADDRESSES), addresses],
     [
       "GET",
       (u) => u.endsWith("/api/account/profile/languages"),

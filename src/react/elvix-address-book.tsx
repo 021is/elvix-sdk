@@ -5,15 +5,15 @@
  * addresses. Lives inside an `<ElvixCard>` so the chrome (brand
  * border + trusted badge) matches every other SDK form.
  *
- * Three sub-views, one frame, slide-left/slide-right transitions:
+ * One frame, one pane at a time (the state machine is in
+ * `address-book-wizard.ts`, the requests in `use-address-book.ts`):
  *
- *   "empty"  — no addresses yet. One big "Add address" tile (mirrors
- *              the AccountIntentCard visual language).
- *   "list"   — addresses stacked vertically as rectangular cards,
- *              default badge on top, "+ Add address" row at the
- *              bottom. Click any card → slides left into "edit".
- *   "form"   — the address form, with a Back arrow. Used for both
- *              add (new) and edit (existing).
+ *   empty / list — the addresses of this kind, or the "Add address" tile.
+ *   add flow     — search → review → apt/floor → recipient → notes → save.
+ *   detail       — one address; each row reopens its add-flow step to edit
+ *                  that field alone.
+ *   confirms     — delete, and set/clear default. Both warn that the
+ *                  address is shared with every app the user signs into.
  *
  * Critical: everything happens INSIDE THE FRAME. No page navigation.
  * That's the SDK contract — a customer drops `<ElvixAddressBook
@@ -26,7 +26,7 @@
  *                min/max.
  *   minHeight  — bottom bound when `height` is not set.
  *   maxHeight  — top bound when `height` is not set.
- *   width      — frame width (default: 432, same as basic info).
+ *   width      — frame width (default: "100%", fills the host's column).
  *
  * Customers can render in narrow checkout columns by passing
  * `width={360}` or in a wide modal with `width={520}` — the inner
@@ -49,26 +49,19 @@ import {
 } from "lucide-react";
 import { type CSSProperties, Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useT } from "../locale/use-t";
-import type { AddressInput, AddressKind, AddressRecord } from "./address-schema";
+import { EditableField, type PlaceDetails, ReturnTo, View } from "./address-book-wizard";
+import type { AddressKind, AddressRecord } from "./address-schema";
 import { MaybeCard } from "./elvix-card";
 import { ElvixInput } from "./elvix-input";
 import { useElvixContext } from "./elvix-provider";
 import { ElvixSaveButton } from "./elvix-save-button";
 import { MAPS_MISSING_CLIENT_ID, mapsUrl } from "./maps-url";
-import { authInit, isSameOrigin } from "./session";
+import { isSameOrigin } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
-import { useStableCallback } from "./use-stable-callback";
+import { type ElvixAddressBookResult, useAddressBook } from "./use-address-book";
 import { FadePane } from "./wizard-panes";
 
-const ReturnTo = {
-  LIST: "list",
-  DETAIL: "detail",
-} as const;
-type ReturnTo = (typeof ReturnTo)[keyof typeof ReturnTo];
-
-export type ElvixAddressBookResult =
-  | { ok: true; count: number }
-  | { ok: false; error: string; message?: string };
+export type { ElvixAddressBookResult } from "./use-address-book";
 
 export type ElvixAddressBookProps = {
   /** Render inside an <ElvixCard>. Default true; pass false for bare (no chrome). */
@@ -96,47 +89,11 @@ export type ElvixAddressBookProps = {
   onResult?: (result: ElvixAddressBookResult) => void;
 };
 
-const View = {
-  EMPTY: "empty",
-  LIST: "list",
-  SEARCH: "search",
-  REVIEW: "review",
-  APT_FLOOR: "apt-floor",
-  RECIPIENT_CHOICE: "recipient-choice",
-  RECIPIENT_CUSTOM: "recipient-custom",
-  RECIPIENT_BUSINESS_NAME: "recipient-business-name",
-  RECIPIENT_BUSINESS_CONTACT: "recipient-business-contact",
-  NOTE_CHOICE: "note-choice",
-  NOTE_INPUT: "note-input",
-  SAVING: "saving",
-  DETAIL: "detail",
-  DELETE_CONFIRM: "delete-confirm",
-  DELETING: "deleting",
-  DEFAULT_CONFIRM: "default-confirm",
-} as const;
-type View = (typeof View)[keyof typeof View];
-
 type PlaceSuggestion = {
   placeId: string;
   text: string;
   mainText: string;
   secondaryText: string;
-};
-
-type PlaceDetails = {
-  placeId: string;
-  formattedAddress: string;
-  displayName: string;
-  line1: string;
-  city: string;
-  regionName: string | null;
-  regionCode: string | null;
-  postalCode: string | null;
-  country: string;
-  countryName: string | null;
-  latitude: number | null;
-  longitude: number | null;
-  timezone: string | null;
 };
 
 function newSessionToken(): string {
@@ -155,412 +112,8 @@ export function ElvixAddressBook({
   card,
 }: ElvixAddressBookProps) {
   const t = useT();
-  const ctx = useElvixContext();
-  const [addresses, setAddresses] = useState<AddressRecord[]>([]);
-  const [view, setView] = useState<View>("empty");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // Stable: a host's inline `onChange` must not re-run the load effect.
-  const emitChange = useStableCallback(onChange);
-  const refresh = useCallback(async () => {
-    const res = await fetch(`${ctx.baseUrl}/api/account/profile/addresses?kind=${kind}`, {
-      cache: "no-store",
-      ...authInit(),
-    });
-    if (!res.ok) {
-      setLoading(false);
-      return;
-    }
-    const body = unwrapEnvelope(await res.json()) as { ok: boolean; addresses: AddressRecord[] };
-    if (!body.ok) {
-      setLoading(false);
-      return;
-    }
-    setAddresses(body.addresses);
-    emitChange(body.addresses);
-    setLoading(false);
-    setView(body.addresses.length === 0 ? "empty" : "list");
-  }, [kind, emitChange, ctx.baseUrl]);
-
-  // Load when the list's identity changes (kind / origin) — not on every
-  // render; after that the wizard owns its view state and refreshes
-  // explicitly after a save or delete.
-  useEffect(() => {
-    void refresh();
-  }, [refresh]);
-
-  const openAdd = useCallback(() => {
-    setError(null);
-    setView("search");
-  }, []);
-
-  const closeWizard = useCallback(() => {
-    setView(addresses.length === 0 ? "empty" : "list");
-  }, [addresses.length]);
-
-  // Wizard state carried through the multi-step add flow.
-  const [searchSeed, setSearchSeed] = useState<PlaceDetails | null>(null);
-  const [pickedLine2, setPickedLine2] = useState<string>("");
-  const [pickedRecipient, setPickedRecipient] = useState<string>("");
-  const [pickedCompany, setPickedCompany] = useState<string>("");
-  const [pickedNotes, setPickedNotes] = useState<string | null>(null);
-  // Detail-view inspection id — also the target id for in-place
-  // field edits (see editingMode below).
-  const [inspectingId, setInspectingId] = useState<string | null>(null);
-  // editingMode flips the wizard's terminal behaviour: instead of
-  // POSTing a brand-new address, the same confirm steps PATCH the
-  // single field on the currently-inspected record, then route back
-  // to the detail view. Lets users tap any row in DetailView to
-  // re-enter the matching wizard step pre-filled with the current
-  // value.
-  const [editingMode, setEditingMode] = useState(false);
-
-  // PATCH a single (or several) fields on the inspected address,
-  // then return to the detail view. Used by every "tap a row to
-  // edit" path. Optimistic refresh keeps the visible card fresh.
-  const patchField = useCallback(
-    async (id: string, partial: Partial<AddressInput>) => {
-      setView("saving");
-      const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/profile/addresses?id=${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", ...auth.headers },
-        credentials: auth.credentials,
-        body: JSON.stringify(partial),
-      });
-      if (!res.ok) {
-        const body = unwrapEnvelope(await res.json().catch(() => ({})));
-        const message = humanizeApiError(body);
-        setError(message);
-        onResult?.({ ok: false, error: "patch_failed", message });
-      } else {
-        onResult?.({ ok: true, count: addresses.length });
-      }
-      await refresh();
-      setEditingMode(false);
-      setSearchSeed(null);
-      setPickedLine2("");
-      setPickedRecipient("");
-      setPickedCompany("");
-      setPickedNotes(null);
-      setView("detail");
-    },
-    [refresh, addresses.length, onResult, ctx.baseUrl],
-  );
-
-  const advanceToReview = useCallback((details: PlaceDetails) => {
-    setSearchSeed(details);
-    setView("review");
-  }, []);
-  const reopenSearch = useCallback(() => {
-    setSearchSeed(null);
-    setView("search");
-  }, []);
-  // After review the user clarifies apt/floor (line2) — Google
-  // almost never returns it. Skippable; advances to recipient choice.
-  const advanceToAptFloor = useCallback(() => {
-    setPickedLine2("");
-    setView("apt-floor");
-  }, []);
-  const onConfirmAptFloor = useCallback(
-    (line2: string | null) => {
-      setPickedLine2(line2 ?? "");
-      if (editingMode && inspectingId) {
-        void patchField(inspectingId, { line2: line2 || null });
-        return;
-      }
-      setView("recipient-choice");
-    },
-    [editingMode, inspectingId, patchField],
-  );
-
-  // Commits the assembled address to the API. Called at the end of
-  // the wizard (after the optional delivery-notes step). Uses the
-  // accumulated wizard state.
-  const commit = useCallback(
-    async (notesOverride: string | null = pickedNotes) => {
-      if (!searchSeed) return;
-      setError(null);
-      setView("saving");
-      const payload: AddressInput = {
-        kind,
-        label: "",
-        isDefault: false,
-        recipientName: pickedRecipient,
-        companyName: pickedCompany || null,
-        line1: searchSeed.line1,
-        line2: pickedLine2.trim() ? pickedLine2.trim() : null,
-        city: searchSeed.city,
-        regionName: searchSeed.regionName,
-        regionCode: searchSeed.regionCode,
-        postalCode: searchSeed.postalCode,
-        country: searchSeed.country,
-        countryName: searchSeed.countryName,
-        deliveryNotes: notesOverride?.trim() ? notesOverride.trim() : null,
-        timezone: searchSeed.timezone,
-        venueName: searchSeed.displayName || null,
-        placeId: searchSeed.placeId,
-        formattedAddress: searchSeed.formattedAddress,
-        latitude: searchSeed.latitude,
-        longitude: searchSeed.longitude,
-      };
-      const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/profile/addresses`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...auth.headers },
-        credentials: auth.credentials,
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) {
-        const body = unwrapEnvelope(await res.json().catch(() => ({})));
-        const message = humanizeApiError(body);
-        setError(message);
-        onResult?.({ ok: false, error: "save_failed", message });
-        setView("note-choice");
-        return;
-      }
-      // Reset wizard state and refresh.
-      setSearchSeed(null);
-      setPickedLine2("");
-      setPickedRecipient("");
-      setPickedCompany("");
-      setPickedNotes(null);
-      await refresh();
-      onResult?.({ ok: true, count: addresses.length + 1 });
-    },
-    [
-      kind,
-      refresh,
-      searchSeed,
-      pickedLine2,
-      pickedRecipient,
-      pickedCompany,
-      pickedNotes,
-      addresses.length,
-      onResult,
-      ctx.baseUrl,
-    ],
-  );
-
-  // After recipient is captured (any branch) we route to the
-  // delivery-notes prompt instead of committing immediately. The
-  // user picks Yes (→ note-input) or No (→ commit straight through).
-  const askNotes = useCallback(() => {
-    setPickedNotes(null);
-    setView("note-choice");
-  }, []);
-
-  const onPickMe = useCallback(
-    (name: string) => {
-      setPickedRecipient(name);
-      setPickedCompany("");
-      askNotes();
-    },
-    [askNotes],
-  );
-  const onPickCustom = useCallback(() => {
-    setPickedRecipient("");
-    setView("recipient-custom");
-  }, []);
-  const onConfirmCustom = useCallback(
-    (name: string) => {
-      setPickedRecipient(name);
-      if (editingMode && inspectingId) {
-        // When editing an existing address from the detail view, we
-        // only patch the recipient field. We do NOT touch
-        // companyName — clicking "Recipient" means "change the name",
-        // not "convert to a personal address".
-        void patchField(inspectingId, { recipientName: name });
-        return;
-      }
-      setPickedCompany("");
-      askNotes();
-    },
-    [askNotes, editingMode, inspectingId, patchField],
-  );
-  const onPickBusiness = useCallback(() => {
-    setPickedCompany("");
-    setPickedRecipient("");
-    setView("recipient-business-name");
-  }, []);
-  const onConfirmBusinessName = useCallback(
-    (company: string) => {
-      setPickedCompany(company);
-      if (editingMode && inspectingId) {
-        // Edit-mode: just patch companyName, keep the rest.
-        void patchField(inspectingId, { companyName: company || null });
-        return;
-      }
-      setView("recipient-business-contact");
-    },
-    [editingMode, inspectingId, patchField],
-  );
-  const onConfirmBusinessContact = useCallback(
-    (contact: string | null) => {
-      // If the user provided a contact name, it goes on the
-      // recipientName line; the company stays on companyName. If
-      // they skipped, recipientName falls back to the company so
-      // the invoice / package is still addressable.
-      const recipient = (contact ?? "").trim() || pickedCompany;
-      setPickedRecipient(recipient);
-      askNotes();
-    },
-    [askNotes, pickedCompany],
-  );
-
-  const onNotesYes = useCallback(() => {
-    setView("note-input");
-  }, []);
-  const onNotesNo = useCallback(() => {
-    setPickedNotes(null);
-    void commit(null);
-  }, [commit]);
-  const onNotesConfirm = useCallback(
-    (notes: string) => {
-      setPickedNotes(notes);
-      if (editingMode && inspectingId) {
-        void patchField(inspectingId, { deliveryNotes: notes.trim() || null });
-        return;
-      }
-      void commit(notes);
-    },
-    [commit, editingMode, inspectingId, patchField],
-  );
-
-  // Delete is a two-step confirmation wizard. The trash icon on a list
-  // row opens a dedicated pane (`delete-confirm`) that surfaces the
-  // address summary + cross-app impact warning. Confirming moves to
-  // a `deleting` pane while the DELETE call is in flight.
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const askDelete = useCallback((id: string) => {
-    setDeletingId(id);
-    setView("delete-confirm");
-  }, []);
-  const cancelDelete = useCallback(() => {
-    setDeletingId(null);
-    setView("list");
-  }, []);
-  const confirmDelete = useCallback(async () => {
-    if (!deletingId) return;
-    setView("deleting");
-    const res = await fetch(`${ctx.baseUrl}/api/account/profile/addresses?id=${deletingId}`, {
-      method: "DELETE",
-      ...authInit(),
-    });
-    if (!res.ok) {
-      const body = unwrapEnvelope(await res.json().catch(() => ({})));
-      const err = (body as { error?: string }).error ?? "delete_failed";
-      setError(err);
-      onResult?.({ ok: false, error: err });
-      setView("delete-confirm");
-      return;
-    }
-    setDeletingId(null);
-    await refresh();
-    onResult?.({ ok: true, count: Math.max(0, addresses.length - 1) });
-  }, [deletingId, refresh, addresses.length, onResult, ctx.baseUrl]);
-
-  const deletingAddress = addresses.find((a) => a.id === deletingId) ?? null;
-
-  // Detail view — click an address row → inspect full info,
-  // with Back / Set default / Delete actions + per-field tap-to-edit.
-  const openDetail = useCallback((id: string) => {
-    setInspectingId(id);
-    setView("detail");
-  }, []);
-  const closeDetail = useCallback(() => {
-    setInspectingId(null);
-    setEditingMode(false);
-    setView("list");
-  }, []);
-  const inspectingAddress = addresses.find((a) => a.id === inspectingId) ?? null;
-
-  // ─── Tap-to-edit entry points ───────────────────────────────────
-  // Each clickable row on the detail view calls one of these. They
-  // pre-fill the matching wizard state slot and navigate to the
-  // existing step component — same UI as the add flow, just with
-  // `editingMode=true` so the confirm PATCHes instead of POSTs.
-  const editLine2 = useCallback((current: string | null) => {
-    setPickedLine2(current ?? "");
-    setEditingMode(true);
-    setView("apt-floor");
-  }, []);
-  const editNotes = useCallback((current: string | null) => {
-    setPickedNotes(current);
-    setEditingMode(true);
-    setView("note-input");
-  }, []);
-  const editRecipient = useCallback((current: string) => {
-    setPickedRecipient(current);
-    setEditingMode(true);
-    setView("recipient-custom");
-  }, []);
-  const editCompany = useCallback((current: string) => {
-    setPickedCompany(current);
-    setEditingMode(true);
-    setView("recipient-business-name");
-  }, []);
-  const cancelEdit = useCallback(() => {
-    setEditingMode(false);
-    setPickedLine2("");
-    setPickedRecipient("");
-    setPickedCompany("");
-    setPickedNotes(null);
-    setView("detail");
-  }, []);
-  // Default changes affect every app that signs the user into elvix
-  // (the address is one record on the elvix profile, shared with all
-  // connected apps). Both setting AND removing a default route
-  // through a confirmation wizard with the cross-app warning, so
-  // there's no silent state change. State for that intent:
-  const [defaultIntent, setDefaultIntent] = useState<{
-    id: string;
-    setting: boolean;
-    returnTo: ReturnTo;
-  } | null>(null);
-  const askDefaultChange = useCallback(
-    (id: string, setting: boolean, returnTo: ReturnTo = "list") => {
-      setDefaultIntent({ id, setting, returnTo });
-      setView("default-confirm");
-    },
-    [],
-  );
-  const cancelDefaultChange = useCallback(() => {
-    const back = defaultIntent?.returnTo ?? "list";
-    setDefaultIntent(null);
-    setView(back);
-  }, [defaultIntent]);
-  const confirmDefaultChange = useCallback(async () => {
-    if (!defaultIntent) return;
-    const { id, setting, returnTo } = defaultIntent;
-    setError(null);
-    // Optimistic local flip — the wizard already showed the warning,
-    // we don't owe the user a second loading screen.
-    setAddresses((prev) =>
-      prev.map((a) => {
-        if (a.kind !== kind) return a;
-        if (setting) return { ...a, isDefault: a.id === id };
-        if (a.id === id) return { ...a, isDefault: false };
-        return a;
-      }),
-    );
-    setView(returnTo);
-    setDefaultIntent(null);
-    const auth = authInit();
-    const res = await fetch(`${ctx.baseUrl}/api/account/profile/addresses?id=${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", ...auth.headers },
-      credentials: auth.credentials,
-      body: JSON.stringify({ isDefault: setting }),
-    });
-    if (!res.ok) {
-      // Revert from server truth on failure.
-      await refresh();
-    }
-  }, [defaultIntent, kind, refresh, ctx.baseUrl]);
-  const defaultIntentAddress = addresses.find((a) => a.id === defaultIntent?.id) ?? null;
-
+  const book = useAddressBook({ kind, onChange, onResult });
+  const { view } = book.state;
   const frameStyle: CSSProperties = {
     width: typeof width === "number" ? `${width}px` : width,
     ...(height
@@ -573,160 +126,19 @@ export function ElvixAddressBook({
       <MaybeCard card={card} className="h-full">
         <div className="relative h-full overflow-hidden">
           <AnimatePresence initial={false}>
-            {loading ? (
+            {book.loading ? (
               <FadePane key="loading">
                 <div className="grid h-full place-items-center text-fg-3 text-sm">
                   {t("common.loading")}
                 </div>
               </FadePane>
-            ) : view === "empty" ? (
-              <FadePane key="empty">
-                <EmptyState kind={kind} onAdd={openAdd} />
-              </FadePane>
-            ) : view === "list" ? (
-              <FadePane key="list" fadeEdges>
-                <ListView
-                  kind={kind}
-                  addresses={addresses}
-                  onOpen={openDetail}
-                  onDelete={askDelete}
-                  onToggleDefault={(id, current) => askDefaultChange(id, !current, "list")}
-                  onAdd={openAdd}
-                />
-              </FadePane>
-            ) : view === "search" ? (
-              <FadePane key="search">
-                <SearchView kind={kind} onPick={advanceToReview} onBack={closeWizard} />
-              </FadePane>
-            ) : view === "review" ? (
-              <FadePane key="review">
-                <ReviewView
-                  kind={kind}
-                  details={searchSeed}
-                  onConfirm={advanceToAptFloor}
-                  onChange={reopenSearch}
-                />
-              </FadePane>
-            ) : view === "apt-floor" ? (
-              <FadePane key="apt-floor">
-                <AptFloorView
-                  kind={kind}
-                  initial={pickedLine2}
-                  onConfirm={onConfirmAptFloor}
-                  onBack={editingMode ? cancelEdit : () => setView("review")}
-                />
-              </FadePane>
-            ) : view === "recipient-choice" ? (
-              <FadePane key="recipient-choice">
-                <RecipientChoiceView
-                  kind={kind}
-                  userDisplayName={userDisplayName ?? null}
-                  onPickMe={onPickMe}
-                  onPickCustom={onPickCustom}
-                  onPickBusiness={onPickBusiness}
-                  onBack={() => setView("apt-floor")}
-                  error={error}
-                />
-              </FadePane>
-            ) : view === "recipient-custom" ? (
-              <FadePane key="recipient-custom">
-                <RecipientCustomView
-                  kind={kind}
-                  initial={pickedRecipient}
-                  onConfirm={onConfirmCustom}
-                  onBack={editingMode ? cancelEdit : () => setView("recipient-choice")}
-                />
-              </FadePane>
-            ) : view === "recipient-business-name" ? (
-              <FadePane key="biz-name">
-                <RecipientBusinessNameView
-                  kind={kind}
-                  initial={pickedCompany}
-                  onConfirm={onConfirmBusinessName}
-                  onBack={editingMode ? cancelEdit : () => setView("recipient-choice")}
-                />
-              </FadePane>
-            ) : view === "recipient-business-contact" ? (
-              <FadePane key="biz-contact">
-                <RecipientBusinessContactView
-                  kind={kind}
-                  companyName={pickedCompany}
-                  onConfirm={onConfirmBusinessContact}
-                  onBack={() => setView("recipient-business-name")}
-                />
-              </FadePane>
-            ) : view === "note-choice" ? (
-              <FadePane key="note-choice">
-                <NoteChoiceView
-                  kind={kind}
-                  onYes={onNotesYes}
-                  onNo={onNotesNo}
-                  onBack={() => setView("recipient-choice")}
-                  error={error}
-                />
-              </FadePane>
-            ) : view === "note-input" ? (
-              <FadePane key="note-input">
-                <NoteInputView
-                  kind={kind}
-                  initial={pickedNotes ?? ""}
-                  onConfirm={onNotesConfirm}
-                  onBack={editingMode ? cancelEdit : () => setView("note-choice")}
-                />
-              </FadePane>
-            ) : view === "saving" ? (
-              <FadePane key="saving">
-                <SavingView label={t("addressBook.savingLabel")} />
-              </FadePane>
-            ) : view === "detail" ? (
-              <FadePane key="detail">
-                <DetailView
-                  kind={kind}
-                  address={inspectingAddress}
-                  onBack={closeDetail}
-                  onDelete={() => inspectingAddress && askDelete(inspectingAddress.id)}
-                  onToggleDefault={() =>
-                    inspectingAddress &&
-                    askDefaultChange(inspectingAddress.id, !inspectingAddress.isDefault, "detail")
-                  }
-                  onEditRecipient={() =>
-                    inspectingAddress && editRecipient(inspectingAddress.recipientName)
-                  }
-                  onEditCompany={() =>
-                    inspectingAddress && editCompany(inspectingAddress.companyName ?? "")
-                  }
-                  onEditLine2={() =>
-                    inspectingAddress && editLine2(inspectingAddress.line2 ?? null)
-                  }
-                  onEditNotes={() =>
-                    inspectingAddress && editNotes(inspectingAddress.deliveryNotes ?? null)
-                  }
-                />
-              </FadePane>
-            ) : view === "default-confirm" ? (
-              <FadePane key="default-confirm">
-                <DefaultConfirmView
-                  kind={kind}
-                  address={defaultIntentAddress}
-                  setting={defaultIntent?.setting ?? true}
-                  error={error}
-                  onCancel={cancelDefaultChange}
-                  onConfirm={confirmDefaultChange}
-                />
-              </FadePane>
-            ) : view === "delete-confirm" ? (
-              <FadePane key="delete-confirm">
-                <DeleteConfirmView
-                  kind={kind}
-                  address={deletingAddress}
-                  error={error}
-                  onCancel={cancelDelete}
-                  onConfirm={confirmDelete}
-                />
-              </FadePane>
             ) : (
-              <FadePane key="deleting">
-                <SavingView label={t("addressBook.deletingLabel")} />
+              <FadePane key={view} fadeEdges={view === View.LIST}>
+                {ADD_FLOW_VIEWS.has(view) ? (
+                  <AddFlowPane kind={kind} userDisplayName={userDisplayName ?? null} book={book} />
+                ) : (
+                  <ManagePane kind={kind} book={book} />
+                )}
               </FadePane>
             )}
           </AnimatePresence>
@@ -736,7 +148,217 @@ export function ElvixAddressBook({
   );
 }
 
-// ─── Frame helpers ────────────────────────────────────────────────────
+type Book = ReturnType<typeof useAddressBook>;
+
+const ADD_FLOW_VIEWS: ReadonlySet<View> = new Set([
+  View.SEARCH,
+  View.REVIEW,
+  View.APT_FLOOR,
+  View.RECIPIENT_CHOICE,
+  View.RECIPIENT_CUSTOM,
+  View.RECIPIENT_BUSINESS_NAME,
+  View.RECIPIENT_BUSINESS_CONTACT,
+  View.NOTE_CHOICE,
+  View.NOTE_INPUT,
+  View.SAVING,
+]);
+
+/**
+ * The add flow's steps. The four steps a detail-view row reopens (apt/floor,
+ * recipient, company, notes) go back to the detail view while editing.
+ */
+function AddFlowPane({
+  kind,
+  userDisplayName,
+  book,
+}: {
+  kind: AddressKind;
+  userDisplayName: string | null;
+  book: Book;
+}) {
+  const t = useT();
+  const { state, dispatch } = book;
+  const { draft, error, editing } = state;
+  const show = (view: View) => () => dispatch({ type: "show", view });
+  const backTo = (view: View) => (editing ? () => dispatch({ type: "cancelEdit" }) : show(view));
+
+  switch (state.view) {
+    case View.SEARCH:
+      return (
+        <SearchView
+          kind={kind}
+          onPick={(seed) => dispatch({ type: "placePicked", seed })}
+          onBack={book.closeWizard}
+        />
+      );
+    case View.REVIEW:
+      return (
+        <ReviewView
+          kind={kind}
+          details={draft.seed}
+          onConfirm={() => dispatch({ type: "reviewConfirmed" })}
+          onChange={() => dispatch({ type: "reopenSearch" })}
+        />
+      );
+    case View.APT_FLOOR:
+      return (
+        <AptFloorView
+          kind={kind}
+          initial={draft.line2}
+          onConfirm={book.confirmLine2}
+          onBack={backTo(View.REVIEW)}
+        />
+      );
+    case View.RECIPIENT_CHOICE:
+      return (
+        <RecipientChoiceView
+          kind={kind}
+          userDisplayName={userDisplayName}
+          onPickMe={(name) => dispatch({ type: "recipientSet", recipient: name, company: "" })}
+          onPickCustom={() => dispatch({ type: "customRecipient" })}
+          onPickBusiness={() => dispatch({ type: "businessStart" })}
+          onBack={show(View.APT_FLOOR)}
+          error={error}
+        />
+      );
+    case View.RECIPIENT_CUSTOM:
+      return (
+        <RecipientCustomView
+          kind={kind}
+          initial={draft.recipient}
+          onConfirm={book.confirmRecipient}
+          onBack={backTo(View.RECIPIENT_CHOICE)}
+        />
+      );
+    case View.RECIPIENT_BUSINESS_NAME:
+      return (
+        <RecipientBusinessNameView
+          kind={kind}
+          initial={draft.company}
+          onConfirm={book.confirmCompany}
+          onBack={backTo(View.RECIPIENT_CHOICE)}
+        />
+      );
+    case View.RECIPIENT_BUSINESS_CONTACT:
+      return (
+        <RecipientBusinessContactView
+          kind={kind}
+          companyName={draft.company}
+          onConfirm={book.confirmContact}
+          onBack={show(View.RECIPIENT_BUSINESS_NAME)}
+        />
+      );
+    case View.NOTE_CHOICE:
+      return (
+        <NoteChoiceView
+          kind={kind}
+          onYes={show(View.NOTE_INPUT)}
+          onNo={() => book.confirmNotes(null)}
+          onBack={show(View.RECIPIENT_CHOICE)}
+          error={error}
+        />
+      );
+    case View.NOTE_INPUT:
+      return (
+        <NoteInputView
+          kind={kind}
+          initial={draft.notes ?? ""}
+          onConfirm={book.confirmNotes}
+          onBack={backTo(View.NOTE_CHOICE)}
+        />
+      );
+    default:
+      return <SavingView label={t("addressBook.savingLabel")} />;
+  }
+}
+
+/** The list, one address's detail, and the delete / default confirmations. */
+function ManagePane({ kind, book }: { kind: AddressKind; book: Book }) {
+  const t = useT();
+  const { state, dispatch, addresses } = book;
+  const find = (id: string | null | undefined) => addresses.find((a) => a.id === id) ?? null;
+  const askDefault = (id: string, setting: boolean, returnTo: ReturnTo) =>
+    dispatch({ type: "askDefault", intent: { id, setting, returnTo } });
+  const openAdd = () => dispatch({ type: "openAdd" });
+
+  switch (state.view) {
+    case View.EMPTY:
+      return <EmptyState kind={kind} onAdd={openAdd} />;
+    case View.LIST:
+      return (
+        <ListView
+          kind={kind}
+          addresses={addresses}
+          onOpen={(id) => dispatch({ type: "openDetail", id })}
+          onDelete={(id) => dispatch({ type: "askDelete", id })}
+          onToggleDefault={(id, current) => askDefault(id, !current, ReturnTo.LIST)}
+          onAdd={openAdd}
+        />
+      );
+    case View.DETAIL:
+      return (
+        <DetailPane
+          kind={kind}
+          address={find(state.inspectingId)}
+          book={book}
+          askDefault={askDefault}
+        />
+      );
+    case View.DEFAULT_CONFIRM:
+      return (
+        <DefaultConfirmView
+          kind={kind}
+          address={find(state.defaultIntent?.id)}
+          setting={state.defaultIntent?.setting ?? true}
+          error={state.error}
+          onCancel={() => dispatch({ type: "cancelDefault" })}
+          onConfirm={book.confirmDefault}
+        />
+      );
+    case View.DELETE_CONFIRM:
+      return (
+        <DeleteConfirmView
+          kind={kind}
+          address={find(state.deletingId)}
+          error={state.error}
+          onCancel={() => dispatch({ type: "cancelDelete" })}
+          onConfirm={book.confirmDelete}
+        />
+      );
+    default:
+      return <SavingView label={t("addressBook.deletingLabel")} />;
+  }
+}
+
+/** One address in full; each row reopens its wizard step to edit it. */
+function DetailPane({
+  kind,
+  address,
+  book,
+  askDefault,
+}: {
+  kind: AddressKind;
+  address: AddressRecord | null;
+  book: Book;
+  askDefault: (id: string, setting: boolean, returnTo: ReturnTo) => void;
+}) {
+  const { dispatch } = book;
+  const edit = (field: EditableField, value: string | null) => () =>
+    dispatch({ type: "edit", field, value });
+  return (
+    <DetailView
+      kind={kind}
+      address={address}
+      onBack={() => dispatch({ type: "closeDetail" })}
+      onDelete={() => address && dispatch({ type: "askDelete", id: address.id })}
+      onToggleDefault={() => address && askDefault(address.id, !address.isDefault, ReturnTo.DETAIL)}
+      onEditRecipient={edit(EditableField.RECIPIENT, address?.recipientName ?? "")}
+      onEditCompany={edit(EditableField.COMPANY, address?.companyName ?? "")}
+      onEditLine2={edit(EditableField.LINE2, address?.line2 ?? null)}
+      onEditNotes={edit(EditableField.NOTES, address?.deliveryNotes ?? null)}
+    />
+  );
+}
 
 // ─── Sub-views ────────────────────────────────────────────────────────
 
@@ -2286,30 +1908,6 @@ function ReviewView({
       </div>
     </div>
   );
-}
-
-// ─── helpers ─────────────────────────────────────────────────────
-
-/**
- * Turn the API's error body into a one-line user-visible message.
- * The route returns `{ ok: false, error: "invalid", issues: { fieldErrors: { ... } } }`
- * for zod failures. The flat "invalid" copy was useless — surface
- * the first specific field error instead.
- */
-function humanizeApiError(body: unknown): string {
-  if (!body || typeof body !== "object") return "save_failed";
-  const b = body as {
-    error?: string;
-    issues?: { fieldErrors?: Record<string, string[] | undefined> };
-  };
-  const fieldErrors = b.issues?.fieldErrors ?? {};
-  const firstField = Object.keys(fieldErrors)[0];
-  if (firstField) {
-    const msgs = fieldErrors[firstField] ?? [];
-    const msg = msgs[0] ?? "invalid";
-    return `${firstField}: ${msg}`;
-  }
-  return b.error ?? "save_failed";
 }
 
 // ─── kind-fixed aliases ──────────────────────────────────────────────
