@@ -3,6 +3,12 @@
   "locale": "uk",
   "namespaces": {
     "common": {
+      "codeGroupLabel": {
+        "other": "Код підтвердження"
+      },
+      "codeDigitLabel": {
+        "other": "Цифра {n} з {total}"
+      },
       "ok": {
         "other": "Гаразд"
       },

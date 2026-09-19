@@ -3,6 +3,12 @@
   "locale": "ru",
   "namespaces": {
     "common": {
+      "codeGroupLabel": {
+        "other": "Код подтверждения"
+      },
+      "codeDigitLabel": {
+        "other": "Цифра {n} из {total}"
+      },
       "ok": {
         "other": "ОК"
       },

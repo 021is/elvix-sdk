@@ -3,6 +3,12 @@
   "locale": "de",
   "namespaces": {
     "common": {
+      "codeGroupLabel": {
+        "other": "Bestätigungscode"
+      },
+      "codeDigitLabel": {
+        "other": "Ziffer {n} von {total}"
+      },
       "ok": {
         "other": "OK"
       },

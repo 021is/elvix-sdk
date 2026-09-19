@@ -3,6 +3,12 @@
   "locale": "cs",
   "namespaces": {
     "common": {
+      "codeGroupLabel": {
+        "other": "Ověřovací kód"
+      },
+      "codeDigitLabel": {
+        "other": "Číslice {n} z {total}"
+      },
       "ok": {
         "other": "OK"
       },

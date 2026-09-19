@@ -2,6 +2,12 @@
   "locale": "pt-PT",
   "namespaces": {
     "common": {
+      "codeGroupLabel": {
+        "other": "Código de verificação"
+      },
+      "codeDigitLabel": {
+        "other": "Dígito {n} de {total}"
+      },
       "ok": {
         "other": "OK"
       },

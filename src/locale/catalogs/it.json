@@ -2,6 +2,12 @@
   "locale": "it",
   "namespaces": {
     "common": {
+      "codeGroupLabel": {
+        "other": "Codice di verifica"
+      },
+      "codeDigitLabel": {
+        "other": "Cifra {n} di {total}"
+      },
       "ok": {
         "other": "OK"
       },

@@ -2,6 +2,12 @@
   "locale": "nl",
   "namespaces": {
     "common": {
+      "codeGroupLabel": {
+        "other": "Verificatiecode"
+      },
+      "codeDigitLabel": {
+        "other": "Cijfer {n} van {total}"
+      },
       "ok": {
         "other": "OK"
       },

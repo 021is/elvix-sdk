@@ -2,6 +2,12 @@
   "locale": "tr",
   "namespaces": {
     "common": {
+      "codeGroupLabel": {
+        "other": "Doğrulama kodu"
+      },
+      "codeDigitLabel": {
+        "other": "{total} basamaktan {n}. basamak"
+      },
       "ok": {
         "other": "Tamam"
       },

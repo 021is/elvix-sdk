@@ -3,6 +3,12 @@
   "locale": "el",
   "namespaces": {
     "common": {
+      "codeGroupLabel": {
+        "other": "Κωδικός επαλήθευσης"
+      },
+      "codeDigitLabel": {
+        "other": "Ψηφίο {n} από {total}"
+      },
       "ok": {
         "other": "Εντάξει"
       },

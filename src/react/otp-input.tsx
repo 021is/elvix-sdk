@@ -15,6 +15,7 @@ import {
   useEffect,
   useRef,
 } from "react";
+import { useT } from "../locale/use-t";
 
 const OTP_LENGTH = 6;
 /** The six fixed positions. A box IS its position (it never moves or
@@ -32,6 +33,7 @@ export function OtpInput({
   disabled?: boolean;
   autoFocus?: boolean;
 }) {
+  const t = useT();
   const refs = useRef<(HTMLInputElement | null)[]>([]);
   const digits = Array.from({ length: OTP_LENGTH }, (_, i) => value[i] ?? "");
 
@@ -104,10 +106,14 @@ export function OtpInput({
     // `aspect-square` keeps each box visually balanced as width
     // shrinks. `max-w-12` caps the boxes at the original 48px on
     // wide surfaces so they don't bloat on desktop.
-    <div className="grid grid-cols-6 gap-2 w-full">
+    <fieldset
+      className="grid grid-cols-6 gap-2 w-full min-w-0 border-0 p-0 m-0"
+      aria-label={t("common.codeGroupLabel")}
+    >
       {SLOTS.map((i) => (
         <input
           key={i}
+          aria-label={t("common.codeDigitLabel", { n: i + 1, total: OTP_LENGTH })}
           ref={(el) => {
             refs.current[i] = el;
           }}
@@ -124,6 +130,6 @@ export function OtpInput({
           className="w-full aspect-square min-w-0 max-w-12 mx-auto text-center text-[20px] font-semibold tabular-nums rounded-[10px] bg-surface border border-border-base text-fg-1 focus:outline-none focus:border-[#8e7dff] focus:ring-2 focus:ring-[#8e7dff]/20 transition disabled:opacity-50"
         />
       ))}
-    </div>
+    </fieldset>
   );
 }

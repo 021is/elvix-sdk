@@ -55,12 +55,12 @@ function mount(
   const { routes, seen } = signInRoutes(replies);
   installFakeElvix({ context: null }, routes);
   const onResult = vi.fn();
-  const view = render(
+  render(
     <ElvixProvider clientId={CLIENT_ID} baseUrl={BASE} presence={false} bootstrapRefreshMs={0}>
       <ElvixSignInForm navigate={false} onResult={onResult} {...props} />
     </ElvixProvider>,
   );
-  return { onResult, seen, view };
+  return { onResult, seen };
 }
 
 async function sendCodeTo(identifier: string, placeholder = "Enter your email") {
@@ -70,19 +70,20 @@ async function sendCodeTo(identifier: string, placeholder = "Enter your email") 
   await act(async () => fireEvent.click(screen.getByRole("button", { name: /Continue/ })));
 }
 
-async function enterCode(container: HTMLElement, code = "123456") {
+async function enterCode(code = "123456") {
   await screen.findByText(/We sent a code to/, {}, PANE);
-  const first = container.querySelector("input") as HTMLInputElement;
+  const first = screen.getByLabelText("Digit 1 of 6");
+  expect(screen.getByRole("group", { name: "Verification code" })).toBeTruthy();
   await act(async () => fireEvent.change(first, { target: { value: code } }));
 }
 
 describe("ElvixSignInForm", () => {
   it("signs in with an emailed code, auto-submitting the sixth digit", async () => {
-    const { onResult, seen, view } = mount();
+    const { onResult, seen } = mount();
     await sendCodeTo("ada@example.test");
     expect(seen.start).toMatchObject({ email: "ada@example.test", clientId: CLIENT_ID });
 
-    await enterCode(view.container);
+    await enterCode();
     await waitFor(() =>
       expect(onResult).toHaveBeenCalledWith({
         ok: true,
@@ -116,11 +117,11 @@ describe("ElvixSignInForm", () => {
   });
 
   it("claims a username during onboarding", async () => {
-    const { onResult, seen, view } = mount({
+    const { onResult, seen } = mount({
       verify: { ok: true, next_step: "username", suggestions: ["ada", "ada1"], final: "/welcome" },
     });
     await sendCodeTo("ada@example.test");
-    await enterCode(view.container);
+    await enterCode();
 
     await screen.findByText("Pick a username", {}, PANE);
     await screen.findByText("Looks good. This one's yours.", {}, PANE);
@@ -135,11 +136,11 @@ describe("ElvixSignInForm", () => {
   });
 
   it("skipping the passkey step finishes at the onboarding destination", async () => {
-    const { onResult, view } = mount({
+    const { onResult } = mount({
       verify: { ok: true, next_step: "passkey", final: "/after-passkey", token: "tok_2" },
     });
     await sendCodeTo("ada@example.test");
-    await enterCode(view.container);
+    await enterCode();
 
     const skip = await screen.findByText("Skip for now", {}, PANE);
     await act(async () => fireEvent.click(skip));
@@ -153,9 +154,9 @@ describe("ElvixSignInForm", () => {
   });
 
   it("the host's redirectAfterSignIn wins over the server's redirect", async () => {
-    const { onResult, view } = mount({}, { redirectAfterSignIn: "/dashboard" });
+    const { onResult } = mount({}, { redirectAfterSignIn: "/dashboard" });
     await sendCodeTo("ada@example.test");
-    await enterCode(view.container);
+    await enterCode();
     await waitFor(() =>
       expect(onResult).toHaveBeenCalledWith(expect.objectContaining({ redirect: "/dashboard" })),
     );
