@@ -13,12 +13,29 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-## [0.12.0] — 2026-09-18
+## [0.12.0] — 2026-09-19
 
 Ten defects DanceClub found moving its profile onto 0.11.0, fixed here so no
-host has to work around them.
+host has to work around them; read-only hooks for the signed-in user's profile
+and access; far fewer "is the user still here" requests; and a codebase at
+zero lint findings, with every multi-step component split into a tested flow,
+a hook and its panes.
 
 ### Added
+
+- **`useElvixRoles()` / `useElvixScopes()` / `useElvixMemberships()`** — what
+  the app's admins granted the signed-in user, with Console names (and
+  membership logos), `slugs`, `has(slug)`, `loading`, `error`, `refresh()`. No
+  arguments inside `<ElvixProvider>`, and no setter: only admins assign these.
+  Changes arrive live over one shared stream; every reader shares one request.
+- **`useElvixUser()`** — the signed-in user with a `displayName` fallback (name,
+  then username, then the email's local part) and a three-state `status`
+  (`loading` / `signed-in` / `signed-out`), so a sign-in button never flashes
+  for a user who is signed in.
+- **`useElvixPronounsLabel(pronouns)`** — the translated label, `null` for
+  "other" and "prefer not to say". **`useElvixLanguageNames(locale?)`** — the
+  user's languages named with `Intl.DisplayNames` in the SDK's locale.
+- **`useElvixContext().locale`** — the locale the SDK renders in.
 
 - **`useElvixUserMedia(userId?)`** — a user's centralized photo and banner meta
   (`hasPhoto`, `avatar`, `banner`, `loading`). Omit `userId` for the signed-in
@@ -52,8 +69,38 @@ host has to work around them.
   light/dark `theme` pinned on the provider before the Console default.
   *Both used a brand only when a host restated it as props, and never the dark
   variant.*
+- **Live updates are pushed, not polled.** Roles, scopes, memberships and
+  `<ElvixLifecycleWatcher>` share one `/api/presence/stream` connection per
+  user, read with `fetch` so the bearer works cross-origin; it closes while a
+  tab stays hidden. *Cross-origin, each roles/scopes/memberships hook polled
+  every 7s and the watcher POSTed `/api/v1/session` every 7s, per tab.* The
+  watcher now also reacts to a ban or pause cross-origin as it happens, and
+  checks the session every 60s while visible (`pollMs`) and on returning to the
+  tab. `useUserRoles({ pollMs })` and friends still work; `pollMs` is now only
+  the safety re-read (default 5 minutes).
+- **One presence heartbeat per browser.** One tab beats for all (a Web Lock),
+  from every tab's visibility and last input; it stops when all are hidden.
+  *Every open tab beat every 30s.*
+- **`bootstrapRefreshMs` defaults to 5 minutes** (was 20s). The envelope is
+  still re-read whenever the tab regains focus or visibility.
+- **Everything is translated.** App passkeys, device approval, the sign-in and
+  sign-out button presets, and several sign-in states rendered English in
+  every locale. The code boxes are a labelled group of "Digit n of 6".
 
 ### Fixed
+
+- **`<ElvixRegion>` looped forever on an inline `onChange`** that set host
+  state (one request per render), and `onResult` reported the locale from
+  before a country change. **`<ElvixLanguages>`** had the same loop.
+- **`<ElvixLegalEntities>` could not rename a company to a one-word name** from
+  the detail view (it applied the person rule). The component now runs the
+  tested step order in `legal-entity-flow.ts`, which it had never called.
+- **`<ElvixDeactivate>` / `<ElvixLeave>` reported the previous error** in
+  `onResult` ("Couldn't save" for a wrong code).
+- **A failed avatar or banner upload lost the picked image**, leaving an empty
+  crop pane whose confirm did nothing.
+- **Device approval said "your your account account"** without an app name, and
+  nine locales dropped the app name from the legal line under the sign-in form.
 
 - **`<ElvixUserAvatar>` / `<ElvixUserBanner>` without `userId` show the
   signed-in user's photo.** They read the per-app membership meta, empty since
@@ -73,8 +120,14 @@ host has to work around them.
 ### Internal
 
 - Component tests run in jsdom with `@testing-library/react`; each defect above
-  has a test that fails on 0.11.0. CI runs vitest (`bun run test`) — plain
-  `bun test` ignored `vitest.config.ts`.
+  has a test that fails on the previous code. CI runs vitest (`bun run test`) —
+  plain `bun test` ignored `vitest.config.ts`.
+- Biome runs with `--error-on-warnings`: 140 findings went to zero, with no
+  allowlist left. The address book, languages, region, legal entities, sign-in
+  form, deactivate/leave, avatar/banner and app passkeys each split into a pure
+  flow, a `use-*` hook and panes (see AGENTS.md, "How the components are
+  built"); the sign-in form was characterized by tests before it was split.
+  Catalog parity across the 15 locales is a test.
 
 ## [0.11.0] — 2026-09-07
 
