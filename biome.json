@@ -85,7 +85,6 @@
         "src/react/elvix-avatar.tsx",
         "src/react/elvix-banner.tsx",
         "src/react/elvix-deactivate.tsx",
-        "src/react/elvix-languages.tsx",
         "src/react/elvix-leave.tsx",
         "src/react/elvix-legal-entities.tsx",
         "src/react/elvix-region.tsx",

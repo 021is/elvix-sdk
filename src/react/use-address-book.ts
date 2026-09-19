@@ -46,7 +46,7 @@ function useAddressList(
 
   const refresh = useCallback(
     async (signal?: AbortSignal) => {
-      const list = await listAddresses(baseUrl, kind, signal).catch(() => null);
+      const list = await listAddresses(baseUrl, kind, signal);
       if (signal?.aborted) return;
       setLoading(false);
       if (!list) return;

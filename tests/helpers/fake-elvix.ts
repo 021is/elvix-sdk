@@ -29,6 +29,7 @@ export type FakeElvixState = {
   holdContext: boolean;
   sessions: { id: string; isCurrent: boolean; [k: string]: unknown }[];
   addresses: { id: string; kind: string; isDefault: boolean; [k: string]: unknown }[];
+  languages: { id: string; code: string; level: string }[];
 };
 
 const json = (body: unknown, status = 200) =>
@@ -106,6 +107,7 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
     holdContext: false,
     sessions: [],
     addresses: [],
+    languages: [],
     ...initial,
   };
   const held: (() => void)[] = [];
@@ -180,6 +182,25 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
     return json({ success: true, data: { ok: true } });
   };
 
+  const LANGUAGES = "/api/account/profile/languages";
+  const languages: Handler = (url, init) => {
+    const method = init?.method ?? "GET";
+    const id = new URL(url).searchParams.get("id");
+    if (method === "DELETE") {
+      state.languages = state.languages.filter((l) => l.id !== id);
+    } else if (method !== "GET") {
+      const body = JSON.parse(String(init?.body)) as { code?: string; level: string };
+      patches.push(body);
+      if (method === "POST") {
+        state.languages.push({ id: `lang_${body.code}`, code: body.code ?? "", level: body.level });
+      } else {
+        const target = state.languages.find((l) => l.id === id);
+        if (target) target.level = body.level;
+      }
+    }
+    return json({ success: true, data: { languages: state.languages } });
+  };
+
   // First match wins: [method or "*", url test, handler].
   const routes: [string, (url: string) => boolean, Handler][] = [
     [
@@ -191,11 +212,7 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
     ["*", (u) => MEDIA.test(u), mediaMeta],
     ["*", (u) => u.endsWith("/api/account/profile/identity"), identity],
     ["*", (u) => u.includes(ADDRESSES), addresses],
-    [
-      "GET",
-      (u) => u.endsWith("/api/account/profile/languages"),
-      () => json({ success: true, data: { languages: [] } }),
-    ],
+    ["*", (u) => u.includes(LANGUAGES), languages],
     ["PUT", (u) => u.endsWith("/api/account/self/images/avatar"), avatarUpload],
     ["POST", (u) => u.endsWith("/revoke-all"), revokeAll],
     ["POST", (u) => /\/sessions\/[^/]+\/revoke$/.test(u), revokeOne],
