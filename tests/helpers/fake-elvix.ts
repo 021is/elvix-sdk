@@ -27,6 +27,7 @@ export type FakeElvixState = {
   identity: Record<string, unknown>;
   /** Set to hold the next sdk-context response until `release()` is called. */
   holdContext: boolean;
+  sessions: { id: string; isCurrent: boolean; [k: string]: unknown }[];
 };
 
 const json = (body: unknown, status = 200) =>
@@ -102,6 +103,7 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
     media: {},
     identity: {},
     holdContext: false,
+    sessions: [],
     ...initial,
   };
   const held: (() => void)[] = [];
@@ -140,6 +142,17 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
       data: { avatarSizes: [128, 256], avatarUpdatedAt: new Date().toISOString() },
     });
 
+  const revokeOne: Handler = (url) => {
+    const id = /\/sessions\/([^/]+)\/revoke$/.exec(url)?.[1];
+    state.sessions = state.sessions.filter((s) => s.id !== id);
+    return json({ success: true, data: { ok: true } });
+  };
+  const revokeAll: Handler = () => {
+    const ended = state.sessions.filter((s) => !s.isCurrent).length;
+    state.sessions = state.sessions.filter((s) => s.isCurrent);
+    return json({ success: true, data: { ok: true, ended } });
+  };
+
   // First match wins: [method or "*", url test, handler].
   const routes: [string, (url: string) => boolean, Handler][] = [
     [
@@ -156,6 +169,13 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
       () => json({ success: true, data: { languages: [] } }),
     ],
     ["PUT", (u) => u.endsWith("/api/account/self/images/avatar"), avatarUpload],
+    ["POST", (u) => u.endsWith("/revoke-all"), revokeAll],
+    ["POST", (u) => /\/sessions\/[^/]+\/revoke$/.test(u), revokeOne],
+    [
+      "GET",
+      (u) => u.endsWith("/sessions"),
+      () => json({ success: true, data: { ok: true, sessions: state.sessions } }),
+    ],
   ];
 
   const route = async (url: string, init?: RequestInit): Promise<Response> => {
