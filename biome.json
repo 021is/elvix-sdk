@@ -77,21 +77,5 @@
         "organizeImports": "on"
       }
     }
-  },
-  "overrides": [
-    {
-      "includes": [
-        "src/react/elvix-sign-in-form.tsx"
-      ],
-      "linter": {
-        "rules": {
-          "complexity": {
-            "noExcessiveLinesPerFunction": "warn",
-            "noExcessiveCognitiveComplexity": "warn",
-            "useMaxParams": "warn"
-          }
-        }
-      }
-    }
-  ]
+  }
 }

@@ -61,16 +61,17 @@ docs/         agent-consumable Markdown, generated from @021is/agent-docs
 ```bash
 bun install
 bun run lint        # biome: format + the size/complexity gate
-bun run lint:ci     # the CI ratchet: counts must equal .lint-baseline.json
+bun run lint:ci     # what CI runs: biome ci --error-on-warnings
 bun run lint:fix    # auto-fix what is safe
 bun run build       # tsup → dist/
 bun run test        # vitest (NOT `bun test`, Bun's own runner)
 ```
 
-**What CI enforces** (`ci.yml`, job `test` — the required check on `main`, admins included): the
-biome ratchet (errors and warnings must EQUAL `.lint-baseline.json`; lower the baseline when you
-fix some), typecheck, build, vitest. `publish.yml` calls the same workflow before `npm publish`,
-so a tag cannot ship what a PR would reject. **A red check is never merged.**
+**What CI enforces** (`ci.yml`, job `test` — the required check on `main`, admins included):
+biome with **zero warnings and zero errors** (`--error-on-warnings`), typecheck, build, vitest.
+`publish.yml` calls the same workflow before `npm publish`, so a tag cannot ship what a PR would
+reject. **A red check is never merged.** The lint debt reached zero on 2026-09-19 (140 findings
+at the start); there is no baseline and no allowlist, so a new warning fails the build.
 
 ## The size gate
 
@@ -89,45 +90,43 @@ they had stopped using.
 | `useMaxParams` | 4 |
 | `noUnusedImports` / `noUnusedVariables` | — |
 
-`bun run lint` runs in CI **before** typecheck.
+`bun run lint` runs in CI **before** typecheck. There is no `overrides`
+allowlist any more: every file meets these limits, and a file that stops
+meeting them fails CI.
 
-**The `overrides` block in `biome.json` is a shrinking allowlist, not a
-settings section.** It listed the 23 files that already violated the size rules
-when the gate went in (22 since `elvix-identity-form.tsx` was split in 0.12),
-downgraded to warnings so CI could be green on day one.
-New code cannot violate these rules anywhere. When you touch a file on that
-list, split what you touched and delete its entry. Never add a file to it.
+## How the components are built
 
-Rules set to `warn` outside that block (a11y, `noNonNullAssertion`,
-`useExhaustiveDependencies`) are pre-existing debt, visible in `bun run lint`
-output and worth fixing opportunistically. They are warnings because turning
-them red on day one would have meant either 130 unrelated fixes in one commit
-or a gate nobody could keep green.
+Every multi-step component follows the same split. Copy it for a new one:
 
-## Splitting a large component
+| Piece | Holds | Examples |
+|---|---|---|
+| a pure flow / reducer | which pane follows which; no React, no fetch; unit-tested | `legal-entity-flow.ts`, `address-book-wizard.ts` |
+| a pure payload map | what each step reads and writes | `legal-entity-payload.ts`, `taxIdsBlockReason` |
+| a `use-*` hook | state + requests; reports outcomes to the host | `use-legal-entities.ts`, `use-address-book.ts`, `use-region-editor.ts`, `use-languages-editor.ts`, `use-sign-in-flow.ts` |
+| shared hooks | a flow two components share | `use-membership-challenge.ts` (deactivate + leave), `use-image-editor.ts` (avatar + banner) |
+| panes | presentational, one per question, a `switch` per group | `sign-in-steps.tsx`, `legal-entity-*-views.tsx` |
 
-`elvix-legal-entities.tsx` is the worked example, split 3,292 → 931 lines:
+Shared plumbing, never re-implemented per component:
 
-- `legal-entity-flow.ts` — the wizard step machine as **pure functions**, with
-  tests. Extract this FIRST when refactoring a wizard: the pane ordering is
-  the part carrying product meaning (a company is never asked for a date of
-  birth) and therefore the part most likely to lose a feature silently.
-- `legal-entity-copy.ts` — placeholders and per-country formatting; pure.
-- `legal-entity-primitives.tsx` — shared presentational pieces.
-- `legal-entity-{wizard,detail}-views.tsx` — panes, one per question.
-- `use-legal-entity-draft.ts` — the in-progress entity as ONE object with a
-  typed `setField`, replacing eighteen `useState` calls and a hand-written
-  reset.
+- `wizard-panes.tsx` — `SlidePane` / `FadePane` / `FADE_MASK`, the only pane transitions.
+- `profile-request.ts` — `send` (never rejects), `jsonInit`, `humanizeApiError`, and
+  `profileCollection()`, the CRUD of `/api/account/profile/<resource>`.
+- `use-stable-callback.ts` — for every host callback (`onChange`, `onResult`). A host
+  callback in an effect's dependencies is how `ElvixLanguages` and `ElvixRegion` looped
+  forever on an inline `onChange`; `tests/host-callbacks.test.tsx` pins both.
 
-Two patterns worth copying:
+Rules the refactors above were driven by:
 
-- **A pane registry beats a ternary chain.** A 21-branch nested ternary was
-  the entire complexity of 255; as a `Partial<Record<View, () => ReactNode>>`
-  it is effectively zero, and each entry is a thunk so only the visible pane
-  is built.
-- **Verify "no feature lost" mechanically.** After the split the `View` enum
-  had 22 values and the pane registry 22 keys, with `comm` reporting zero on
-  both sides. That is evidence; re-reading the diff is not.
+- **Extract the flow FIRST, and make the component use it.** `legal-entity-flow.ts`
+  was a tested `nextView()` the component never called: it kept its own sixteen
+  handlers, so the tests guarded a copy. Pane ordering carries product meaning (a
+  company is never asked for a date of birth); it has one home.
+- **Characterize before restructuring.** `tests/sign-in-form.test.tsx` was written
+  against the 1,027-line `AuthBody` and passed unchanged on the split. A refactor
+  test must also run against the old code (`git stash push <file>`), or it proves
+  nothing.
+- **A `switch` per pane group beats a ternary chain.** A 21-branch nested ternary
+  was a complexity of 255 on its own.
 
 Publishing is tag-driven via GitHub Actions: tag `v0.1.0` on main → CI publishes to npm public registry.
 
