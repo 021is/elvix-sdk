@@ -38,8 +38,8 @@
  */
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, Check, Fingerprint, Loader2, X } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Loader2 } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Drawer as Vaul } from "vaul";
 import { useT } from "../locale/use-t";
@@ -53,27 +53,19 @@ import {
   useElvixResolvedTheme,
   useElvixSession,
 } from "./elvix-provider";
-import { ElvixRecoverGate } from "./elvix-recover-gate";
 import { ElvixSignInButton, type ElvixSignInButtonProps } from "./elvix-sign-in-button";
-import { GoogleOneTap } from "./google-one-tap";
-import { OtpInput } from "./otp-input";
-import { runPasskeyRegister, runPasskeySignIn } from "./passkey";
 import {
-  authInit,
-  consumeSignedOutFlag,
-  type ElvixLandingPayload,
-  getElvixToken,
-  isSameOrigin,
-  setElvixToken,
-  takeJustReturnedLanding,
-  takeJustReturnedToken,
-  wasReturnTokenConsumed,
-} from "./session";
-import { unwrapEnvelope } from "./spine-fetch";
-import { toast } from "./toast";
-import type { ElvixSignInMethod, ElvixSignInResult } from "./types";
-import { useStableCallback } from "./use-stable-callback";
-import { isValidUsername } from "./username-rules";
+  AuthenticatingPane,
+  CodeStep,
+  IdentifierStep,
+  LegalFooter,
+  PasskeyStep,
+  RecoverStep,
+  SignInHeader,
+  UsernameStep,
+} from "./sign-in-steps";
+import type { ElvixSignInResult } from "./types";
+import { Step, useOtpStart, useSignInFlow, useSignInReturns } from "./use-sign-in-flow";
 import { ELVIX_SDK_VERSION } from "./version";
 
 /** elvix marketing origin the "Secured by elvix" chip links to. In the
@@ -141,27 +133,6 @@ const SignInVerb = {
   LOGIN: "login",
 } as const;
 type SignInVerb = (typeof SignInVerb)[keyof typeof SignInVerb];
-
-const State = {
-  INACTIVE: "inactive",
-  SOFT_DELETED_BY_USER: "soft_deleted_by_user",
-} as const;
-type State = (typeof State)[keyof typeof State];
-
-const NextStep = {
-  DONE: "done",
-  USERNAME: "username",
-  PASSKEY: "passkey",
-  RECOVER: "recover",
-} as const;
-type NextStep = (typeof NextStep)[keyof typeof NextStep];
-
-const NextStep2 = {
-  DONE: "done",
-  USERNAME: "username",
-  PASSKEY: "passkey",
-} as const;
-type NextStep2 = (typeof NextStep2)[keyof typeof NextStep2];
 
 /**
  * One auth surface to rule them all. Same component renders:
@@ -359,8 +330,6 @@ export type AuthFormProps = {
   redirectIfAuthenticated?: boolean;
 };
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 // Hard-coded theme values so the ElvixSignInForm's chrome can be isolated from the
 // surrounding page (e.g., Console can be dark while the preview shows the
 // light-theme appearance to the customer, or vice-versa). When the user
@@ -392,6 +361,51 @@ const ELVIX_DARK_VARS: React.CSSProperties = {
   ["--elvix-placeholder" as string]: "#52525b",
 };
 
+type AppEnvelope = ReturnType<typeof useElvixApp>;
+
+// Every explicit prop wins (the Console live preview passes unsaved state);
+// the Console envelope from <ElvixProvider clientId> fills in the rest.
+
+function resolveIdentity(props: AuthFormProps, app: AppEnvelope) {
+  return {
+    mode: props.mode ?? "interactive",
+    appName: props.appName ?? app?.appName ?? "your app",
+    logoUrl: props.logoUrl ?? app?.logoUrl ?? null,
+    logoUrlDark: props.logoUrlDark ?? app?.logoUrlDark ?? null,
+    privacyPolicyUrl: props.privacyPolicyUrl ?? app?.privacyPolicyUrl ?? null,
+    termsOfServiceUrl: props.termsOfServiceUrl ?? app?.termsOfServiceUrl ?? null,
+    websiteUrl: props.websiteUrl ?? app?.websiteUrl ?? null,
+    intent: props.intent ?? "app",
+    clientId: props.clientId ?? app?.clientId ?? undefined,
+  } satisfies Partial<AuthFormProps>;
+}
+
+function resolveMethods(props: AuthFormProps, app: AppEnvelope) {
+  return {
+    methodGoogle: props.methodGoogle ?? app?.methodGoogle ?? false,
+    methodGithub: props.methodGithub ?? app?.methodGithub ?? false,
+    methodEmailOtp: props.methodEmailOtp ?? app?.methodEmailOtp ?? true,
+    methodPasskey: props.methodPasskey ?? app?.methodPasskey ?? false,
+    methodUsername: props.methodUsername ?? app?.methodUsername ?? false,
+    googleConfig:
+      props.googleConfig ?? (app?.googleConfig as AuthFormProps["googleConfig"]) ?? undefined,
+    googleClientId: props.googleClientId ?? app?.googleClientId ?? undefined,
+  } satisfies Partial<AuthFormProps>;
+}
+
+function resolveLook(props: AuthFormProps, app: AppEnvelope) {
+  return {
+    layout: props.layout ?? (app?.layout as AuthFormProps["layout"]) ?? "centered",
+    socialLayout:
+      props.socialLayout ?? (app?.socialLayout as AuthFormProps["socialLayout"]) ?? "stacked",
+    presentation:
+      props.presentation ?? (app?.presentation as AuthFormProps["presentation"]) ?? "card",
+    showHeader: props.showHeader ?? app?.showHeader ?? true,
+    transparentBg: props.transparentBg ?? app?.transparentBg ?? false,
+    signInVerb: props.signInVerb ?? (app?.signInVerb as AuthFormProps["signInVerb"]) ?? "signin",
+  } satisfies Partial<AuthFormProps>;
+}
+
 export function ElvixSignInForm(props: AuthFormProps) {
   // Pull the Console-configured envelope from <ElvixProvider clientId>.
   // Every explicit prop wins (Console live-preview passes unsaved
@@ -409,34 +423,12 @@ export function ElvixSignInForm(props: AuthFormProps) {
   );
   const resolved: AuthFormProps = {
     ...props,
-    mode: props.mode ?? "interactive",
-    appName: props.appName ?? app?.appName ?? "your app",
-    logoUrl: props.logoUrl ?? app?.logoUrl ?? null,
-    logoUrlDark: props.logoUrlDark ?? app?.logoUrlDark ?? null,
+    ...resolveIdentity(props, app),
+    ...resolveMethods(props, app),
+    ...resolveLook(props, app),
     brandColor: props.brandColor ?? brandPair?.primary ?? "#5d4dff",
     onBrandColor: props.onBrandColor ?? (props.brandColor ? undefined : brandPair?.on) ?? "#ffffff",
-    methodGoogle: props.methodGoogle ?? app?.methodGoogle ?? false,
-    methodGithub: props.methodGithub ?? app?.methodGithub ?? false,
-    methodEmailOtp: props.methodEmailOtp ?? app?.methodEmailOtp ?? true,
-    methodPasskey: props.methodPasskey ?? app?.methodPasskey ?? false,
-    methodUsername: props.methodUsername ?? app?.methodUsername ?? false,
-    privacyPolicyUrl: props.privacyPolicyUrl ?? app?.privacyPolicyUrl ?? null,
-    termsOfServiceUrl: props.termsOfServiceUrl ?? app?.termsOfServiceUrl ?? null,
-    intent: props.intent ?? "app",
-    clientId: props.clientId ?? app?.clientId ?? undefined,
-    layout: props.layout ?? (app?.layout as AuthFormProps["layout"]) ?? "centered",
-    socialLayout:
-      props.socialLayout ?? (app?.socialLayout as AuthFormProps["socialLayout"]) ?? "stacked",
-    presentation:
-      props.presentation ?? (app?.presentation as AuthFormProps["presentation"]) ?? "card",
     theme,
-    showHeader: props.showHeader ?? app?.showHeader ?? true,
-    transparentBg: props.transparentBg ?? app?.transparentBg ?? false,
-    signInVerb: props.signInVerb ?? (app?.signInVerb as AuthFormProps["signInVerb"]) ?? "signin",
-    googleConfig:
-      props.googleConfig ?? (app?.googleConfig as AuthFormProps["googleConfig"]) ?? undefined,
-    googleClientId: props.googleClientId ?? app?.googleClientId ?? undefined,
-    websiteUrl: props.websiteUrl ?? app?.websiteUrl ?? null,
   };
   // `framed` defaults to the dashed "This is a preview" wrapper ONLY when
   // the form is in preview mode. Customer-host renders (zp.edvone.dev,
@@ -818,840 +810,51 @@ function AuthCard(props: AuthFormProps) {
   );
 }
 
-function AuthBody({
-  mode,
-  appName,
-  logoUrl,
-  logoUrlDark,
-  logoNode,
-  brandColor,
-  onBrandColor = "#ffffff",
-  methodGoogle,
-  methodGithub,
-  methodEmailOtp,
-  methodPasskey,
-  methodUsername = false,
-  privacyPolicyUrl,
-  termsOfServiceUrl,
-  intent = "app",
-  clientId,
-  websiteUrl,
-  layout = "centered",
-  socialLayout = "stacked",
-  showHeader = true,
-  theme = "light",
-  signInVerb = "signin",
-  belowHeading,
-  belowMethods,
-  googleConfig,
-  googleClientId,
-  redirectAfterSignIn,
-  onAuthenticated,
-  onResult,
-  navigate = true,
-  redirectIfAuthenticated = false,
-}: AuthFormProps) {
-  // Cross-origin elvix base URL the SDK talks to (provided by <ElvixProvider>).
+/**
+ * The card's content: header, the current step, the host's `belowMethods`
+ * slot, and the legal footer. Every step renders inside the same card, with
+ * no URL hop: a host embeds `<ElvixSignInForm />` and the user finishes the
+ * whole flow, onboarding included, without leaving it.
+ */
+function AuthBody(p: AuthFormProps) {
   const { baseUrl } = useElvixContext();
   const sessionStatus = useElvixSession();
-  const t = useT();
-  const isPreview = mode === "preview";
-  const anyMethod =
-    methodGoogle || methodGithub || methodEmailOtp || methodPasskey || methodUsername;
-  // Social buttons in importance order — Google, GitHub, Passkey. In grid mode
-  // they tile 2-up; when an odd number is enabled the LAST one spans the full
-  // width so there's never a lonely half-button. 2-up buttons use short labels;
-  // a full-width one keeps the long label (it has the room).
-  const socialCount = (methodGoogle ? 1 : 0) + (methodGithub ? 1 : 0) + (methodPasskey ? 1 : 0);
-  const socialGrid = socialLayout === "grid" && socialCount >= 2;
-  const socialSpanLast = socialGrid && socialCount % 2 === 1;
-  const passkeyIsLast = methodPasskey;
-  const githubIsLast = methodGithub && !methodPasskey;
-  const googleIsLast = methodGoogle && !methodGithub && !methodPasskey;
-  const gisEnabled =
-    !isPreview &&
-    methodGoogle &&
-    Boolean(googleConfig) &&
-    Boolean(
-      googleConfig?.oneTap ||
-        googleConfig?.popup ||
-        googleConfig?.autoSelect ||
-        googleConfig?.fedcm,
-    );
-  const gisButtonRef = useRef<HTMLDivElement | null>(null);
-  // Pull the Console envelope here too so the body has direct access
-  // to fields ElvixSignInForm didn't thread through as props (e.g.
-  // signinGate, used by the default GateBadge below the heading).
+  // The Console envelope, for what the form does not thread through as props
+  // (the signinGate behind the default badge).
   const appCtx = useElvixApp();
-  // Whenever ANY GIS flag is on, swap our custom redirect anchor for
-  // Google's official renderButton output. The button morphs into the
-  // personalized "Continue as <name>" surface when GIS detects an
-  // active Google session — which works in modern browsers when
-  // `fedcm` is on (third-party-cookie path is being sunsetted).
-  //
-  // CRITICAL: the GIS path renders into an (initially empty) ref slot
-  // that GoogleOneTap fills client-side. GoogleOneTap only mounts when
-  // a Google client id is available. In the elvix monorepo that's the
-  // build-time NEXT_PUBLIC_GOOGLE_CLIENT_ID; in the published SDK it
-  // arrives per-app on the bootstrap envelope (`googleClientId`). If it's
-  // missing, the GIS slot would stay empty and the Google button would be
-  // INVISIBLE. Require the client id here so a missing value degrades to
-  // the static redirect anchor (which uses elvix's server-side
-  // GOOGLE_CLIENT_ID via /api/auth/google/start and works without it).
-  // The GIS-rendered button (Google's official "Continue as <name>"
-  // personalised pill) only works when the SDK is HOSTED on the elvix
-  // origin itself — see `google-one-tap.tsx`. On a customer origin,
-  // GIS doesn't run, the slot stays empty, and the Google button
-  // disappears. Detect cross-origin here and fall back to the static
-  // `<a>` redirect anchor so the button always renders.
-  const isSameOriginAsBase = typeof window !== "undefined" && window.location.origin === baseUrl;
-  const useGisRenderedButton = gisEnabled && Boolean(googleClientId) && isSameOriginAsBase;
-  // identifier   → email / username entry (initial)
-  // code         → OTP entry
-  // username     → onboarding: claim a username (form, suggestions, skip)
-  // passkey      → onboarding: add a passkey (or skip)
-  // All four render inside the same card chrome — no URL hop. That's the
-  // whole point: developers embed <ElvixSignInForm /> and the user finishes the
-  // entire flow without leaving the form.
-  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  const [step, setStep] = useState<
-    "identifier" | "code" | "username" | "passkey" | "recover" | "authenticating"
-  >("identifier");
-
-  // Recovery gateway: populated when the auth handler returns
-  // `next_step: "recover"` because the user just signed back in to
-  // an app where their membership is in a reversible off-state
-  // (deactivated or soft-deleted-by-user inside 90d). The user has
-  // to decide before any onward redirect — restore (resume the
-  // membership) or cancel (sign out, stay off-state).
-  const [recoverState, setRecoverState] = useState<{
-    appId: string;
-    appName: string;
-    state: State;
-    sinceAt: string;
-  } | null>(null);
-  const [identifier, setIdentifier] = useState("");
-  const [code, setCode] = useState("");
-  const [challengeId, setChallengeId] = useState<string | null>(null);
-  const [sendingOtp, setSendingOtp] = useState(false);
-  const [verifyingOtp, setVerifyingOtp] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [resendIn, setResendIn] = useState(0);
-  const [passkeyBusy, setPasskeyBusy] = useState(false);
-  // True once a redirect-OAuth button (GitHub) is clicked — the button flips to
-  // a "Signing in…" spinner so the user gets instant feedback during the
-  // round-trip instead of staring at a static button for 1-2s.
-  const [redirecting, setRedirecting] = useState(false);
-
-  // Onboarding state — only meaningful once we're past identifier+code.
-  const [usernameValue, setUsernameValue] = useState("");
-  const [usernameSuggestions, setUsernameSuggestions] = useState<string[]>([]);
-  const [usernameCheck, setUsernameCheck] = useState<UsernameCheckState>({ kind: "idle" });
-  const [onboardingBusy, setOnboardingBusy] = useState<"claim" | "skip" | "add" | null>(null);
-  /**
-   * Backend-provided final destination for multi-step onboarding flows.
-   * When the OTP verify (or Google return state) lands on `next_step:
-   * "passkey"` / `"username"`, the verifier also returns `final` — the
-   * URL the user should land on once they finish (or skip) onboarding.
-   * Stored here so the username + passkey steps know where to send
-   * them. Always passed through `finalRedirect(...)` so
-   * `redirectAfterSignIn` wins when the host set it.
-   */
-  const [backendFinalRedirect, setBackendFinalRedirect] = useState<string>("/");
-
-  /**
-   * Single resolver for every terminal redirect target inside the form.
-   * Resolution order: `redirectAfterSignIn` (host prop, highest) > the
-   * backend's per-method `redirect` value (OTP/Passkey/Google /done/) >
-   * the onboarding `final` we cached when we entered the step > `"/"`.
-   *
-   * Every onResult call + every `window.location.href = ...` site MUST
-   * pass through this helper so behaviour is identical across methods.
-   */
-  const finalRedirect = useCallback(
-    (backendRedirect?: string): string => {
-      if (redirectAfterSignIn) return redirectAfterSignIn;
-      if (backendRedirect) return backendRedirect;
-      if (backendFinalRedirect) return backendFinalRedirect;
-      return "/";
-    },
-    [redirectAfterSignIn, backendFinalRedirect],
-  );
-
-  /**
-   * The factor that authenticated this ceremony. Stamped at each entry path
-   * (OTP / passkey / Google) and read by `finishSignIn` so `onResult.method`
-   * is correct even after in-frame onboarding steps. Persists across the
-   * onboarding panes (same component instance); on a Google redirect-return
-   * the fragment dispatch re-stamps it to "google" on mount.
-   */
-  const methodRef = useRef<ElvixSignInMethod>("email_otp");
-
-  /**
-   * The single terminal-success funnel. EVERY sign-in path (OTP, passkey,
-   * Google, and the onboarding completions) ends here. Fires `onResult` once
-   * with `phase: "complete"` + the method + the resolved destination, then
-   * navigates UNLESS the host opted out via `navigate={false}` or the
-   * deprecated `onAuthenticated` (whose presence implies host-owned routing).
-   * Centralising this keeps the contract identical across methods.
-   */
-  const finishSignIn = useCallback(
-    (redirect: string, token: string | undefined) => {
-      setStep("authenticating");
-      onResult?.({ ok: true, phase: "complete", method: methodRef.current, redirect, token });
-      // Deprecated hook — still fired for back-compat.
-      onAuthenticated?.({ ok: true, redirect, token });
-      const hostOwnsNav = navigate === false || Boolean(onAuthenticated);
-      if (!hostOwnsNav) window.location.href = redirect;
-    },
-    [onResult, onAuthenticated, navigate],
-  );
-
-  // SSO silent-resume: if the host opted in and the SDK detects an active
-  // session on mount, complete sign-in immediately (method "session") so the
-  // host lands the user on the dashboard instead of showing the sign-in form.
-  // Fires once. The loading state below holds the UI until the session probe
-  // resolves, so a signed-in user never sees a sign-in flash.
-  const resumedRef = useRef(false);
-  // Read the one-shot "just signed out" marker once per mount. If the user
-  // landed here straight from signOut(), suppress the auto-resume so we never
-  // sign them back in on the post-logout landing (even if a session lingers).
-  const justSignedOutRef = useRef<boolean | null>(null);
-  useEffect(() => {
-    if (!redirectIfAuthenticated || isPreview) return;
-    if (justSignedOutRef.current === null) justSignedOutRef.current = consumeSignedOutFlag();
-    if (justSignedOutRef.current) return;
-    // A fresh sign-in just returned via the URL fragment — the form's own
-    // return handler owns completion + onboarding (passkey/username). Yield, or
-    // the resume races ahead and skips the enrollment prompt.
-    if (wasReturnTokenConsumed()) return;
-    if (sessionStatus !== ElvixSessionStatus.AUTHENTICATED) return;
-    if (resumedRef.current) return;
-    resumedRef.current = true;
-    methodRef.current = "session";
-    finishSignIn(finalRedirect(), getElvixToken() ?? undefined);
-  }, [redirectIfAuthenticated, isPreview, sessionStatus, finishSignIn, finalRedirect]);
-
-  useEffect(() => {
-    if (resendIn <= 0) return;
-    const t = setInterval(() => setResendIn((s) => Math.max(0, s - 1)), 1000);
-    return () => clearInterval(t);
-  }, [resendIn]);
-
-  // Drain the one-shot queue that consumeElvixReturnToken fills when
-  // ElvixProvider strips `#elvix_token=...` from the URL. If a token
-  // was just consumed (the page is the destination of the Google
-  // redirect-OAuth callback), fire onResult so the host's existing
-  // redirect handler (router.push, cookie write) runs — exactly like
-  // an in-frame OTP / passkey sign-in already does.
-  // Token-return + landing-resume drain consolidated into a single
-  // effect AFTER applyLanding (declared below) so we can safely
-  // reference it in the dep array without hitting TDZ. See the second
-  // effect a few lines down — it owns both paths.
-
-  /**
-   * Set the inline error string AND fire `onResult({ ok: false })`
-   * for the host. Every catchable failure inside the form funnels
-   * through here so customers never miss a terminal event.
-   */
-  const reportError = useCallback(
-    (code: string | undefined, message: string) => {
-      setError(message);
-      onResult?.({
-        ok: false,
-        error: code ?? "unknown",
-        message,
-      });
-    },
-    [onResult],
-  );
-
-  // Apply a sign-in finisher's payload. Single funnel so OTP, passkey, and
-  // the Google-return state probe all converge here. When `next_step` says
-  // we're done, we navigate away — otherwise we just move the ElvixSignInForm to
-  // the right step in place.
-  const applyLanding = useCallback(
-    (body: {
-      next_step?: NextStep;
-      redirect?: string;
-      suggestions?: string[];
-      final?: string;
-      token?: string;
-      recover?: {
-        appId: string;
-        appName: string;
-        state: State;
-        sinceAt: string;
-      };
-    }) => {
-      // Cross-origin sign-in returns the session token in the body (no cookie
-      // is set on a third-party origin). Store it so every subsequent SDK call
-      // carries it as a bearer, and hand it to the host via onAuthenticated.
-      if (body.token) setElvixToken(body.token);
-      // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-      if (body.next_step === "username") {
-        setUsernameSuggestions(body.suggestions ?? []);
-        setUsernameValue(body.suggestions?.[0] ?? "");
-        setBackendFinalRedirect(body.final ?? "/");
-        setStep("username");
-        return;
-      }
-      // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-      if (body.next_step === "passkey") {
-        setBackendFinalRedirect(body.final ?? "/");
-        setStep("passkey");
-        return;
-      }
-      // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-      if (body.next_step === "recover" && body.recover) {
-        setRecoverState(body.recover);
-        setBackendFinalRedirect(body.final ?? "/");
-        setStep("recover");
-        return;
-      }
-      // "done" or legacy { redirect } shape. Funnel through finalRedirect()
-      // so `redirectAfterSignIn` wins over the backend value when the host
-      // set it.
-      const redirect = finalRedirect(body.redirect ?? defaultRedirect(intent));
-      // body.token is fresh from the verifier; getElvixToken() falls back to
-      // whatever was stashed earlier in this ceremony so the host always
-      // receives a bearer even on intermediate "done" landings.
-      const token = body.token ?? getElvixToken() ?? undefined;
-      // Terminal success. finishSignIn flips to the "authenticating" pane
-      // (so the card doesn't sit on the old step during the host's ~1s
-      // token exchange + navigation), fires onResult, and navigates unless
-      // the host opted out.
-      finishSignIn(redirect, token);
-    },
-    [intent, finalRedirect, finishSignIn],
-  );
-  // Stable handles for the one-shot landing effects below, so a new
-  // `applyLanding` or a host's inline `onResult` does not re-run them.
-  const onLanding = useStableCallback(applyLanding);
-  const reportResult = useStableCallback(onResult);
-
-  // Drain the queues that ElvixProvider's consumeElvixReturnToken
-  // fills when it strips `#elvix_token=...&elvix_landing=...` from the
-  // URL on mount. Two outcomes:
-  //
-  //   1. Landing payload pending (Google return + onboarding gate)
-  //      → call applyLanding so the form renders the gate inline.
-  //
-  //   2. No landing → terminal sign-in event, mirror the in-frame
-  //      OTP / passkey success path: fire onResult AND onAuthenticated
-  //      (hosts wire whichever they prefer).
-  //
-  // This effect must live AFTER `applyLanding` is declared, otherwise
-  // the dep-array reference would be a TDZ ReferenceError on render.
-  useEffect(() => {
-    if (isPreview) return;
-    if (typeof window === "undefined") return;
-    const dispatch = (token: string, landing: ElvixLandingPayload | null) => {
-      // A #elvix_token return is a redirect-flow finish: Google redirect-OAuth
-      // (the common case) or the cross-origin hosted-passkey ceremony (older
-      // browsers without Related Origin Requests). The fragment carries no
-      // method marker, so we label it "google" — correct for the dominant
-      // path; a hosted-passkey return would mislabel until elvix adds an
-      // explicit method to the return payload.
-      methodRef.current = "google";
-      if (landing && landing.next_step !== "done") {
-        // applyLanding's body shape mirrors the gate-endpoint envelope:
-        // `{ next_step, suggestions?, final?, token?, recover? }`. The
-        // landing payload from the fragment is the SAME shape (minus
-        // `ok` which is implied by reaching this branch). `recover.state`
-        // is a const-as-object union locally; the fragment carries a
-        // plain string so we narrow at the boundary instead of
-        // bubbling the wider type up the chain.
-        applyLanding({
-          next_step: landing.next_step,
-          suggestions: landing.next_step === "username" ? landing.suggestions : undefined,
-          final: landing.final,
-          token,
-          recover:
-            landing.next_step === "recover" && landing.recover
-              ? {
-                  appId: landing.recover.appId,
-                  appName: landing.recover.appName,
-                  state: landing.recover.state as State,
-                  sinceAt: landing.recover.sinceAt,
-                }
-              : undefined,
-        });
-        return;
-      }
-      finishSignIn(finalRedirect(), token);
-    };
-    const token = takeJustReturnedToken();
-    if (token) dispatch(token, takeJustReturnedLanding());
-    const listener = (e: Event) => {
-      const ce = e as CustomEvent<{ token: string; landing?: ElvixLandingPayload | null }>;
-      if (!ce.detail?.token) return;
-      dispatch(ce.detail.token, ce.detail.landing ?? null);
-    };
-    window.addEventListener("elvix:return-token", listener);
-    return () => window.removeEventListener("elvix:return-token", listener);
-  }, [isPreview, applyLanding, finishSignIn, finalRedirect]);
-
-  // Google OAuth lands the user back on /sign-in/<surface>?onboarding=1&next=…
-  // (it's a redirect flow — can't return JSON). Pick up the onboarding step
-  // from /api/onboarding/state on mount so the ElvixSignInForm renders the right
-  // step inside the card, never a separate URL.
-  useEffect(() => {
-    if (isPreview) return;
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("onboarding") !== "1") return;
-    (async () => {
-      try {
-        const init = authInit();
-        const res = await fetch(`${baseUrl}/api/onboarding/state`, {
-          headers: init.headers,
-          credentials: init.credentials,
-        });
-        if (!res.ok) return;
-        const body = unwrapEnvelope(await res.json());
-        if (body.ok) onLanding(body);
-      } catch {
-        // best-effort — if the probe fails we just stay on the identifier
-        // step, the user can try again.
-      } finally {
-        // Strip the ?onboarding query so a refresh doesn't re-trigger.
-        const url = new URL(window.location.href);
-        url.searchParams.delete("onboarding");
-        url.searchParams.delete("next");
-        window.history.replaceState({}, "", url.toString());
-      }
-    })();
-    // Runs once in practice: the param is stripped, so a re-run returns early.
-  }, [isPreview, baseUrl, onLanding]);
-
-  // A blocked OAuth REDIRECT (Google/GitHub) bounces the user back here with
-  // `?error=` (first-party) or `?elvix_error=` (cross-origin app) and NO token.
-  // Without surfacing it the user just lands on a fresh sign-in page with no
-  // idea why they couldn't get in. Show a toast (they just landed — not
-  // mid-form, so a toast reads better than an inline line) with the SPECIFIC
-  // reason (private beta / closed / banned / paused / ...), fire onResult for
-  // the host, then strip the param so a refresh is clean.
-  useEffect(() => {
-    if (isPreview || typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("elvix_error") ?? params.get("error");
-    if (!code) return;
-    const message = humanError(t, code);
-    toast.error(message);
-    reportResult({ ok: false, error: code, message });
-    const url = new URL(window.location.href);
-    url.searchParams.delete("elvix_error");
-    url.searchParams.delete("error");
-    window.history.replaceState({}, "", url.toString());
-    // Runs once in practice: the param is stripped, so a re-run returns early.
-  }, [isPreview, t, reportResult]);
-
-  // Auto-submit once the OTP input fills to 6 chars (typed or pasted). The
-  // ref guards against re-firing for the same 6-char value after a verify
-  // error — the user must edit before we try again.
-  const autoSubmittedCodeRef = useRef<string>("");
-  // Clear the guard whenever the user shortens the code, so a fresh 6-char
-  // entry triggers a new submit.
-  useEffect(() => {
-    if (code.length < 6) autoSubmittedCodeRef.current = "";
-  }, [code]);
-
-  /** Validity branches on what's actually enabled: an email is only OK
-   *  when methodEmailOtp is on, a username is only OK when methodUsername
-   *  is on. If only username is enabled, typing an email shouldn't unlock
-   *  Continue — the resolve route would reject it anyway. */
-  const identifierValid = useMemo(() => {
-    const v = identifier.trim();
-    if (!v) return false;
-    if (v.includes("@")) return methodEmailOtp && EMAIL_RE.test(v);
-    if (methodUsername) return isValidUsername(v);
-    return false;
-  }, [identifier, methodEmailOtp, methodUsername]);
-
-  // Placeholder mirrors what the user can actually type:
-  //   - both on  → "Email or username"
-  //   - only username → "Username"
-  //   - only email → "Enter your email"
-  const identifierPlaceholder =
-    methodEmailOtp && methodUsername
-      ? t("signin.identifierPlaceholderEmailOrUsername")
-      : methodUsername
-        ? t("signin.identifierPlaceholderUsername")
-        : t("signin.identifierPlaceholderEmail");
-
-  /** Continue button styling — Clerk pattern: dark by default, brand color once user changes it. */
-  // CTA bg = brandColor (the "primary"), text = onBrandColor (Material's
-  // "onPrimary"). Customer-picked pair — we never auto-compute the foreground
-  // because contrast is on them, and dark brands need light text and v.v.
-  // Hover/active states deepen the brand via color-mix in the className,
-  // so light brands like #8e7dff don't read as washed-out flat blocks.
-  const ctaBase = brandColor;
-  const ctaFg = onBrandColor;
-  // Mirrors components/elvix-primary-button.tsx (the "Create application" CTA):
-  // solid brand base + subtle white-to-transparent sheen on the top 40%, plus a
-  // 3-layer shadow that grounds the button without the puffy brand-glow look
-  // we had before. Hover/active darken via brightness filter so any brandColor
-  // (light or dark) gets a perceptible state change without us needing to
-  // pre-compute hover shades.
-  const ctaStyle = {
-    backgroundImage: "linear-gradient(to bottom, rgba(255,255,255,0.12), rgba(255,255,255,0) 40%)",
-    backgroundColor: ctaBase,
-    color: ctaFg,
-    boxShadow:
-      "0 1px 0 rgba(255,255,255,0.06) inset, 0 2px 3px -1px rgba(0,0,0,0.18), 0 0 0 1px rgba(25,28,33,0.08)",
-  };
-  const ctaLabelStyle = {
-    filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.18))",
-  } as React.CSSProperties;
-
-  /** Submit identifier — figures out email vs username, dispatches accordingly. */
-  const onSubmitIdentifier = useCallback(
-    async (e?: React.FormEvent) => {
-      e?.preventDefault();
-      if (!identifierValid || isPreview || sendingOtp) return;
-      setError(null);
-      setSendingOtp(true);
-      const v = identifier.trim();
-      try {
-        // Username path — single endpoint resolves to the user's bound
-        // primary email and sends an OTP there. Works on console/account/app.
-        if (!v.includes("@")) {
-          const res = await fetch(`${baseUrl}/api/auth/identifier/resolve`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: isSameOrigin(baseUrl) ? "include" : "omit",
-            body: JSON.stringify({
-              username: v.toLowerCase(),
-              intent,
-              ...(clientId ? { clientId } : {}),
-            }),
-          });
-          const body = unwrapEnvelope(await res.json().catch(() => ({}))) as {
-            ok?: boolean;
-            challengeId?: string;
-            error?: string;
-            retryAfterSeconds?: number;
-          };
-          if (!res.ok || !body.ok || !body.challengeId) {
-            // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-            if (body.error === "too_recent" || body.error === "too_many") {
-              setResendIn(body.retryAfterSeconds ?? 45);
-            }
-            reportError(body.error, humanError(t, body.error, body.retryAfterSeconds));
-            return;
-          }
-          setChallengeId(body.challengeId);
-          setStep("code");
-          setResendIn(45);
-          return;
-        }
-        // Email path — call the unified OTP start route.
-        const res = await fetch(`${baseUrl}/api/auth/otp/start`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: isSameOrigin(baseUrl) ? "include" : "omit",
-          body: JSON.stringify({ email: v, intent, clientId }),
-        });
-        const body = unwrapEnvelope(await res.json().catch(() => ({}))) as {
-          ok?: boolean;
-          challengeId?: string;
-          error?: string;
-          retryAfterSeconds?: number;
-        };
-        if (!res.ok || !body.ok || !body.challengeId) {
-          if (body.error === "too_recent" || body.error === "too_many") {
-            setResendIn(body.retryAfterSeconds ?? 30);
-          }
-          reportError(body.error, humanError(t, body.error, body.retryAfterSeconds));
-          return;
-        }
-        setChallengeId(body.challengeId);
-        setStep("code");
-        setResendIn(45);
-      } catch {
-        reportError("network_error", t("signin.errorNetwork"));
-      } finally {
-        setSendingOtp(false);
-      }
-    },
-    [identifier, identifierValid, isPreview, sendingOtp, intent, clientId, reportError, baseUrl, t],
-  );
-
-  /** Submit the OTP code. Existing route returns { ok, redirect }. */
-  const onSubmitCode = useCallback(
-    async (e?: React.FormEvent) => {
-      e?.preventDefault();
-      if (isPreview || verifyingOtp || code.length !== 6 || !challengeId) return;
-      setError(null);
-      setVerifyingOtp(true);
-      try {
-        const res = await fetch(`${baseUrl}/api/auth/otp/verify`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: isSameOrigin(baseUrl) ? "include" : "omit",
-          body: JSON.stringify({ challengeId, code }),
-        });
-        const body = unwrapEnvelope(await res.json().catch(() => ({}))) as {
-          ok?: boolean;
-          next_step?: NextStep2;
-          redirect?: string;
-          suggestions?: string[];
-          final?: string;
-          token?: string;
-          error?: string;
-        };
-        if (!res.ok || !body.ok) {
-          reportError(body.error, humanError(t, body.error));
-          return;
-        }
-        methodRef.current = "email_otp";
-        applyLanding(body);
-      } catch {
-        reportError("network_error", t("signin.errorNetwork"));
-      } finally {
-        setVerifyingOtp(false);
-      }
-    },
-    [code, challengeId, isPreview, verifyingOtp, applyLanding, reportError, baseUrl, t],
-  );
-
-  // Fire onSubmitCode exactly once when the input first reaches 6 chars.
-  // Re-firing for the same string is guarded by autoSubmittedCodeRef, which
-  // resets when the user shortens the code (above).
-  useEffect(() => {
-    // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-    if (step !== "code") return;
-    if (code.length !== 6) return;
-    if (verifyingOtp || isPreview || !challengeId) return;
-    if (autoSubmittedCodeRef.current === code) return;
-    autoSubmittedCodeRef.current = code;
-    void onSubmitCode();
-  }, [code, step, verifyingOtp, isPreview, challengeId, onSubmitCode]);
-
-  /** Real WebAuthn ceremony using the SDK's cross-origin passkey sign-in. */
-  const onPasskey = useCallback(async () => {
-    if (isPreview || passkeyBusy) return;
-    // Cross-origin strategy: try the inline ceremony FIRST. Modern
-    // browsers honour elvix's `/.well-known/webauthn` Related Origin
-    // Requests manifest, so the prompt lands on the host's own origin
-    // (best UX). If the browser rejects with rp.id / SecurityError
-    // (older Safari, Firefox without ROR), fall back to the hosted
-    // passkey page on elvix.is via the same architecture as Google
-    // redirect-OAuth: returns via #elvix_token=<token> which
-    // consumeElvixReturnToken already handles.
-    const crossOrigin = !isSameOrigin(baseUrl) && Boolean(clientId);
-    const redirectToHosted = () => {
-      if (!clientId) return;
-      const returnTo = window.location.href;
-      window.location.assign(
-        `${baseUrl}/auth/passkey/${encodeURIComponent(clientId)}?returnUrl=${encodeURIComponent(returnTo)}`,
-      );
-    };
-    setError(null);
-    setPasskeyBusy(true);
-    try {
-      const result = await runPasskeySignIn(baseUrl, clientId, intent);
-      if (!result.ok) {
-        if (result.error === "passkey_cancelled") {
-          // user dismissed the prompt — stay quiet, report via onResult only
-          onResult?.({ ok: false, error: result.error });
-          return;
-        }
-        if (
-          crossOrigin &&
-          (/rp\.?id|RelyingParty|cannot be used with the current origin|SecurityError/i.test(
-            result.message ?? "",
-          ) ||
-            result.error === "passkey_failed")
-        ) {
-          redirectToHosted();
-          return;
-        }
-        reportError(
-          result.error,
-          result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyVerify"),
-        );
-        return;
-      }
-      // Passkey sign-in succeeded — applyLanding will run through
-      // finalRedirect() so `redirectAfterSignIn` (if set) wins over
-      // result.redirect.
-      methodRef.current = "passkey";
-      applyLanding({ next_step: "done", redirect: result.redirect, token: result.token });
-    } finally {
-      setPasskeyBusy(false);
-    }
-  }, [isPreview, passkeyBusy, baseUrl, clientId, intent, applyLanding, reportError, onResult, t]);
-
-  // Debounced live availability check for the username step. AbortController
-  // ensures only the latest keystroke's verdict reaches state.
-  const usernameAbortRef = useRef<AbortController | null>(null);
-  useEffect(() => {
-    if (step !== "username") return;
-    const candidate = usernameValue.trim().toLowerCase();
-    if (!candidate) {
-      setUsernameCheck({ kind: "idle" });
-      return;
-    }
-    setUsernameCheck({ kind: "checking" });
-    const t = setTimeout(() => {
-      usernameAbortRef.current?.abort();
-      const ctrl = new AbortController();
-      usernameAbortRef.current = ctrl;
-      const init = authInit();
-      fetch(`${baseUrl}/api/onboarding/username/check?u=${encodeURIComponent(candidate)}`, {
-        signal: ctrl.signal,
-        headers: init.headers,
-        credentials: init.credentials,
-      })
-        .then((r) => r.json())
-        .then(
-          (raw) => unwrapEnvelope(raw) as { ok?: boolean; available?: boolean; reason?: string },
-        )
-        .then((b) => {
-          if (b.ok === false) {
-            setUsernameCheck({ kind: "rejected", reason: b.reason ?? "invalid" });
-            return;
-          }
-          if (b.available) setUsernameCheck({ kind: "available" });
-          else setUsernameCheck({ kind: "rejected", reason: b.reason ?? "taken" });
-        })
-        .catch((err) => {
-          if (err.name !== "AbortError") setUsernameCheck({ kind: "idle" });
-        });
-    }, 220);
-    return () => clearTimeout(t);
-  }, [usernameValue, step, baseUrl]);
-
-  /**
-   * Submit the username step. `auto: true` means "skip — pick one for me",
-   * which lets the server auto-generate (same helper used by sign-in
-   * finishers in the legacy inline path).
-   */
-  const onSubmitUsername = useCallback(
-    async (auto: boolean) => {
-      if (onboardingBusy || isPreview) return;
-      setError(null);
-      setOnboardingBusy(auto ? "skip" : "claim");
-      try {
-        const init = authInit();
-        const res = await fetch(`${baseUrl}/api/onboarding/username`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", ...init.headers },
-          credentials: init.credentials,
-          body: JSON.stringify(auto ? {} : { username: usernameValue.trim().toLowerCase() }),
-        });
-        const body = unwrapEnvelope(await res.json().catch(() => ({}))) as {
-          ok?: boolean;
-          next_step?: NextStep2;
-          redirect?: string;
-          suggestions?: string[];
-          final?: string;
-          token?: string;
-          error?: string;
-        };
-        if (!res.ok || !body.ok) {
-          reportError(body.error, humanError(t, body.error));
-          return;
-        }
-        applyLanding(body);
-      } catch {
-        reportError("network_error", t("signin.errorNetwork"));
-      } finally {
-        setOnboardingBusy(null);
-      }
-    },
-    [usernameValue, isPreview, onboardingBusy, applyLanding, reportError, baseUrl, t],
-  );
-
-  /** Onboarding passkey step: register a new passkey for the current session. */
-  const onAddPasskey = useCallback(async () => {
-    if (onboardingBusy || isPreview) return;
-    // Cross-origin enrollment mirrors sign-in: try the inline ceremony FIRST
-    // (works when the browser honours elvix's Related Origin Requests
-    // manifest), and on an rp.id / SecurityError fall back to the hosted
-    // register page on elvix.is where rpId matches. The user is already
-    // authenticated, so we hand the bearer to that page via the URL fragment.
-    const crossOrigin = !isSameOrigin(baseUrl) && Boolean(clientId);
-    const redirectToHostedRegister = () => {
-      if (!clientId) return;
-      // Return to THIS page (the mounted sign-in surface), not the final dest:
-      // the ceremony hands the token back via #elvix_token and the SDK here
-      // consumes it to COMPLETE sign-in (fires onResult/onAuthenticated → the
-      // host's establishSession + navigate). Mirrors the sign-in ceremony.
-      // Sending the user straight to the final dest would skip session
-      // establishment and bounce them back to the gate. (`window.location.href`
-      // includes any ?next= the host login page carries, so post-auth routing
-      // still resolves.)
-      const returnTo = window.location.href;
-      const token = getElvixToken();
-      const url = `${baseUrl}/auth/passkey-register/${encodeURIComponent(clientId)}?returnUrl=${encodeURIComponent(returnTo)}`;
-      window.location.assign(token ? `${url}#elvix_token=${encodeURIComponent(token)}` : url);
-    };
-    setError(null);
-    setOnboardingBusy("add");
-    try {
-      // Try inline FIRST. Cross-origin enrollment works when the browser honours
-      // elvix's ROR manifest for create() AND this origin is in the app's
-      // allowedOrigins (the console "developer domains") — register/finish trusts
-      // them via `clientId`, so the credential persists with NO redirect. On any
-      // non-cancel failure for a cross-origin host (browser without ROR, or an
-      // origin not in allowedOrigins), fall back to the hosted ceremony, which
-      // registers same-origin on elvix.is. Same-origin enrollment is always inline.
-      const surface = intent === "app" ? "app" : intent;
-      const result = await runPasskeyRegister(baseUrl, surface, undefined, clientId ?? undefined);
-      if (!result.ok) {
-        if (result.error === "passkey_cancelled") return;
-        if (crossOrigin) {
-          redirectToHostedRegister();
-          return;
-        }
-        reportError(
-          result.error,
-          result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyAdd"),
-        );
-        return;
-      }
-      // Passkey added → done. Resolve the destination through
-      // finalRedirect() so a host-supplied `redirectAfterSignIn` wins over
-      // the backend-stashed `final` for this onboarding leg. method stays the
-      // original sign-in factor (methodRef) — adding a passkey is onboarding,
-      // not the factor that authenticated this session.
-      finishSignIn(finalRedirect(), getElvixToken() ?? undefined);
-    } finally {
-      setOnboardingBusy(null);
-    }
-  }, [
+  const t = useT();
+  const isPreview = p.mode === "preview";
+  const intent = p.intent ?? "app";
+  const flow = useSignInFlow({
     intent,
-    isPreview,
-    onboardingBusy,
-    finalRedirect,
-    finishSignIn,
-    reportError,
+    redirectAfterSignIn: p.redirectAfterSignIn,
+    onResult: p.onResult,
+    onAuthenticated: p.onAuthenticated,
+    navigate: p.navigate ?? true,
+  });
+  useSignInReturns({
+    flow,
     baseUrl,
-    clientId,
+    isPreview,
+    redirectIfAuthenticated: p.redirectIfAuthenticated ?? false,
+    sessionStatus,
     t,
-  ]);
+    onResult: p.onResult,
+  });
+  const otp = useOtpStart({
+    flow,
+    baseUrl,
+    intent,
+    clientId: p.clientId,
+    isPreview,
+    methodEmailOtp: Boolean(p.methodEmailOtp),
+    methodUsername: Boolean(p.methodUsername),
+    t,
+  });
 
-  /**
-   * Skip the onboarding "Add a passkey" step. The user is already
-   * authenticated (OTP/Google ceremony happened to reach this step) so
-   * this fires onResult({ok:true}) just like the explicit "Add a
-   * passkey" success path — and routes through finalRedirect() so the
-   * destination matches every other success path. Previously this just
-   * navigated, leaving the host's onResult silent on Skip.
-   */
-  const onSkipPasskey = useCallback(() => {
-    if (onboardingBusy) return;
-    setOnboardingBusy("skip");
-    finishSignIn(finalRedirect(), getElvixToken() ?? undefined);
-  }, [onboardingBusy, finalRedirect, finishSignIn]);
-
-  // SSO silent-resume: while the opted-in session probe is in flight, hold the
-  // UI on a loader so a signed-in user never sees the sign-in form flash before
-  // the resume effect redirects them.
-  if (redirectIfAuthenticated && !isPreview && sessionStatus === ElvixSessionStatus.LOADING) {
+  // SSO silent-resume: while the opted-in session probe runs, hold a loader
+  // so a signed-in user never sees the form flash before being sent on.
+  if (p.redirectIfAuthenticated && !isPreview && sessionStatus === ElvixSessionStatus.LOADING) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-10">
         <Loader2 className="size-5 animate-spin text-fg-3" />
@@ -1660,575 +863,30 @@ function AuthBody({
     );
   }
 
+  const cta = { brand: p.brandColor, onBrand: p.onBrandColor ?? "#ffffff" };
+  const shared = { flow, baseUrl, isPreview, cta };
   return (
     <>
-      {showHeader && (
-        <div
-          className={
-            "gap-3 mb-6 " +
-            (layout === "left"
-              ? "flex items-center text-left"
-              : // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-                layout === "banner"
-                ? "-mx-7 -mt-7 px-7 py-6 flex flex-col items-center text-center border-b border-border-base"
-                : "flex flex-col items-center text-center")
-          }
-          style={
-            layout === "banner"
-              ? { background: `linear-gradient(135deg, ${brandColor}24, ${brandColor}08)` }
-              : undefined
-          }
-        >
-          {(() => {
-            // Logo rendering rules:
-            //   1. logoNode passed (e.g. /sign-in/console with ElvixLogo) →
-            //      render bare, no chrome.
-            //   2. logoUrl (or dark variant when theme=dark) → render the
-            //      image bare too. Height-fixed, width-auto, max width caps
-            //      it. No border, no tinted backdrop — the customer's mark
-            //      stands on its own, same as what they see in the email.
-            //   3. Nothing available → letter placeholder on a brand-tinted
-            //      square, which IS the only case where a backdrop helps
-            //      readability.
-            const letter = (
-              <div
-                className={
-                  "size-14 rounded-[12px] border border-border-base grid place-items-center overflow-hidden transition" +
-                  (websiteUrl ? " hover:border-border-strong hover:shadow-sm" : "")
-                }
-                style={{ background: `${brandColor}1a` }}
-              >
-                <span className="text-[18px] font-semibold" style={{ color: brandColor }}>
-                  {appName?.[0]?.toUpperCase() ?? "?"}
-                </span>
-              </div>
-            );
-
-            const bareImg = (src: string) => (
-              <img src={src} alt={appName} className="h-12 w-auto max-w-[220px] object-contain" />
-            );
-
-            let inner: React.ReactNode;
-            if (logoNode) {
-              inner = (
-                <div className="inline-flex items-center justify-center min-h-12 max-w-[220px]">
-                  {logoNode}
-                </div>
-              );
-            } else if (theme === "dark") {
-              inner = logoUrlDark ? bareImg(logoUrlDark) : letter;
-            } else if (theme === "auto" && logoUrlDark && logoUrl) {
-              inner = (
-                <picture>
-                  <source srcSet={logoUrlDark} media="(prefers-color-scheme: dark)" />
-                  <img
-                    src={logoUrl}
-                    alt={appName}
-                    className="h-12 w-auto max-w-[220px] object-contain"
-                  />
-                </picture>
-              );
-            } else if (logoUrl) {
-              inner = bareImg(logoUrl);
-            } else {
-              inner = letter;
-            }
-
-            return websiteUrl ? (
-              <a
-                href={websiteUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={t("signin.visitAppWebsite", { app: appName ?? "" })}
-                className="cursor-pointer"
-              >
-                {inner}
-              </a>
-            ) : (
-              inner
-            );
-          })()}
-          <div>
-            <div className="text-[18px] font-semibold tracking-tight text-fg-1">
-              {step === "code"
-                ? t("export.doneTitle")
-                : step === "username"
-                  ? t("username.title")
-                  : step === "passkey"
-                    ? signInVerb === "login"
-                      ? t("signin.passkeyOnboardingTitleLogin")
-                      : t("signin.passkeyOnboardingTitleSignin")
-                    : step === "recover"
-                      ? t("signin.recoverTitle", {
-                          app: recoverState?.appName ?? appName ?? t("signin.appNameFallback"),
-                        })
-                      : // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-                        signInVerb === "login"
-                        ? t("signin.titleLogin", { app: appName || t("signin.appNameFallback") })
-                        : t("signin.title", { app: appName || t("signin.appNameFallback") })}
-            </div>
-            <div className="text-[12.5px] text-fg-3 mt-0.5">
-              {step === "code"
-                ? t("signin.codeSentSubtitle", { email: identifier })
-                : step === "username"
-                  ? appName
-                    ? t("username.subtitle", { app: appName })
-                    : t("username.subtitleNoApp")
-                  : step === "passkey"
-                    ? t("signin.passkeyOnboardingSubtitle")
-                    : step === "recover"
-                      ? t("signin.recoverSubtitle")
-                      : t("signin.identifierSubtitle")}
-            </div>
-            {/* Gate-state badge sits inline under the subtitle so the
-              user reads consequence + badge as one unit. Only the
-              "pick-a-method" step shows it; once the user is mid-flow
-              (code / username / passkey) the badge would just clutter.
-              Host's belowHeading prop wins; otherwise, when the
-              Application's signinGate is private_beta or closed, the
-              SDK paints a default badge automatically. Hosts can opt
-              out with belowHeading={null}. */}
-            {/* LEGACY: spine-lint-disable-next-line spine/enum-over-string */}
-            {step === "identifier" &&
-              (belowHeading !== undefined ? (
-                belowHeading
-              ) : (
-                <GateBadge gate={appCtx?.signinGate} t={t} />
-              ))}
-          </div>
-        </div>
+      {(p.showHeader ?? true) && (
+        <SignInHeader p={p} flow={flow} identifier={otp.identifier} gate={appCtx?.signinGate} />
       )}
-
-      {step === "authenticating" ? (
-        <div className="flex flex-col items-center justify-center gap-3 py-8">
-          <Loader2 className="size-7 animate-spin" style={{ color: brandColor }} />
-          <div className="text-[13.5px] font-medium text-fg-1">Signing you in…</div>
-          <div className="text-[12px] text-fg-3">
-            Hold on a second, taking you to {appName || "your app"}.
-          </div>
-        </div>
-      ) : step === "code" ? (
-        <form onSubmit={onSubmitCode} className="space-y-3">
-          <OtpInput
-            value={code}
-            onChange={setCode}
-            disabled={isPreview || verifyingOtp}
-            autoFocus
-          />
-          <button
-            type="submit"
-            disabled={verifyingOtp || code.length !== 6}
-            className="cursor-pointer w-full inline-flex items-center justify-center h-9 px-4 rounded-[10px] font-semibold text-[13px] tracking-tight transition hover:brightness-[0.94] active:brightness-[0.88] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:brightness-100"
-            style={ctaStyle}
-          >
-            <span className="inline-flex items-center gap-1.5" style={ctaLabelStyle}>
-              {verifyingOtp ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                t("signin.verifyButton")
-              )}
-              {!verifyingOtp && (
-                <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden>
-                  <path
-                    d="M7.75 5L4.25 2.75V7.25L7.75 5Z"
-                    fill="currentColor"
-                    stroke="currentColor"
-                    opacity="0.6"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              )}
-            </span>
-          </button>
-          <div className="flex items-center justify-between pt-1">
-            <button
-              type="button"
-              onClick={() => {
-                setStep("identifier");
-                setCode("");
-                setError(null);
-              }}
-              className="cursor-pointer inline-flex items-center gap-1 text-[12px] text-fg-2 hover:text-fg-1 hover:bg-surface-hover rounded-md px-2 -mx-2 py-1 transition"
-            >
-              <ArrowLeft className="size-3" /> {t("signin.useDifferentEmail")}
-            </button>
-            <button
-              type="button"
-              disabled={resendIn > 0 || sendingOtp}
-              onClick={() => onSubmitIdentifier()}
-              className="cursor-pointer text-[12px] text-fg-2 hover:text-fg-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:text-fg-3 transition"
-            >
-              {resendIn > 0
-                ? t("signin.resendInSeconds", { seconds: resendIn })
-                : t("signin.resendCode")}
-            </button>
-          </div>
-          {error && <p className="text-[11.5px] text-red-400 text-center">{error}</p>}
-        </form>
-      ) : step === "username" ? (
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="onboarding-username" className="block text-[12px] text-fg-3 mb-1.5">
-              {t("username.label")}
-            </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[14px] text-fg-3 pointer-events-none">
-                @
-              </span>
-              <input
-                id="onboarding-username"
-                type="text"
-                autoFocus
-                autoComplete="username"
-                value={usernameValue}
-                minLength={4}
-                maxLength={30}
-                onChange={(e) => setUsernameValue(e.target.value)}
-                placeholder={t("username.exampleHandle")}
-                disabled={onboardingBusy !== null}
-                className="w-full h-11 pl-7 pr-10 rounded-[10px] bg-surface border border-border-strong text-[14px] text-fg-1 placeholder:text-placeholder focus:outline-none focus:border-[#8e7dff] focus:ring-2 focus:ring-[#8e7dff]/20 transition disabled:opacity-60 disabled:cursor-not-allowed"
-              />
-              {/* LEGACY: spine-lint-disable-next-line spine/enum-over-string */}
-              {usernameCheck.kind === "checking" && (
-                <Loader2 className="size-4 text-fg-3 absolute right-3 top-1/2 -translate-y-1/2 animate-spin pointer-events-none" />
-              )}
-              {/* LEGACY: spine-lint-disable-next-line spine/enum-over-string */}
-              {usernameCheck.kind === "available" && (
-                <Check className="size-4 text-emerald-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-              )}
-              {/* LEGACY: spine-lint-disable-next-line spine/enum-over-string */}
-              {usernameCheck.kind === "rejected" && (
-                <X className="size-4 text-red-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-              )}
-            </div>
-            <p className="text-[11px] mt-1.5 leading-relaxed min-h-[14px]">
-              {usernameCheck.kind === "idle" && (
-                <span className="text-fg-3">{t("username.rulesHint")}</span>
-              )}
-              {usernameCheck.kind === "checking" && (
-                <span className="text-fg-3">{t("username.checking")}</span>
-              )}
-              {usernameCheck.kind === "available" && (
-                <span className="text-emerald-500">{t("username.availableHint")}</span>
-              )}
-              {usernameCheck.kind === "rejected" && (
-                <span className="text-red-500">{usernameReasonLabel(t, usernameCheck.reason)}</span>
-              )}
-            </p>
-          </div>
-
-          {usernameSuggestions.length > 0 && (
-            <div className="space-y-2">
-              <div className="text-[11px] uppercase tracking-[0.08em] text-fg-3">
-                {t("username.suggestionsHeading")}
-              </div>
-              {/* Horizontal chip strip. Overflows scroll horizontally for
-                  long handles; the scrollbar is hidden via
-                  scrollbar-none + WebkitScrollbar tweak below. The final
-                  chip is Skip — same shape as a suggestion so the row
-                  reads as one set of options, not separate widgets. */}
-              <div className="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap pb-0.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-                {usernameSuggestions.slice(0, 3).map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    disabled={onboardingBusy !== null}
-                    onClick={() => setUsernameValue(s)}
-                    className="cursor-pointer shrink-0 inline-flex items-center h-7 px-2.5 rounded-full bg-surface-hover border border-border-base hover:border-border-strong hover:bg-surface-active transition text-[12px] text-fg-2 font-mono disabled:opacity-60 disabled:cursor-not-allowed"
-                  >
-                    @{s}
-                  </button>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => onSubmitUsername(true)}
-                  disabled={onboardingBusy !== null}
-                  className="cursor-pointer shrink-0 inline-flex items-center gap-1 h-7 px-2.5 rounded-full border border-dashed border-border-base hover:border-border-strong hover:bg-surface-hover transition text-[12px] text-fg-3 hover:text-fg-1 disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {onboardingBusy === "skip" ? (
-                    <Loader2 className="size-3.5 animate-spin" />
-                  ) : (
-                    t("common.skip")
-                  )}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {error && <p className="text-[11.5px] text-red-400">{error}</p>}
-
-          <button
-            type="button"
-            onClick={() => onSubmitUsername(false)}
-            disabled={onboardingBusy !== null || usernameCheck.kind !== "available"}
-            className="cursor-pointer w-full inline-flex items-center justify-center h-9 px-4 rounded-[10px] font-semibold text-[13px] tracking-tight transition hover:brightness-[0.94] active:brightness-[0.88] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:brightness-100"
-            style={ctaStyle}
-          >
-            <span className="inline-flex items-center gap-1.5" style={ctaLabelStyle}>
-              {onboardingBusy === "claim" ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                t("username.claimCta", { handle: usernameValue || t("username.yournameFallback") })
-              )}
-            </span>
-          </button>
-        </div>
-      ) : step === "passkey" ? (
-        <div className="space-y-3">
-          <ul className="text-[12.5px] text-fg-2 leading-relaxed space-y-1.5">
-            <li className="flex items-start gap-2">
-              <span className="mt-1.5 size-1 rounded-full" style={{ background: brandColor }} />
-              <span>{t("signin.passkeyBullet1")}</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="mt-1.5 size-1 rounded-full" style={{ background: brandColor }} />
-              <span>{t("signin.passkeyBullet2")}</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="mt-1.5 size-1 rounded-full" style={{ background: brandColor }} />
-              <span>{t("signin.passkeyBullet3")}</span>
-            </li>
-          </ul>
-
-          {error && <p className="text-[11.5px] text-red-400">{error}</p>}
-
-          <button
-            type="button"
-            onClick={onAddPasskey}
-            disabled={onboardingBusy !== null}
-            className="cursor-pointer w-full inline-flex items-center justify-center h-9 px-4 rounded-[10px] font-semibold text-[13px] tracking-tight transition hover:brightness-[0.94] active:brightness-[0.88] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:brightness-100"
-            style={ctaStyle}
-          >
-            <span className="inline-flex items-center gap-1.5" style={ctaLabelStyle}>
-              {onboardingBusy === "add" ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <>
-                  <Fingerprint className="size-4" /> {t("signin.addPasskeyCta")}
-                </>
-              )}
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={onSkipPasskey}
-            disabled={onboardingBusy !== null}
-            className="cursor-pointer w-full inline-flex items-center justify-center h-9 px-3 rounded-[8px] text-[13px] text-fg-2 hover:text-fg-1 hover:bg-surface-hover transition disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {/* LEGACY: spine-lint-disable-next-line spine/enum-over-string */}
-            {onboardingBusy === "skip" ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              t("signin.skipForNow")
-            )}
-          </button>
-        </div>
-      ) : step === "recover" && recoverState ? (
-        // Recovery gateway — user just signed back in to an app where
-        // their membership is in a reversible off-state. Sign-in won't
-        // complete until they pick Restore or Cancel. The SDK
-        // component handles the API call; we just route the result
-        // (final redirect on restore, sign-in URL on cancel).
-        <ElvixRecoverGate
-          baseUrl={baseUrl}
-          appName={recoverState.appName}
-          state={recoverState.state}
-          sinceAt={recoverState.sinceAt}
-          onRestore={({ redirect }) => {
-            // Restore = successful sign-in completion. Funnel through
-            // finalRedirect() so redirectAfterSignIn wins over the gate's
-            // suggested target. method stays the original factor (methodRef).
-            finishSignIn(finalRedirect(redirect), getElvixToken() ?? undefined);
-          }}
-          onCancel={({ redirect }) => {
-            // Cancel = NOT a sign-in success; honour the gate's redirect
-            // (typically /sign-in) so the user lands somewhere safe. Do
-            // NOT consult redirectAfterSignIn here — that's the success
-            // destination and the user just chose to back out.
-            window.location.href = redirect;
-          }}
-        />
-      ) : !anyMethod ? (
-        <div className="rounded-[10px] border border-dashed border-border-base bg-surface-hover py-8 px-4 text-center">
-          <p className="text-[12.5px] text-fg-3">{t("signin.previewEmptyMethods")}</p>
-        </div>
+      {flow.step === Step.AUTHENTICATING ? (
+        <AuthenticatingPane brandColor={p.brandColor} appName={p.appName} />
+      ) : flow.step === Step.CODE ? (
+        <CodeStep {...shared} otp={otp} />
+      ) : flow.step === Step.USERNAME ? (
+        <UsernameStep {...shared} />
+      ) : flow.step === Step.PASSKEY ? (
+        <PasskeyStep {...shared} p={p} />
+      ) : flow.step === Step.RECOVER ? (
+        <RecoverStep flow={flow} baseUrl={baseUrl} />
       ) : (
-        <form onSubmit={onSubmitIdentifier} className="space-y-2">
-          {gisEnabled && googleClientId && (
-            <GoogleOneTap
-              baseUrl={baseUrl}
-              clientId={googleClientId}
-              intent={intent}
-              appClientId={clientId}
-              renderButton={useGisRenderedButton}
-              buttonContainerRef={gisButtonRef}
-              config={{
-                oneTap: googleConfig?.oneTap ?? false,
-                autoSelect: googleConfig?.autoSelect ?? false,
-                popup: googleConfig?.popup ?? false,
-                fedcm: googleConfig?.fedcm ?? false,
-                hostedDomain: googleConfig?.hostedDomain ?? "",
-              }}
-            />
-          )}
-          {(methodGoogle || methodPasskey || methodGithub) && (
-            <div className={socialGrid ? "grid grid-cols-2 gap-2" : "space-y-2"}>
-              {methodGoogle &&
-                (useGisRenderedButton ? (
-                  // GIS-rendered button — respects ux_mode='popup' so the
-                  // OAuth flow runs in a small window instead of a full-
-                  // page redirect. Google styles this themselves; we
-                  // reserve the slot at our button height so layout stays
-                  // stable while GIS hydrates.
-                  // Mount point only: GIS renders its own button in here and
-                  // brings its own accessible name, so an aria-label on the
-                  // wrapper was both unsupported on a bare div and a second,
-                  // competing label for the same control.
-                  <div
-                    ref={gisButtonRef}
-                    className={`w-full min-h-10${socialSpanLast && googleIsLast ? " col-span-2" : ""}`}
-                  />
-                ) : (
-                  <a
-                    href={isPreview ? "#" : googleStartHref(baseUrl, intent, clientId)}
-                    onClick={isPreview ? (e) => e.preventDefault() : undefined}
-                    className={`cursor-pointer w-full inline-flex items-center justify-center gap-2 h-10 rounded-[10px] font-medium text-[13px] border border-border-base bg-surface text-fg-1 hover:bg-surface-hover transition${socialSpanLast && googleIsLast ? " col-span-2" : ""}`}
-                  >
-                    <GoogleGlyph />
-                    {socialGrid && !(socialSpanLast && googleIsLast)
-                      ? t("signin.googleButtonShort")
-                      : t("signin.googleButton")}
-                  </a>
-                ))}
-              {methodGithub && (
-                <button
-                  type="button"
-                  disabled={isPreview || redirecting}
-                  onClick={
-                    isPreview
-                      ? undefined
-                      : () => {
-                          // Flip to the spinner, then navigate on the next frame
-                          // so React paints "Signing in…" before the browser
-                          // leaves for GitHub.
-                          setRedirecting(true);
-                          const href = githubStartHref(baseUrl, intent, clientId);
-                          requestAnimationFrame(() => window.location.assign(href));
-                        }
-                  }
-                  aria-label={t("signin.githubButton")}
-                  className={`cursor-pointer w-full inline-flex items-center justify-center gap-2 h-10 rounded-[10px] font-medium text-[13px] border border-border-base bg-surface text-fg-1 hover:bg-surface-hover transition disabled:cursor-not-allowed disabled:opacity-70${socialSpanLast && githubIsLast ? " col-span-2" : ""}`}
-                >
-                  {redirecting ? (
-                    <>
-                      <Loader2 className="size-4 animate-spin" />
-                      {t("signin.signingIn")}
-                    </>
-                  ) : (
-                    <>
-                      <GithubGlyph />
-                      {socialGrid && !(socialSpanLast && githubIsLast)
-                        ? "GitHub"
-                        : t("signin.githubButton")}
-                    </>
-                  )}
-                </button>
-              )}
-              {methodPasskey && (
-                <button
-                  type="button"
-                  disabled={passkeyBusy}
-                  onClick={isPreview ? undefined : onPasskey}
-                  className={`cursor-pointer w-full inline-flex items-center justify-center gap-2 h-10 rounded-[10px] font-medium text-[13px] border border-border-base bg-surface text-fg-1 hover:bg-surface-hover transition disabled:cursor-not-allowed disabled:opacity-60${socialSpanLast && passkeyIsLast ? " col-span-2" : ""}`}
-                >
-                  {passkeyBusy ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    <Fingerprint className="size-4" />
-                  )}
-                  {socialGrid && !(socialSpanLast && passkeyIsLast)
-                    ? t("signin.passkeyButtonShort")
-                    : t("signin.passkeyButton")}
-                </button>
-              )}
-            </div>
-          )}
-
-          {(methodEmailOtp || methodUsername) && (
-            <>
-              {(methodGoogle || methodPasskey || methodGithub) && (
-                <div className="flex items-center gap-3 my-3">
-                  <span className="h-px flex-1 bg-border-base" />
-                  <span className="text-[11px] uppercase tracking-[0.08em] text-fg-3">
-                    {t("signin.or")}
-                  </span>
-                  <span className="h-px flex-1 bg-border-base" />
-                </div>
-              )}
-              <input
-                type="text"
-                disabled={sendingOtp}
-                value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
-                placeholder={identifierPlaceholder}
-                aria-label={identifierPlaceholder}
-                autoComplete={methodUsername ? "username" : "email"}
-                inputMode={methodUsername ? "text" : "email"}
-                className="w-full h-10 px-3 rounded-[10px] bg-surface border border-border-strong text-[13px] text-fg-1 placeholder:text-placeholder focus:outline-none focus:border-[#8e7dff] focus:ring-2 focus:ring-[#8e7dff]/20 transition disabled:cursor-not-allowed"
-              />
-              <button
-                type="submit"
-                disabled={!identifierValid || sendingOtp}
-                className="cursor-pointer w-full inline-flex items-center justify-center h-9 px-4 mt-3 rounded-[10px] font-semibold text-[13px] tracking-tight transition hover:brightness-[0.94] active:brightness-[0.88] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:brightness-100"
-                style={ctaStyle}
-              >
-                <span className="inline-flex items-center gap-1.5" style={ctaLabelStyle}>
-                  {sendingOtp ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    t("signin.sendCodeButton")
-                  )}
-                  {!sendingOtp && (
-                    <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden>
-                      <path
-                        d="M7.75 5L4.25 2.75V7.25L7.75 5Z"
-                        fill="currentColor"
-                        stroke="currentColor"
-                        opacity="0.6"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  )}
-                </span>
-              </button>
-              {error && <p className="text-[11.5px] text-red-400 text-center mt-1">{error}</p>}
-            </>
-          )}
-        </form>
+        <IdentifierStep {...shared} otp={otp} p={p} />
       )}
-
-      {/* Slot for text-link affordances on gated hosted surfaces
-          ("Inform me when it goes public" / "Request access to private
-          beta"). Shown only on the entry step — once the user has typed
-          an identifier or moved into code/onboarding the slot would
-          just compete with the active flow. */}
-      {step === "identifier" && belowMethods}
-
-      <div className="text-center mt-5 leading-[1.45]">
-        <div className="text-[11.5px] text-placeholder">
-          {t("signin.legalIntro", { app: appName || t("signin.legalAppFallback") })}
-        </div>
-        <div className="text-[11.5px] mt-1 flex items-center justify-center gap-1.5">
-          <LegalLink href={termsOfServiceUrl}>{t("signin.termsOfService")}</LegalLink>
-          <span className="text-placeholder">·</span>
-          <LegalLink href={privacyPolicyUrl}>{t("signin.privacyPolicy")}</LegalLink>
-        </div>
-      </div>
+      {/* The host's text links for gated surfaces ("Request access"), on the
+          entry step only, where they do not compete with an active flow. */}
+      {flow.step === Step.IDENTIFIER && p.belowMethods}
+      <LegalFooter p={p} />
     </>
   );
 }
@@ -2272,251 +930,4 @@ export function FramedPreview({ children }: { children: React.ReactNode }) {
       </div>
     </div>
   );
-}
-
-function LegalLink({ href, children }: { href?: string | null; children: React.ReactNode }) {
-  const base =
-    "cursor-pointer font-semibold text-fg-2 underline underline-offset-2 decoration-fg-3/60 hover:text-fg-1 hover:decoration-fg-1 transition";
-  if (!href) return <span className={base}>{children}</span>;
-  return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={base}>
-      {children}
-    </a>
-  );
-}
-
-function GoogleGlyph() {
-  return (
-    <svg viewBox="0 0 18 18" className="size-4" aria-hidden>
-      <path
-        fill="#4285F4"
-        d="M16.51 8.18c0-.58-.05-1.13-.15-1.66H9v3.14h4.21a3.6 3.6 0 0 1-1.56 2.36v1.96h2.52c1.47-1.36 2.34-3.36 2.34-5.8z"
-      />
-      <path
-        fill="#34A853"
-        d="M9 17c2.1 0 3.87-.7 5.17-1.9l-2.52-1.96c-.7.47-1.6.74-2.65.74-2.04 0-3.77-1.38-4.38-3.23H2.02v2.03A8 8 0 0 0 9 17z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M4.62 10.65A4.8 4.8 0 0 1 4.36 9c0-.57.1-1.12.26-1.65V5.32H2.02A8 8 0 0 0 1 9c0 1.29.31 2.5.86 3.58l2.51-1.93z"
-      />
-      <path
-        fill="#EA4335"
-        d="M9 4.77c1.14 0 2.17.4 2.98 1.17l2.23-2.23A7.84 7.84 0 0 0 9 1 8 8 0 0 0 1.86 5.32l2.51 1.93C5.23 5.17 6.96 4.77 9 4.77z"
-      />
-    </svg>
-  );
-}
-
-function GithubGlyph() {
-  return (
-    <svg viewBox="0 0 16 16" className="size-4" fill="currentColor" aria-hidden>
-      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.65 7.65 0 0 1 8 3.96c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
-    </svg>
-  );
-}
-
-type Translator = (key: string, params?: Record<string, string | number>) => string;
-
-function humanError(t: Translator, code?: string, retryAfterSeconds?: number): string {
-  switch (code) {
-    case "too_recent":
-      return retryAfterSeconds
-        ? t("signin.errorTooRecentWithSeconds", { seconds: retryAfterSeconds })
-        : t("signin.errorTooRecent");
-    case "too_many":
-      return retryAfterSeconds
-        ? t("signin.errorTooManyWithRetry", { retry: formatRetry(t, retryAfterSeconds) })
-        : t("signin.errorTooMany");
-    case "invalid_code":
-      return t("signin.errorInvalidCode");
-    case "expired":
-      return t("signin.errorExpired");
-    case "send_failed":
-      return t("signin.errorSendFailed");
-    case "user_paused":
-      return t("signin.errorUserPaused");
-    case "user_banned":
-      return t("signin.errorUserBanned");
-    case "username_not_found":
-      return t("signin.errorUsernameNotFound");
-    case "method_disabled":
-      return t("signin.errorMethodDisabled");
-    // Gate enforcement reasons. The backend throws these when a sign-in
-    // attempt fails the Application's signinGate. Without a friendly
-    // string here every host saw "Something went wrong" instead of the
-    // real reason.
-    case "gate_private_beta":
-      return tOrFallback(
-        t,
-        "signin.errorGatePrivateBeta",
-        "This app is in private beta. Ask the owner for an invite.",
-      );
-    case "gate_closed":
-      return tOrFallback(
-        t,
-        "signin.errorGateClosed",
-        "Sign-ups are closed. Only existing members can sign in.",
-      );
-    case "gate_blocked":
-      return tOrFallback(
-        t,
-        "signin.errorGateBlocked",
-        "Your account isn't approved for this app yet.",
-      );
-    // Account-state guards (lib/signin-account-state.ts).
-    case "user_deleted":
-      return tOrFallback(
-        t,
-        "signin.errorUserDeleted",
-        "This account was deleted. Contact support if you need it back.",
-      );
-    case "email_archived":
-      return tOrFallback(
-        t,
-        "signin.errorEmailArchived",
-        "This email was retired from sign-in. Use your current address.",
-      );
-    // Passkey sign-in outcomes. `unknown_credential` = the browser offered a
-    // passkey elvix has no record of (a stale credential left in the keychain
-    // by a device that no longer holds the server-side row). Give the recovery
-    // path instead of the useless generic "Something went wrong".
-    case "unknown_credential":
-      return tOrFallback(
-        t,
-        "signin.errorPasskeyUnknown",
-        "This passkey isn't registered with elvix. Sign in another way, then remove it and add a new one in Security settings.",
-      );
-    case "verify_failed":
-    case "not_verified":
-      return tOrFallback(
-        t,
-        "signin.errorPasskeyVerifyFailed",
-        "That passkey couldn't be verified. Sign in another way, then re-add it in Security settings.",
-      );
-    case "challenge_invalid":
-      return tOrFallback(
-        t,
-        "signin.errorPasskeyExpired",
-        "This passkey sign-in expired. Please try again.",
-      );
-    default:
-      return t("signin.errorGeneric");
-  }
-}
-
-/**
- * Translate-or-fallback wrapper. `useT()` returns the key itself when
- * the catalog is missing the translation, so we trap that case and
- * paint the bundled English string instead of leaking the raw key to
- * a customer. This lets the SDK ship new error codes ahead of the i18n
- * catalogs without surfacing `signin.errorGatePrivateBeta` to users.
- */
-function tOrFallback(t: Translator, key: string, fallback: string): string {
-  const out = t(key);
-  return out === key ? fallback : out;
-}
-
-/**
- * Default badge rendered under the heading when the Application's
- * signinGate is set to `private_beta` or `closed` and the host did
- * not supply its own `belowHeading`. Communicates the gate state to
- * the user before they pick a method.
- */
-function GateBadge({ gate, t }: { gate: string | undefined; t: Translator }) {
-  if (!gate || gate === "public") return null;
-  const isBeta = gate === "private_beta";
-  const label = isBeta
-    ? tOrFallback(t, "signin.gateBadgePrivateBeta", "Private beta · invite only")
-    : tOrFallback(t, "signin.gateBadgeClosed", "Sign-ups closed");
-  const bg = isBeta ? "rgba(46, 229, 168, 0.12)" : "rgba(220, 38, 38, 0.10)";
-  const dot = isBeta ? "#2EE5A8" : "#DC2626";
-  const color = isBeta ? "#0a8f63" : "#b91c1c";
-  return (
-    <span
-      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
-      style={{ background: bg, color }}
-    >
-      <span className="size-1.5 rounded-full" style={{ background: dot }} />
-      {label}
-    </span>
-  );
-}
-
-function formatRetry(t: Translator, seconds: number): string {
-  if (seconds < 60) return t("common.durationSeconds", { seconds });
-  const m = Math.ceil(seconds / 60);
-  return m === 1 ? t("common.durationOneMinute") : t("common.durationMinutes", { minutes: m });
-}
-
-/**
- * Build the `/api/auth/google/start` href for the static redirect-OAuth
- * anchor (the fallback used when GIS isn't active). For `intent="app"` the
- * cross-origin flow needs a `returnUrl` so elvix's callback can bounce the
- * user back to THIS page with the session token in the fragment — we use the
- * current page URL. elvix validates that origin against the app's
- * `allowedOrigins` and rejects anything unlisted, so this is safe to derive
- * from the live location. Non-app intents (account/console) are first-party
- * and need no returnUrl.
- */
-function googleStartHref(baseUrl: string, intent?: string, clientId?: string): string {
-  const params = new URLSearchParams({ intent: intent ?? "app" });
-  if (clientId) params.set("clientId", clientId);
-  if (intent === "app" && typeof window !== "undefined") {
-    params.set("returnUrl", window.location.href);
-  }
-  return `${baseUrl}/api/auth/google/start?${params.toString()}`;
-}
-
-function githubStartHref(baseUrl: string, intent?: string, clientId?: string): string {
-  const params = new URLSearchParams({ intent: intent ?? "app" });
-  if (clientId) params.set("clientId", clientId);
-  if (intent === "app" && typeof window !== "undefined") {
-    params.set("returnUrl", window.location.href);
-  }
-  return `${baseUrl}/api/auth/github/start?${params.toString()}`;
-}
-
-function defaultRedirect(intent?: string): string {
-  switch (intent) {
-    case "console":
-      return "/console";
-    case "account":
-      return "/account";
-    default:
-      return "/";
-  }
-}
-
-// State + label mapping for the onboarding username step's live availability
-// indicator. Reason codes mirror /api/onboarding/username/check.
-type UsernameCheckState =
-  | { kind: "idle" }
-  | { kind: "checking" }
-  | { kind: "available" }
-  | { kind: "rejected"; reason: string };
-
-function usernameReasonLabel(t: Translator, reason: string): string {
-  switch (reason) {
-    case "blank":
-      return t("username.reasonBlank");
-    case "too_short":
-      return t("username.reasonTooShort");
-    case "too_long":
-      return t("username.reasonTooLong");
-    case "only_numbers":
-      return t("username.reasonOnlyNumbers");
-    case "bad_start":
-      return t("username.reasonBadStart");
-    case "bad_chars":
-      return t("username.reasonBadChars");
-    case "consecutive_special":
-      return t("username.reasonConsecutiveSpecial");
-    case "trailing_special":
-      return t("username.reasonTrailingSpecial");
-    case "taken":
-      return t("username.reasonTaken");
-    default:
-      return t("username.reasonInvalid");
-  }
 }

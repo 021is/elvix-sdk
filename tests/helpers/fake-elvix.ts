@@ -39,7 +39,7 @@ export type FakeElvixState = {
   passkeys: { id: string; [k: string]: unknown }[];
 };
 
-const json = (body: unknown, status = 200) =>
+export const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
     headers: { "content-type": "application/json" },
@@ -106,8 +106,8 @@ export function stubColorScheme(scheme: "light" | "dark") {
   });
 }
 
-type Handler = (url: string, init?: RequestInit) => Response | Promise<Response>;
-type Route = [method: string, test: (url: string) => boolean, handler: Handler];
+export type Handler = (url: string, init?: RequestInit) => Response | Promise<Response>;
+export type Route = [method: string, test: (url: string) => boolean, handler: Handler];
 
 const idParam = (url: string) => new URL(url).searchParams.get("id");
 
@@ -203,7 +203,8 @@ function profileRoutes(state: FakeElvixState, patches: unknown[]): Route[] {
   ];
 }
 
-export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
+/** `extra` routes are tried first, for endpoints one test file owns. */
+export function installFakeElvix(initial: Partial<FakeElvixState> = {}, extra: Route[] = []) {
   const state: FakeElvixState = {
     bootstrap: {
       applicationId: "app_1",
@@ -275,6 +276,7 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
 
   // First match wins: [method or "*", url test, handler].
   const routes: Route[] = [
+    ...extra,
     [
       "*",
       (u) => u.includes("/api/v1/bootstrap/"),
