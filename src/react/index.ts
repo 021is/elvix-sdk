@@ -123,6 +123,15 @@ export {
   useUserScopes,
 } from "./hooks";
 export { ElvixLifecycleWatcher } from "./lifecycle-watcher";
+// Read-only profile: who is signed in, and labels for rendering them.
+export {
+  type ElvixLanguageName,
+  type ElvixSignedInUser,
+  ElvixUserStatus,
+  useElvixLanguageNames,
+  useElvixPronounsLabel,
+  useElvixUser,
+} from "./profile-hooks";
 // Cross-origin session token (stored by ElvixSignIn, sent as a bearer by every
 // SDK call when the app is embedded on its own origin).
 // `consumeElvixReturnToken` picks up the token elvix's Google redirect-callback

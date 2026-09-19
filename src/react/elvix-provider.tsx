@@ -125,6 +125,8 @@ type ElvixContextValue = {
    *  transition animations. Cascades from `<ElvixProvider animated>`
    *  to every consumer; per-component `animated` props still win. */
   animated: boolean;
+  /** The BCP-47 locale the SDK renders in (the provider's `locale`, else "en"). */
+  locale: string;
 };
 
 const ElvixContext = createContext<ElvixContextValue | null>(null);
@@ -301,7 +303,8 @@ export function ElvixProvider({
   // `switchLocale(...)` inside useCatalogLocale, and the next render sees the
   // new runtime in every nested `useT()`.
   const initialRuntime = useMemo(() => buildEnglishRuntime(), []);
-  useCatalogLocale(locale ?? DEFAULT_LOCALE, i18nBase);
+  const activeLocale = locale ?? DEFAULT_LOCALE;
+  useCatalogLocale(activeLocale, i18nBase);
 
   // Cross-origin Google redirect return: store `#elvix_token=<token>` and
   // strip it from the URL before anything else runs. No-op without one.
@@ -341,6 +344,7 @@ export function ElvixProvider({
       hostTheme: theme === "light" || theme === "dark" ? theme : null,
       brand: configuredBrand,
       animated,
+      locale: activeLocale,
     }),
     [
       clientId,
@@ -354,6 +358,7 @@ export function ElvixProvider({
       theme,
       configuredBrand,
       animated,
+      activeLocale,
     ],
   );
 
