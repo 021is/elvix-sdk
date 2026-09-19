@@ -13,6 +13,8 @@ import { defaultsFor } from "../../src/react/regions";
 
 export const BASE = "https://elvix.test";
 export const CLIENT_ID = "elvix_pub_test_abc";
+/** The code the fake's membership challenges accept. */
+export const VALID_CODE = "424242";
 
 type Media = {
   slug: string;
@@ -158,7 +160,25 @@ function profileRoutes(state: FakeElvixState, patches: unknown[]): Route[] {
     return json({ success: true, data: { region: state.region } });
   };
 
+  // The emailed code is always VALID_CODE; anything else costs an attempt.
+  let attemptsLeft = 3;
+  const challenge: Handler = () =>
+    json({
+      success: true,
+      data: { ok: true, challengeId: "ch_1", deliveredTo: "a***@example.test" },
+    });
+  const membership: Handler = (_url, init) => {
+    const body = bodyOf(init) as { action: string; code?: string };
+    if (body.code !== undefined && body.code !== VALID_CODE) {
+      attemptsLeft -= 1;
+      return json({ success: true, data: { ok: false, error: "wrong_code", attemptsLeft } }, 400);
+    }
+    return json({ success: true, data: { ok: true } });
+  };
+
   return [
+    ["POST", (u) => u.endsWith("/membership/challenge"), challenge],
+    ["POST", (u) => u.endsWith("/membership"), membership],
     ["*", (u) => u.includes("/api/account/profile/addresses"), addresses],
     ["*", (u) => u.includes("/api/account/profile/languages"), languages],
     ["*", (u) => u.includes("/api/account/profile/region"), region],

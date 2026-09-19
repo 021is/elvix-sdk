@@ -23,14 +23,18 @@ import { MaybeCard } from "./elvix-card";
 
 import { AnimatePresence } from "framer-motion";
 import { ArrowLeft, Eye, EyeOff, Loader2, RefreshCw } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useT } from "../locale/use-t";
 import { DonePane } from "./done-pane";
-import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
+import { useElvixApp, useElvixAppContext } from "./elvix-provider";
 import { ElvixSaveButton } from "./elvix-save-button";
 import { OtpInput } from "./otp-input";
-import { authInit } from "./session";
-import { unwrapEnvelope } from "./spine-fetch";
+import {
+  type ChallengeCopy,
+  ChallengedAction,
+  type MembershipOutcome,
+  useMembershipChallenge,
+} from "./use-membership-challenge";
 import { SlidePane } from "./wizard-panes";
 
 const State = {
@@ -71,7 +75,7 @@ function ElvixDeactivateImpl(props: {
   const appCtx = useElvixAppContext();
   const appId = props.appId ?? app?.clientId ?? "preview";
   const appName = props.appName ?? app?.appName ?? "your app";
-  const inactive = props.inactive ?? Boolean(appCtx?.membership?.inactiveAt) ?? false;
+  const inactive = props.inactive ?? Boolean(appCtx?.membership?.inactiveAt);
   const inactivatedBy = props.inactivatedBy ?? appCtx?.membership?.inactivatedBy ?? null;
   const { onSuccess, onFail, onResult } = props;
   return (
@@ -104,262 +108,98 @@ function ElvixDeactivateInner({
   onFail?: (error: string) => void;
   onResult?: (result: ElvixDeactivateResult) => void;
 }) {
-  const ctx = useElvixContext();
   const t = useT();
+  const challenge = useMembershipChallenge(appId, ChallengedAction.INACTIVATE, DEACTIVATE_COPY);
   const [isInactive, setIsInactive] = useState(inactive);
-  const [pane, setPane] = useState<Pane>(inactive ? "reactivate" : "warn1");
+  const [pane, setPane] = useState<Pane>(inactive ? Pane.REACTIVATE : Pane.WARN1);
   const [direction, setDirection] = useState<1 | -1>(1);
-  const [saving, setSaving] = useState(false);
-  const [serverError, setServerError] = useState<string | null>(null);
 
-  // OTP state
-  const [challengeId, setChallengeId] = useState<string | null>(null);
-  const [deliveredTo, setDeliveredTo] = useState<string | null>(null);
-  const [code, setCode] = useState("");
-  const [requesting, setRequesting] = useState(false);
-  const [attemptsLeft, setAttemptsLeft] = useState<number | null>(null);
-  const [resendIn, setResendIn] = useState(0);
-
-  // Countdown for the resend gate (30s).
-  useEffect(() => {
-    if (resendIn <= 0) return;
-    const t = setInterval(() => setResendIn((s) => Math.max(0, s - 1)), 1000);
-    return () => clearInterval(t);
-  }, [resendIn]);
-
-  function go(next: Pane, dir: 1 | -1 = 1) {
+  const go = (next: Pane, dir: 1 | -1 = 1) => {
     setDirection(dir);
     setPane(next);
-    setServerError(null);
-  }
+    challenge.clearError();
+  };
 
-  async function requestChallenge() {
-    setRequesting(true);
-    setServerError(null);
-    try {
-      const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/apps/${appId}/membership/challenge`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...auth.headers },
-        credentials: auth.credentials,
-        body: JSON.stringify({ kind: "inactivate" }),
-      });
-      const body = unwrapEnvelope(await res.json()) as {
-        ok: boolean;
-        error?: string;
-        challengeId?: string;
-        deliveredTo?: string;
-        retryAfterSeconds?: number;
-      };
-      if (!res.ok || !body.ok) {
-        // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-        if (body.error === "too_recent") {
-          setResendIn(body.retryAfterSeconds ?? 30);
-        }
-        setServerError(
-          body.error === "too_many"
-            ? t("deactivate.errorTooMany")
-            : body.error === "too_recent"
-              ? t("deactivate.errorTooRecent", { seconds: body.retryAfterSeconds ?? 30 })
-              : body.error === "send_failed"
-                ? t("deactivate.errorSendFailed")
-                : t("deactivate.errorRequestFailed"),
-        );
-        return false;
-      }
-      setChallengeId(body.challengeId ?? null);
-      setDeliveredTo(body.deliveredTo ?? null);
-      setCode("");
-      setAttemptsLeft(null);
-      setResendIn(30);
-      return true;
-    } catch {
-      setServerError(t("common.errorNetwork"));
-      return false;
-    } finally {
-      setRequesting(false);
+  /** Reports a write; on success the host's onSuccess, or the done pane. */
+  const settle = (out: MembershipOutcome | null, state: State) => {
+    if (!out) return;
+    if (!out.ok) {
+      if (out.fatal) onFail?.(out.message);
+      onResult?.({ ok: false, error: out.error, message: out.message });
+      return;
     }
-  }
+    setIsInactive(state === State.INACTIVE);
+    onResult?.({ ok: true, state });
+    onSuccess?.(state);
+    if (!onSuccess) go(Pane.DONE);
+  };
 
-  async function startOtpFlow() {
-    setDirection(1);
-    setPane("otp");
-    if (!challengeId) {
-      await requestChallenge();
-    }
-  }
-
-  async function verifyAndSubmit() {
-    if (saving || !challengeId || code.length !== 6) return;
-    setSaving(true);
-    setServerError(null);
-    try {
-      const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/apps/${appId}/membership`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...auth.headers },
-        credentials: auth.credentials,
-        body: JSON.stringify({ action: "inactivate", challengeId, code }),
-      });
-      const body = unwrapEnvelope(await res.json()) as {
-        ok: boolean;
-        error?: string;
-        attemptsLeft?: number;
-      };
-      if (!res.ok || !body.ok) {
-        if (body.error === "wrong_code") {
-          setAttemptsLeft(body.attemptsLeft ?? null);
-          setCode("");
-          setServerError(t("deactivate.errorWrongCode", { count: body.attemptsLeft ?? 0 }));
-        } else if (body.error === "challenge_locked") {
-          setServerError(t("deactivate.errorChallengeLocked"));
-          setChallengeId(null);
-          setCode("");
-        } else if (body.error === "challenge_expired") {
-          setServerError(t("deactivate.errorChallengeExpired"));
-          setChallengeId(null);
-          setCode("");
-        } else {
-          const msg = t("common.errorSaveFailed");
-          setServerError(msg);
-          onFail?.(msg);
-        }
-        onResult?.({
-          ok: false,
-          error: body.error ?? "save_failed",
-          message: serverError ?? t("common.errorSaveFailed"),
-        });
-        return;
-      }
-      setIsInactive(true);
-      onResult?.({ ok: true, state: "inactive" });
-      onSuccess?.("inactive");
-      if (!onSuccess) {
-        setDirection(1);
-        setPane("done");
-      }
-    } catch {
-      setServerError(t("common.errorNetwork"));
-      onResult?.({
-        ok: false,
-        error: "network_error",
-        message: t("common.errorNetwork"),
-      });
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  async function submitReactivate() {
-    if (saving) return;
-    setSaving(true);
-    setServerError(null);
-    try {
-      const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/apps/${appId}/membership`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...auth.headers },
-        credentials: auth.credentials,
-        body: JSON.stringify({ action: "reactivate" }),
-      });
-      const body = unwrapEnvelope(await res.json()) as { ok: boolean; error?: string };
-      if (!res.ok || !body.ok) {
-        const msg =
-          body.error === "deleted" ? t("deactivate.errorAlreadyLeft") : t("common.errorSaveFailed");
-        setServerError(msg);
-        onFail?.(msg);
-        onResult?.({
-          ok: false,
-          error: body.error ?? "save_failed",
-          message: msg,
-        });
-        return;
-      }
-      setIsInactive(false);
-      onResult?.({ ok: true, state: "active" });
-      onSuccess?.("active");
-      if (!onSuccess) {
-        setDirection(1);
-        setPane("done");
-      }
-    } catch {
-      const msg = t("common.errorNetwork");
-      setServerError(msg);
-      onFail?.(msg);
-      onResult?.({ ok: false, error: "network_error", message: msg });
-    } finally {
-      setSaving(false);
-    }
-  }
+  const reactivate = async () =>
+    settle(
+      await challenge.submit({ action: "reactivate" }, (reply) => ({
+        message: t(
+          reply.error === "deleted" ? "deactivate.errorAlreadyLeft" : "common.errorSaveFailed",
+        ),
+        fatal: true,
+      })),
+      State.ACTIVE,
+    );
 
   return (
     <div className="relative overflow-hidden">
       <AnimatePresence mode="wait" custom={direction}>
-        {pane === "warn1" && (
-          <SlidePane key="warn1" direction={direction}>
-            <Warn1Pane appName={appName} onContinue={() => go("warn2", 1)} />
-          </SlidePane>
-        )}
-        {pane === "warn2" && (
-          <SlidePane key="warn2" direction={direction}>
+        <SlidePane key={pane} direction={direction}>
+          {pane === Pane.WARN1 ? (
+            <Warn1Pane appName={appName} onContinue={() => go(Pane.WARN2)} />
+          ) : pane === Pane.WARN2 ? (
             <Warn2Pane
-              onBack={() => go("warn1", -1)}
+              onBack={() => go(Pane.WARN1, -1)}
               onContinue={() => {
-                void startOtpFlow();
+                go(Pane.OTP);
+                void challenge.start();
               }}
-              requesting={requesting}
+              requesting={challenge.requesting}
             />
-          </SlidePane>
-        )}
-        {pane === "otp" && (
-          <SlidePane key="otp" direction={direction}>
+          ) : pane === Pane.OTP ? (
             <OtpPane
-              appName={appName}
-              deliveredTo={deliveredTo}
-              code={code}
-              setCode={setCode}
-              saving={saving}
-              requesting={requesting}
-              serverError={serverError}
-              attemptsLeft={attemptsLeft}
-              resendIn={resendIn}
-              onBack={() => go("warn2", -1)}
-              onConfirm={verifyAndSubmit}
-              onResend={requestChallenge}
+              challenge={challenge}
+              onBack={() => go(Pane.WARN2, -1)}
+              onConfirm={async () => settle(await challenge.verify(), State.INACTIVE)}
               actionLabel={t("deactivate.confirmCta")}
             />
-          </SlidePane>
-        )}
-        {pane === "reactivate" && (
-          <SlidePane key="reactivate" direction={direction}>
+          ) : pane === Pane.REACTIVATE ? (
             <ReactivatePane
               appName={appName}
               inactivatedBy={inactivatedBy}
-              saving={saving}
-              serverError={serverError}
-              onConfirm={submitReactivate}
+              saving={challenge.saving}
+              serverError={challenge.error}
+              onConfirm={reactivate}
             />
-          </SlidePane>
-        )}
-        {pane === "done" && (
-          <SlidePane key="done" direction={direction}>
+          ) : (
             <DeactivateDonePane
               appName={appName}
-              kind={isInactive ? "deactivated" : "reactivated"}
+              kind={isInactive ? Kind.DEACTIVATED : Kind.REACTIVATED}
               onAgain={() => {
-                setChallengeId(null);
-                setCode("");
-                setResendIn(0);
-                setAttemptsLeft(null);
-                go(isInactive ? "reactivate" : "warn1", -1);
+                challenge.reset();
+                go(isInactive ? Pane.REACTIVATE : Pane.WARN1, -1);
               }}
             />
-          </SlidePane>
-        )}
+          )}
+        </SlidePane>
       </AnimatePresence>
     </div>
   );
 }
+
+const DEACTIVATE_COPY: ChallengeCopy = {
+  tooMany: "deactivate.errorTooMany",
+  tooRecent: "deactivate.errorTooRecent",
+  sendFailed: "deactivate.errorSendFailed",
+  requestFailed: "deactivate.errorRequestFailed",
+  wrongCode: "deactivate.errorWrongCode",
+  locked: "deactivate.errorChallengeLocked",
+  expired: "deactivate.errorChallengeExpired",
+};
 
 function Warn1Pane({ appName, onContinue }: { appName: string; onContinue: () => void }) {
   const t = useT();
@@ -530,36 +370,20 @@ function DeactivateDonePane({
   );
 }
 
+/** The code step of a membership challenge; shared with `<ElvixLeave>`. */
 export function OtpPane({
-  appName: _appName,
-  deliveredTo,
-  code,
-  setCode,
-  saving,
-  requesting,
-  serverError,
-  attemptsLeft: _attemptsLeft,
-  resendIn,
+  challenge,
   onBack,
   onConfirm,
-  onResend,
   actionLabel,
 }: {
-  appName: string;
-  deliveredTo: string | null;
-  code: string;
-  setCode: (v: string) => void;
-  saving: boolean;
-  requesting: boolean;
-  serverError: string | null;
-  attemptsLeft: number | null;
-  resendIn: number;
+  challenge: ReturnType<typeof useMembershipChallenge>;
   onBack: () => void;
   onConfirm: () => void;
-  onResend: () => Promise<boolean | undefined>;
   actionLabel: string;
 }) {
   const t = useT();
+  const { deliveredTo, code, setCode, saving, requesting, resendIn } = challenge;
   return (
     <form
       className="space-y-4"
@@ -590,7 +414,9 @@ export function OtpPane({
         </p>
       </div>
       <OtpInput value={code} onChange={setCode} disabled={saving} autoFocus />
-      {serverError ? <p className="text-[12px] text-red-500 leading-tight">{serverError}</p> : null}
+      {challenge.error ? (
+        <p className="text-[12px] text-red-500 leading-tight">{challenge.error}</p>
+      ) : null}
       <ElvixSaveButton
         state={saving ? "saving" : "idle"}
         disabled={saving || code.length !== 6}
@@ -603,7 +429,7 @@ export function OtpPane({
           type="button"
           onClick={() => {
             if (resendIn > 0 || requesting) return;
-            void onResend();
+            void challenge.request();
           }}
           disabled={resendIn > 0 || requesting || saving}
           className="inline-flex items-center gap-1 font-medium text-fg-2 hover:text-fg-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"

@@ -27,14 +27,18 @@ import { MaybeCard } from "./elvix-card";
 
 import { AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, Lock, LogOut, Trash2, Undo2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useT } from "../locale/use-t";
 import { DonePane } from "./done-pane";
 import { OtpPane } from "./elvix-deactivate";
-import { useElvixApp, useElvixAppContext, useElvixContext } from "./elvix-provider";
+import { useElvixApp, useElvixAppContext } from "./elvix-provider";
 import { ElvixSaveButton } from "./elvix-save-button";
-import { authInit } from "./session";
-import { unwrapEnvelope } from "./spine-fetch";
+import {
+  type ChallengeCopy,
+  ChallengedAction,
+  type MembershipOutcome,
+  useMembershipChallenge,
+} from "./use-membership-challenge";
 import { SlidePane } from "./wizard-panes";
 
 const State = {
@@ -118,270 +122,117 @@ function ElvixLeaveInner({
   onFail?: (error: string) => void;
   onResult?: (result: ElvixLeaveResult) => void;
 }) {
-  const ctx = useElvixContext();
   const t = useT();
+  const challenge = useMembershipChallenge(appId, ChallengedAction.LEAVE, LEAVE_COPY);
   const [localDeletedAt, setLocalDeletedAt] = useState<string | null>(deletedAt);
   const [localDeletedBy, setLocalDeletedBy] = useState<string | null>(deletedBy);
   const isDeleted = Boolean(localDeletedAt);
-  const isOwnerInitiated = isDeleted && localDeletedBy === "owner";
-
-  const ninetyDaysMs = 90 * 24 * 60 * 60 * 1000;
-  const daysLeft = localDeletedAt
-    ? Math.max(
-        0,
-        Math.ceil(
-          (new Date(localDeletedAt).getTime() + ninetyDaysMs - Date.now()) / (24 * 60 * 60 * 1000),
-        ),
-      )
-    : 0;
-
-  const [pane, setPane] = useState<Pane>(isDeleted ? "restore" : "warn1");
+  const daysLeft = localDeletedAt ? graceDaysLeft(localDeletedAt) : 0;
+  const [pane, setPane] = useState<Pane>(isDeleted ? Pane.RESTORE : Pane.WARN1);
   const [direction, setDirection] = useState<1 | -1>(1);
-  const [saving, setSaving] = useState(false);
-  const [serverError, setServerError] = useState<string | null>(null);
 
-  // OTP state
-  const [challengeId, setChallengeId] = useState<string | null>(null);
-  const [deliveredTo, setDeliveredTo] = useState<string | null>(null);
-  const [code, setCode] = useState("");
-  const [requesting, setRequesting] = useState(false);
-  const [attemptsLeft, setAttemptsLeft] = useState<number | null>(null);
-  const [resendIn, setResendIn] = useState(0);
-
-  useEffect(() => {
-    if (resendIn <= 0) return;
-    const t = setInterval(() => setResendIn((s) => Math.max(0, s - 1)), 1000);
-    return () => clearInterval(t);
-  }, [resendIn]);
-
-  function go(next: Pane, dir: 1 | -1 = 1) {
+  const go = (next: Pane, dir: 1 | -1 = 1) => {
     setDirection(dir);
     setPane(next);
-    setServerError(null);
-  }
+    challenge.clearError();
+  };
 
-  async function requestChallenge() {
-    setRequesting(true);
-    setServerError(null);
-    try {
-      const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/apps/${appId}/membership/challenge`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...auth.headers },
-        credentials: auth.credentials,
-        body: JSON.stringify({ kind: "leave" }),
-      });
-      const body = unwrapEnvelope(await res.json()) as {
-        ok: boolean;
-        error?: string;
-        challengeId?: string;
-        deliveredTo?: string;
-        retryAfterSeconds?: number;
-      };
-      if (!res.ok || !body.ok) {
-        // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-        if (body.error === "too_recent") setResendIn(body.retryAfterSeconds ?? 30);
-        setServerError(
-          body.error === "too_many"
-            ? t("leave.errorTooManyCodes")
-            : body.error === "too_recent"
-              ? t("leave.errorTooRecent", { seconds: body.retryAfterSeconds ?? 30 })
-              : body.error === "send_failed"
-                ? t("leave.errorSendFailed")
-                : t("leave.errorRequestFailed"),
-        );
-        return false;
-      }
-      setChallengeId(body.challengeId ?? null);
-      setDeliveredTo(body.deliveredTo ?? null);
-      setCode("");
-      setAttemptsLeft(null);
-      setResendIn(30);
-      return true;
-    } catch {
-      setServerError(t("common.errorNetwork"));
-      return false;
-    } finally {
-      setRequesting(false);
+  /** Reports a write; on success the host's onSuccess, or the done pane. */
+  const settle = (out: MembershipOutcome | null, state: State) => {
+    if (!out) return;
+    if (!out.ok) {
+      if (out.fatal) onFail?.(out.message);
+      onResult?.({ ok: false, error: out.error, message: out.message });
+      return;
     }
-  }
+    setLocalDeletedAt(state === State.LEFT ? new Date().toISOString() : null);
+    setLocalDeletedBy(state === State.LEFT ? "user" : null);
+    onResult?.({ ok: true, state });
+    onSuccess?.(state);
+    if (!onSuccess) go(Pane.DONE);
+  };
 
-  async function startOtpFlow() {
-    setDirection(1);
-    setPane("otp");
-    if (!challengeId) await requestChallenge();
-  }
+  const restore = async () =>
+    settle(
+      await challenge.submit(
+        { action: "restore" },
+        (reply) => ({
+          message: t(RESTORE_ERRORS[reply.error ?? ""] ?? "leave.errorRestoreFailed"),
+          fatal: true,
+        }),
+        "restore_failed",
+      ),
+      State.RESTORED,
+    );
 
-  async function verifyAndLeave() {
-    if (saving || !challengeId || code.length !== 6) return;
-    setSaving(true);
-    setServerError(null);
-    try {
-      const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/apps/${appId}/membership`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...auth.headers },
-        credentials: auth.credentials,
-        body: JSON.stringify({ action: "leave", challengeId, code }),
-      });
-      const body = unwrapEnvelope(await res.json()) as {
-        ok: boolean;
-        error?: string;
-        attemptsLeft?: number;
-      };
-      if (!res.ok || !body.ok) {
-        if (body.error === "wrong_code") {
-          setAttemptsLeft(body.attemptsLeft ?? null);
-          setCode("");
-          setServerError(t("leave.errorWrongCode", { count: body.attemptsLeft ?? 0 }));
-        } else if (body.error === "challenge_locked") {
-          setServerError(t("leave.errorChallengeLocked"));
-          setChallengeId(null);
-          setCode("");
-        } else if (body.error === "challenge_expired") {
-          setServerError(t("leave.errorChallengeExpired"));
-          setChallengeId(null);
-          setCode("");
-        } else {
-          const msg = t("common.errorSaveFailed");
-          setServerError(msg);
-          onFail?.(msg);
-        }
-        onResult?.({
-          ok: false,
-          error: body.error ?? "save_failed",
-          message: serverError ?? t("common.errorSaveFailed"),
-        });
-        return;
-      }
-      setLocalDeletedAt(new Date().toISOString());
-      setLocalDeletedBy("user");
-      onResult?.({ ok: true, state: "left" });
-      onSuccess?.("left");
-      if (!onSuccess) {
-        setDirection(1);
-        setPane("done");
-      }
-    } catch {
-      setServerError(t("common.errorNetwork"));
-      onResult?.({
-        ok: false,
-        error: "network_error",
-        message: t("common.errorNetwork"),
-      });
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  async function submitRestore() {
-    if (saving) return;
-    setSaving(true);
-    setServerError(null);
-    try {
-      const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/apps/${appId}/membership`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...auth.headers },
-        credentials: auth.credentials,
-        body: JSON.stringify({ action: "restore" }),
-      });
-      const body = unwrapEnvelope(await res.json()) as { ok: boolean; error?: string };
-      if (!res.ok || !body.ok) {
-        const msg =
-          body.error === "owner_initiated"
-            ? t("leave.errorOwnerInitiated")
-            : body.error === "grace_expired"
-              ? t("leave.errorGraceExpired")
-              : t("leave.errorRestoreFailed");
-        setServerError(msg);
-        onFail?.(msg);
-        onResult?.({ ok: false, error: body.error ?? "restore_failed", message: msg });
-        return;
-      }
-      setLocalDeletedAt(null);
-      setLocalDeletedBy(null);
-      onResult?.({ ok: true, state: "restored" });
-      onSuccess?.("restored");
-      if (!onSuccess) {
-        setDirection(1);
-        setPane("done");
-      }
-    } catch {
-      const msg = t("common.errorNetwork");
-      setServerError(msg);
-      onFail?.(msg);
-      onResult?.({ ok: false, error: "network_error", message: msg });
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  if (isOwnerInitiated && localDeletedAt && pane !== "done") {
+  // An app owner removed this user: only the owner can undo it.
+  if (isDeleted && localDeletedBy === "owner" && localDeletedAt && pane !== Pane.DONE) {
     return <OwnerLockedPane appName={appName} deletedAt={localDeletedAt} daysLeft={daysLeft} />;
   }
 
   return (
     <div className="relative overflow-hidden">
       <AnimatePresence mode="wait" custom={direction}>
-        {pane === "warn1" && (
-          <SlidePane key="warn1" direction={direction}>
-            <LeaveWarn1Pane appName={appName} onContinue={() => go("warn2", 1)} />
-          </SlidePane>
-        )}
-        {pane === "warn2" && (
-          <SlidePane key="warn2" direction={direction}>
+        <SlidePane key={pane} direction={direction}>
+          {pane === Pane.WARN1 ? (
+            <LeaveWarn1Pane appName={appName} onContinue={() => go(Pane.WARN2)} />
+          ) : pane === Pane.WARN2 ? (
             <LeaveWarn2Pane
               appName={appName}
               privacyPolicyUrl={privacyPolicyUrl}
               termsOfServiceUrl={termsOfServiceUrl}
-              requesting={requesting}
-              onBack={() => go("warn1", -1)}
+              requesting={challenge.requesting}
+              onBack={() => go(Pane.WARN1, -1)}
               onContinue={() => {
-                void startOtpFlow();
+                go(Pane.OTP);
+                void challenge.start();
               }}
             />
-          </SlidePane>
-        )}
-        {pane === "otp" && (
-          <SlidePane key="otp" direction={direction}>
+          ) : pane === Pane.OTP ? (
             <OtpPane
-              appName={appName}
-              deliveredTo={deliveredTo}
-              code={code}
-              setCode={setCode}
-              saving={saving}
-              requesting={requesting}
-              serverError={serverError}
-              attemptsLeft={attemptsLeft}
-              resendIn={resendIn}
-              onBack={() => go("warn2", -1)}
-              onConfirm={verifyAndLeave}
-              onResend={requestChallenge}
+              challenge={challenge}
+              onBack={() => go(Pane.WARN2, -1)}
+              onConfirm={async () => settle(await challenge.verify(), State.LEFT)}
               actionLabel={t("leave.otpActionLabel", { app: appName })}
             />
-          </SlidePane>
-        )}
-        {pane === "restore" && (
-          <SlidePane key="restore" direction={direction}>
+          ) : pane === Pane.RESTORE ? (
             <RestorePane
               appName={appName}
               daysLeft={daysLeft}
-              saving={saving}
-              serverError={serverError}
-              onConfirm={submitRestore}
+              saving={challenge.saving}
+              serverError={challenge.error}
+              onConfirm={restore}
             />
-          </SlidePane>
-        )}
-        {pane === "done" && (
-          <SlidePane key="done" direction={direction}>
-            <LeaveDonePane appName={appName} kind={isDeleted ? "left" : "restored"} />
-          </SlidePane>
-        )}
+          ) : (
+            <LeaveDonePane appName={appName} kind={isDeleted ? State.LEFT : State.RESTORED} />
+          )}
+        </SlidePane>
       </AnimatePresence>
     </div>
   );
+}
+
+const LEAVE_COPY: ChallengeCopy = {
+  tooMany: "leave.errorTooManyCodes",
+  tooRecent: "leave.errorTooRecent",
+  sendFailed: "leave.errorSendFailed",
+  requestFailed: "leave.errorRequestFailed",
+  wrongCode: "leave.errorWrongCode",
+  locked: "leave.errorChallengeLocked",
+  expired: "leave.errorChallengeExpired",
+};
+
+const RESTORE_ERRORS: Record<string, string> = {
+  owner_initiated: "leave.errorOwnerInitiated",
+  grace_expired: "leave.errorGraceExpired",
+};
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+/** A left membership can be restored for 90 days. */
+const GRACE_MS = 90 * DAY_MS;
+
+function graceDaysLeft(deletedAt: string): number {
+  return Math.max(0, Math.ceil((new Date(deletedAt).getTime() + GRACE_MS - Date.now()) / DAY_MS));
 }
 
 function LeaveWarn1Pane({ appName, onContinue }: { appName: string; onContinue: () => void }) {
