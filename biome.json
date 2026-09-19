@@ -81,7 +81,6 @@
   "overrides": [
     {
       "includes": [
-        "src/react/elvix-app-passkeys.tsx",
         "src/react/elvix-legal-entities.tsx",
         "src/react/elvix-sign-in-form.tsx",
         "src/react/legal-entity-wizard-views.tsx"

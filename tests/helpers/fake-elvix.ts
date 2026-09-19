@@ -35,6 +35,7 @@ export type FakeElvixState = {
   languages: { id: string; code: string; level: string }[];
   /** `null` = the user has not set a region yet. */
   region: Record<string, unknown> | null;
+  passkeys: { id: string; [k: string]: unknown }[];
 };
 
 const json = (body: unknown, status = 200) =>
@@ -176,7 +177,17 @@ function profileRoutes(state: FakeElvixState, patches: unknown[]): Route[] {
     return json({ success: true, data: { ok: true } });
   };
 
+  const passkeys: Handler = (url, init) => {
+    if (init?.method === "DELETE") {
+      const id = new URL(url).searchParams.get("passkeyId");
+      state.passkeys = state.passkeys.filter((p) => p.id !== id);
+      return json({ success: true, data: { ok: true } });
+    }
+    return json({ success: true, data: { ok: true, passkeys: state.passkeys } });
+  };
+
   return [
+    ["*", (u) => /\/api\/account\/apps\/[^/]+\/passkeys/.test(u), passkeys],
     ["POST", (u) => u.endsWith("/membership/challenge"), challenge],
     ["POST", (u) => u.endsWith("/membership"), membership],
     ["*", (u) => u.includes("/api/account/profile/addresses"), addresses],
@@ -206,6 +217,7 @@ export function installFakeElvix(initial: Partial<FakeElvixState> = {}) {
     addresses: [],
     languages: [],
     region: null,
+    passkeys: [],
     ...initial,
   };
   const held: (() => void)[] = [];

@@ -25,28 +25,15 @@ import { MaybeCard } from "./elvix-card";
  */
 
 import { Fingerprint, KeyRound, Loader2, Plus, Trash2 } from "lucide-react";
-import { type ReactNode, useCallback, useEffect, useState } from "react";
-import { useElvixApp, useElvixContext } from "./elvix-provider";
-import { runPasskeyRegister } from "./passkey";
-import { authInit } from "./session";
-import { unwrapEnvelope } from "./spine-fetch";
+import type { ReactNode } from "react";
+import { useElvixApp } from "./elvix-provider";
+import {
+  type ElvixAppPasskey,
+  type ElvixAppPasskeysResult,
+  useAppPasskeys,
+} from "./use-app-passkeys";
 
-export type ElvixAppPasskey = {
-  id: string;
-  nickname: string | null;
-  deviceType: string;
-  backedUp: boolean;
-  transports: string[];
-  aaguid: string | null;
-  createdUserAgent: string | null;
-  lastUsedAt: string | null;
-  createdAt: string;
-};
-
-export type ElvixAppPasskeysResult =
-  | { ok: true; kind: "added" }
-  | { ok: true; kind: "removed"; passkeyId: string }
-  | { ok: false; error: string; message?: string };
+export type { ElvixAppPasskey, ElvixAppPasskeysResult };
 
 function ElvixAppPasskeysImpl({
   appId,
@@ -63,109 +50,15 @@ function ElvixAppPasskeysImpl({
   onAdded?: () => void;
   onRemoved?: (passkeyId: string) => void;
 }) {
-  const ctx = useElvixContext();
   const app = useElvixApp();
-
   const resolvedAppId = appId ?? app?.applicationId ?? null;
   const appName = appNameProp ?? app?.appName ?? "this app";
-
-  const [rows, setRows] = useState<ElvixAppPasskey[] | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [removingId, setRemovingId] = useState<string | null>(null);
-
-  const fetchList = useCallback(async () => {
-    if (!resolvedAppId) return;
-    setError(null);
-    try {
-      const init = authInit();
-      const res = await fetch(
-        `${ctx.baseUrl}/api/account/apps/${encodeURIComponent(resolvedAppId)}/passkeys`,
-        {
-          headers: { accept: "application/json", ...init.headers },
-          credentials: init.credentials,
-        },
-      );
-      const body = unwrapEnvelope(await res.json().catch(() => ({}))) as {
-        ok?: boolean;
-        passkeys?: ElvixAppPasskey[];
-        error?: string;
-      };
-      if (!res.ok || !body.ok) {
-        setError(body.error ?? "Couldn't load passkeys.");
-        setRows([]);
-        return;
-      }
-      setRows(body.passkeys ?? []);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Network error.");
-      setRows([]);
-    }
-  }, [ctx.baseUrl, resolvedAppId]);
-
-  useEffect(() => {
-    void fetchList();
-  }, [fetchList]);
-
-  const onAdd = useCallback(async () => {
-    if (!resolvedAppId || busy) return;
-    setBusy(true);
-    setError(null);
-    try {
-      const result = await runPasskeyRegister(ctx.baseUrl, "account", resolvedAppId);
-      if (!result.ok) {
-        if (result.error !== "passkey_cancelled") {
-          setError(result.message ?? friendlyError(result.error));
-        }
-        onResult?.({ ok: false, error: result.error, message: result.message });
-        return;
-      }
-      onResult?.({ ok: true, kind: "added" });
-      onAdded?.();
-      await fetchList();
-    } finally {
-      setBusy(false);
-    }
-  }, [busy, ctx.baseUrl, fetchList, onAdded, onResult, resolvedAppId]);
-
-  const onRemove = useCallback(
-    async (passkeyId: string) => {
-      if (!resolvedAppId || removingId) return;
-      setRemovingId(passkeyId);
-      setError(null);
-      try {
-        const init = authInit();
-        const res = await fetch(
-          `${ctx.baseUrl}/api/account/apps/${encodeURIComponent(resolvedAppId)}/passkeys?passkeyId=${encodeURIComponent(passkeyId)}`,
-          {
-            method: "DELETE",
-            headers: { accept: "application/json", ...init.headers },
-            credentials: init.credentials,
-          },
-        );
-        const body = unwrapEnvelope(await res.json().catch(() => ({}))) as {
-          ok?: boolean;
-          error?: string;
-        };
-        if (!res.ok || !body.ok) {
-          const err = body.error ?? "remove_failed";
-          setError(friendlyError(err));
-          onResult?.({ ok: false, error: err });
-          return;
-        }
-        onResult?.({ ok: true, kind: "removed", passkeyId });
-        onRemoved?.(passkeyId);
-        await fetchList();
-      } catch (e) {
-        const msg = e instanceof Error ? e.message : "Network error.";
-        setError(msg);
-        onResult?.({ ok: false, error: "remove_failed", message: msg });
-      } finally {
-        setRemovingId(null);
-      }
-    },
-    [ctx.baseUrl, fetchList, onRemoved, onResult, removingId, resolvedAppId],
-  );
+  const { rows, busy, error, removingId, add, remove } = useAppPasskeys({
+    appId: resolvedAppId,
+    onResult,
+    onAdded,
+    onRemoved,
+  });
 
   if (!resolvedAppId) {
     return (
@@ -242,7 +135,7 @@ function ElvixAppPasskeysImpl({
               key={row.id}
               row={row}
               removing={removingId === row.id}
-              onRemove={() => onRemove(row.id)}
+              onRemove={() => void remove(row.id)}
             />
           ))}
         </ul>
@@ -250,7 +143,7 @@ function ElvixAppPasskeysImpl({
 
       <button
         type="button"
-        onClick={onAdd}
+        onClick={() => void add()}
         disabled={busy}
         data-elvix-action="add-app-passkey"
         style={{
@@ -291,7 +184,7 @@ function ElvixAppPasskeysImpl({
             color: "var(--elvix-danger, #dc2626)",
           }}
         >
-          {error}
+          {friendlyError(error)}
         </p>
       )}
     </div>
@@ -411,7 +304,9 @@ function shortDate(iso: string): string {
   }
 }
 
+/** Words an error code; a ceremony's own message passes through as is. */
 function friendlyError(code: string): string {
+  if (code === "load_failed") return "Couldn't load passkeys.";
   if (code === "not_a_member") return "You're not a member of this app.";
   if (code === "method_disabled") return "Passkeys are disabled for this app.";
   if (code === "app_not_found") return "App not found.";
