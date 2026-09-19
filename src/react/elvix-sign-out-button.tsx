@@ -3,6 +3,8 @@
 import { Loader2, LogOut } from "lucide-react";
 import type * as React from "react";
 import type { ReactNode } from "react";
+import { cssLength } from "./css-length";
+import { useElvixBrandPair, useElvixResolvedTheme } from "./elvix-provider";
 import { useSignOut } from "./use-sign-out";
 
 const Size = {
@@ -316,150 +318,144 @@ export function ElvixSignOutButton({
   onResult,
 }: ElvixSignOutButtonProps) {
   const { run: doSignOut, busy } = useSignOut({ redirectAfterSignOut, cookieName });
+  const { fill, onFill } = useBrandFill({ tone, variant, theme, brandColor, onBrandColor });
 
   const isIconOnly = type === "icon";
-  const resolvedLabel = label ?? PRESET_LABEL[preset];
-
-  const iconPx = ICON_SIZE[size];
-  const variantClass = PALETTE[tone][variant][theme];
-  const sizeClass = isIconOnly ? SIZE_ICON[size] : SIZE_STANDARD[size];
-
-  const effectiveShape: ElvixSignOutShape = isIconOnly
-    ? shape === "pill" || shape === "circle"
-      ? "circle"
-      : "square"
-    : shape;
-
-  const useBrandOverride = brandColor && tone === "brand" && variant === "filled";
-
-  const cls = [
-    "inline-flex items-center font-medium select-none transition",
-    ALIGN_CLASS[align],
-    "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
-    tone === "destructive"
-      ? "focus-visible:ring-[#dc2626]/60"
-      : tone === "brand"
-        ? "focus-visible:ring-[#8e7dff]/60"
-        : "focus-visible:ring-black/30",
-    "disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer",
-    borderRadius !== undefined ? "" : SHAPE_CLASS[effectiveShape],
-    sizeClass,
-    useBrandOverride ? "" : variantClass,
-    className ?? "",
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .trim();
-
-  const resolvedOnBrand = onBrandColor ?? "#ffffff";
-  const inlineStyle: React.CSSProperties = {
-    ...(fontSize !== undefined
-      ? { fontSize: typeof fontSize === "number" ? `${fontSize}px` : fontSize }
-      : {}),
-    ...(borderRadius !== undefined
-      ? { borderRadius: typeof borderRadius === "number" ? `${borderRadius}px` : borderRadius }
-      : {}),
-    ...(useBrandOverride && brandColor
-      ? { backgroundColor: brandColor, color: resolvedOnBrand }
-      : {}),
-  };
-
-  async function handleClick() {
-    const result = await doSignOut();
-    onResult?.(result);
-  }
-
-  const isBusy = busy;
-
-  // Swap the leading glyph for an animated spinner while the sign-out
-  // is in flight so the click reads as ack'd immediately instead of
-  // looking dead until navigation happens.
-  const iconNode = isBusy ? (
-    <Loader2 size={iconPx} strokeWidth={2} className="animate-spin" aria-hidden />
-  ) : showIcon ? (
-    (icon?.(iconPx) ?? <LogOut size={iconPx} strokeWidth={2} aria-hidden />)
-  ) : null;
-
-  const liveLabel = isBusy ? "Signing out…" : resolvedLabel;
+  const handleClick = async () => onResult?.(await doSignOut());
+  const iconNode = <SignOutGlyph busy={busy} show={showIcon} icon={icon} px={ICON_SIZE[size]} />;
+  const liveLabel = busy ? "Signing out…" : (label ?? PRESET_LABEL[preset]);
 
   // Headless: the host owns the element; we just hand over `signOut` + `busy`.
   if (typeof children === "function") {
-    return <>{children({ signOut: () => void handleClick(), busy: isBusy })}</>;
+    return <>{children({ signOut: () => void handleClick(), busy })}</>;
   }
 
-  // Menu item — a full-width dropdown row (account menus). Hardcoded colours +
-  // `dark:` variants so it reads on any host page without the SDK theme vars.
-  if (as === "menuitem") {
-    const menuCls = [
-      "w-full inline-flex items-center gap-2.5 px-3 h-10 rounded-md text-[14px] font-medium text-left transition cursor-pointer",
-      "hover:bg-black/[0.05] dark:hover:bg-white/[0.06] disabled:opacity-60 disabled:cursor-not-allowed",
-      tone === "destructive"
-        ? "text-[#b91c1c] dark:text-[#fca5a5] hover:bg-[#dc2626]/[0.06] dark:hover:bg-[#fca5a5]/[0.10]"
-        : "text-[#0a0a0b] dark:text-white",
-      className ?? "",
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .trim();
+  // Menu item (account menus) and link (footers / settings rows) use
+  // hardcoded colours + `dark:` variants so they read on any host page
+  // without the SDK theme vars.
+  if (as === "menuitem" || as === "link") {
+    const menu = as === "menuitem";
     return (
       <button
         type="button"
-        role="menuitem"
+        role={menu ? "menuitem" : undefined}
         onClick={handleClick}
-        disabled={isBusy}
-        aria-busy={isBusy || undefined}
-        className={menuCls}
+        disabled={busy}
+        aria-busy={busy || undefined}
+        className={joinClasses(
+          menu ? MENU_BASE : LINK_BASE,
+          (menu ? MENU_TONE : LINK_TONE)[tone],
+          className,
+        )}
       >
-        {iconNode}
+        {menu || showIcon ? iconNode : null}
         <span>{liveLabel}</span>
       </button>
     );
   }
 
-  // Link — inline text link (footers / settings rows).
-  if (as === "link") {
-    const linkCls = [
-      "inline-flex items-center gap-1.5 text-[14px] font-medium underline-offset-4 hover:underline transition cursor-pointer",
-      "disabled:opacity-60 disabled:cursor-not-allowed disabled:no-underline",
-      tone === "destructive"
-        ? "text-[#b91c1c] dark:text-[#fca5a5]"
-        : tone === "brand"
-          ? "text-[#6c5ce7] dark:text-[#a59cff]"
-          : "text-[#0a0a0b] dark:text-white",
-      className ?? "",
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .trim();
-    return (
-      <button
-        type="button"
-        onClick={handleClick}
-        disabled={isBusy}
-        aria-busy={isBusy || undefined}
-        className={linkCls}
-      >
-        {showIcon ? iconNode : null}
-        <span>{liveLabel}</span>
-      </button>
-    );
-  }
+  const style: React.CSSProperties = {
+    fontSize: cssLength(fontSize, undefined),
+    borderRadius: cssLength(borderRadius, undefined),
+    ...(fill ? { backgroundColor: fill, color: onFill } : {}),
+  };
 
   return (
     <button
       type="button"
       onClick={handleClick}
-      disabled={isBusy}
-      className={cls}
-      style={inlineStyle}
+      disabled={busy}
+      className={joinClasses(
+        BUTTON_BASE,
+        ALIGN_CLASS[align],
+        FOCUS_RING[tone],
+        borderRadius === undefined && SHAPE_CLASS[isIconOnly ? iconShape(shape) : shape],
+        isIconOnly ? SIZE_ICON[size] : SIZE_STANDARD[size],
+        !fill && PALETTE[tone][variant][theme],
+        className,
+      )}
+      style={style}
       aria-label={isIconOnly ? liveLabel : undefined}
-      aria-busy={isBusy || undefined}
+      aria-busy={busy || undefined}
     >
       {iconNode}
       {isIconOnly ? null : <span>{liveLabel}</span>}
     </button>
   );
 }
+
+/** The leading glyph, swapped for a spinner while the sign-out is in flight
+ *  so the click reads as ack'd instead of looking dead until navigation. */
+function SignOutGlyph({
+  busy,
+  show,
+  icon,
+  px,
+}: {
+  busy: boolean;
+  show: boolean;
+  icon: ElvixSignOutButtonProps["icon"];
+  px: number;
+}) {
+  if (busy) return <Loader2 size={px} strokeWidth={2} className="animate-spin" aria-hidden />;
+  if (!show) return null;
+  return icon?.(px) ?? <LogOut size={px} strokeWidth={2} aria-hidden />;
+}
+
+/** The brand fill for tone="brand" + variant="filled": an explicit colour,
+ *  else the provider / Console brand for this theme (the same default as
+ *  <ElvixSignInButton>). Other tones and variants paint from the palette. */
+function useBrandFill(p: {
+  tone: ElvixSignOutTone;
+  variant: ElvixSignOutButtonProps["variant"];
+  theme: ElvixSignOutButtonProps["theme"];
+  brandColor?: string;
+  onBrandColor?: string;
+}): { fill: string | undefined; onFill: string } {
+  const providerTheme = useElvixResolvedTheme();
+  const pair = useElvixBrandPair(
+    p.theme === "light" || p.theme === "dark" ? p.theme : (providerTheme ?? "light"),
+  );
+  const fill =
+    p.tone === "brand" && p.variant === "filled" ? (p.brandColor ?? pair?.primary) : undefined;
+  const onFill = p.onBrandColor ?? (p.brandColor ? undefined : pair?.on) ?? "#ffffff";
+  return { fill, onFill };
+}
+
+const joinClasses = (...parts: (string | false | null | undefined)[]) =>
+  parts.filter(Boolean).join(" ").trim();
+
+/** An icon-only button is round or square, whatever shape was asked for. */
+const iconShape = (shape: ElvixSignOutShape): ElvixSignOutShape =>
+  shape === "pill" || shape === "circle" ? "circle" : "square";
+
+const BUTTON_BASE =
+  "inline-flex items-center font-medium select-none transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer";
+
+const FOCUS_RING: Record<ElvixSignOutTone, string> = {
+  neutral: "focus-visible:ring-black/30",
+  brand: "focus-visible:ring-[#8e7dff]/60",
+  destructive: "focus-visible:ring-[#dc2626]/60",
+};
+
+const MENU_BASE =
+  "w-full inline-flex items-center gap-2.5 px-3 h-10 rounded-md text-[14px] font-medium text-left transition cursor-pointer hover:bg-black/[0.05] dark:hover:bg-white/[0.06] disabled:opacity-60 disabled:cursor-not-allowed";
+
+const MENU_TONE: Record<ElvixSignOutTone, string> = {
+  neutral: "text-[#0a0a0b] dark:text-white",
+  brand: "text-[#0a0a0b] dark:text-white",
+  destructive:
+    "text-[#b91c1c] dark:text-[#fca5a5] hover:bg-[#dc2626]/[0.06] dark:hover:bg-[#fca5a5]/[0.10]",
+};
+
+const LINK_BASE =
+  "inline-flex items-center gap-1.5 text-[14px] font-medium underline-offset-4 hover:underline transition cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:no-underline";
+
+const LINK_TONE: Record<ElvixSignOutTone, string> = {
+  neutral: "text-[#0a0a0b] dark:text-white",
+  brand: "text-[#6c5ce7] dark:text-[#a59cff]",
+  destructive: "text-[#b91c1c] dark:text-[#fca5a5]",
+};
 
 /**
  * `<ElvixSignOutMenuItem>` — the sign-out action as a dropdown/account-menu

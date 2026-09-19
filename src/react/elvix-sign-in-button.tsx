@@ -1,6 +1,7 @@
 "use client";
 
 import { type CSSProperties, useState } from "react";
+import { cssLength } from "./css-length";
 import { useElvixBrandPair, useElvixResolvedTheme } from "./elvix-provider";
 import { ElvixShield } from "./elvix-shield";
 import { ElvixSignInForm as ElvixSignIn } from "./elvix-sign-in-form";
@@ -153,10 +154,6 @@ const JUSTIFY: Record<ElvixSignInButtonAlign, CSSProperties["justifyContent"]> =
   center: "center",
   right: "flex-end",
 };
-
-/** A number is px; a string is any CSS length; undefined takes the preset. */
-const cssLength = (value: number | string | undefined, preset: number | string) =>
-  value === undefined ? preset : typeof value === "number" ? `${value}px` : value;
 
 /** An icon-only button is round or square, whatever shape was asked for. */
 const iconShape = (shape: ElvixSignInButtonShape): ElvixSignInButtonShape =>
