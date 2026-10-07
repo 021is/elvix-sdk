@@ -7,13 +7,13 @@
  * other editors each spelled their own `pt-3` row. Every editor now renders
  * `<ElvixSaveRow>`, whose gap is `SAVE_ROW_GAP`, defined once.
  */
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
-import { readFileSync, readdirSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ElvixIdentityForm, ElvixProvider } from "../src/react/index";
 import { SAVE_ROW_GAP } from "../src/react/elvix-save-button";
+import { ElvixIdentityForm, ElvixProvider } from "../src/react/index";
 import { BASE, CLIENT_ID, installFakeElvix } from "./helpers/fake-elvix";
 
 function Provider({ children }: { children: ReactNode }) {
