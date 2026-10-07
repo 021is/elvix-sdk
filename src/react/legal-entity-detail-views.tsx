@@ -13,7 +13,7 @@ import { Plus, Star, Trash2 } from "lucide-react";
 
 import { useT } from "../locale/use-t";
 import { findCountry } from "./countries";
-import { ElvixSaveButton } from "./elvix-save-button";
+import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { formatIsoDate, humanType, renderNationality } from "./legal-entity-copy";
 import {
   DetailRow,
@@ -397,25 +397,26 @@ export function DeleteConfirmView({
           {t("legalEntities.deleteError", { error })}
         </div>
       )}
-      <div className="mt-auto flex items-center gap-2 pt-3">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
-        >
-          {t("common.cancel")}
-        </button>
-        <div className="ml-auto">
+      <ElvixSaveRow
+        leading={
           <button
             type="button"
-            onClick={onConfirm}
-            className="inline-flex h-10 items-center gap-1.5 rounded-[10px] bg-red-600 px-5 text-[14px] font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_2px_3px_-1px_rgba(0,0,0,0.18),0_0_0_1px_rgba(25,28,33,0.08)] transition hover:bg-red-700 active:scale-[0.985] cursor-pointer"
+            onClick={onCancel}
+            className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
           >
-            <Trash2 className="size-4" />
-            {t("legalEntities.yesDelete")}
+            {t("common.cancel")}
           </button>
-        </div>
-      </div>
+        }
+      >
+        <button
+          type="button"
+          onClick={onConfirm}
+          className="inline-flex h-10 items-center gap-1.5 rounded-[10px] bg-red-600 px-5 text-[14px] font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_2px_3px_-1px_rgba(0,0,0,0.18),0_0_0_1px_rgba(25,28,33,0.08)] transition hover:bg-red-700 active:scale-[0.985] cursor-pointer"
+        >
+          <Trash2 className="size-4" />
+          {t("legalEntities.yesDelete")}
+        </button>
+      </ElvixSaveRow>
     </div>
   );
 }
@@ -480,25 +481,26 @@ export function DefaultConfirmView({
           {t("legalEntities.saveError", { error })}
         </div>
       )}
-      <div className="mt-auto flex items-center gap-2 pt-3">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
-        >
-          {t("common.cancel")}
-        </button>
-        <div className="ml-auto">
-          <ElvixSaveButton
-            state="idle"
-            onClick={onConfirm}
-            label={verb}
-            savedLabel={verb}
-            hint={null}
-            className="!w-auto !px-5"
-          />
-        </div>
-      </div>
+      <ElvixSaveRow
+        leading={
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
+          >
+            {t("common.cancel")}
+          </button>
+        }
+      >
+        <ElvixSaveButton
+          state="idle"
+          onClick={onConfirm}
+          label={verb}
+          savedLabel={verb}
+          hint={null}
+          className="!w-auto !px-5"
+        />
+      </ElvixSaveRow>
     </div>
   );
 }
