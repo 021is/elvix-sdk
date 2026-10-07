@@ -37,7 +37,7 @@ import { ElvixChipGroup } from "./elvix-chip-group";
 import { ElvixDateInput } from "./elvix-date-input";
 import { ElvixInput } from "./elvix-input";
 import { useElvixContext } from "./elvix-provider";
-import { ElvixSaveButton } from "./elvix-save-button";
+import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import type { Gender, IdentityInput, Pronouns } from "./identity-schema";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
@@ -219,9 +219,9 @@ function ElvixIdentityFormInner({
         onChange={(v) => setField("pronouns", v)}
       />
 
-      <div className="pt-1">
+      <ElvixSaveRow>
         <ElvixSaveButton state={state} disabled={!canSave} onClick={save} />
-      </div>
+      </ElvixSaveRow>
     </form>
   );
 }

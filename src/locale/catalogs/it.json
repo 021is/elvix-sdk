@@ -2417,6 +2417,12 @@
       },
       "errorRemoveFailed": {
         "other": "Impossibile rimuovere la passkey. Riprova."
+      },
+      "managedInAccount": {
+        "other": "Le passkey per {app} si aggiungono e si rimuovono nel tuo account elvix."
+      },
+      "openAccount": {
+        "other": "Apri il tuo account elvix"
       }
     },
     "device": {

@@ -33,7 +33,7 @@ import { type CSSProperties, useState } from "react";
 import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
 import { ElvixInput } from "./elvix-input";
-import { ElvixSaveButton } from "./elvix-save-button";
+import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import type { LanguageRecord } from "./language-schema";
 import {
   findLanguage,
@@ -416,7 +416,7 @@ function LevelPickView({
               : t("signin.errorGeneric")}
         </div>
       )}
-      <div className="mt-auto flex items-center justify-end pt-3">
+      <ElvixSaveRow>
         <ElvixSaveButton
           state="idle"
           onClick={onConfirm}
@@ -425,7 +425,7 @@ function LevelPickView({
           hint={null}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </div>
   );
 }
@@ -454,7 +454,7 @@ function DeleteConfirmView({
           language: lang?.name ?? t("languages.thisLanguageFallback"),
         })}
       </Subtitle>
-      <div className="mt-auto flex items-center justify-end gap-3 pt-3">
+      <ElvixSaveRow>
         <button
           type="button"
           onClick={onCancel}
@@ -469,7 +469,7 @@ function DeleteConfirmView({
         >
           {t("languages.remove")}
         </button>
-      </div>
+      </ElvixSaveRow>
     </div>
   );
 }

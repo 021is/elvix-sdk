@@ -13,6 +13,39 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.13.0] — 2026-10-07
+
+DanceClub's second batch: sign-out that tells the truth, and one Save row
+for every editor. Pairs with elvix server changes that let the elvix account
+manage every app a person uses.
+
+### Added
+
+- **`<ElvixSessions signInUrl={null}>`**: "Sign out everywhere" no longer
+  navigates; the host does, from `onResult`, after its own cleanup.
+
+### Changed
+
+- **`<ElvixAppPasskeys>` is for elvix.is account pages only.** On a customer
+  origin it says passkeys are managed in the elvix account and links to
+  `/account/apps/<id>/passkeys`, instead of loading a list it cannot load.
+  Link hosts to `${baseUrl}/account/apps/<applicationId>`.
+
+### Fixed
+
+- **`signOut()` resolves `ok: true` on a 401.** The session had already ended,
+  so the person is signed out. `ok: false` now means they may still be signed
+  in (5xx, network). The local token and cookie are cleared either way.
+- **"Sign out everywhere" ends this device the way `signOut()` does**: SDK
+  token, `elvix_token` cookie and the signed-out flag are cleared before
+  `onResult`. Before, a live token survived, so the sign-in page could resume
+  the session that had just been ended.
+- **`<ElvixAppPasskeys>` on a customer origin** told a signed-in user "Sign in
+  first, then add a passkey."
+- **The identity form's Save sat against the pronoun chips.** Every editor
+  (identity, languages, region, address book, legal entities) now renders
+  `<ElvixSaveRow>`, one gap defined once.
+
 ## [0.12.0] — 2026-09-19
 
 Ten defects DanceClub found moving its profile onto 0.11.0, fixed here so no

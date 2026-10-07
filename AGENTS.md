@@ -20,6 +20,9 @@ Public elvix SDK. Lives at github.com/021is/elvix-sdk. npm-published under `@elv
 - **`src/react/identity-schema.ts` is byte-identical with the elvix monorepo's `lib/sdk/identity-schema.ts`**, which validates the PATCH. Change both, or the form and the server disagree.
 - **A new field on an envelope type is optional** (`?:`), so a host on an older elvix gets `undefined` rather than a type that lies. Same rule as 0.11's `ElvixUser`.
 - **`<ElvixSaveButton onClick>` cancels the surrounding form's submit.** With both firing, every press ran its action twice (double PATCH, wizard step confirmed twice). Pass `onClick` OR rely on the form's `onSubmit`; either runs once.
+- **An editor's action row is `<ElvixSaveRow>`** (0.13). The gap above Save is `SAVE_ROW_GAP`, defined once; `tests/save-row.test.tsx` fails on any hand-written `mt-auto flex items-center … pt-N` row.
+- **Ending this device's session goes through `endLocalSession()`** (`sign-out.ts`, 0.13): token, `elvix_token` cookie, signed-out flag. `signOut()` and "Sign out everywhere" both call it; 0.12's sessions path skipped it and left a live token behind. A 401 from sign-out is success: the session had already ended.
+- **`<ElvixAppPasskeys>` is first-party only** (0.13). The register ceremony needs elvix.is's account session, which a customer origin never has. Off elvix.is it renders a link to `/account/apps/<id>/passkeys`; never make it "work" cross-origin.
 
 ## Lint rules turned off, and why
 

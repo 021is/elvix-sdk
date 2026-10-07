@@ -27,7 +27,7 @@ import { findCountry } from "./countries";
 import { ElvixCountrySelect } from "./elvix-country-select";
 import { ElvixInput } from "./elvix-input";
 import { useElvixContext } from "./elvix-provider";
-import { ElvixSaveButton } from "./elvix-save-button";
+import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { ElvixTaxIdInput, type TaxIdValidationState } from "./elvix-tax-id-input";
 import {
   regNumberFormatHint,
@@ -184,7 +184,7 @@ export function SingleTextView({
           </span>
         )}
       </label>
-      <div className="mt-auto flex items-center justify-end pt-3">
+      <ElvixSaveRow>
         <ElvixSaveButton
           state="idle"
           disabled={!valid}
@@ -194,7 +194,7 @@ export function SingleTextView({
           hint={t("common.enterHint")}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </div>
   );
 }
@@ -263,7 +263,7 @@ export function DateView({
           </span>
         )}
       </label>
-      <div className="mt-auto flex items-center justify-end pt-3">
+      <ElvixSaveRow>
         <ElvixSaveButton
           state="idle"
           disabled={!valid}
@@ -273,7 +273,7 @@ export function DateView({
           hint={t("common.enterHint")}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </form>
   );
 }
@@ -326,7 +326,7 @@ export function CountryView({
           listMaxHeightClass={selected ? "max-h-44" : "max-h-52"}
         />
       </div>
-      <div className="mt-auto flex items-center justify-end pt-3">
+      <ElvixSaveRow>
         <ElvixSaveButton
           state="idle"
           disabled={!valid}
@@ -336,7 +336,7 @@ export function CountryView({
           hint={null}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </div>
   );
 }
@@ -410,7 +410,7 @@ export function NationalityView({
         </div>
       )}
 
-      <div className="mt-auto flex items-center justify-end pt-3">
+      <ElvixSaveRow>
         <ElvixSaveButton
           state="idle"
           disabled={!valid}
@@ -420,7 +420,7 @@ export function NationalityView({
           hint={null}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </div>
   );
 }
@@ -514,7 +514,7 @@ export function TaxIdsView({
           </label>
         )}
       </div>
-      <div className="mt-auto flex items-center justify-end gap-3 pt-3">
+      <ElvixSaveRow>
         {blockReason && <span className="text-[12px] text-fg-3">{blockReason}</span>}
         <ElvixSaveButton
           state="idle"
@@ -525,7 +525,7 @@ export function TaxIdsView({
           hint={null}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </form>
   );
 }
@@ -716,21 +716,20 @@ export function VerifyingTaxIdView({
         <VerifyingBadge phase={phase} level={result.level} />
       </div>
 
-      <div className="mt-auto flex items-center justify-between gap-3 pt-3">
-        {isInvalid ? (
-          <>
-            <span />
-            <ElvixSaveButton
-              state="idle"
-              onClick={onBack}
-              label={t("legalEntities.fixVatCta")}
-              savedLabel={t("legalEntities.fixVatCta")}
-              hint={null}
-              className="!w-auto !px-5"
-            />
-          </>
-        ) : isFormat ? (
-          <>
+      {isInvalid ? (
+        <ElvixSaveRow>
+          <ElvixSaveButton
+            state="idle"
+            onClick={onBack}
+            label={t("legalEntities.fixVatCta")}
+            savedLabel={t("legalEntities.fixVatCta")}
+            hint={null}
+            className="!w-auto !px-5"
+          />
+        </ElvixSaveRow>
+      ) : isFormat ? (
+        <ElvixSaveRow
+          leading={
             <button
               type="button"
               onClick={onBack}
@@ -738,19 +737,18 @@ export function VerifyingTaxIdView({
             >
               {t("common.back")}
             </button>
-            <ElvixSaveButton
-              state="idle"
-              onClick={onPass}
-              label={t("legalEntities.continueAnywayCta")}
-              savedLabel={t("common.continue")}
-              hint={null}
-              className="!w-auto !px-5"
-            />
-          </>
-        ) : (
-          <span />
-        )}
-      </div>
+          }
+        >
+          <ElvixSaveButton
+            state="idle"
+            onClick={onPass}
+            label={t("legalEntities.continueAnywayCta")}
+            savedLabel={t("common.continue")}
+            hint={null}
+            className="!w-auto !px-5"
+          />
+        </ElvixSaveRow>
+      ) : null}
     </div>
   );
 }
@@ -848,7 +846,7 @@ export function RegistrationView({
           )}
         </label>
       </div>
-      <div className="mt-auto flex items-center justify-end pt-3">
+      <ElvixSaveRow>
         <ElvixSaveButton
           state="idle"
           disabled={!valid}
@@ -858,7 +856,7 @@ export function RegistrationView({
           hint={null}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </form>
   );
 }
@@ -1032,7 +1030,7 @@ export function PlaceOfBirthView({
         </div>
       )}
 
-      <div className="mt-auto flex items-center justify-end pt-3">
+      <ElvixSaveRow>
         <ElvixSaveButton
           state="idle"
           disabled={!hasPick}
@@ -1042,7 +1040,7 @@ export function PlaceOfBirthView({
           hint={null}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </div>
   );
 }
@@ -1418,7 +1416,7 @@ export function ContactInputView({
           )}
         </label>
       </div>
-      <div className="mt-auto flex items-center justify-end pt-3">
+      <ElvixSaveRow>
         <ElvixSaveButton
           state="idle"
           disabled={!allOk}
@@ -1428,7 +1426,7 @@ export function ContactInputView({
           hint={null}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </form>
   );
 }

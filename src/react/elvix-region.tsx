@@ -24,7 +24,7 @@ import { findCountry } from "./countries";
 import { MaybeCard } from "./elvix-card";
 import { ElvixCountrySelect } from "./elvix-country-select";
 import { ElvixInput } from "./elvix-input";
-import { ElvixSaveButton } from "./elvix-save-button";
+import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { findLanguage, LANGUAGES } from "./languages";
 import type { RegionRecord } from "./region-schema";
 import {
@@ -349,14 +349,17 @@ function CascadeConfirmView({
           />
         </div>
       )}
-      <div className="mt-auto flex items-center justify-between gap-3 pt-3">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
-        >
-          {t("common.cancel")}
-        </button>
+      <ElvixSaveRow
+        leading={
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
+          >
+            {t("common.cancel")}
+          </button>
+        }
+      >
         <ElvixSaveButton
           state="idle"
           onClick={onConfirm}
@@ -365,7 +368,7 @@ function CascadeConfirmView({
           hint={null}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </div>
   );
 }
@@ -573,7 +576,7 @@ function ChoiceEditView<T extends string>({
           );
         })}
       </ul>
-      <div className="mt-auto flex items-center justify-end pt-3">
+      <ElvixSaveRow>
         <ElvixSaveButton
           state="idle"
           onClick={() => onSave(selected)}
@@ -582,7 +585,7 @@ function ChoiceEditView<T extends string>({
           hint={null}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </div>
   );
 }
@@ -629,7 +632,7 @@ function FirstDayEditView({
           );
         })}
       </ul>
-      <div className="mt-auto flex items-center justify-end pt-3">
+      <ElvixSaveRow>
         <ElvixSaveButton
           state="idle"
           onClick={() => onSave(selected)}
@@ -638,7 +641,7 @@ function FirstDayEditView({
           hint={null}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </div>
   );
 }

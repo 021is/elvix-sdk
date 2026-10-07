@@ -17,6 +17,30 @@
 
 import { authInit, markSignedOut, setElvixToken } from "./session";
 
+/** elvix answers 401 when the session to end had already ended. */
+const SESSION_ALREADY_ENDED = 401;
+
+/**
+ * Everything signing out leaves on THIS device: the SDK's token (memory +
+ * storage), the one-shot "just signed out" flag, and the `elvix_token`
+ * cookie. Shared by `signOut()` and `<ElvixSessions>`'s "Sign out
+ * everywhere", so a host's own sign-out cleanup finds the same state after
+ * either. Leaving a live token behind is what let `redirectIfAuthenticated`
+ * resume a "signed-out" user.
+ */
+export function endLocalSession(cookieName: string | null = "elvix_token"): void {
+  setElvixToken(null);
+  // One-shot flag the sign-in surface checks: suppress `redirectIfAuthenticated`
+  // for the immediate post-sign-out load so the resume can never fight a logout,
+  // even if a session somehow lingers.
+  markSignedOut();
+  if (cookieName && typeof document !== "undefined") {
+    const secure =
+      typeof location !== "undefined" && location.protocol === "https:" ? "; secure" : "";
+    document.cookie = `${cookieName}=; path=/; max-age=0; samesite=lax${secure}`;
+  }
+}
+
 export type SignOutResult =
   | { ok: true; redirect?: string }
   | { ok: false; error: string; message?: string };
@@ -70,14 +94,18 @@ export async function signOut(options: SignOutOptions = {}): Promise<SignOutResu
       method: "POST",
       ...authInit(),
     });
+    // A 401 means the session had already ended (expired, revoked, signed out
+    // in another tab): the user IS signed out, so that is a success. Only a
+    // failure that may leave them signed in (5xx, network) is `ok: false`; a
+    // host that trusts `ok` must not strand someone who is already out.
     result =
-      !res.ok && res.status !== 204
-        ? {
+      res.ok || res.status === SESSION_ALREADY_ENDED
+        ? { ok: true, redirect: undefined }
+        : {
             ok: false,
             error: `http_${res.status}`,
             message: `sign-out failed (HTTP ${res.status})`,
-          }
-        : { ok: true, redirect: undefined };
+          };
   } catch (e) {
     result = {
       ok: false,
@@ -87,18 +115,8 @@ export async function signOut(options: SignOutOptions = {}): Promise<SignOutResu
   }
 
   // ALWAYS clear local state — the user's intent is to be signed out even if
-  // the server call failed (offline, transient 5xx). Leaving a live token
-  // behind is what let `redirectIfAuthenticated` resume a "signed-out" user.
-  setElvixToken(null);
-  // One-shot flag the sign-in surface checks: suppress `redirectIfAuthenticated`
-  // for the immediate post-sign-out load so the resume can never fight a logout,
-  // even if a session somehow lingers.
-  markSignedOut();
-  if (cookieName && typeof document !== "undefined") {
-    const secure =
-      typeof location !== "undefined" && location.protocol === "https:" ? "; secure" : "";
-    document.cookie = `${cookieName}=; path=/; max-age=0; samesite=lax${secure}`;
-  }
+  // the server call failed (offline, transient 5xx).
+  endLocalSession(cookieName);
 
   const target = redirectAfterSignOut === null ? undefined : (redirectAfterSignOut ?? "/");
   if (result.ok) result = { ok: true, redirect: target };

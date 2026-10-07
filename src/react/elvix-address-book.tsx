@@ -54,7 +54,7 @@ import type { AddressKind, AddressRecord } from "./address-schema";
 import { MaybeCard } from "./elvix-card";
 import { ElvixInput } from "./elvix-input";
 import { useElvixContext } from "./elvix-provider";
-import { ElvixSaveButton } from "./elvix-save-button";
+import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { MAPS_MISSING_CLIENT_ID, mapsUrl } from "./maps-url";
 import { isSameOrigin } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
@@ -755,7 +755,7 @@ function AptFloorView({
         />
       </label>
 
-      <div className="mt-auto flex items-center justify-end pt-3">
+      <ElvixSaveRow>
         {/* Optional field — Continue is always enabled (within max
             length). Empty input saves null, which both adds and
             removes the value cleanly. No separate Skip button to
@@ -769,7 +769,7 @@ function AptFloorView({
           hint={t("common.enterHint")}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </div>
   );
 }
@@ -956,7 +956,7 @@ function RecipientCustomView({
         />
       </label>
 
-      <div className="mt-auto flex items-center justify-end border-t border-fg-3/10 pt-3">
+      <ElvixSaveRow divided>
         <ElvixSaveButton
           state="idle"
           disabled={!valid}
@@ -966,7 +966,7 @@ function RecipientCustomView({
           hint={t("common.enterHint")}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </div>
   );
 }
@@ -1032,7 +1032,7 @@ function RecipientBusinessNameView({
         />
       </label>
 
-      <div className="mt-auto flex items-center justify-end border-t border-fg-3/10 pt-3">
+      <ElvixSaveRow divided>
         <ElvixSaveButton
           state="idle"
           disabled={!valid}
@@ -1042,7 +1042,7 @@ function RecipientBusinessNameView({
           hint={t("common.enterHint")}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </div>
   );
 }
@@ -1106,26 +1106,28 @@ function RecipientBusinessContactView({
         />
       </label>
 
-      <div className="mt-auto flex items-center gap-2 border-t border-fg-3/10 pt-3">
-        <button
-          type="button"
-          onClick={() => onConfirm(null)}
-          className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
-        >
-          {t("addressBook.skip")}
-        </button>
-        <div className="ml-auto">
-          <ElvixSaveButton
-            state="idle"
-            disabled={!valid}
-            onClick={() => valid && onConfirm(trimmed || null)}
-            label={t("common.save")}
-            savedLabel={t("common.save")}
-            hint={t("common.enterHint")}
-            className="!w-auto !px-5"
-          />
-        </div>
-      </div>
+      <ElvixSaveRow
+        divided
+        leading={
+          <button
+            type="button"
+            onClick={() => onConfirm(null)}
+            className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
+          >
+            {t("addressBook.skip")}
+          </button>
+        }
+      >
+        <ElvixSaveButton
+          state="idle"
+          disabled={!valid}
+          onClick={() => valid && onConfirm(trimmed || null)}
+          label={t("common.save")}
+          savedLabel={t("common.save")}
+          hint={t("common.enterHint")}
+          className="!w-auto !px-5"
+        />
+      </ElvixSaveRow>
     </div>
   );
 }
@@ -1285,7 +1287,7 @@ function NoteInputView({
         <div className="mt-1 text-right text-[11px] text-fg-3">{trimmed.length}/500</div>
       </label>
 
-      <div className="mt-auto flex items-center justify-end pt-3">
+      <ElvixSaveRow>
         <ElvixSaveButton
           state="idle"
           disabled={!valid}
@@ -1295,7 +1297,7 @@ function NoteInputView({
           hint={null}
           className="!w-auto !px-5"
         />
-      </div>
+      </ElvixSaveRow>
     </div>
   );
 }
@@ -1641,25 +1643,26 @@ function DefaultConfirmView({
         </div>
       )}
 
-      <div className="mt-auto flex items-center gap-2 pt-3">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
-        >
-          {t("common.cancel")}
-        </button>
-        <div className="ml-auto">
-          <ElvixSaveButton
-            state="idle"
-            onClick={onConfirm}
-            label={verb}
-            savedLabel={verb}
-            hint={null}
-            className="!w-auto !px-5"
-          />
-        </div>
-      </div>
+      <ElvixSaveRow
+        leading={
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
+          >
+            {t("common.cancel")}
+          </button>
+        }
+      >
+        <ElvixSaveButton
+          state="idle"
+          onClick={onConfirm}
+          label={verb}
+          savedLabel={verb}
+          hint={null}
+          className="!w-auto !px-5"
+        />
+      </ElvixSaveRow>
     </div>
   );
 }
@@ -1757,25 +1760,27 @@ function DeleteConfirmView({
         </div>
       )}
 
-      <div className="mt-auto flex items-center gap-2 border-t border-fg-3/10 pt-3">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
-        >
-          {t("common.cancel")}
-        </button>
-        <div className="ml-auto">
+      <ElvixSaveRow
+        divided
+        leading={
           <button
             type="button"
-            onClick={onConfirm}
-            className="inline-flex h-10 items-center gap-1.5 rounded-[10px] bg-red-600 px-5 text-[14px] font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_2px_3px_-1px_rgba(0,0,0,0.18),0_0_0_1px_rgba(25,28,33,0.08)] transition hover:bg-red-700 active:scale-[0.985] cursor-pointer"
+            onClick={onCancel}
+            className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
           >
-            <Trash2 className="size-4" />
-            {t("addressBook.yesDelete")}
+            {t("common.cancel")}
           </button>
-        </div>
-      </div>
+        }
+      >
+        <button
+          type="button"
+          onClick={onConfirm}
+          className="inline-flex h-10 items-center gap-1.5 rounded-[10px] bg-red-600 px-5 text-[14px] font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_2px_3px_-1px_rgba(0,0,0,0.18),0_0_0_1px_rgba(25,28,33,0.08)] transition hover:bg-red-700 active:scale-[0.985] cursor-pointer"
+        >
+          <Trash2 className="size-4" />
+          {t("addressBook.yesDelete")}
+        </button>
+      </ElvixSaveRow>
     </div>
   );
 }

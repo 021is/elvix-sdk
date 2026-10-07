@@ -2427,6 +2427,12 @@
       },
       "errorRemoveFailed": {
         "other": "Passkey se nepodařilo odebrat. Zkuste to znovu."
+      },
+      "managedInAccount": {
+        "other": "Passkeys pro {app} přidáte a odeberete ve svém účtu elvix."
+      },
+      "openAccount": {
+        "other": "Otevřít účet elvix"
       }
     },
     "device": {

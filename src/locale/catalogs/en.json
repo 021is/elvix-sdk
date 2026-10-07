@@ -2418,6 +2418,12 @@
       },
       "errorRemoveFailed": {
         "other": "Couldn't remove the passkey. Try again."
+      },
+      "managedInAccount": {
+        "other": "Passkeys for {app} are added and removed in your elvix account."
+      },
+      "openAccount": {
+        "other": "Open your elvix account"
       }
     },
     "device": {

@@ -41,6 +41,42 @@ const LABEL_SHADOW = {
   filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.18))",
 } as React.CSSProperties;
 
+/**
+ * The space between an editor's last field and its Save button. One value
+ * for every SDK editor, so no form crowds its button (the identity form's
+ * `pt-1` inside `space-y-5` put Save against the pronoun chips) and no two
+ * editors differ.
+ */
+export const SAVE_ROW_GAP = "pt-3";
+
+/**
+ * The row that holds an editor's Save button (or its confirm actions), at
+ * the shared spacing. `leading` (a Cancel, say) sits at the start; the
+ * children end the row. `divided` draws a rule above it, for panes whose
+ * content scrolls behind the row.
+ */
+export function ElvixSaveRow({
+  leading,
+  divided = false,
+  children,
+}: {
+  leading?: ReactNode;
+  divided?: boolean;
+  children: ReactNode;
+}) {
+  const justify = leading ? "justify-between" : "justify-end";
+  const rule = divided ? "border-t border-fg-3/10" : "";
+  return (
+    <div
+      data-elvix-save-row=""
+      className={`mt-auto flex items-center gap-3 ${SAVE_ROW_GAP} ${justify} ${rule}`}
+    >
+      {leading}
+      {children}
+    </div>
+  );
+}
+
 export function ElvixSaveButton({
   state = "idle",
   disabled = false,
