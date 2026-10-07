@@ -2418,6 +2418,12 @@
       },
       "errorRemoveFailed": {
         "other": "Det gick inte att ta bort passkeyn. Försök igen."
+      },
+      "managedInAccount": {
+        "other": "Passkeys för {app} lägger du till och tar bort i ditt elvix-konto."
+      },
+      "openAccount": {
+        "other": "Öppna ditt elvix-konto"
       }
     },
     "device": {

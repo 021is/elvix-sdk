@@ -2436,6 +2436,12 @@
       },
       "errorRemoveFailed": {
         "other": "Не вдалося видалити ключ доступу. Спробуйте ще раз."
+      },
+      "managedInAccount": {
+        "other": "Ключі доступу для {app} додаються та видаляються у вашому акаунті elvix."
+      },
+      "openAccount": {
+        "other": "Відкрити акаунт elvix"
       }
     },
     "device": {

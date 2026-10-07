@@ -2417,6 +2417,12 @@
       },
       "errorRemoveFailed": {
         "other": "De passkey kon niet worden verwijderd. Probeer het opnieuw."
+      },
+      "managedInAccount": {
+        "other": "Passkeys voor {app} voeg je toe en verwijder je in je elvix-account."
+      },
+      "openAccount": {
+        "other": "Je elvix-account openen"
       }
     },
     "device": {

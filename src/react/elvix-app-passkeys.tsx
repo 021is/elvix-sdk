@@ -13,6 +13,9 @@ import { MaybeCard } from "./elvix-card";
  * Lists + adds + removes passkeys scoped to ONE app. Account-level
  * passkeys (from `/account/security`) are not shown here.
  *
+ * Works on elvix.is account pages only. On a customer origin it renders a
+ * link to `/account/apps/<id>/passkeys` instead of a list that can never load.
+ *
  * Brand-aware: the add button paints with `var(--elvix-primary-strong)`
  * installed by `<ElvixProvider brand>`. Row icons + accents follow the
  * brand chord too.
@@ -27,7 +30,8 @@ import { MaybeCard } from "./elvix-card";
 import { Fingerprint, KeyRound, Loader2, Plus, Trash2 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useT } from "../locale/use-t";
-import { useElvixApp } from "./elvix-provider";
+import { useElvixApp, useElvixContext } from "./elvix-provider";
+import { isSameOrigin } from "./session";
 import type { Translator } from "./sign-in-copy";
 import {
   type ElvixAppPasskey,
@@ -54,10 +58,14 @@ function ElvixAppPasskeysImpl({
 }) {
   const t = useT();
   const app = useElvixApp();
+  const { baseUrl } = useElvixContext();
   const resolvedAppId = appId ?? app?.applicationId ?? null;
   const appName = appNameProp ?? app?.appName ?? t("passkeys.thisApp");
+  // elvix.is account pages only: the ceremony runs against elvix.is's
+  // account session, which a customer origin never holds.
+  const firstParty = isSameOrigin(baseUrl);
   const { rows, busy, error, removingId, add, remove } = useAppPasskeys({
-    appId: resolvedAppId,
+    appId: firstParty ? resolvedAppId : null,
     onResult,
     onAdded,
     onRemoved,
@@ -69,6 +77,27 @@ function ElvixAppPasskeysImpl({
         <p style={{ color: "var(--elvix-danger, #dc2626)", fontSize: 13 }}>
           {t("passkeys.missingAppId")}
         </p>
+      </div>
+    );
+  }
+
+  if (!firstParty) {
+    return (
+      <div data-elvix-pane="account-only">
+        <p style={{ fontSize: 13, color: "var(--elvix-fg-2, #444)", marginTop: 0 }}>
+          {t("passkeys.managedInAccount", { app: appName })}
+        </p>
+        <a
+          href={`${baseUrl}/account/apps/${encodeURIComponent(resolvedAppId)}/passkeys`}
+          data-elvix-action="open-account-passkeys"
+          style={{
+            fontSize: 13,
+            fontWeight: 600,
+            color: "var(--elvix-primary-strong, #5d4dff)",
+          }}
+        >
+          {t("passkeys.openAccount")}
+        </a>
       </div>
     );
   }

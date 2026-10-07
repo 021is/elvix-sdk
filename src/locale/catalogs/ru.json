@@ -2436,6 +2436,12 @@
       },
       "errorRemoveFailed": {
         "other": "Не удалось удалить passkey. Попробуйте ещё раз."
+      },
+      "managedInAccount": {
+        "other": "Passkeys для {app} добавляются и удаляются в вашем аккаунте elvix."
+      },
+      "openAccount": {
+        "other": "Открыть аккаунт elvix"
       }
     },
     "device": {
