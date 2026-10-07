@@ -44,6 +44,7 @@ import { useT } from "../locale/use-t";
 import { DonePane } from "./done-pane";
 import { useElvixContext } from "./elvix-provider";
 import { authInit } from "./session";
+import { endLocalSession } from "./sign-out";
 import { unwrapEnvelope } from "./spine-fetch";
 import { SlidePane } from "./wizard-panes";
 
@@ -142,9 +143,11 @@ function ElvixSessionsImpl({
    *  mounts the provider with no clientId — falls through to the global
    *  `surface="account"` list. */
   appId?: string;
-  /** Where to send the user after a "sign out everywhere too"
-   *  action. Defaults to elvix's account sign-in. */
-  signInUrl?: string;
+  /** Where to send the user after "sign out everywhere, this device too".
+   *  Defaults to elvix's account sign-in. `null` leaves navigation to the
+   *  host: run your own sign-out cleanup in `onResult`, then navigate. The
+   *  SDK's own state (token, `elvix_token` cookie) is cleared either way. */
+  signInUrl?: string | null;
   onChanged?: () => void;
   /** Fires on every terminal revoke outcome. Safe payload: action
    *  kind + count of ended sessions. No session IDs leak to the host. */
@@ -242,7 +245,7 @@ function ElvixSessionsImpl({
 function useSessionsList(args: {
   baseUrl: string;
   appId: string | undefined;
-  signInUrl: string;
+  signInUrl: string | null;
   onChanged?: () => void;
   onResult?: (result: ElvixSessionsResult) => void;
 }) {
@@ -318,6 +321,10 @@ function useSessionsList(args: {
       }
       const ended = body.ended ?? 0;
       setEndedCount(ended);
+      // This device's session is gone too: tear down exactly what signOut()
+      // does (token, elvix_token cookie, signed-out flag) BEFORE telling the
+      // host, so the host's own sign-out cleanup in onResult finds it done.
+      if (all) endLocalSession();
       onChanged?.();
       onResult?.({
         ok: true,
@@ -325,9 +332,9 @@ function useSessionsList(args: {
         ended,
       });
       if (all) {
-        // The current session is gone too: go to sign-in. `replace` so the
-        // back button doesn't return to a now-401 surface.
-        window.location.replace(signInUrl);
+        // Go to sign-in, unless the host owns navigation (`signInUrl={null}`).
+        // `replace` so the back button doesn't return to a now-401 surface.
+        if (signInUrl !== null) window.location.replace(signInUrl);
         return false;
       }
       setItems((prev) => prev.filter((s) => s.isCurrent));

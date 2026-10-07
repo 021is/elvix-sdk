@@ -3,6 +3,7 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ElvixProvider, ElvixSessions } from "../src/react/index";
+import { getElvixToken, setElvixToken } from "../src/react/session";
 import { BASE, CLIENT_ID, installFakeElvix } from "./helpers/fake-elvix";
 
 afterEach(() => {
@@ -57,5 +58,33 @@ describe("ElvixSessions", () => {
     await screen.findByText("2 devices signed out.", {}, { timeout: 3000 });
     expect(onResult).toHaveBeenCalledWith({ ok: true, action: "sign_out_others", ended: 2 });
     expect(fake.state.sessions.map((s) => s.id)).toEqual(["s1"]);
+  });
+
+  // #6 (0.13): "Sign out everywhere" ends this device the way signOut() does,
+  // before onResult, and `signInUrl={null}` leaves navigation to the host.
+  it("tears down this device before onResult and lets the host navigate", async () => {
+    installFakeElvix({ sessions: [row("s1", true), row("s2", false)] });
+    setElvixToken("tok");
+    document.cookie = "elvix_token=tok; path=/";
+    const replace = vi.fn();
+    vi.stubGlobal("location", { ...window.location, replace });
+    const seen: { token: string | null; cookie: string }[] = [];
+    const onResult = vi.fn(() => seen.push({ token: getElvixToken(), cookie: document.cookie }));
+    render(
+      <ElvixProvider clientId={CLIENT_ID} baseUrl={BASE} presence={false} bootstrapRefreshMs={0}>
+        <ElvixSessions onResult={onResult} signInUrl={null} />
+      </ElvixProvider>,
+    );
+    await waitFor(() => expect(revokeButtons()).toHaveLength(1));
+
+    fireEvent.click(screen.getByText("Sign out of devices..."));
+    const all = await screen.findByText(/Sign out everywhere/, {}, { timeout: 3000 });
+    await act(async () => fireEvent.click(all));
+
+    await waitFor(() => expect(onResult).toHaveBeenCalled());
+    expect(onResult).toHaveBeenCalledWith({ ok: true, action: "sign_out_all", ended: 1 });
+    expect(seen[0]?.token).toBeNull();
+    expect(seen[0]?.cookie).not.toContain("elvix_token=tok");
+    expect(replace).not.toHaveBeenCalled();
   });
 });
