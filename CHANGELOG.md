@@ -13,6 +13,20 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.14.2] — 2026-10-12
+
+### Fixed
+
+- **`<ElvixLifecycleWatcher>` reloaded the page on a cookie session.** Its
+  session check calls `/api/v1/session`, which only answers a bearer token. A
+  cookie session (elvix's own Console and Account, any same-origin host) has none,
+  so the check was always refused and, with the live stream open, that read as
+  "the session ended": the page reloaded on every poll (the Account security
+  wizard reloaded the moment it asked for an OTP). A session with no token is now
+  watched by the live stream alone; a bearer session still ends on a failed check.
+  Each refused poll also counted against the per-IP failure limiter on the
+  server; they no longer happen.
+
 ## [0.14.1] — 2026-10-12
 
 ### Fixed
