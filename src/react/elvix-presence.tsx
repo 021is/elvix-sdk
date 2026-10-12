@@ -31,7 +31,7 @@
  */
 
 import { useEffect } from "react";
-import { useElvixApp, useElvixContext } from "./elvix-provider";
+import { useElvixApp, useResolvedBaseUrl } from "./elvix-provider";
 import { authInit } from "./session";
 
 const PresenceStatus = {
@@ -51,8 +51,20 @@ const IDLE_AFTER_MS = 60_000;
  *   is available (no clientId, or envelope not yet loaded) the component is
  *   inert — it never beats with a missing id.
  */
-export function ElvixPresence({ applicationId }: { applicationId?: string } = {}) {
-  const { baseUrl } = useElvixContext();
+export function ElvixPresence({
+  applicationId,
+  baseUrl: baseUrlProp,
+}: {
+  applicationId?: string;
+  /**
+   * elvix origin. Defaults to the provider's, else `https://elvix.is`. Pass `""`
+   * for elvix's own first-party surfaces (Console, Account): they are not a
+   * customer app, have no `clientId` and mount no `<ElvixProvider>`, so they
+   * pass their `applicationId` and the same origin.
+   */
+  baseUrl?: string;
+} = {}) {
+  const baseUrl = useResolvedBaseUrl(baseUrlProp);
   const app = useElvixApp();
   const appId = applicationId ?? app?.applicationId ?? null;
 

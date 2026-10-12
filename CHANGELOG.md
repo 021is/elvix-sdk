@@ -61,6 +61,9 @@ redirect `state`); the server is already live when this publishes.
 - **`useElvixLanguageLevelLabel(level)`**: a level's label in the SDK's locale, the
   editor's own words. `useElvixLanguageNames()` and the editor now share one name
   source.
+- **`<ElvixPresence baseUrl>`** and it now works with no `<ElvixProvider>`: elvix's
+  own Console and Account (no `clientId`, no provider) pass `applicationId` and
+  `baseUrl=""` and drop their private copies of the heartbeat.
 - `allowedOrigins` on the bootstrap envelope type (optional).
 - `scripts/sync-catalogs.mjs` (upload + `--check`) and a publish step that uploads
   the catalogs and verifies the CDN serves every key before `npm publish`.
