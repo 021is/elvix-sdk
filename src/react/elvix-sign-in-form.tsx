@@ -231,6 +231,12 @@ export type AuthFormProps = {
    */
   resumeOnReturn?: boolean;
   /**
+   * `mode="preview"` only: start on a post-redirect onboarding step (the pane
+   * `<ElvixOnboarding>` opens on) with demo data, inline. Inert: no session, no
+   * network. For documentation and design tools; ignored in a real sign-in.
+   */
+  previewStep?: "username" | "passkey" | "recover";
+  /**
    * Width of the card / overlay panel. Number = px, string = any CSS length.
    * Applies to the inline card, the modal panel, AND the drawer (`maxWidth` of
    * the vaul sheet — set it to your app container's width so a bottom drawer
@@ -880,6 +886,7 @@ function AuthBody(p: AuthFormProps) {
     onAuthenticated: p.onAuthenticated,
     navigate: p.navigate ?? true,
     allowedOrigins: appCtx?.allowedOrigins,
+    previewStep: isPreview ? p.previewStep : undefined,
   });
   useSignInReturns({
     flow,
