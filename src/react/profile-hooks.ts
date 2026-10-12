@@ -14,11 +14,11 @@
  * envelope), with no reload.
  */
 
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useT } from "../locale/use-t";
 import { ElvixSessionStatus, useElvixContext } from "./elvix-provider";
 import type { Pronouns } from "./identity-schema";
-import type { LanguageLevel } from "./languages";
+import { LANGUAGE_LEVEL_KEYS, type LanguageLevel, languageDisplayName } from "./languages";
 
 export const ElvixUserStatus = {
   LOADING: "loading",
@@ -99,6 +99,22 @@ export function useElvixPronounsLabel(pronouns: Pronouns | null | undefined): st
   return key ? t(key) : null;
 }
 
+/**
+ * A level's label in the SDK's locale ("Fortgeschritten"), exactly what
+ * `<ElvixLanguages>` shows, so a host listing a user's languages uses the
+ * editor's own words. `useT` falls back to English where a locale lacks it.
+ */
+export function useElvixLanguageLevelLabel(level: LanguageLevel): string {
+  return useT()(LANGUAGE_LEVEL_KEYS[level].label);
+}
+
+/** `(code) => name`: language names in the SDK's locale, via `Intl.DisplayNames`
+ *  with the English catalogue name as the fallback. Same words as the editor. */
+export function useLanguageName(): (code: string) => string {
+  const { locale } = useElvixContext();
+  return useCallback((code) => languageDisplayName(code, locale), [locale]);
+}
+
 export type ElvixLanguageName = { code: string; level: LanguageLevel; name: string };
 
 /**
@@ -111,7 +127,6 @@ export function useElvixLanguageNames(locale?: string): ElvixLanguageName[] {
   const lang = locale ?? sdkLocale;
   return useMemo(() => {
     if (!languages?.length) return [];
-    const names = new Intl.DisplayNames([lang], { type: "language" });
-    return languages.map((l) => ({ ...l, name: names.of(l.code) ?? l.code }));
+    return languages.map((l) => ({ ...l, name: languageDisplayName(l.code, lang) }));
   }, [languages, lang]);
 }

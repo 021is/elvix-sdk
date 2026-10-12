@@ -128,6 +128,7 @@ export {
   type ElvixLanguageName,
   type ElvixSignedInUser,
   ElvixUserStatus,
+  useElvixLanguageLevelLabel,
   useElvixLanguageNames,
   useElvixPronounsLabel,
   useElvixUser,

@@ -205,7 +205,7 @@ export function DetailView({
       </div>
 
       <div
-        className="mt-3 flex-1 min-h-0 overflow-y-auto pr-1 pt-3 pb-6 space-y-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="mt-3 flex-1 min-h-0 overflow-y-auto pr-1 pt-3 pb-6 grid content-start gap-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         style={{ maskImage: FADE_MASK, WebkitMaskImage: FADE_MASK }}
       >
         <DetailSection title={t("legalEntities.detailSectionIdentity")}>

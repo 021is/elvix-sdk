@@ -37,13 +37,15 @@ import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import type { LanguageRecord } from "./language-schema";
 import {
   findLanguage,
-  LANGUAGE_LEVEL_META,
+  LANGUAGE_LEVEL_CEFR,
+  LANGUAGE_LEVEL_KEYS,
   LANGUAGE_LEVELS,
   LANGUAGES,
   type Language,
   type LanguageLevel,
   MAX_LANGUAGES_PER_USER,
 } from "./languages";
+import { useLanguageName } from "./profile-hooks";
 import { type ElvixLanguagesResult, useLanguagesEditor, View } from "./use-languages-editor";
 import { FADE_MASK, FadePane } from "./wizard-panes";
 
@@ -199,6 +201,7 @@ function ListView({
   onDelete: (id: string) => void;
 }) {
   const t = useT();
+  const languageName = useLanguageName();
   return (
     <div className="flex h-full flex-col pt-4">
       <div className="mb-2 flex items-center justify-between px-1">
@@ -218,7 +221,8 @@ function ListView({
       <ul className="flex flex-col gap-2 pb-3">
         {languages.map((rec) => {
           const lang = findLanguage(rec.code);
-          const meta = LANGUAGE_LEVEL_META[rec.level];
+          const name = languageName(rec.code);
+          const levelLabel = t(LANGUAGE_LEVEL_KEYS[rec.level].label);
           return (
             <li key={rec.id}>
               <div className="group flex items-center gap-3 rounded-[12px] border border-fg-3/15 bg-surface px-3 py-2.5 transition hover:border-[var(--elvix-primary)] hover:bg-[color-mix(in_srgb,var(--elvix-primary)_5%,transparent)]">
@@ -228,22 +232,20 @@ function ListView({
                   className="flex min-w-0 flex-1 items-center gap-3 text-left cursor-pointer"
                 >
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-[14px] font-medium text-fg-1">
-                      {lang?.name ?? rec.code}
-                    </div>
+                    <div className="truncate text-[14px] font-medium text-fg-1">{name}</div>
                     <div className="truncate text-[12px] text-fg-3">
-                      {lang?.native && lang.native !== lang.name
-                        ? `${lang.native} · ${meta.label}`
-                        : meta.label}
+                      {lang?.native && lang.native !== name
+                        ? `${lang.native} · ${levelLabel}`
+                        : levelLabel}
                     </div>
                   </div>
                 </button>
                 <span className="rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_10%,transparent)] px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--elvix-primary)]">
-                  {meta.cefr}
+                  {LANGUAGE_LEVEL_CEFR[rec.level]}
                 </span>
                 <button
                   type="button"
-                  aria-label={`${t("languages.remove")} ${lang?.name ?? rec.code}`}
+                  aria-label={`${t("languages.remove")} ${name}`}
                   onClick={() => onDelete(rec.id)}
                   className="grid size-7 place-items-center rounded-md text-fg-3 transition hover:bg-red-500/10 hover:text-red-500 cursor-pointer"
                 >
@@ -268,12 +270,15 @@ function LanguagePickView({
   takenCodes: string[];
 }) {
   const t = useT();
+  const languageName = useLanguageName();
   const [query, setQuery] = useState("");
   const taken = new Set(takenCodes);
   const q = query.trim().toLowerCase();
+  // Matches the name the viewer reads, the English name, the endonym or the code.
   const filtered: readonly Language[] = q
     ? LANGUAGES.filter(
         (l) =>
+          languageName(l.code).toLowerCase().includes(q) ||
           l.name.toLowerCase().includes(q) ||
           l.native.toLowerCase().includes(q) ||
           l.code.includes(q),
@@ -321,8 +326,10 @@ function LanguagePickView({
                     }
                   >
                     <div className="min-w-0 flex-1">
-                      <div className="truncate text-[13.5px] font-medium text-fg-1">{l.name}</div>
-                      {l.native && l.native !== l.name && (
+                      <div className="truncate text-[13.5px] font-medium text-fg-1">
+                        {languageName(l.code)}
+                      </div>
+                      {l.native && l.native !== languageName(l.code) && (
                         <div className="truncate text-[12px] text-fg-3">{l.native}</div>
                       )}
                     </div>
@@ -365,18 +372,19 @@ function LevelPickView({
   error: string | null;
 }) {
   const t = useT();
+  const languageName = useLanguageName();
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onBack} />
       <Heading>
         {t("languages.levelPickTitle", {
-          language: language?.name ?? t("languages.thisLanguageFallback"),
+          language: language ? languageName(language.code) : t("languages.thisLanguageFallback"),
         })}
       </Heading>
       <Subtitle>{t("languages.levelPickSubtitle")}</Subtitle>
       <ul className="mt-4 flex flex-col gap-2">
         {LANGUAGE_LEVELS.map((lvl) => {
-          const meta = LANGUAGE_LEVEL_META[lvl];
+          const keys = LANGUAGE_LEVEL_KEYS[lvl];
           const isSelected = selected === lvl;
           return (
             <li key={lvl}>
@@ -392,12 +400,12 @@ function LevelPickView({
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-[14px] font-semibold text-fg-1">{meta.label}</span>
+                    <span className="text-[14px] font-semibold text-fg-1">{t(keys.label)}</span>
                     <span className="text-[11px] uppercase tracking-wide text-fg-3">
-                      {meta.cefr}
+                      {LANGUAGE_LEVEL_CEFR[lvl]}
                     </span>
                   </div>
-                  <div className="mt-0.5 text-[12.5px] text-fg-2">{meta.hint}</div>
+                  <div className="mt-0.5 text-[12.5px] text-fg-2">{t(keys.hint)}</div>
                 </div>
                 {isSelected && (
                   <Check className="mt-1 size-4 shrink-0 text-[var(--elvix-primary)]" />
@@ -440,20 +448,13 @@ function DeleteConfirmView({
   onConfirm: () => void;
 }) {
   const t = useT();
-  const lang = record ? findLanguage(record.code) : null;
+  const languageName = useLanguageName();
+  const name = record ? languageName(record.code) : t("languages.thisLanguageFallback");
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onCancel} />
-      <Heading>
-        {t("languages.removeConfirmTitle", {
-          language: lang?.name ?? t("languages.thisLanguageFallback"),
-        })}
-      </Heading>
-      <Subtitle>
-        {t("languages.removeConfirmBody", {
-          language: lang?.name ?? t("languages.thisLanguageFallback"),
-        })}
-      </Subtitle>
+      <Heading>{t("languages.removeConfirmTitle", { language: name })}</Heading>
+      <Subtitle>{t("languages.removeConfirmBody", { language: name })}</Subtitle>
       <ElvixSaveRow>
         <button
           type="button"

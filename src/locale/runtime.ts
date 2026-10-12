@@ -61,6 +61,28 @@ export async function fetchCatalog(
   }
 }
 
+/**
+ * The catalog with the host's own strings laid over it. `messages` is flat,
+ * `"namespace.key": "text"`, so a host can reword one button or supply a whole
+ * language elvix does not ship. Anything it leaves out keeps the catalog's
+ * text. Returns the same catalog when there is nothing to apply.
+ */
+export function applyMessages(
+  catalog: Catalog,
+  messages: Readonly<Record<string, string>> | undefined,
+): Catalog {
+  const entries = Object.entries(messages ?? {});
+  if (entries.length === 0) return catalog;
+  const namespaces = { ...catalog.namespaces };
+  for (const [fullKey, text] of entries) {
+    const dot = fullKey.indexOf(".");
+    if (dot < 1 || typeof text !== "string") continue;
+    const ns = fullKey.slice(0, dot);
+    namespaces[ns] = { ...namespaces[ns], [fullKey.slice(dot + 1)]: { other: text } };
+  }
+  return { ...catalog, namespaces };
+}
+
 /** Best-effort lookup of a catalog. English fallback is synchronous. */
 export function lookupCatalogSync(locale: string): Catalog | null {
   const tag = normaliseTag(locale);

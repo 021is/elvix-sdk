@@ -62,7 +62,7 @@ export function DonePane({
 
       {/* One width for every component, so the card does not resize depending
           on which flow the user just finished. */}
-      <div className="space-y-1 max-w-[320px]">
+      <div className="flex flex-col gap-1 max-w-[320px]">
         <div className="text-[15px] font-semibold tracking-tight text-fg-1">{title}</div>
         {body ? <div className="text-[12.5px] text-fg-3 leading-[1.55]">{body}</div> : null}
       </div>

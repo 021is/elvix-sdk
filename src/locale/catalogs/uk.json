@@ -991,6 +991,30 @@
       "thisLanguageFallback": {
         "other": "ця мова"
       },
+      "levelElementary": {
+        "other": "Початковий"
+      },
+      "levelElementaryHint": {
+        "other": "Можу замовити каву, зрозуміти вказівники, привітатися."
+      },
+      "levelIntermediate": {
+        "other": "Середній"
+      },
+      "levelIntermediateHint": {
+        "other": "Розмовний. Робочі дзвінки проходять нормально, статті читаються вільно."
+      },
+      "levelProficient": {
+        "other": "Просунутий"
+      },
+      "levelProficientHint": {
+        "other": "Вільно. Нюанси, ідіоми, іноді легкий акцент."
+      },
+      "levelNative": {
+        "other": "Рідна"
+      },
+      "levelNativeHint": {
+        "other": "Рідна мова або двомовність з дитинства."
+      },
       "levelPickSubtitle": {
         "other": "Виберіть рівень, який звучить правильно. Ви можете змінити його пізніше."
       },

@@ -18,14 +18,17 @@ import {
   useState,
 } from "react";
 import { useT } from "../locale/use-t";
+import { BRAND_FOCUS } from "./brand-focus";
 import { ElvixRecoverGate } from "./elvix-recover-gate";
 import type { AuthFormProps } from "./elvix-sign-in-form";
 import { GoogleOneTap } from "./google-one-tap";
 import { OtpInput } from "./otp-input";
+import { STACK_2, STACK_3, STACK_4 } from "./pane-layout";
 import { runPasskeyRegister, runPasskeySignIn } from "./passkey";
 import { send } from "./profile-request";
 import { authInit, getElvixToken, isSameOrigin } from "./session";
 import {
+  hostedCeremonyUrl,
   humanError,
   OAuthProvider,
   oauthStartHref,
@@ -353,7 +356,7 @@ export function CodeStep({
     t,
   });
   return (
-    <form onSubmit={(e) => void verify(e)} className="space-y-3">
+    <form onSubmit={(e) => void verify(e)} className={STACK_3}>
       <OtpInput value={code} onChange={setCode} disabled={isPreview || verifying} autoFocus />
       <CtaButton cta={cta} submit busy={verifying} disabled={verifying || code.length !== 6} arrow>
         {t("signin.verifyButton")}
@@ -504,7 +507,7 @@ export function UsernameStep({
   };
 
   return (
-    <div className="space-y-4">
+    <div className={STACK_4}>
       <div>
         <label htmlFor="onboarding-username" className="block text-[12px] text-fg-3 mb-1.5">
           {t("username.label")}
@@ -524,7 +527,7 @@ export function UsernameStep({
             onChange={(e) => setValue(e.target.value)}
             placeholder={t("username.exampleHandle")}
             disabled={busy !== null}
-            className="w-full h-11 pl-7 pr-10 rounded-[10px] bg-surface border border-border-strong text-[14px] text-fg-1 placeholder:text-placeholder focus:outline-none focus:border-[#8e7dff] focus:ring-2 focus:ring-[#8e7dff]/20 transition disabled:opacity-60 disabled:cursor-not-allowed"
+            className={`w-full h-11 pl-7 pr-10 rounded-[10px] bg-surface border border-border-strong text-[14px] text-fg-1 placeholder:text-placeholder ${BRAND_FOCUS} transition disabled:opacity-60 disabled:cursor-not-allowed`}
           />
           <UsernameStatus check={check} />
         </div>
@@ -571,7 +574,7 @@ function UsernameSuggestions({
 }) {
   const t = useT();
   return (
-    <div className="space-y-2">
+    <div className={STACK_2}>
       <div className="text-[11px] uppercase tracking-[0.08em] text-fg-3">
         {t("username.suggestionsHeading")}
       </div>
@@ -606,7 +609,7 @@ function UsernameSuggestions({
  *  is signed in, so the bearer rides in the fragment; the page returns here
  *  with `#elvix_token`, which completes sign-in like any redirect return. */
 function hostedRegisterUrl(baseUrl: string, clientId: string): string {
-  const url = `${baseUrl}/auth/passkey-register/${encodeURIComponent(clientId)}?returnUrl=${encodeURIComponent(window.location.href)}`;
+  const url = hostedCeremonyUrl(baseUrl, "passkey-register", clientId);
   const token = getElvixToken();
   return token ? `${url}#elvix_token=${encodeURIComponent(token)}` : url;
 }
@@ -662,8 +665,8 @@ export function PasskeyStep({
   };
 
   return (
-    <div className="space-y-3">
-      <ul className="text-[12.5px] text-fg-2 leading-relaxed space-y-1.5">
+    <div className={STACK_3}>
+      <ul className="text-[12.5px] text-fg-2 leading-relaxed flex flex-col gap-1.5">
         {["signin.passkeyBullet1", "signin.passkeyBullet2", "signin.passkeyBullet3"].map((key) => (
           <li key={key} className="flex items-start gap-2">
             <span className="mt-1.5 size-1 rounded-full" style={{ background: p.brandColor }} />
@@ -709,9 +712,7 @@ export function RecoverStep({ flow, baseUrl }: { flow: SignInFlow; baseUrl: stri
       state={flow.recover.state}
       sinceAt={flow.recover.sinceAt}
       onRestore={({ redirect }) => flow.finishOnboarding(redirect)}
-      onCancel={({ redirect }) => {
-        window.location.href = redirect;
-      }}
+      onCancel={({ redirect }) => flow.leaveTo(redirect)}
     />
   );
 }
@@ -781,9 +782,7 @@ function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: string, i
     const hostedHelps =
       RP_ID_MISMATCH.test(result.message ?? "") || result.error === "passkey_failed";
     if (!isSameOrigin(baseUrl) && p.clientId && hostedHelps) {
-      window.location.assign(
-        `${baseUrl}/auth/passkey/${encodeURIComponent(p.clientId)}?returnUrl=${encodeURIComponent(window.location.href)}`,
-      );
+      window.location.assign(hostedCeremonyUrl(baseUrl, "passkey", p.clientId));
       return;
     }
     flow.reportError(
@@ -827,7 +826,7 @@ function SocialButtons({
   const intent = p.intent ?? "app";
 
   return (
-    <div className={grid ? "grid grid-cols-2 gap-2" : "space-y-2"}>
+    <div className={grid ? "grid grid-cols-2 gap-2" : STACK_2}>
       {p.methodGoogle &&
         (gisSlot ? (
           // GIS renders its own button here, with its own accessible name;
@@ -943,7 +942,7 @@ export function IdentifierStep({
     );
   }
   return (
-    <form onSubmit={(e) => void otp.start(e)} className="space-y-2">
+    <form onSubmit={(e) => void otp.start(e)} className={STACK_2}>
       {gis.enabled && p.googleClientId && (
         <GoogleOneTap
           baseUrl={baseUrl}
@@ -990,7 +989,7 @@ export function IdentifierStep({
             aria-label={placeholder}
             autoComplete={p.methodUsername ? "username" : "email"}
             inputMode={p.methodUsername ? "text" : "email"}
-            className="w-full h-10 px-3 rounded-[10px] bg-surface border border-border-strong text-[13px] text-fg-1 placeholder:text-placeholder focus:outline-none focus:border-[#8e7dff] focus:ring-2 focus:ring-[#8e7dff]/20 transition disabled:cursor-not-allowed"
+            className={`w-full h-10 px-3 rounded-[10px] bg-surface border border-border-strong text-[13px] text-fg-1 placeholder:text-placeholder ${BRAND_FOCUS} transition disabled:cursor-not-allowed`}
           />
           <CtaButton
             cta={cta}

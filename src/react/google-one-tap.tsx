@@ -33,6 +33,7 @@
  */
 
 import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { safeRedirect } from "./safe-redirect";
 import { isSameOrigin, setElvixToken } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { useStableCallback } from "./use-stable-callback";
@@ -267,7 +268,7 @@ export const GoogleOneTap = memo(function GoogleOneTap({
         // subsequent SDK call carries it as a bearer.
         if (body.token) setElvixToken(body.token);
         if (body.redirect) {
-          window.location.assign(body.redirect);
+          window.location.assign(safeRedirect(body.redirect));
         }
       } catch (e) {
         setErr(e instanceof Error ? e.message : "Network error");

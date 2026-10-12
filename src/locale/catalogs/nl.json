@@ -984,6 +984,30 @@
       "thisLanguageFallback": {
         "other": "deze taal"
       },
+      "levelElementary": {
+        "other": "Basis"
+      },
+      "levelElementaryHint": {
+        "other": "Kan koffie bestellen, bordjes volgen, eenvoudig groeten."
+      },
+      "levelIntermediate": {
+        "other": "Gemiddeld"
+      },
+      "levelIntermediateHint": {
+        "other": "Gespreksniveau. Werkgesprekken lukken, artikelen lezen prima."
+      },
+      "levelProficient": {
+        "other": "Gevorderd"
+      },
+      "levelProficientHint": {
+        "other": "Vloeiend. Nuances, gezegden, af en toe een accent."
+      },
+      "levelNative": {
+        "other": "Moedertaal"
+      },
+      "levelNativeHint": {
+        "other": "Moedertaal of van kinds af aan tweetalig."
+      },
       "levelPickSubtitle": {
         "other": "Kies het niveau dat klopt. U kunt het later wijzigen."
       },

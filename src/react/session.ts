@@ -38,6 +38,36 @@ export function setElvixToken(token: string | null): void {
   }
 }
 
+const sessionListeners = new Set<() => void>();
+
+/**
+ * "The session changed": this tab ended it (`endLocalSession`) or another tab
+ * stored or cleared the token (the `storage` event). `<ElvixProvider>`
+ * listens and re-reads the envelope, so `useElvixSession()` follows without
+ * a refocus. A sign-in does not announce here: the form refreshes the
+ * provider itself once the whole flow, onboarding included, is complete, so
+ * a half-finished sign-in never reads as signed in to the host.
+ */
+export function announceSessionChange(): void {
+  for (const listener of sessionListeners) listener();
+}
+
+/** Subscribe to {@link announceSessionChange}; returns the unsubscribe. */
+export function onElvixSessionChange(listener: () => void): () => void {
+  sessionListeners.add(listener);
+  if (typeof window === "undefined") return () => sessionListeners.delete(listener);
+  const onStorage = (e: StorageEvent) => {
+    if (e.key !== STORAGE_KEY) return;
+    memToken = e.newValue;
+    listener();
+  };
+  window.addEventListener("storage", onStorage);
+  return () => {
+    sessionListeners.delete(listener);
+    window.removeEventListener("storage", onStorage);
+  };
+}
+
 /**
  * Auth/credentials additions for a cross-origin-aware request. When a token
  * exists (cross-origin), returns a bearer header and `credentials: "omit"`
@@ -89,6 +119,51 @@ export function consumeSignedOutFlag(): boolean {
  */
 const RETURN_TOKEN_KEY = "elvix_token";
 const RETURN_LANDING_KEY = "elvix_landing";
+/** Echo of the `state` the redirect started with; see {@link signInState}. */
+const RETURN_STATE_KEY = "elvix_state";
+const STATE_STORAGE_KEY = "elvix.signin.state";
+const STATE_BYTES = 16;
+
+/**
+ * The one-time `state` that binds a redirect sign-in to the browser tab that
+ * started it. Every redirect start (Google, GitHub, the hosted passkey pages)
+ * sends it through elvix, which echoes it back in the return fragment;
+ * {@link consumeElvixReturnToken} accepts a returned token only when it
+ * matches. Without it, anyone could send a victim
+ * `https://host/#elvix_token=<attacker's session>` and sign them in as the
+ * attacker (login CSRF). Kept in sessionStorage: it survives the round-trip
+ * in this tab and is invisible to every other. Returns null when storage is
+ * blocked, in which case no redirect return can validate and sign-in fails
+ * closed rather than open.
+ */
+export function signInState(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const existing = window.sessionStorage.getItem(STATE_STORAGE_KEY);
+    if (existing) return existing;
+    const bytes = window.crypto.getRandomValues(new Uint8Array(STATE_BYTES));
+    const fresh = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+    window.sessionStorage.setItem(STATE_STORAGE_KEY, fresh);
+    return fresh;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * True, and the nonce discarded, when `returned` is this tab's pending
+ * `state`: good for one return. A mismatch leaves it alone, so a forged link
+ * cannot cancel the sign-in the user actually started.
+ */
+function spendSignInState(returned: string): boolean {
+  try {
+    if (window.sessionStorage.getItem(STATE_STORAGE_KEY) !== returned) return false;
+    window.sessionStorage.removeItem(STATE_STORAGE_KEY);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 /**
  * One-shot queue for the token that `consumeElvixReturnToken` just
@@ -161,14 +236,74 @@ export function takeJustReturnedLanding(): ElvixLandingPayload | null {
   return l;
 }
 
+const isString = (v: unknown): v is string => typeof v === "string";
+const optionalString = (v: unknown) => v === undefined || isString(v);
+const MAX_SUGGESTIONS = 10;
+
+/**
+ * Narrow untrusted JSON to a landing step, or null. The fragment is decoded
+ * from a URL, so nothing in it is trusted: an unknown step, a wrong field
+ * type or a missing recover detail yields null (the sign-in then completes
+ * as a plain one), never a half-typed object the form would render.
+ */
+export function parseLandingPayload(raw: unknown): ElvixLandingPayload | null {
+  if (typeof raw !== "object" || raw === null) return null;
+  const p = raw as Record<string, unknown>;
+  switch (p.next_step) {
+    case "done":
+      return optionalString(p.redirect) ? (p as ElvixLandingPayload) : null;
+    case "username": {
+      const s = p.suggestions;
+      const suggestionsOk =
+        s === undefined || (Array.isArray(s) && s.length <= MAX_SUGGESTIONS && s.every(isString));
+      return suggestionsOk && optionalString(p.final) ? (p as ElvixLandingPayload) : null;
+    }
+    case "passkey":
+      return optionalString(p.final) ? (p as ElvixLandingPayload) : null;
+    case "recover": {
+      const r = p.recover as Record<string, unknown> | undefined;
+      const recoverOk =
+        r === undefined ||
+        (typeof r === "object" &&
+          r !== null &&
+          [r.appId, r.appName, r.state, r.sinceAt].every(isString));
+      return recoverOk && optionalString(p.final) ? (p as ElvixLandingPayload) : null;
+    }
+    default:
+      return null;
+  }
+}
+
 function decodeLandingPayload(b64url: string): ElvixLandingPayload | null {
   try {
     const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/");
     const pad = b64.length % 4 === 0 ? "" : "=".repeat(4 - (b64.length % 4));
-    const json = atob(b64 + pad);
-    return JSON.parse(json) as ElvixLandingPayload;
+    return parseLandingPayload(JSON.parse(atob(b64 + pad)));
   } catch {
     return null;
+  }
+}
+
+/**
+ * Remove our keys from the URL fragment, keeping any other fragment params
+ * the host uses. `replaceState(null, …)`, not the current `history.state`: a
+ * router (Next's App Router) keeps its own tree in that state and patches
+ * `replaceState` to learn the new URL when it gets none. Passing its private
+ * state back made it keep `#elvix_token` in its canonical URL and write it
+ * back on the next navigation.
+ */
+function stripReturnParams(params: URLSearchParams): void {
+  params.delete(RETURN_TOKEN_KEY);
+  params.delete(RETURN_LANDING_KEY);
+  params.delete(RETURN_STATE_KEY);
+  const rest = params.toString();
+  try {
+    const url = new URL(window.location.href);
+    url.hash = rest ? `#${rest}` : "";
+    window.history.replaceState(null, "", url.toString());
+  } catch {
+    // History API unavailable (sandboxed frame): the fragment stays, but a
+    // token that fails the state check is never stored, so it does no harm.
   }
 }
 
@@ -190,7 +325,16 @@ export function consumeElvixReturnToken(): string | null {
   // Fragment may be `#elvix_token=...` or `#a=1&elvix_token=...`.
   const params = new URLSearchParams(hash.slice(1));
   const token = params.get(RETURN_TOKEN_KEY);
-  if (!token) return null;
+  const landingRaw = params.get(RETURN_LANDING_KEY);
+  const returnedState = params.get(RETURN_STATE_KEY);
+  if (!token && !landingRaw && !returnedState) return null;
+
+  // Strip first, whatever happens next: the token must never linger in the
+  // address bar (copied, shared, sent in a referrer), accepted or not.
+  stripReturnParams(params);
+
+  // Accept only the return of a sign-in THIS tab started (login CSRF guard).
+  if (!token || !returnedState || !spendSignInState(returnedState)) return null;
 
   setElvixToken(token);
   _justReturnedToken = token;
@@ -201,13 +345,7 @@ export function consumeElvixReturnToken(): string | null {
   // Landing step descriptor (optional) — only present when the elvix
   // backend determined the user has remaining onboarding gates after
   // the Google round-trip. Decode + queue for the form to drain.
-  const landingRaw = params.get(RETURN_LANDING_KEY);
-  if (landingRaw) {
-    const decoded = decodeLandingPayload(landingRaw);
-    if (decoded) {
-      _justReturnedLanding = decoded;
-    }
-  }
+  if (landingRaw) _justReturnedLanding = decodeLandingPayload(landingRaw);
   try {
     window.dispatchEvent(
       new CustomEvent("elvix:return-token", {
@@ -219,18 +357,6 @@ export function consumeElvixReturnToken(): string | null {
     // above is the load-bearing path; the event is a nice-to-have.
   }
 
-  // Strip our keys; preserve any other fragment params the host uses.
-  params.delete(RETURN_TOKEN_KEY);
-  params.delete(RETURN_LANDING_KEY);
-  const rest = params.toString();
-  try {
-    const url = new URL(window.location.href);
-    url.hash = rest ? `#${rest}` : "";
-    window.history.replaceState(window.history.state, "", url.toString());
-  } catch {
-    // History API unavailable (sandboxed frame) — token is already stored,
-    // which is what matters; the stale fragment is cosmetic.
-  }
   return token;
 }
 
@@ -250,6 +376,7 @@ export function isSameOrigin(baseUrl: string): boolean {
   try {
     return new URL(baseUrl, window.location.href).origin === window.location.origin;
   } catch {
-    return true;
+    // Unparseable: not provably same-origin, so never credentialed.
+    return false;
   }
 }

@@ -36,7 +36,7 @@ export function UserBanner({
   containerPx = 1200,
   cornerRadius = 14,
   className = "",
-  emptyClassName = "bg-gradient-to-br from-[#8e7dff]/10 via-surface-hover to-[#6c5ce7]/10",
+  emptyClassName = "bg-gradient-to-br from-[color-mix(in_srgb,var(--elvix-primary)_10%,transparent)] via-surface-hover to-[color-mix(in_srgb,var(--elvix-primary)_6%,transparent)]",
   fallbackSrc,
 }: UserBannerProps) {
   const resolved = useMemo(

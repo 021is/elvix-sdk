@@ -24,6 +24,7 @@ import { EyeOff, LogOut, Undo2, X } from "lucide-react";
 import { useState } from "react";
 import { useT } from "../locale/use-t";
 import { DonePane } from "./done-pane";
+import { STACK_4 } from "./pane-layout";
 import { authInit } from "./session";
 
 type TFn = ReturnType<typeof useT>;
@@ -237,7 +238,7 @@ function DecidePane({
 }) {
   const isDeleted = state === "soft_deleted_by_user";
   return (
-    <div className="space-y-4">
+    <div className={STACK_4}>
       <div className="flex items-start gap-3">
         <span
           className={

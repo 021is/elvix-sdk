@@ -170,36 +170,71 @@ export const LANGUAGE_LEVELS = ["ELEMENTARY", "INTERMEDIATE", "PROFICIENT", "NAT
 export type LanguageLevel = (typeof LANGUAGE_LEVELS)[number];
 
 /**
- * UX metadata for each level. CEFR maps are best-effort approximations
- * (most users can't self-place on CEFR, but they know "fluent" vs
- * "conversational"). Keep the copy short — these labels appear as
- * chips inside the wizard's level chooser.
+ * CEFR bands per level: best-effort approximations (most users can't self-place
+ * on CEFR, but they know "fluent" vs "conversational"). The band is a code, so
+ * it is not translated; the label and hint are (see {@link LANGUAGE_LEVEL_KEYS}).
  */
-export const LANGUAGE_LEVEL_META: Record<
-  LanguageLevel,
-  { label: string; hint: string; cefr: string }
-> = {
-  ELEMENTARY: {
-    label: "Elementary",
-    hint: "Can order coffee, follow signs, basic greetings.",
-    cefr: "A1-A2",
-  },
-  INTERMEDIATE: {
-    label: "Intermediate",
-    hint: "Conversational. Work calls land, articles read fine.",
-    cefr: "B1-B2",
-  },
-  PROFICIENT: {
-    label: "Proficient",
-    hint: "Fluent. Nuance, idioms, occasional accent.",
-    cefr: "C1",
-  },
-  NATIVE: {
-    label: "Native",
-    hint: "Mother tongue or bilingual since childhood.",
-    cefr: "C2",
-  },
+export const LANGUAGE_LEVEL_CEFR: Record<LanguageLevel, string> = {
+  ELEMENTARY: "A1-A2",
+  INTERMEDIATE: "B1-B2",
+  PROFICIENT: "C1",
+  NATIVE: "C2",
 };
+
+/** Catalog keys of each level's label and hint, in the SDK's locale. */
+export const LANGUAGE_LEVEL_KEYS: Record<LanguageLevel, { label: string; hint: string }> = {
+  ELEMENTARY: { label: "languages.levelElementary", hint: "languages.levelElementaryHint" },
+  INTERMEDIATE: { label: "languages.levelIntermediate", hint: "languages.levelIntermediateHint" },
+  PROFICIENT: { label: "languages.levelProficient", hint: "languages.levelProficientHint" },
+  NATIVE: { label: "languages.levelNative", hint: "languages.levelNativeHint" },
+};
+
+// ─── Names in the viewer's language ──────────────────────────────────
+
+const REGION_OR_SCRIPT = /^(?:[a-z]{2}|\d{3}|[a-z]{4})$/;
+
+/** Our lowercase codes (`pt-br`, `zh-hans`, `es-419`) in the casing
+ *  `Intl.DisplayNames` expects (`pt-BR`, `zh-Hans`, `es-419`). */
+function intlTag(code: string): string {
+  const [language, ...rest] = code.toLowerCase().split("-");
+  return [
+    language,
+    ...rest.map((part) => {
+      if (!REGION_OR_SCRIPT.test(part)) return part;
+      if (part.length === 4) return part[0]?.toUpperCase() + part.slice(1);
+      return part.toUpperCase();
+    }),
+  ].join("-");
+}
+
+const DISPLAY_NAMES = new Map<string, Intl.DisplayNames | null>();
+
+function displayNamesFor(locale: string): Intl.DisplayNames | null {
+  if (!DISPLAY_NAMES.has(locale)) {
+    try {
+      DISPLAY_NAMES.set(locale, new Intl.DisplayNames([locale], { type: "language" }));
+    } catch {
+      DISPLAY_NAMES.set(locale, null);
+    }
+  }
+  return DISPLAY_NAMES.get(locale) ?? null;
+}
+
+/**
+ * The name of a language in `locale` ("Deutsch" for `de` when the viewer reads
+ * German), from the platform's `Intl.DisplayNames`. Falls back to the English
+ * name in the catalogue, then to the code, when the platform has no name.
+ */
+export function languageDisplayName(code: string, locale: string): string {
+  const english = findLanguage(code)?.name ?? code;
+  if (locale === "en") return english;
+  try {
+    const name = displayNamesFor(locale)?.of(intlTag(code));
+    return name && name.toLowerCase() !== code.toLowerCase() ? name : english;
+  } catch {
+    return english;
+  }
+}
 
 /** Cap enforced by both the wizard UI and the server schema. */
 export const MAX_LANGUAGES_PER_USER = 8;

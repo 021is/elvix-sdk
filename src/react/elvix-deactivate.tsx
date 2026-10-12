@@ -29,6 +29,7 @@ import { DonePane } from "./done-pane";
 import { useElvixApp, useElvixAppContext } from "./elvix-provider";
 import { ElvixSaveButton } from "./elvix-save-button";
 import { OtpInput } from "./otp-input";
+import { STACK_4 } from "./pane-layout";
 import {
   type ChallengeCopy,
   ChallengedAction,
@@ -205,7 +206,7 @@ function Warn1Pane({ appName, onContinue }: { appName: string; onContinue: () =>
   const t = useT();
   return (
     <form
-      className="space-y-4"
+      className={STACK_4}
       onSubmit={(e) => {
         e.preventDefault();
         onContinue();
@@ -254,7 +255,7 @@ function Warn2Pane({
   const t = useT();
   return (
     <form
-      className="space-y-4"
+      className={STACK_4}
       onSubmit={(e) => {
         e.preventDefault();
         onContinue();
@@ -271,7 +272,7 @@ function Warn2Pane({
       <div className="text-[15px] font-semibold tracking-tight text-fg-1 leading-tight">
         {t("deactivate.warn2Title")}
       </div>
-      <ul className="text-[12.5px] text-fg-2 leading-[1.55] pl-3 space-y-1.5 list-disc">
+      <ul className="text-[12.5px] text-fg-2 leading-[1.55] pl-3 flex flex-col gap-1.5 list-disc">
         <li>{t("deactivate.warn2Bullet1")}</li>
         <li>{t("deactivate.warn2Bullet2")}</li>
         <li>{t("deactivate.warn2Bullet3")}</li>
@@ -305,7 +306,7 @@ function ReactivatePane({
 }) {
   const t = useT();
   return (
-    <div className="space-y-4">
+    <div className={STACK_4}>
       <div className="flex items-start gap-3">
         <span
           className="size-10 rounded-full inline-flex items-center justify-center shrink-0"
@@ -386,7 +387,7 @@ export function OtpPane({
   const { deliveredTo, code, setCode, saving, requesting, resendIn } = challenge;
   return (
     <form
-      className="space-y-4"
+      className={STACK_4}
       onSubmit={(e) => {
         e.preventDefault();
         onConfirm();

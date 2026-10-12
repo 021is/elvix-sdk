@@ -991,6 +991,30 @@
       "thisLanguageFallback": {
         "other": "этот язык"
       },
+      "levelElementary": {
+        "other": "Начальный"
+      },
+      "levelElementaryHint": {
+        "other": "Могу заказать кофе, понять указатели, поздороваться."
+      },
+      "levelIntermediate": {
+        "other": "Средний"
+      },
+      "levelIntermediateHint": {
+        "other": "Разговорный. Рабочие звонки проходят нормально, статьи читаются свободно."
+      },
+      "levelProficient": {
+        "other": "Продвинутый"
+      },
+      "levelProficientHint": {
+        "other": "Свободно. Нюансы, идиомы, иногда лёгкий акцент."
+      },
+      "levelNative": {
+        "other": "Родной"
+      },
+      "levelNativeHint": {
+        "other": "Родной язык или двуязычие с детства."
+      },
       "levelPickSubtitle": {
         "other": "Выберите подходящий уровень. Позже его можно изменить."
       },

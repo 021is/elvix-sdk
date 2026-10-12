@@ -67,6 +67,12 @@ export type ElvixBootstrapEnvelope = {
    */
   googleClientId?: string;
   signinGate: "public" | "private_beta" | "closed";
+  /**
+   * The app's registered origins (elvix 2026-10-12+; `undefined` from an
+   * older server). Besides the host's own origin, the only places the form
+   * will redirect to after sign-in.
+   */
+  allowedOrigins?: string[];
   archivedAt: string | null;
   /**
    * Console-configured sign-in copy overrides. Any subset of the strings the

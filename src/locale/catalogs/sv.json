@@ -985,6 +985,30 @@
       "thisLanguageFallback": {
         "other": "det här språket"
       },
+      "levelElementary": {
+        "other": "Grundläggande"
+      },
+      "levelElementaryHint": {
+        "other": "Kan beställa kaffe, följa skyltar och hälsa."
+      },
+      "levelIntermediate": {
+        "other": "Medel"
+      },
+      "levelIntermediateHint": {
+        "other": "Samtalsnivå. Arbetssamtal funkar, artiklar går bra att läsa."
+      },
+      "levelProficient": {
+        "other": "Avancerad"
+      },
+      "levelProficientHint": {
+        "other": "Flytande. Nyanser, idiom, ibland en brytning."
+      },
+      "levelNative": {
+        "other": "Modersmål"
+      },
+      "levelNativeHint": {
+        "other": "Modersmål eller tvåspråkig sedan barndomen."
+      },
       "levelPickSubtitle": {
         "other": "Välj den nivå som låter rätt. Du kan ändra den senare."
       },

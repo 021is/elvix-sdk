@@ -985,6 +985,30 @@
       "thisLanguageFallback": {
         "other": "αυτή τη γλώσσα"
       },
+      "levelElementary": {
+        "other": "Στοιχειώδες"
+      },
+      "levelElementaryHint": {
+        "other": "Μπορώ να παραγγείλω καφέ, να ακολουθήσω πινακίδες, να χαιρετήσω."
+      },
+      "levelIntermediate": {
+        "other": "Μέτριο"
+      },
+      "levelIntermediateHint": {
+        "other": "Επίπεδο συζήτησης. Οι επαγγελματικές κλήσεις βγαίνουν, τα άρθρα διαβάζονται εύκολα."
+      },
+      "levelProficient": {
+        "other": "Προχωρημένο"
+      },
+      "levelProficientHint": {
+        "other": "Άπταιστα. Αποχρώσεις, ιδιωματισμοί, κάποιες φορές προφορά."
+      },
+      "levelNative": {
+        "other": "Μητρική"
+      },
+      "levelNativeHint": {
+        "other": "Μητρική γλώσσα ή δίγλωσσος από παιδί."
+      },
       "levelPickSubtitle": {
         "other": "Επιλέξτε το επίπεδο που σας ταιριάζει. Μπορείτε να το αλλάξετε αργότερα."
       },

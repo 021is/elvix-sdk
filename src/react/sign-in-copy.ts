@@ -3,6 +3,8 @@
  * the OAuth start links, and where a finished sign-in lands by default.
  */
 
+import { signInState } from "./session";
+
 export type Translator = (key: string, params?: Record<string, string | number>) => string;
 
 export function formatRetry(t: Translator, seconds: number): string {
@@ -93,8 +95,26 @@ export function oauthStartHref(
   if (clientId) params.set("clientId", clientId);
   if (intent === "app" && typeof window !== "undefined") {
     params.set("returnUrl", window.location.href);
+    const state = signInState();
+    if (state) params.set("state", state);
   }
   return `${baseUrl}/api/auth/${provider}/start?${params.toString()}`;
+}
+
+/**
+ * A hosted passkey page on elvix.is (`passkey` sign-in, `passkey-register`
+ * enrollment) that returns to THIS page with `#elvix_token`. Carries the same
+ * one-time `state` as the OAuth starts, so the return validates.
+ */
+export function hostedCeremonyUrl(
+  baseUrl: string,
+  page: "passkey" | "passkey-register",
+  clientId: string,
+): string {
+  const params = new URLSearchParams({ returnUrl: window.location.href });
+  const state = signInState();
+  if (state) params.set("state", state);
+  return `${baseUrl}/auth/${page}/${encodeURIComponent(clientId)}?${params.toString()}`;
 }
 
 export function defaultRedirect(intent?: string): string {

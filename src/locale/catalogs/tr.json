@@ -984,6 +984,30 @@
       "thisLanguageFallback": {
         "other": "bu dil"
       },
+      "levelElementary": {
+        "other": "Temel"
+      },
+      "levelElementaryHint": {
+        "other": "Kahve sipariş edebilir, tabelaları takip edebilir, temel selamlaşmaları yapabilirim."
+      },
+      "levelIntermediate": {
+        "other": "Orta"
+      },
+      "levelIntermediateHint": {
+        "other": "Sohbet düzeyi. İş görüşmeleri sorunsuz geçer, makaleler rahat okunur."
+      },
+      "levelProficient": {
+        "other": "İleri"
+      },
+      "levelProficientHint": {
+        "other": "Akıcı. İnce anlamlar, deyimler, ara sıra aksan."
+      },
+      "levelNative": {
+        "other": "Ana dili"
+      },
+      "levelNativeHint": {
+        "other": "Ana dili ya da çocukluktan beri iki dilli."
+      },
       "levelPickSubtitle": {
         "other": "Size uygun gelen seviyeyi seçin. Daha sonra değiştirebilirsiniz."
       },

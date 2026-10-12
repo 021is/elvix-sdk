@@ -243,6 +243,7 @@ export function ElvixProvider({
   baseUrl,
   locale,
   i18nBase,
+  messages,
   animated = true,
   presence = true,
   bootstrapRefreshMs = 300_000,
@@ -295,6 +296,13 @@ export function ElvixProvider({
    * published to the shared `i18n` R2 bucket under `elvix/main/<locale>.json`.
    */
   i18nBase?: string;
+  /**
+   * The host's own strings, `"namespace.key": "text"`, laid over the active
+   * locale: reword one button (`{ "buttons.signIn": "Join the club" }`) or
+   * supply a language elvix does not ship (`locale="ja"` plus your texts; keys
+   * you leave out show English). A component's own `label` prop still wins.
+   */
+  messages?: Readonly<Record<string, string>>;
   children: ReactNode;
   className?: string;
 }) {
@@ -304,7 +312,7 @@ export function ElvixProvider({
   // new runtime in every nested `useT()`.
   const initialRuntime = useMemo(() => buildEnglishRuntime(), []);
   const activeLocale = locale ?? DEFAULT_LOCALE;
-  useCatalogLocale(activeLocale, i18nBase);
+  useCatalogLocale(activeLocale, i18nBase, messages);
 
   // Cross-origin Google redirect return: store `#elvix_token=<token>` and
   // strip it from the URL before anything else runs. No-op without one.
@@ -398,7 +406,10 @@ function appBrand(app: ElvixBootstrapEnvelope | null): ElvixBrand | null {
 }
 
 /** The brand CSS custom properties every SDK surface paints with. */
-function brandCssVars(primary: string, on: string): CSSProperties {
+/** The `--elvix-primary*` variables for a brand colour pair. Exported so the
+ *  sign-in card can re-install them where it renders outside the provider's
+ *  root (the modal and drawer portal to `document.body`). */
+export function brandCssVars(primary: string, on: string): CSSProperties {
   return {
     "--elvix-primary": primary,
     "--elvix-on-primary": on,

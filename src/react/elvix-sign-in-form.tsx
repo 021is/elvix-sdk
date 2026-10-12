@@ -45,6 +45,7 @@ import { Drawer as Vaul } from "vaul";
 import { useT } from "../locale/use-t";
 import { ElvixLogo } from "./elvix-logo";
 import {
+  brandCssVars,
   ElvixSessionStatus,
   useElvixApp,
   useElvixBrandPair,
@@ -662,7 +663,7 @@ function ModalOverlay({
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
             transition={{ type: "spring", stiffness: 380, damping: 34 }}
           >
-            <AuthCard {...resolved} onResult={onResult} />
+            <AuthCard {...resolved} overlay onResult={onResult} />
           </motion.div>
         </div>
       )}
@@ -726,7 +727,13 @@ function DrawerOverlay({
           )}
           <Vaul.Title className="sr-only">{t("signin.title", { app: appName ?? "" })}</Vaul.Title>
           <div className="min-h-0 overflow-y-auto pb-4">
-            <AuthCard {...resolved} transparentBg width={resolvedWidth} onResult={onResult} />
+            <AuthCard
+              {...resolved}
+              overlay
+              transparentBg
+              width={resolvedWidth}
+              onResult={onResult}
+            />
           </div>
         </Vaul.Content>
       </Vaul.Portal>
@@ -752,9 +759,20 @@ function trapTab(e: KeyboardEvent, panel: HTMLElement | null): void {
   }
 }
 
-function AuthCard(props: AuthFormProps) {
+/** The SDK version, one component for every presentation. */
+function VersionLabel() {
+  return (
+    <span className="text-[9px] tracking-wide text-fg-3 opacity-60 tabular-nums">
+      v{ELVIX_SDK_VERSION}
+    </span>
+  );
+}
+
+/** `overlay`: the card floats on a dimmed backdrop (modal, drawer), where the
+ *  version would be unreadable below it, so it sits on the card surface. */
+function AuthCard(props: AuthFormProps & { overlay?: boolean }) {
   const t = useT();
-  const { transparentBg = false } = props;
+  const { transparentBg = false, overlay = false } = props;
   // Fixed width regardless of layout/appearance — the card never reflows wider
   // just because the header switched to "left" or "banner". One width everywhere
   // (Console preview, hosted page, customer host).
@@ -763,8 +781,13 @@ function AuthCard(props: AuthFormProps) {
     : "mx-auto w-full max-w-[420px] rounded-[14px] bg-surface shadow-[0_2px_8px_rgba(0,0,0,0.04),0_20px_40px_-20px_rgba(0,0,0,0.12)] border border-border-base overflow-hidden";
   // `width` (when set) overrides the default 420px cap — inline style wins over
   // the max-w-[420px] class. Lets a host widen the card / modal / drawer.
-  const cardStyle: React.CSSProperties | undefined =
-    props.width !== undefined ? { maxWidth: props.width } : undefined;
+  // The brand variables ride on the card itself: the modal and drawer portal
+  // out of the provider's root, where `--elvix-primary` would not exist and
+  // every focus ring fell back to a default colour.
+  const cardStyle: React.CSSProperties = {
+    ...(props.brandColor ? brandCssVars(props.brandColor, props.onBrandColor ?? "#ffffff") : {}),
+    ...(props.width !== undefined ? { maxWidth: props.width } : {}),
+  };
   return (
     <>
       <div className={cardClass} style={cardStyle}>
@@ -777,7 +800,7 @@ function AuthCard(props: AuthFormProps) {
         <div
           className={
             (transparentBg ? "mt-3 " : "border-t border-border-base bg-surface-hover px-7 py-3 ") +
-            "flex items-center justify-center"
+            "flex flex-col items-center justify-center gap-2"
           }
         >
           <a
@@ -798,14 +821,15 @@ function AuthCard(props: AuthFormProps) {
               <span className="font-semibold text-fg-1">elvix</span>
             </span>
           </a>
+          {overlay && <VersionLabel />}
         </div>
       </div>
-      {/* Version badge sits BELOW the card, not inside it. */}
-      <div className="mt-2.5 text-center leading-none">
-        <span className="text-[9px] tracking-wide text-fg-3 opacity-50 tabular-nums">
-          v{ELVIX_SDK_VERSION}
-        </span>
-      </div>
+      {/* Inline, the version sits BELOW the card; on an overlay it is inside. */}
+      {!overlay && (
+        <div className="mt-2.5 text-center leading-none">
+          <VersionLabel />
+        </div>
+      )}
     </>
   );
 }
@@ -831,6 +855,7 @@ function AuthBody(p: AuthFormProps) {
     onResult: p.onResult,
     onAuthenticated: p.onAuthenticated,
     navigate: p.navigate ?? true,
+    allowedOrigins: appCtx?.allowedOrigins,
   });
   useSignInReturns({
     flow,

@@ -198,6 +198,15 @@ const SIZE_ICON = {
 
 const ICON_SIZE = { sm: 16, md: 18, lg: 20 } as const;
 
+// Full literal class names, never built by interpolation: Tailwind only
+// generates CSS for a class it can read whole in the source.
+const BRAND_FILLED =
+  "bg-[var(--elvix-primary,#6c5ce7)] text-[var(--elvix-on-primary,#fff)] hover:brightness-[0.94] active:brightness-[0.88] ring-1 ring-black/10 shadow-[0_4px_16px_-4px_color-mix(in_srgb,var(--elvix-primary,#6c5ce7)_45%,transparent)]";
+const BRAND_OUTLINE =
+  "text-[var(--elvix-primary,#6c5ce7)] border border-[color-mix(in_srgb,var(--elvix-primary,#6c5ce7)_30%,transparent)] hover:bg-[color-mix(in_srgb,var(--elvix-primary,#6c5ce7)_8%,transparent)] hover:border-[color-mix(in_srgb,var(--elvix-primary,#6c5ce7)_50%,transparent)]";
+const BRAND_GHOST =
+  "text-[var(--elvix-primary,#6c5ce7)] hover:bg-[color-mix(in_srgb,var(--elvix-primary,#6c5ce7)_10%,transparent)]";
+
 /**
  * One palette per (tone, variant). Light + dark are handled inside
  * each entry. The class string is the WHOLE button skin: bg, text,
@@ -223,23 +232,23 @@ const PALETTE: Record<ElvixSignOutTone, Record<ElvixSignOutVariant, Record<Theme
       auto: "bg-transparent text-[#0a0a0b] hover:bg-black/[0.05] dark:text-white dark:hover:bg-white/[0.06]",
     },
   },
+  // The brand tone follows the app's Console colour (`--elvix-primary`);
+  // elvix lavender is only the fallback with no provider or brand.
   brand: {
     filled: {
-      light:
-        "bg-[#6c5ce7] text-white hover:bg-[#5d4ede] active:bg-[#5040d4] ring-1 ring-black/10 shadow-[0_4px_16px_-4px_rgba(108,92,231,0.45)]",
-      dark: "bg-[#6c5ce7] text-white hover:bg-[#5d4ede] active:bg-[#5040d4] ring-1 ring-black/10 shadow-[0_4px_16px_-4px_rgba(108,92,231,0.45)]",
-      auto: "bg-[#6c5ce7] text-white hover:bg-[#5d4ede] active:bg-[#5040d4] ring-1 ring-black/10 shadow-[0_4px_16px_-4px_rgba(108,92,231,0.45)]",
+      light: BRAND_FILLED,
+      dark: BRAND_FILLED,
+      auto: BRAND_FILLED,
     },
     outline: {
-      light:
-        "bg-white text-[#6c5ce7] border border-[#6c5ce7]/30 hover:bg-[#6c5ce7]/[0.06] hover:border-[#6c5ce7]/50",
-      dark: "bg-white/[0.02] text-[#a59cff] border border-[#a59cff]/30 hover:bg-[#a59cff]/[0.08] hover:border-[#a59cff]/50",
-      auto: "bg-transparent text-[#6c5ce7] border border-[#6c5ce7]/30 hover:bg-[#6c5ce7]/[0.06] hover:border-[#6c5ce7]/50",
+      light: `bg-white ${BRAND_OUTLINE}`,
+      dark: `bg-white/[0.02] ${BRAND_OUTLINE}`,
+      auto: `bg-transparent ${BRAND_OUTLINE}`,
     },
     ghost: {
-      light: "bg-transparent text-[#6c5ce7] hover:bg-[#6c5ce7]/[0.08]",
-      dark: "bg-transparent text-[#a59cff] hover:bg-[#a59cff]/[0.10]",
-      auto: "bg-transparent text-[#6c5ce7] hover:bg-[#6c5ce7]/[0.08]",
+      light: `bg-transparent ${BRAND_GHOST}`,
+      dark: `bg-transparent ${BRAND_GHOST}`,
+      auto: `bg-transparent ${BRAND_GHOST}`,
     },
   },
   // Destructive: solid red for filled (the affordance for security-
@@ -437,7 +446,7 @@ const BUTTON_BASE =
 
 const FOCUS_RING: Record<ElvixSignOutTone, string> = {
   neutral: "focus-visible:ring-black/30",
-  brand: "focus-visible:ring-[#8e7dff]/60",
+  brand: "focus-visible:ring-[color-mix(in_srgb,var(--elvix-primary)_60%,transparent)]",
   destructive: "focus-visible:ring-[#dc2626]/60",
 };
 
@@ -456,7 +465,7 @@ const LINK_BASE =
 
 const LINK_TONE: Record<ElvixSignOutTone, string> = {
   neutral: "text-[#0a0a0b] dark:text-white",
-  brand: "text-[#6c5ce7] dark:text-[#a59cff]",
+  brand: "text-[var(--elvix-primary,#6c5ce7)]",
   destructive: "text-[#b91c1c] dark:text-[#fca5a5]",
 };
 

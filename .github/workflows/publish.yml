@@ -30,6 +30,18 @@ jobs:
           registry-url: "https://registry.npmjs.org"
       - run: bun install --frozen-lockfile
       - run: bun run build
+      # The CDN must hold every key this release reads BEFORE the release is
+      # public: 0.13 shipped the whole `buttons` namespace while the CDN had
+      # none of it, and every non-English locale rendered English. Upload,
+      # then read it back from elvix.is exactly as a host's browser would.
+      - name: Sync catalogs to the translation CDN
+        env:
+          R2_I18N_ENDPOINT: ${{ secrets.R2_I18N_ENDPOINT }}
+          R2_I18N_ACCESS_KEY_ID: ${{ secrets.R2_I18N_ACCESS_KEY_ID }}
+          R2_I18N_SECRET_ACCESS_KEY: ${{ secrets.R2_I18N_SECRET_ACCESS_KEY }}
+        run: node scripts/sync-catalogs.mjs
+      - name: Verify the CDN serves every key
+        run: node scripts/sync-catalogs.mjs --check
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

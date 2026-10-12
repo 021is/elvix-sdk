@@ -22,6 +22,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronDown, Search } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { BRAND_FOCUS } from "./brand-focus";
 import { COUNTRIES, type Country, findCountry } from "./countries";
 
 export type ElvixCountrySelectProps = {
@@ -108,7 +109,7 @@ export function ElvixCountrySelect({
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          className="flex w-full items-center gap-2 rounded-[10px] border border-fg-3/25 bg-canvas px-3 py-2 text-left text-[14px] text-fg-1 transition hover:border-[var(--elvix-primary)] focus:border-[var(--elvix-primary)] focus:outline-none focus:ring-2 focus:ring-[color-mix(in_srgb,var(--elvix-primary)_25%,transparent)] cursor-pointer"
+          className={`flex w-full items-center gap-2 rounded-[10px] border border-fg-3/25 bg-canvas px-3 py-2 text-left text-[14px] text-fg-1 transition hover:border-[var(--elvix-primary)] ${BRAND_FOCUS} cursor-pointer`}
         >
           {selected ? (
             <>
@@ -145,7 +146,7 @@ export function ElvixCountrySelect({
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={placeholder}
-                  className="w-full rounded-[10px] border border-fg-3/25 bg-canvas py-2 pl-9 pr-3 text-[14px] text-fg-1 placeholder:text-fg-3 focus:border-[var(--elvix-primary)] focus:outline-none focus:ring-2 focus:ring-[color-mix(in_srgb,var(--elvix-primary)_25%,transparent)]"
+                  className={`w-full rounded-[10px] border border-fg-3/25 bg-canvas py-2 pl-9 pr-3 text-[14px] text-fg-1 placeholder:text-fg-3 ${BRAND_FOCUS}`}
                 />
               </div>
 

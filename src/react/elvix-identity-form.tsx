@@ -39,6 +39,7 @@ import { ElvixInput } from "./elvix-input";
 import { useElvixContext } from "./elvix-provider";
 import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import type { Gender, IdentityInput, Pronouns } from "./identity-schema";
+import { STACK_5 } from "./pane-layout";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { type ElvixIdentityFormResult, useIdentityDraft } from "./use-identity-draft";
@@ -146,7 +147,7 @@ function ElvixIdentityFormInner({
         e.preventDefault();
         void save();
       }}
-      className="space-y-5"
+      className={STACK_5}
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label={t("identity.givenName")} error={errorFor("givenName")}>

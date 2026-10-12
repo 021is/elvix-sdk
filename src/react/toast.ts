@@ -43,7 +43,10 @@ function ensureHost(): HTMLDivElement | null {
 
 // Leading status glyph per kind — a filled accent circle with a white mark, so
 // the toast reads at a glance (error / success / info) the way sonner's do.
-const ICON: Record<ToastKind, string> = {
+// These are the ONLY strings ever written with `innerHTML` in this file: static
+// markup keyed by a three-value `ToastKind`, never a caller's text (the message
+// goes through `textContent`). `tests/toast.test.ts` fails if that stops being so.
+const ICON: Readonly<Record<ToastKind, string>> = {
   error:
     '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#ef4444"/><path d="M12 7v6M12 16.5h.01" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
   success:
