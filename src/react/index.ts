@@ -64,6 +64,11 @@ export { ElvixIdentityForm, type Gender, type Pronouns } from "./elvix-identity-
 export { ElvixLanguages } from "./elvix-languages";
 export { ElvixLeave } from "./elvix-leave";
 export { ElvixLegalEntities } from "./elvix-legal-entities";
+export {
+  ElvixOnboarding,
+  type ElvixOnboardingProps,
+  type ElvixOnboardingStep,
+} from "./elvix-onboarding";
 export { ElvixPresence } from "./elvix-presence";
 export type { ElvixAppContext } from "./elvix-provider";
 export {
@@ -157,6 +162,8 @@ export type {
   ElvixSignInResultOk,
   ElvixTheme,
 } from "./types";
+// After a redirect sign-in: is an onboarding step still waiting?
+export { type ElvixOnboardingState, useElvixOnboarding } from "./use-onboarding";
 export { useSignOut } from "./use-sign-out";
 export { type ElvixUserMedia, useElvixUserMedia } from "./user-media";
 export { ELVIX_SDK_VERSION } from "./version";

@@ -13,6 +13,32 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.14.3] — 2026-10-12
+
+### Added
+
+- **`<ElvixOnboarding>`**: the surface for what happens AFTER a redirect sign-in.
+  Mount it once in a layout inside `<ElvixProvider>`; it renders nothing until a
+  Google / GitHub / hosted-passkey return brings a step (username, passkey,
+  recover), then opens itself on that step as a modal or drawer, finishes it in
+  place and closes. `steps={["passkey"]}` limits what it offers; closing it means
+  "not now". Props: `steps`, `presentation`, `drawerSide`, `width`, `dismissable`,
+  `redirectAfterSignIn`, `navigate` (default `false`), `onResult`, `onAuthenticated`.
+- **`useElvixOnboarding()`** returns `{ pending, step }` for hosts that build their
+  own surface.
+- **`resumeOnReturn`** on `<ElvixSignInForm presentation="modal" | "drawer">`
+  (default `true`): the form opens itself on a redirect return that carries a step.
+
+### Fixed
+
+- **Google / GitHub sign-in never offered the passkey (or username) step.** A
+  redirect reloads the page, so the sign-in modal was closed when the person came
+  back; the SDK read the step from the URL and dropped it. Username and email-code
+  sign-ins were fine (the modal was open the whole time). The modal now opens on
+  the step, on the right pane, and until the step is done the session is NOT
+  reported to the host (`useElvixSession()` stays anonymous), so a host that reacts
+  to "signed in" does not tear the form down first.
+
 ## [0.14.2] — 2026-10-12
 
 ### Fixed

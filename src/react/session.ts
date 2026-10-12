@@ -236,6 +236,46 @@ export function takeJustReturnedLanding(): ElvixLandingPayload | null {
   return l;
 }
 
+/** The queued landing step, without taking it. */
+export function peekJustReturnedLanding(): ElvixLandingPayload | null {
+  return _justReturnedLanding;
+}
+
+/**
+ * True from the moment a redirect return carries an onboarding step (username,
+ * passkey, recover) until the sign-in finishes. While it is true the session is
+ * NOT reported to the host: the person is signed in on elvix's side but has not
+ * finished signing in, exactly as during an in-frame sign-in, so a host that
+ * reacts to "authenticated" does not tear the form down before the step shows.
+ */
+let _onboardingPending = false;
+const onboardingListeners = new Set<() => void>();
+const notifyOnboarding = () => {
+  for (const listener of onboardingListeners) listener();
+};
+
+export function isOnboardingPending(): boolean {
+  return _onboardingPending;
+}
+/** Which step is waiting, or null. Stable between changes (a snapshot for React). */
+export function pendingOnboardingStep(): "username" | "passkey" | "recover" | null {
+  const step = _onboardingPending ? _justReturnedLandingStep : null;
+  return step === "username" || step === "passkey" || step === "recover" ? step : null;
+}
+/** Subscribe to the pending step appearing or finishing; returns the unsubscribe. */
+export function onOnboardingChange(listener: () => void): () => void {
+  onboardingListeners.add(listener);
+  return () => onboardingListeners.delete(listener);
+}
+/** The sign-in finished (or was abandoned): the session may be reported. */
+export function clearOnboardingPending(): void {
+  if (!_onboardingPending) return;
+  _onboardingPending = false;
+  notifyOnboarding();
+}
+/** Remembered apart from the queue, which the form drains when it mounts. */
+let _justReturnedLandingStep: string | null = null;
+
 const isString = (v: unknown): v is string => typeof v === "string";
 const optionalString = (v: unknown) => v === undefined || isString(v);
 const MAX_SUGGESTIONS = 10;
@@ -346,6 +386,9 @@ export function consumeElvixReturnToken(): string | null {
   // backend determined the user has remaining onboarding gates after
   // the Google round-trip. Decode + queue for the form to drain.
   if (landingRaw) _justReturnedLanding = decodeLandingPayload(landingRaw);
+  _onboardingPending = _justReturnedLanding !== null && _justReturnedLanding.next_step !== "done";
+  _justReturnedLandingStep = _justReturnedLanding?.next_step ?? null;
+  if (_onboardingPending) notifyOnboarding();
   try {
     window.dispatchEvent(
       new CustomEvent("elvix:return-token", {

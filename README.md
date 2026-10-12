@@ -53,6 +53,7 @@ Sign-in and sign-up are the same door. There is no separate registration flow to
 
 - `useElvixUser()` — the signed-in user (display name with fallbacks, username, identity summary, languages) and `loading` / `signed-in` / `signed-out`. Every SDK editor refreshes it after a save; `useElvixRefresh()` does it on demand.
 - `useElvixRoles()` / `useElvixScopes()` / `useElvixMemberships()` — what the app's admins granted the user, with names; `has("admin")` for checks. Changes in the Console arrive live. There is no setter: users cannot change their own access.
+- After a redirect sign-in (Google, GitHub), mount `<ElvixOnboarding steps={["passkey"]} />` once in a layout: it opens itself on the step the server asked for (add a passkey, pick a username) and finishes it in place. `useElvixOnboarding()` tells a custom UI a step is pending; a modal `<ElvixSignInForm>` already resumes on its own.
 - `useElvixPronounsLabel(pronouns)`, `useElvixLanguageNames()` and `useElvixLanguageLevelLabel(level)` — ready-to-render labels in the SDK's locale, the same words the editors show.
 - Your own words: `<ElvixProvider locale="de" messages={{ "buttons.signIn": "Rein da" }}>` rewords any string, or supplies a language elvix does not ship. All fifteen shipped locales translate every button; a component's `label` prop always wins.
 - `useElvixUserMedia(userId?)` — "does this user have a photo", from the same cache the avatars use.

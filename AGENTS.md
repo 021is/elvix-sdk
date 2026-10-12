@@ -31,6 +31,8 @@ Public elvix SDK. Lives at github.com/021is/elvix-sdk. npm-published under `@elv
 - **Colours that show state come from `--elvix-primary`** (0.14). Focus uses `BRAND_FOCUS`; no literal purple outside elvix's own mark (`tests/brand-colors.test.ts`). The sign-in card re-installs the brand variables because the modal and drawer portal out of the provider. Tailwind classes are full literals, never built by interpolation, or the CSS is not generated.
 - **The translation CDN must hold every key a release reads** (0.14). `scripts/sync-catalogs.mjs` uploads the catalogs to R2 and `--check` reads them back from elvix.is; `publish.yml` runs both before `npm publish`. A new key goes into all 15 catalogs (`catalogs.test.ts`) and must exist for every `t()` literal (`catalog-keys.test.ts`). Run the sync yourself after adding keys if a host needs them before a release.
 
+- **A redirect return that carries a step must be shown** (0.14.3). A redirect reloads the page, so the modal is closed on return and nothing is mounted to render the step; `consumeElvixReturnToken` records it (`isOnboardingPending`), the modal / drawer form opens itself on it (`resumeOnReturn`), `<ElvixOnboarding>` is the standalone surface, and `useElvixOnboarding()` lets a host build its own. While a step is pending the provider reports the session as ANONYMOUS; `finishSignIn` clears it. In-frame methods (email code, username, passkey) never reload, so they are not affected. `tests/redirect-return-onboarding.test.tsx` and `tests/onboarding-component.test.tsx` pin it.
+
 ## Lint rules turned off, and why
 
 Three biome rules are `off` in `biome.json` because they are wrong for a framework-neutral SDK,
