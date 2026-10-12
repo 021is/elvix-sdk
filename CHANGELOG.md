@@ -13,6 +13,16 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.14.4] — 2026-10-12
+
+### Added
+
+- **`previewStep` on `<ElvixSignInForm mode="preview">`** (`"username" | "passkey" | "recover"`):
+  renders a post-redirect onboarding step inline with demo data, inert (no session,
+  no network). For documentation and design tools; ignored in a real sign-in. It
+  lets the docs show what `<ElvixOnboarding>` opens on without faking a redirect
+  return, which would store a bearer token in the page.
+
 ## [0.14.3] — 2026-10-12
 
 ### Added

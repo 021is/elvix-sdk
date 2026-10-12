@@ -118,6 +118,17 @@ type FlowOptions = {
   navigate: boolean;
   /** The app's registered origins: the only other places a redirect may go. */
   allowedOrigins?: readonly string[];
+  /** Preview mode only: start on an onboarding step, with demo data. */
+  previewStep?: "username" | "passkey" | "recover";
+};
+
+/** What `previewStep` shows when there is no server to ask. */
+const PREVIEW_SUGGESTIONS = ["ada", "ada.dev", "ada_l"];
+const PREVIEW_RECOVER: RecoverState = {
+  appId: "preview",
+  appName: "this app",
+  state: "inactive",
+  sinceAt: "2026-01-01T00:00:00.000Z",
 };
 
 export function useSignInFlow({
@@ -127,11 +138,16 @@ export function useSignInFlow({
   onAuthenticated,
   navigate,
   allowedOrigins,
+  previewStep,
 }: FlowOptions) {
   const refreshSession = useElvixRefresh();
-  const [step, setStep] = useState<Step>(Step.IDENTIFIER);
-  const [recover, setRecover] = useState<RecoverState | null>(null);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [step, setStep] = useState<Step>(previewStep ?? Step.IDENTIFIER);
+  const [recover, setRecover] = useState<RecoverState | null>(
+    previewStep === Step.RECOVER ? PREVIEW_RECOVER : null,
+  );
+  const [suggestions, setSuggestions] = useState<string[]>(
+    previewStep === Step.USERNAME ? PREVIEW_SUGGESTIONS : [],
+  );
   const [error, setError] = useState<string | null>(null);
   /** The onboarding destination the server named when a gate step began. */
   const [backendFinal, setBackendFinal] = useState("/");
