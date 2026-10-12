@@ -116,6 +116,9 @@
       "errorEmailArchived": {
         "other": "Dit e-mailadres kan niet meer worden gebruikt om aan te melden. Gebruik uw huidige adres."
       },
+      "errorPasskeyWrongApp": {
+        "other": "Deze passkey hoort bij een andere app. Log op een andere manier in en voeg daarna een passkey toe voor deze app."
+      },
       "errorPasskeyUnknown": {
         "other": "Deze passkey is niet bij elvix geregistreerd. Meld u op een andere manier aan, verwijder hem en voeg een nieuwe toe in de beveiligingsinstellingen."
       },

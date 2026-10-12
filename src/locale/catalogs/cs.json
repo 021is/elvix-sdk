@@ -118,6 +118,9 @@
       "errorEmailArchived": {
         "other": "Tento e-mail už nelze použít k přihlášení. Použijte svou aktuální adresu."
       },
+      "errorPasskeyWrongApp": {
+        "other": "Tento přístupový klíč patří jiné aplikaci. Přihlaste se jinak a poté přidejte klíč pro tuto aplikaci."
+      },
       "errorPasskeyUnknown": {
         "other": "Tento passkey není v elvix registrován. Přihlaste se jinak, pak ho odeberte a v nastavení zabezpečení přidejte nový."
       },

@@ -117,6 +117,9 @@
       "errorEmailArchived": {
         "other": "This email was retired from sign-in. Use your current address."
       },
+      "errorPasskeyWrongApp": {
+        "other": "This passkey was made for a different app. Sign in another way, then add a passkey for this one."
+      },
       "errorPasskeyUnknown": {
         "other": "This passkey isn't registered with elvix. Sign in another way, then remove it and add a new one in Security settings."
       },

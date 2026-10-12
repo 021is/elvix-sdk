@@ -13,6 +13,19 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.14.1] — 2026-10-12
+
+### Fixed
+
+- **A refused passkey says why.** Picking a passkey made for another app, or one
+  that lives on the elvix account (which an app sign-in refuses), failed with
+  "Something went wrong". `credential_not_for_app` and `credential_not_for_surface`
+  now read "This passkey was made for a different app. Sign in another way, then
+  add a passkey for this one." in all 15 locales (`tests/passkey-errors.test.ts`
+  pins every refusal a person can act on). Pairs with an elvix server fix: an
+  account-level passkey that has never been used no longer counts as "you have a
+  passkey", so the add-a-passkey step is offered again.
+
 ## [0.14.0] — 2026-10-12
 
 First DanceClub release after the 0.13 batch: the host sees a sign-in the moment
