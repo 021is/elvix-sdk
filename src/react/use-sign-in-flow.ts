@@ -20,6 +20,7 @@ import { jsonInit, send } from "./profile-request";
 import { safeRedirect } from "./safe-redirect";
 import {
   authInit,
+  clearOnboardingPending,
   consumeSignedOutFlag,
   type ElvixLandingPayload,
   getElvixToken,
@@ -158,6 +159,9 @@ export function useSignInFlow({
   const finishSignIn = useCallback(
     async (target: string, token: string | undefined) => {
       setStep(Step.AUTHENTICATING);
+      // Any onboarding step a redirect return carried is done: from here the
+      // host may see the session.
+      clearOnboardingPending();
       // The provider reads the new session BEFORE the host hears about it, so
       // `useElvixSession()` / `useElvixUser()` are already authenticated when
       // `onResult` runs. Without this the host showed "Sign in" until the tab

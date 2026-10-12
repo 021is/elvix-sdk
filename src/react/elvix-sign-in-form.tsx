@@ -55,6 +55,7 @@ import {
   useElvixSession,
 } from "./elvix-provider";
 import { ElvixSignInButton, type ElvixSignInButtonProps } from "./elvix-sign-in-button";
+import { isOnboardingPending, onOnboardingChange } from "./session";
 import {
   AuthenticatingPane,
   CodeStep,
@@ -222,6 +223,13 @@ export type AuthFormProps = {
   drawerSide?: DrawerSide;
   /** Allow backdrop-click + Escape to close the overlay. Default true. */
   dismissable?: boolean;
+  /**
+   * Modal / drawer only. After a redirect sign-in (Google, GitHub, hosted
+   * passkey) the page reloads with the overlay closed; when the server asked for
+   * one more step (username, passkey, recover) the overlay opens itself on it.
+   * Default true. Set false to open your own surface from `useElvixOnboarding()`.
+   */
+  resumeOnReturn?: boolean;
   /**
    * Width of the card / overlay panel. Number = px, string = any CSS length.
    * Applies to the inline card, the modal panel, AND the drawer (`maxWidth` of
@@ -540,6 +548,22 @@ function OverlayPresentation({
     [isControlled, onOpenChange],
   );
   const openFn = useCallback(() => setOpen(true), [setOpen]);
+
+  // A redirect sign-in (Google, GitHub, hosted passkey) reloads the page, so the
+  // modal is closed when the person returns. If the server asked for one more
+  // step (username, passkey, recover), open on it: nothing else is mounted to
+  // show it, and the host is told the person is not signed in yet. A return
+  // with nothing left to do leaves the modal alone. `resumeOnReturn={false}`
+  // hands this to the host (see `useElvixOnboarding`).
+  const resume = resolved.resumeOnReturn ?? true;
+  useEffect(() => {
+    if (!resume) return;
+    const openIfPending = () => {
+      if (isOnboardingPending()) setOpen(true);
+    };
+    openIfPending();
+    return onOnboardingChange(openIfPending);
+  }, [resume, setOpen]);
 
   // Close on a successful sign-in, then forward to the host's onResult.
   const hostOnResult = resolved.onResult;

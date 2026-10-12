@@ -13,7 +13,7 @@ import { applyMessages, bundledEnglishCatalog, fetchCatalog } from "../locale/ru
 import type { ElvixAppContext } from "./elvix-provider";
 import { startHeartbeat } from "./presence-heartbeat";
 import { jsonInit, send } from "./profile-request";
-import { authInit, onElvixSessionChange } from "./session";
+import { authInit, isOnboardingPending, onElvixSessionChange } from "./session";
 import type { ElvixBootstrapEnvelope } from "./types";
 
 export const DEFAULT_LOCALE = "en";
@@ -186,6 +186,9 @@ export function useUserEnvelope(
         setSessionStatus(ctx ? ElvixSessionStatus.AUTHENTICATED : ElvixSessionStatus.ANONYMOUS);
       };
       if (!clientId) return settle(null);
+      // A redirect return with an onboarding step still to show: the host sees
+      // a signed-out user until the form finishes it (see `isOnboardingPending`).
+      if (isOnboardingPending()) return settle(null);
       try {
         const r = await fetch(
           `${baseUrl}/api/account/apps/${encodeURIComponent(clientId)}/sdk-context`,
