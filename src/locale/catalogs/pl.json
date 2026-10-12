@@ -991,6 +991,30 @@
       "thisLanguageFallback": {
         "other": "ten język"
       },
+      "levelElementary": {
+        "other": "Podstawowy"
+      },
+      "levelElementaryHint": {
+        "other": "Zamówię kawę, zrozumiem znaki, powiem podstawowe powitania."
+      },
+      "levelIntermediate": {
+        "other": "Średni"
+      },
+      "levelIntermediateHint": {
+        "other": "Swobodna rozmowa. Rozmowy służbowe się udają, artykuły czyta się bez problemu."
+      },
+      "levelProficient": {
+        "other": "Zaawansowany"
+      },
+      "levelProficientHint": {
+        "other": "Biegły. Niuanse, idiomy, czasem lekki akcent."
+      },
+      "levelNative": {
+        "other": "Ojczysty"
+      },
+      "levelNativeHint": {
+        "other": "Język ojczysty lub dwujęzyczność od dzieciństwa."
+      },
       "levelPickSubtitle": {
         "other": "Wybierz poziom, który pasuje. Możesz go później zmienić."
       },

@@ -47,6 +47,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, AtSign, Check, Loader2, Mail, ShieldOff, X } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { DonePane } from "./done-pane";
+import { STACK_4, STACK_5 } from "./pane-layout";
 import { SlidePane } from "./wizard-panes";
 
 const DEBOUNCE_MS = 280;
@@ -367,7 +368,7 @@ function EditPane({
   const inputId = useId();
   const hasError = status === "format_invalid" || status === "taken" || Boolean(serverError);
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} className={STACK_4}>
       <div>
         <label htmlFor={inputId} className="block text-[12.5px] font-medium text-fg-2 mb-1.5">
           {t("username.label")}
@@ -394,7 +395,7 @@ function EditPane({
         <StatusLine status={status} value={value} current={persisted} serverError={serverError} />
       </div>
 
-      <ul className="text-[11.5px] text-fg-3 leading-[1.55] list-disc pl-4 space-y-0.5">
+      <ul className="text-[11.5px] text-fg-3 leading-[1.55] list-disc pl-4 flex flex-col gap-0.5">
         <li>{t("username.ruleLength", { min: USERNAME_MIN_LENGTH, max: USERNAME_MAX_LENGTH })}</li>
         <li>{t("username.ruleChars")}</li>
         <li>{t("username.ruleStartEnd")}</li>
@@ -426,7 +427,7 @@ function ConfirmPane({
 }) {
   const t = useT();
   return (
-    <div className="space-y-5">
+    <div className={STACK_5}>
       <button
         type="button"
         onClick={onBack}
@@ -527,7 +528,7 @@ function DisabledPane({
           style={{ color: "var(--elvix-primary-strong)" }}
         />
       </motion.span>
-      <div className="space-y-1 max-w-[320px]">
+      <div className="flex flex-col gap-1 max-w-[320px]">
         <div className="text-[15px] font-semibold tracking-tight text-fg-1">
           {t("username.disabledTitle", { appName })}
         </div>

@@ -21,6 +21,7 @@ import { useT } from "../locale/use-t";
 import { useElvixAppContext, useElvixContext } from "./elvix-provider";
 import { ElvixSaveButton } from "./elvix-save-button";
 import { OtpInput } from "./otp-input";
+import { STACK_3, STACK_4 } from "./pane-layout";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 
@@ -218,7 +219,7 @@ function PreviewPane({ target, go }: { target: ExportTarget; go: (p: Pane, d?: 1
           at rest. 28px band matches the badge tail + bottom CTA
           gap visually so the fade reads as part of the chrome. */}
       <div
-        className="flex-1 min-h-0 overflow-y-auto overscroll-contain scrollbar-hide py-6 space-y-4"
+        className="flex-1 min-h-0 overflow-y-auto overscroll-contain scrollbar-hide py-6 grid content-start gap-4"
         style={{
           maskImage:
             "linear-gradient(to bottom, transparent 0, black 28px, black calc(100% - 28px), transparent 100%)",
@@ -244,7 +245,7 @@ function PreviewPane({ target, go }: { target: ExportTarget; go: (p: Pane, d?: 1
         ) : err ? (
           <p className="text-[12px] text-red-500 leading-tight">{err}</p>
         ) : (
-          <ul className="space-y-1.5">
+          <ul className="flex flex-col gap-1.5">
             {sections.map((s) => (
               <li key={s} className="flex items-start gap-2 text-[12.5px] text-fg-2 leading-[1.55]">
                 <span
@@ -334,7 +335,7 @@ function SendToPane({
   }
 
   return (
-    <div className="space-y-4">
+    <div className={STACK_4}>
       <BackBar label={t("common.back")} onClick={() => go("preview", -1)} />
       <div className="flex items-start gap-3">
         <span
@@ -496,14 +497,14 @@ function OtpPane({
 
   if (!stash) {
     return (
-      <div className="space-y-3">
+      <div className={STACK_3}>
         <BackBar label={t("common.back")} onClick={() => go("send-to", -1)} />
         <p className="text-[12px] text-fg-3">{t("export.noPendingCode")}</p>
       </div>
     );
   }
   return (
-    <form className="space-y-4" onSubmit={submit}>
+    <form className={STACK_4} onSubmit={submit}>
       <BackBar label={t("common.back")} onClick={() => go("send-to", -1)} />
       <div>
         <div className="text-[15px] font-semibold tracking-tight text-fg-1">

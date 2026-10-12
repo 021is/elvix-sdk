@@ -26,6 +26,7 @@ import { ElvixCountrySelect } from "./elvix-country-select";
 import { ElvixInput } from "./elvix-input";
 import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { findLanguage, LANGUAGES } from "./languages";
+import { useLanguageName } from "./profile-hooks";
 import type { RegionRecord } from "./region-schema";
 import {
   CURRENCIES,
@@ -305,6 +306,7 @@ function CascadeConfirmView({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  const languageName = useLanguageName();
   const t = useT();
   const currentCountry = current ? findCountry(current.country) : null;
   const nextCountry = next ? findCountry(next) : null;
@@ -328,7 +330,11 @@ function CascadeConfirmView({
         <div className="mt-4 grid grid-cols-2 gap-2 text-[12.5px]">
           <CascadeRow
             label={t("region.uiLanguageLabel")}
-            value={findLanguage(newDefaults.uiLocale)?.name ?? newDefaults.uiLocale}
+            value={
+              findLanguage(newDefaults.uiLocale)
+                ? languageName(newDefaults.uiLocale)
+                : newDefaults.uiLocale
+            }
           />
           <CascadeRow label={t("region.timeZone")} value={prettyTimeZone(newDefaults.timeZone)} />
           <CascadeRow
@@ -406,6 +412,7 @@ function DetailView({
   onEditFirstDay: () => void;
 }) {
   const t = useT();
+  const languageName = useLanguageName();
   if (!region) return null;
   const country = findCountry(region.country);
   const lang = findLanguage(region.uiLocale ?? "");
@@ -436,7 +443,7 @@ function DetailView({
       <div className="overflow-hidden rounded-[14px] border border-fg-3/15 bg-surface">
         <DetailRow
           label={t("region.uiLanguageLabel")}
-          value={lang ? `${lang.name} · ${lang.native}` : region.uiLocale}
+          value={lang ? `${languageName(lang.code)} · ${lang.native}` : region.uiLocale}
           onClick={onEditUiLocale}
         />
         <DetailRow
@@ -656,6 +663,7 @@ function UiLocaleEditView({
   onBack: () => void;
 }) {
   const t = useT();
+  const languageName = useLanguageName();
   const [query, setQuery] = useState("");
   const q = query.trim().toLowerCase();
   const filtered = useMemo(
@@ -663,12 +671,13 @@ function UiLocaleEditView({
       q
         ? LANGUAGES.filter(
             (l) =>
+              languageName(l.code).toLowerCase().includes(q) ||
               l.name.toLowerCase().includes(q) ||
               l.native.toLowerCase().includes(q) ||
               l.code.includes(q),
           )
         : LANGUAGES,
-    [q],
+    [q, languageName],
   );
   return (
     <div className="flex h-full flex-col">
@@ -707,8 +716,10 @@ function UiLocaleEditView({
                   }
                 >
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-[13.5px] font-medium text-fg-1">{l.name}</div>
-                    {l.native && l.native !== l.name && (
+                    <div className="truncate text-[13.5px] font-medium text-fg-1">
+                      {languageName(l.code)}
+                    </div>
+                    {l.native && l.native !== languageName(l.code) && (
                       <div className="truncate text-[12px] text-fg-3">{l.native}</div>
                     )}
                   </div>

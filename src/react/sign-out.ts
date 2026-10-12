@@ -15,7 +15,7 @@
  *     wrappers.
  */
 
-import { authInit, markSignedOut, setElvixToken } from "./session";
+import { announceSessionChange, authInit, markSignedOut, setElvixToken } from "./session";
 
 /** elvix answers 401 when the session to end had already ended. */
 const SESSION_ALREADY_ENDED = 401;
@@ -39,6 +39,9 @@ export function endLocalSession(cookieName: string | null = "elvix_token"): void
       typeof location !== "undefined" && location.protocol === "https:" ? "; secure" : "";
     document.cookie = `${cookieName}=; path=/; max-age=0; samesite=lax${secure}`;
   }
+  // Tell the provider: with no token to clear (a same-origin cookie session)
+  // nothing else would, and `useElvixSession()` would keep saying signed in.
+  announceSessionChange();
 }
 
 export type SignOutResult =

@@ -43,6 +43,7 @@ import { useEffect, useState } from "react";
 import { useT } from "../locale/use-t";
 import { DonePane } from "./done-pane";
 import { useElvixContext } from "./elvix-provider";
+import { STACK_2, STACK_3, STACK_4 } from "./pane-layout";
 import { authInit } from "./session";
 import { endLocalSession } from "./sign-out";
 import { unwrapEnvelope } from "./spine-fetch";
@@ -383,8 +384,8 @@ function ListPane({
     );
   }
   return (
-    <div className="space-y-3">
-      <ul className="space-y-2">
+    <div className={STACK_3}>
+      <ul className={STACK_2}>
         <AnimatePresence initial={false}>
           {items.map((s) => (
             <motion.li
@@ -486,7 +487,7 @@ function ConfirmPane({
   const t = useT();
   const busy = revokingMode !== "none";
   return (
-    <div className="space-y-4">
+    <div className={STACK_4}>
       <button
         type="button"
         onClick={onBack}

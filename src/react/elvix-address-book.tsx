@@ -51,6 +51,7 @@ import { type CSSProperties, Fragment, useCallback, useEffect, useRef, useState 
 import { useT } from "../locale/use-t";
 import { EditableField, type PlaceDetails, ReturnTo, View } from "./address-book-wizard";
 import type { AddressKind, AddressRecord } from "./address-schema";
+import { BRAND_FOCUS } from "./brand-focus";
 import { MaybeCard } from "./elvix-card";
 import { ElvixInput } from "./elvix-input";
 import { useElvixContext } from "./elvix-provider";
@@ -1282,7 +1283,7 @@ function NoteInputView({
               ? t("addressBook.notePlaceholderBilling")
               : t("addressBook.notePlaceholderShipping")
           }
-          className="w-full resize-none rounded-[10px] border border-fg-3/25 bg-canvas px-3 py-2 text-[14px] text-fg-1 placeholder:text-fg-3 focus:border-[var(--elvix-primary)] focus:outline-none focus:ring-2 focus:ring-[color-mix(in_srgb,var(--elvix-primary)_25%,transparent)]"
+          className={`w-full resize-none rounded-[10px] border border-fg-3/25 bg-canvas px-3 py-2 text-[14px] text-fg-1 placeholder:text-fg-3 ${BRAND_FOCUS}`}
         />
         <div className="mt-1 text-right text-[11px] text-fg-3">{trimmed.length}/500</div>
       </label>
@@ -1398,7 +1399,7 @@ function DetailView({
       </div>
 
       <div
-        className="flex-1 min-h-0 overflow-y-auto pr-1 pt-3 pb-6 space-y-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex-1 min-h-0 overflow-y-auto pr-1 pt-3 pb-6 grid content-start gap-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         style={{
           // Soft fade on BOTH edges — content dissolves into the
           // hero card above and the action bar below instead of

@@ -79,7 +79,9 @@ export function verifyElvixWebhook(args: VerifyWebhookArgs): ElvixWebhookVerifyR
     };
   }
 
-  const expected = createHmac("sha256", secret).update(`${tNum}.${rawBody}`).digest("hex");
+  // HMAC over the timestamp EXACTLY as the header carries it: re-serialising
+  // the number would drop leading zeros and sign a different string.
+  const expected = createHmac("sha256", secret).update(`${ts}.${rawBody}`).digest("hex");
   // Constant-time compare against every supported version line — only
   // v1 today, but the loop is forward-compatible.
   const expectedBuf = Buffer.from(expected, "hex");

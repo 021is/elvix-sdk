@@ -83,7 +83,7 @@ export type ElvixSignInButtonProps = {
  */ & ElvixSizeProps;
 
 /** Catalog keys of the preset labels. */
-const PRESET_LABEL: Record<ElvixSignInPreset, string> = {
+export const PRESET_LABEL: Record<ElvixSignInPreset, string> = {
   "sign-in-with-elvix": "buttons.signInWithElvix",
   "continue-with-elvix": "buttons.continueWithElvix",
   "sign-up-with-elvix": "buttons.signUpWithElvix",

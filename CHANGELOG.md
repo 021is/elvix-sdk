@@ -13,6 +13,110 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.14.0] — 2026-10-12
+
+First DanceClub release after the 0.13 batch: the host sees a sign-in the moment
+it happens, the sign-in card is spaced and branded the way the Console says, every
+button speaks the app's language, and a security review of the SDK is closed out.
+**Server first:** this release needs the matching elvix server (it echoes the new
+redirect `state`); the server is already live when this publishes.
+
+### Security
+
+- **HIGH, login CSRF / session fixation via the return fragment (fixed).**
+  `consumeElvixReturnToken` accepted any `#elvix_token=…` on any page, so a link
+  `https://host/#elvix_token=<attacker's session>` signed the visitor in as the
+  attacker. Every redirect sign-in (Google, GitHub, the hosted passkey pages) now
+  carries a one-time `state` nonce kept in `sessionStorage`; elvix echoes it back
+  as `elvix_state`, and the token is accepted only when it matches. Without a match
+  the token **and** the `elvix_landing` payload are discarded and the fragment is
+  still stripped. The landing payload is also shape-validated, so a forged link can
+  no longer choose the onboarding pane. A forged link does not cancel the sign-in
+  the user really started. Hosts that build their own `/api/auth/<provider>/start`
+  link must send a `state` (see the docs); the SDK's form and button do it for you.
+- **MEDIUM, navigation to unvalidated URLs (fixed).** One guard, `safeRedirect`,
+  now stands in front of every navigation to a server- or prop-supplied URL
+  (`finishSignIn`, One Tap, the recover gate): `http(s):` only, on the host's origin
+  or one of the app's registered origins (`allowedOrigins`, now in the bootstrap
+  envelope), else `/`. `javascript:`, `data:`, `//evil` and `/\evil` are refused.
+  The `redirect` handed to `onResult` is the checked one.
+- **LOW, `isSameOrigin` failed open (fixed).** An unparseable base URL returned
+  `true`, which turned on `credentials: "include"`. It now returns `false`.
+- **Dependencies.** `@modelcontextprotocol/sdk` 1.29.0 to 1.31.0 (exact pin; fixes
+  its OAuth-client advisory) and patched overrides for its HTTP-server transitives;
+  `vitest` 4 and patched build-tool transitives. `bun audit` reports no
+  vulnerabilities.
+- `verifyElvixWebhook` re-reviewed (timing-safe compare, tolerance both ways) and
+  now has tests; it signs over the timestamp exactly as the header carries it.
+  The toast's one `innerHTML` is pinned to its static icon map by a test.
+- Token storage trade-off written up in `docs/token-storage.md`. **No default
+  changed**; needs a decision.
+
+### Added
+
+- **`messages` on `<ElvixProvider>`**: your own strings, `"namespace.key": "text"`,
+  over the active locale. Reword a button, or supply a language elvix does not
+  ship (`locale="ja"` plus your texts; the rest stays English). A component's own
+  `label` still wins.
+- **`useElvixLanguageLevelLabel(level)`**: a level's label in the SDK's locale, the
+  editor's own words. `useElvixLanguageNames()` and the editor now share one name
+  source.
+- **`<ElvixPresence baseUrl>`** and it now works with no `<ElvixProvider>`: elvix's
+  own Console and Account (no `clientId`, no provider) pass `applicationId` and
+  `baseUrl=""` and drop their private copies of the heartbeat.
+- `allowedOrigins` on the bootstrap envelope type (optional).
+- `scripts/sync-catalogs.mjs` (upload + `--check`) and a publish step that uploads
+  the catalogs and verifies the CDN serves every key before `npm publish`.
+
+### Changed
+
+- **`onResult` / `onAuthenticated` fire after the provider has refreshed.** After
+  any sign-in, `useElvixSession()` / `useElvixUser()` are already authenticated
+  inside your callback. The final-step `onResult` is therefore one `sdk-context`
+  request later than before, not synchronous.
+- **Modal and drawer show the SDK version on the card**, under "Secured by elvix";
+  below a floating card it was invisible on the dimmed backdrop. Inline cards keep
+  it below the card.
+- **`<ElvixLanguages>` and `<ElvixRegion>` are translated**: language names from
+  `Intl.DisplayNames`, level labels and hints from the catalog (8 new keys in all
+  15 locales), search matching the translated, English and native names.
+- Panes stack with `gap`, never `space-y` (see Fixed). `STACK_2/3/4/5` live in
+  `pane-layout.ts`.
+
+### Fixed
+
+- **Email-code sign-in did not sign the user in until the tab regained focus**, in
+  every method but Google (which reloads). `finishSignIn` stored the token and fired
+  `onResult` but nothing told the provider. It now refreshes the provider first.
+  Signing out (`endLocalSession`) and a token change in another tab (`storage`)
+  refresh it too; an older read can no longer land after a sign-out and bring the
+  user back. A half-finished sign-in (an onboarding gate still open) does not flip
+  the host to signed in. The same fix covers a new user claiming a username.
+- **No gap between the code boxes and Verify.** `space-y-3` is a margin on the
+  children and the OTP fieldset's own `m-0` cancelled it. Every pane and every
+  `space-y` stack in the SDK (28 sites) now uses `gap` on the container. Measured
+  in Chromium at 12px, light and dark, card, modal and drawer.
+- **Purple focus ring over the app's brand colour.** The OTP boxes, both sign-in
+  inputs, the sign-out button's brand tone and the empty banner hard-coded elvix
+  purple. They now read `--elvix-primary` (shared `BRAND_FOCUS`); the sign-in card
+  re-installs the brand variables itself, because the modal and drawer portal out
+  of `<ElvixProvider>`. `tests/brand-colors.test.ts` fails on a new literal.
+- **Button labels were English in every other locale.** The catalogs had the
+  `buttons` namespace but the translation CDN did not (59 keys missing in all 15
+  locales). The CDN is synced, the release pipeline syncs and verifies it, and
+  tests fail if a key the SDK reads is missing from any catalog.
+- **`consumeElvixReturnToken` broke routers.** It stripped the fragment with
+  `replaceState(history.state, …)`, so Next's App Router kept `#elvix_token` in its
+  own URL and wrote it back later, leaving a duplicate history entry and the token
+  in the address bar. It strips first and with `replaceState(null, …)`, which
+  routers observe. (The test models the router's contract; it does not run Next.)
+
+### Needs from the host
+
+Nothing for any of the above, unless the host builds its own `/api/auth/<provider>/start`
+link (add `state`). Hosts on an older elvix server get the old behaviour minus the
+redirect return, which needs the matching server.
+
 ## [0.13.0] — 2026-10-07
 
 DanceClub's second batch: sign-out that tells the truth, and one Save row

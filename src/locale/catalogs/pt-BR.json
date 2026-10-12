@@ -985,6 +985,30 @@
       "thisLanguageFallback": {
         "other": "este idioma"
       },
+      "levelElementary": {
+        "other": "Básico"
+      },
+      "levelElementaryHint": {
+        "other": "Sei pedir um café, seguir placas e cumprimentar."
+      },
+      "levelIntermediate": {
+        "other": "Intermediário"
+      },
+      "levelIntermediateHint": {
+        "other": "Conversação. Ligações de trabalho rolam, artigos são de boa leitura."
+      },
+      "levelProficient": {
+        "other": "Avançado"
+      },
+      "levelProficientHint": {
+        "other": "Fluente. Nuances, expressões idiomáticas, um sotaque de vez em quando."
+      },
+      "levelNative": {
+        "other": "Nativo"
+      },
+      "levelNativeHint": {
+        "other": "Língua materna ou bilíngue desde a infância."
+      },
       "levelPickSubtitle": {
         "other": "Escolha o nível que soar certo. Você pode mudar depois."
       },

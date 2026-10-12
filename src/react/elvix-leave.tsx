@@ -33,6 +33,7 @@ import { DonePane } from "./done-pane";
 import { OtpPane } from "./elvix-deactivate";
 import { useElvixApp, useElvixAppContext } from "./elvix-provider";
 import { ElvixSaveButton } from "./elvix-save-button";
+import { STACK_4 } from "./pane-layout";
 import {
   type ChallengeCopy,
   ChallengedAction,
@@ -239,7 +240,7 @@ function LeaveWarn1Pane({ appName, onContinue }: { appName: string; onContinue: 
   const t = useT();
   return (
     <form
-      className="space-y-4"
+      className={STACK_4}
       onSubmit={(e) => {
         e.preventDefault();
         onContinue();
@@ -287,7 +288,7 @@ function LeaveWarn2Pane({
   const t = useT();
   return (
     <form
-      className="space-y-4"
+      className={STACK_4}
       onSubmit={(e) => {
         e.preventDefault();
         onContinue();
@@ -363,7 +364,7 @@ function RestorePane({
 }) {
   const t = useT();
   return (
-    <div className="space-y-4">
+    <div className={STACK_4}>
       <div className="flex items-start gap-3">
         <span
           className="size-10 rounded-full inline-flex items-center justify-center shrink-0"
@@ -414,7 +415,7 @@ function OwnerLockedPane({
     year: "numeric",
   });
   return (
-    <div className="space-y-4">
+    <div className={STACK_4}>
       <div className="flex items-start gap-3">
         <span className="size-10 rounded-full bg-amber-500/15 inline-flex items-center justify-center shrink-0">
           <Lock className="size-5 text-amber-600 dark:text-amber-300" strokeWidth={2.2} />

@@ -988,6 +988,30 @@
       "thisLanguageFallback": {
         "other": "tento jazyk"
       },
+      "levelElementary": {
+        "other": "Základní"
+      },
+      "levelElementaryHint": {
+        "other": "Objednám si kávu, vyznám se v cedulích, pozdravím."
+      },
+      "levelIntermediate": {
+        "other": "Středně pokročilý"
+      },
+      "levelIntermediateHint": {
+        "other": "Konverzační úroveň. Pracovní hovory zvládnu, články se čtou dobře."
+      },
+      "levelProficient": {
+        "other": "Pokročilý"
+      },
+      "levelProficientHint": {
+        "other": "Plynulý. Nuance, idiomy, občas přízvuk."
+      },
+      "levelNative": {
+        "other": "Rodilý"
+      },
+      "levelNativeHint": {
+        "other": "Mateřský jazyk nebo dvojjazyčnost od dětství."
+      },
       "levelPickSubtitle": {
         "other": "Zvolte úroveň, která sedí. Můžete to později změnit."
       },

@@ -53,7 +53,8 @@ Sign-in and sign-up are the same door. There is no separate registration flow to
 
 - `useElvixUser()` — the signed-in user (display name with fallbacks, username, identity summary, languages) and `loading` / `signed-in` / `signed-out`. Every SDK editor refreshes it after a save; `useElvixRefresh()` does it on demand.
 - `useElvixRoles()` / `useElvixScopes()` / `useElvixMemberships()` — what the app's admins granted the user, with names; `has("admin")` for checks. Changes in the Console arrive live. There is no setter: users cannot change their own access.
-- `useElvixPronounsLabel(pronouns)` and `useElvixLanguageNames()` — ready-to-render labels in the SDK's locale.
+- `useElvixPronounsLabel(pronouns)`, `useElvixLanguageNames()` and `useElvixLanguageLevelLabel(level)` — ready-to-render labels in the SDK's locale, the same words the editors show.
+- Your own words: `<ElvixProvider locale="de" messages={{ "buttons.signIn": "Rein da" }}>` rewords any string, or supplies a language elvix does not ship. All fifteen shipped locales translate every button; a component's `label` prop always wins.
 - `useElvixUserMedia(userId?)` — "does this user have a photo", from the same cache the avatars use.
 
 **Server helpers** — verify a session token against elvix on each protected request and get the live user, roles, scopes and memberships back. Because it re-checks on every call, a banned or signed-out user stops verifying within one request, so bans take effect server-side without you writing anything. Details: **[elvix.is/docs/verify-backend](https://elvix.is/docs/verify-backend)**.

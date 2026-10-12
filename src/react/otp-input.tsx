@@ -16,6 +16,7 @@ import {
   useRef,
 } from "react";
 import { useT } from "../locale/use-t";
+import { BRAND_FOCUS } from "./brand-focus";
 
 const OTP_LENGTH = 6;
 /** The six fixed positions. A box IS its position (it never moves or
@@ -127,7 +128,7 @@ export function OtpInput({
           onKeyDown={(e) => onKeyDown(i, e)}
           onPaste={onPaste}
           onFocus={(e) => e.target.select()}
-          className="w-full aspect-square min-w-0 max-w-12 mx-auto text-center text-[20px] font-semibold tabular-nums rounded-[10px] bg-surface border border-border-base text-fg-1 focus:outline-none focus:border-[#8e7dff] focus:ring-2 focus:ring-[#8e7dff]/20 transition disabled:opacity-50"
+          className={`w-full aspect-square min-w-0 max-w-12 mx-auto text-center text-[20px] font-semibold tabular-nums rounded-[10px] bg-surface border border-border-base text-fg-1 ${BRAND_FOCUS} transition disabled:opacity-50`}
         />
       ))}
     </fieldset>

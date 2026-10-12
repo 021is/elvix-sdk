@@ -15,8 +15,9 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ElvixSessionStatus } from "./elvix-provider";
+import { ElvixSessionStatus, useElvixRefresh } from "./elvix-provider";
 import { jsonInit, send } from "./profile-request";
+import { safeRedirect } from "./safe-redirect";
 import {
   authInit,
   consumeSignedOutFlag,
@@ -114,6 +115,8 @@ type FlowOptions = {
   onResult?: (result: ElvixSignInResult) => void;
   onAuthenticated?: (r: { ok: true; redirect: string; token?: string }) => void;
   navigate: boolean;
+  /** The app's registered origins: the only other places a redirect may go. */
+  allowedOrigins?: readonly string[];
 };
 
 export function useSignInFlow({
@@ -122,7 +125,9 @@ export function useSignInFlow({
   onResult,
   onAuthenticated,
   navigate,
+  allowedOrigins,
 }: FlowOptions) {
+  const refreshSession = useElvixRefresh();
   const [step, setStep] = useState<Step>(Step.IDENTIFIER);
   const [recover, setRecover] = useState<RecoverState | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -151,14 +156,20 @@ export function useSignInFlow({
    * `navigate={false}` or the deprecated `onAuthenticated`.
    */
   const finishSignIn = useCallback(
-    (redirect: string, token: string | undefined) => {
+    async (target: string, token: string | undefined) => {
       setStep(Step.AUTHENTICATING);
+      // The provider reads the new session BEFORE the host hears about it, so
+      // `useElvixSession()` / `useElvixUser()` are already authenticated when
+      // `onResult` runs. Without this the host showed "Sign in" until the tab
+      // regained focus. Never rejects.
+      await refreshSession();
+      const redirect = safeRedirect(target, allowedOrigins);
       onResult?.({ ok: true, phase: "complete", method: methodRef.current, redirect, token });
       onAuthenticated?.({ ok: true, redirect, token });
       const hostOwnsNav = navigate === false || Boolean(onAuthenticated);
       if (!hostOwnsNav) window.location.href = redirect;
     },
-    [onResult, onAuthenticated, navigate],
+    [onResult, onAuthenticated, navigate, refreshSession, allowedOrigins],
   );
 
   /** Shows the error inline and reports it; every failure funnels here. */
@@ -196,15 +207,23 @@ export function useSignInFlow({
         return;
       }
       const redirect = finalRedirect(body.redirect ?? defaultRedirect(intent));
-      finishSignIn(redirect, body.token ?? getElvixToken() ?? undefined);
+      void finishSignIn(redirect, body.token ?? getElvixToken() ?? undefined);
     },
     [intent, finalRedirect, finishSignIn],
+  );
+
+  /** Leaves the form for a server-named destination, through the redirect guard. */
+  const leaveTo = useCallback(
+    (target: string) => {
+      window.location.href = safeRedirect(target, allowedOrigins);
+    },
+    [allowedOrigins],
   );
 
   /** Finishes an onboarding leg at its destination with the stored bearer. */
   const finishOnboarding = useCallback(
     (backendRedirect?: string) =>
-      finishSignIn(finalRedirect(backendRedirect), getElvixToken() ?? undefined),
+      void finishSignIn(finalRedirect(backendRedirect), getElvixToken() ?? undefined),
     [finalRedirect, finishSignIn],
   );
 
@@ -219,6 +238,7 @@ export function useSignInFlow({
     finalRedirect,
     finishSignIn,
     finishOnboarding,
+    leaveTo,
     reportError,
     applyLanding,
   };
@@ -280,7 +300,7 @@ export function useSignInReturns(o: ReturnOptions) {
     if (sessionStatus !== ElvixSessionStatus.AUTHENTICATED || resumedRef.current) return;
     resumedRef.current = true;
     methodRef.current = "session";
-    finishSignIn(finalRedirect(), getElvixToken() ?? undefined);
+    void finishSignIn(finalRedirect(), getElvixToken() ?? undefined);
   }, [o.redirectIfAuthenticated, isPreview, sessionStatus, finishSignIn, finalRedirect, methodRef]);
 
   // The provider strips `#elvix_token=…&elvix_landing=…` on mount and queues
@@ -296,7 +316,7 @@ export function useSignInReturns(o: ReturnOptions) {
         applyLanding(landingFromFragment(token, landing));
         return;
       }
-      finishSignIn(finalRedirect(), token);
+      void finishSignIn(finalRedirect(), token);
     };
     const token = takeJustReturnedToken();
     if (token) dispatch(token, takeJustReturnedLanding());

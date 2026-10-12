@@ -47,6 +47,7 @@ import {
 import type { LegalEntityType } from "./legal-entity-schema";
 import { newSessionToken, type PlaceDetails, type PlaceSuggestion } from "./legal-entity-types";
 import { MAPS_MISSING_CLIENT_ID, mapsUrl } from "./maps-url";
+import { STACK_3 } from "./pane-layout";
 import { isSameOrigin } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { localTaxIdMatches, registrationNumberMatches } from "./tax-validation";
@@ -481,7 +482,7 @@ export function TaxIdsView({
       <WizardHeader onBack={onBack} />
       <Heading>{t("legalEntities.taxIdsTitle")}</Heading>
       <Subtitle>{subtitleCopy}</Subtitle>
-      <div className="mt-4 space-y-3">
+      <div className={`mt-4 ${STACK_3}`}>
         <label className="block">
           <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
             {t("legalEntities.localTaxNumberLabel")}
@@ -795,7 +796,7 @@ export function RegistrationView({
       <WizardHeader onBack={onBack} />
       <Heading>{t("legalEntities.registrationTitle")}</Heading>
       <Subtitle>{t("legalEntities.registrationSubtitle")}</Subtitle>
-      <div className="mt-4 space-y-3">
+      <div className={`mt-4 ${STACK_3}`}>
         <label className="block">
           <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
             {t("legalEntities.registrationNumberLabel")}
@@ -1378,7 +1379,7 @@ export function ContactInputView({
       <WizardHeader onBack={onBack} />
       <Heading>{t("legalEntities.contactInputTitle")}</Heading>
       <Subtitle>{t("legalEntities.contactInputSubtitle")}</Subtitle>
-      <div className="mt-4 space-y-3">
+      <div className={`mt-4 ${STACK_3}`}>
         <label className="block">
           <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
             {t("legalEntities.contactEmailLabel")}

@@ -9,11 +9,11 @@
 
 import { switchLocale } from "@021.is/spine-i18n/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { bundledEnglishCatalog, fetchCatalog } from "../locale/runtime";
+import { applyMessages, bundledEnglishCatalog, fetchCatalog } from "../locale/runtime";
 import type { ElvixAppContext } from "./elvix-provider";
 import { startHeartbeat } from "./presence-heartbeat";
 import { jsonInit, send } from "./profile-request";
-import { authInit } from "./session";
+import { authInit, onElvixSessionChange } from "./session";
 import type { ElvixBootstrapEnvelope } from "./types";
 
 export const DEFAULT_LOCALE = "en";
@@ -39,25 +39,35 @@ const isAbort = (e: unknown) => (e as { name?: string })?.name === "AbortError";
  * the fallback so a missing key never shows raw. A failed fetch falls back to
  * English silently.
  */
-export function useCatalogLocale(locale: string, i18nBase: string | undefined): void {
+export function useCatalogLocale(
+  locale: string,
+  i18nBase: string | undefined,
+  messages?: Readonly<Record<string, string>>,
+): void {
+  // A fresh object literal on every render must not refetch: key on content.
+  const messagesKey = JSON.stringify(messages ?? {});
   useEffect(() => {
+    const own = JSON.parse(messagesKey) as Record<string, string>;
+    const english = bundledEnglishCatalog();
     if (locale === DEFAULT_LOCALE) {
-      switchLocale({ primary: bundledEnglishCatalog(), fallback: null });
+      switchLocale({ primary: applyMessages(english, own), fallback: null });
       return;
     }
     let cancelled = false;
     void fetchCatalog(locale, i18nBase).then((primary) => {
       if (cancelled) return;
+      // A locale the CDN lacks (a host's own language) still gets the host's
+      // strings, over English for whatever it left out.
       switchLocale(
         primary
-          ? { primary, fallback: bundledEnglishCatalog() }
-          : { primary: bundledEnglishCatalog(), fallback: null },
+          ? { primary: applyMessages(primary, own), fallback: english }
+          : { primary: applyMessages(english, own), fallback: null },
       );
     });
     return () => {
       cancelled = true;
     };
-  }, [locale, i18nBase]);
+  }, [locale, i18nBase, messagesKey]);
 }
 
 /** Turn a failed bootstrap response into the error the sign-in card shows. */
@@ -164,9 +174,14 @@ export function useUserEnvelope(
     ElvixSessionStatus.LOADING,
   );
 
+  // Only the latest read may settle: a read that began before a sign-out must
+  // not land afterwards and put the old user back.
+  const generation = useRef(0);
   const load = useCallback(
     async (signal?: AbortSignal) => {
+      const mine = ++generation.current;
       const settle = (ctx: ElvixAppContext | null) => {
+        if (mine !== generation.current) return;
         setAppContext(ctx);
         setSessionStatus(ctx ? ElvixSessionStatus.AUTHENTICATED : ElvixSessionStatus.ANONYMOUS);
       };
@@ -193,6 +208,11 @@ export function useUserEnvelope(
   }, [load]);
 
   const refresh = useCallback(() => load(), [load]);
+
+  // The session changed outside a sign-in (this tab signed out, another tab
+  // signed in or out): re-read, so `useElvixSession()` follows with no refocus.
+  useEffect(() => onElvixSessionChange(() => void refresh()), [refresh]);
+
   return { appContext, sessionStatus, refresh };
 }
 
