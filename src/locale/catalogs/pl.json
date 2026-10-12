@@ -119,6 +119,9 @@
       "errorEmailArchived": {
         "other": "Tego adresu e-mail nie można już używać do logowania. Użyj swojego obecnego adresu."
       },
+      "errorPasskeyWrongApp": {
+        "other": "Ten klucz dostępu należy do innej aplikacji. Zaloguj się inaczej, a potem dodaj klucz dla tej aplikacji."
+      },
       "errorPasskeyUnknown": {
         "other": "Ten klucz dostępu nie jest zarejestrowany w elvix. Zaloguj się w inny sposób, a potem usuń go i dodaj nowy w ustawieniach bezpieczeństwa."
       },

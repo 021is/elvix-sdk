@@ -116,6 +116,9 @@
       "errorEmailArchived": {
         "other": "Este email já não pode ser usado para iniciar sessão. Utilize o seu endereço atual."
       },
+      "errorPasskeyWrongApp": {
+        "other": "Esta passkey é de outra aplicação. Inicie sessão de outra forma e depois adicione uma passkey para esta."
+      },
       "errorPasskeyUnknown": {
         "other": "Esta passkey não está registada no elvix. Inicie sessão de outra forma, depois remova-a e adicione uma nova nas definições de segurança."
       },

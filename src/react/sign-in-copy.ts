@@ -35,6 +35,9 @@ const ERROR_KEYS: Record<string, string> = {
   user_deleted: "signin.errorUserDeleted",
   email_archived: "signin.errorEmailArchived",
   unknown_credential: "signin.errorPasskeyUnknown",
+  // A passkey made for another app, or on the elvix account: refused for this one.
+  credential_not_for_app: "signin.errorPasskeyWrongApp",
+  credential_not_for_surface: "signin.errorPasskeyWrongApp",
   verify_failed: "signin.errorPasskeyVerifyFailed",
   not_verified: "signin.errorPasskeyVerifyFailed",
   challenge_invalid: "signin.errorPasskeyExpired",

@@ -117,6 +117,9 @@
       "errorEmailArchived": {
         "other": "Den här e-postadressen kan inte längre användas för inloggning. Använd din nuvarande adress."
       },
+      "errorPasskeyWrongApp": {
+        "other": "Den här nyckeln tillhör en annan app. Logga in på ett annat sätt och lägg sedan till en nyckel för den här appen."
+      },
       "errorPasskeyUnknown": {
         "other": "Den här passkeyn är inte registrerad hos elvix. Logga in på ett annat sätt, ta sedan bort den och lägg till en ny i säkerhetsinställningarna."
       },

@@ -116,6 +116,9 @@
       "errorEmailArchived": {
         "other": "Questa email non può più essere usata per accedere. Usa il tuo indirizzo attuale."
       },
+      "errorPasskeyWrongApp": {
+        "other": "Questa passkey appartiene a un'altra app. Accedi in un altro modo, poi aggiungine una per questa."
+      },
       "errorPasskeyUnknown": {
         "other": "Questa passkey non è registrata su elvix. Accedi in un altro modo, poi rimuovila e aggiungine una nuova nelle impostazioni di sicurezza."
       },

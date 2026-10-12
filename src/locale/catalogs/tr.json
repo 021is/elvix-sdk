@@ -116,6 +116,9 @@
       "errorEmailArchived": {
         "other": "Bu e-posta artık giriş için kullanılamaz. Güncel adresinizi kullanın."
       },
+      "errorPasskeyWrongApp": {
+        "other": "Bu geçiş anahtarı başka bir uygulamaya ait. Başka bir yöntemle giriş yapın, ardından bu uygulama için bir geçiş anahtarı ekleyin."
+      },
       "errorPasskeyUnknown": {
         "other": "Bu geçiş anahtarı elvix'te kayıtlı değil. Başka bir yolla giriş yapın, ardından onu kaldırıp güvenlik ayarlarından yenisini ekleyin."
       },

@@ -117,6 +117,9 @@
       "errorEmailArchived": {
         "other": "Cette adresse e-mail n'est plus utilisable pour se connecter. Utilisez votre adresse actuelle."
       },
+      "errorPasskeyWrongApp": {
+        "other": "Cette clé d'accès appartient à une autre application. Connectez-vous autrement, puis ajoutez-en une pour celle-ci."
+      },
       "errorPasskeyUnknown": {
         "other": "Cette clé d'accès n'est pas enregistrée chez elvix. Connectez-vous autrement, puis supprimez-la et ajoutez-en une nouvelle dans les paramètres de sécurité."
       },
