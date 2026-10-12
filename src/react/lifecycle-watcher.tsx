@@ -31,7 +31,7 @@ import { useEffect } from "react";
 import { useElvixApp, useElvixAppContext, useResolvedBaseUrl } from "./elvix-provider";
 import { LIVE_OPEN, subscribeLive } from "./live-stream";
 import { send } from "./profile-request";
-import { authInit, setElvixToken } from "./session";
+import { authInit, getElvixToken, setElvixToken } from "./session";
 import { useStableCallback } from "./use-stable-callback";
 
 /** Membership states the watcher reacts to. "active" = back to normal. */
@@ -116,6 +116,12 @@ export function ElvixLifecycleWatcher({
 
     const checkSession = async () => {
       if (fired || document.visibilityState === "hidden") return;
+      // `/api/v1/session` answers a BEARER only. A cookie session (elvix's own
+      // Console and Account, any same-origin host) has none, so the check can
+      // only refuse it, and with the live stream open that refusal read as "the
+      // session ended" and reloaded the page on every poll. Such a session is
+      // watched by the stream alone.
+      if (!getElvixToken()) return;
       const init = authInit();
       const res = await send(`${resolvedBaseUrl}/api/v1/session`, {
         method: "POST",

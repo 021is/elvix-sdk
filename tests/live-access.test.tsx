@@ -18,7 +18,8 @@ import {
   useElvixRoles,
 } from "../src/react/index";
 import { _resetLiveStreams, parseSseFrames } from "../src/react/live-stream";
-import { accessItem, BASE, CLIENT_ID, installFakeElvix } from "./helpers/fake-elvix";
+import { setElvixToken } from "../src/react/session";
+import { accessItem, BASE, CLIENT_ID, installFakeElvix, json } from "./helpers/fake-elvix";
 
 afterEach(() => {
   cleanup();
@@ -147,6 +148,77 @@ describe("ElvixLifecycleWatcher", () => {
     await waitFor(() => expect(fake.openStreams()).toBe(1));
     act(() => fake.push("user.lifecycle.changed", { userId: "usr_1", status: "banned" }));
     await waitFor(() => expect(onSignedOut).toHaveBeenCalledWith("banned"));
+  });
+
+  /**
+   * First-party Console and Account sessions are COOKIES: no bearer exists, and
+   * `/api/v1/session` only answers a bearer. With the live stream open (so the
+   * watcher believes the session is alive) that refusal read as "session ended"
+   * and the page RELOADED, on every poll: the Account security wizard reloaded
+   * when it asked for an OTP. A session with no token is watched by the stream
+   * alone.
+   */
+  describe("a cookie session (no token)", () => {
+    const refuseBearerless: Parameters<typeof installFakeElvix>[1] = [
+      [
+        "POST",
+        (u) => u.includes("/api/v1/session"),
+        () => json({ ok: false, error: "no_bearer" }, 401),
+      ],
+    ];
+
+    it("is not ended by the bearer-only session check", async () => {
+      setElvixToken(null);
+      const fake = installFakeElvix({}, refuseBearerless);
+      const onSignedOut = vi.fn();
+      render(
+        <Provider>
+          <ElvixLifecycleWatcher onSignedOut={onSignedOut} />
+        </Provider>,
+      );
+      await waitFor(() => expect(fake.openStreams()).toBe(1));
+      await new Promise((r) => setTimeout(r, 300));
+      expect(onSignedOut).not.toHaveBeenCalled();
+      expect(fake.calls("/api/v1/session")).toBe(0);
+    });
+
+    it("is still ended by a ban pushed on the stream", async () => {
+      setElvixToken(null);
+      const fake = installFakeElvix({}, refuseBearerless);
+      const onSignedOut = vi.fn();
+      render(
+        <Provider>
+          <ElvixLifecycleWatcher onSignedOut={onSignedOut} />
+        </Provider>,
+      );
+      await waitFor(() => expect(fake.openStreams()).toBe(1));
+      act(() => fake.push("user.lifecycle.changed", { userId: "usr_1", status: "banned" }));
+      await waitFor(() => expect(onSignedOut).toHaveBeenCalledWith("banned"));
+    });
+  });
+
+  it("a bearer session whose session check fails IS ended (the stream was open)", async () => {
+    setElvixToken("tok_1");
+    const fake = installFakeElvix({}, [
+      [
+        "POST",
+        (u) => u.includes("/api/v1/session"),
+        () => json({ ok: false, error: "revoked" }, 401),
+      ],
+    ]);
+    const onSignedOut = vi.fn();
+    render(
+      <Provider>
+        <ElvixLifecycleWatcher onSignedOut={onSignedOut} />
+      </Provider>,
+    );
+    await waitFor(() => expect(fake.openStreams()).toBe(1));
+    // The stream opens, then the next check (visibility change) sees the revoke.
+    act(() => {
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    await waitFor(() => expect(onSignedOut).toHaveBeenCalledWith("revoked"));
+    setElvixToken(null);
   });
 
   it("an inline onSignedOut that re-renders the host does not reconnect", async () => {
