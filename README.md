@@ -94,6 +94,8 @@ Found something? Read [SECURITY.md](./SECURITY.md) and report through [elvix.is/
 
 Deep purple: `#5d4dff` on light, `#8e7dff` on dark. Override per application from the Console, or set it explicitly on the provider to win over the Console default.
 
+The mark itself is `<ElvixLogo size={14} />` (add `withText` for the wordmark). Its shield takes your text colour, so it fits light and dark: use it to show what elvix handles in your own UI, such as the settings rows that open elvix's editors.
+
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md). CI runs on every push and must be green before merge.

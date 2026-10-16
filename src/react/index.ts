@@ -64,6 +64,9 @@ export { ElvixIdentityForm, type Gender, type Pronouns } from "./elvix-identity-
 export { ElvixLanguages } from "./elvix-languages";
 export { ElvixLeave } from "./elvix-leave";
 export { ElvixLegalEntities } from "./elvix-legal-entities";
+// The mark, for a host to show what elvix handles (a settings row, a
+// "managed by" note). The shield follows the host's text colour.
+export { ElvixLogo, type ElvixLogoProps } from "./elvix-logo";
 export {
   ElvixOnboarding,
   type ElvixOnboardingProps,

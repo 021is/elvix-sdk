@@ -13,9 +13,16 @@
  *
  * Construction is original; not derived from any competitor's mark.
  * Adapts to light/dark via currentColor on the shield.
+ *
+ * Exported (0.14.5) so a host can mark what elvix handles, e.g. the rows of
+ * its own settings that open elvix's editors. Set the colour with the host's
+ * text colour (`className="text-foreground"`); the "e" is cut out, so the
+ * page shows through in either theme.
  */
-type ElvixLogoProps = {
+export type ElvixLogoProps = {
+  /** The shield's side in px (default 22). */
   size?: number;
+  /** The lowercase "elvix" wordmark beside the shield. */
   withText?: boolean;
   className?: string;
 };
