@@ -13,9 +13,16 @@
  *
  * Construction is original; not derived from any competitor's mark.
  * Adapts to light/dark via currentColor on the shield.
+ *
+ * Exported (0.14.5) so a host can mark what elvix handles, e.g. the rows of
+ * its own settings that open elvix's editors. Set the colour with the host's
+ * text colour (`className="text-foreground"`); the "e" is cut out, so the
+ * page shows through in either theme.
  */
-type ElvixLogoProps = {
+export type ElvixLogoProps = {
+  /** The shield's side in px (default 22). */
   size?: number;
+  /** The lowercase "elvix" wordmark beside the shield. */
   withText?: boolean;
   className?: string;
 };
@@ -23,9 +30,11 @@ type ElvixLogoProps = {
 export function ElvixLogo({ size = 22, withText = false, className }: ElvixLogoProps) {
   const wordmarkSize = Math.round(size * 0.84);
   return (
-    // role="img" is what makes the aria-label count: on a bare <div> the
-    // label is ignored, so the logo reached screen readers unnamed.
-    <div
+    // role="img" is what makes the aria-label count: on a bare element the
+    // label is ignored, so the logo reached screen readers unnamed. A <span>,
+    // not a <div>: hosts put the mark inside buttons and links (0.14.5), where
+    // only phrasing content is valid; inline-flex looks the same either way.
+    <span
       role="img"
       aria-label="elvix"
       className={`inline-flex items-center gap-[7px] ${className ?? ""}`}
@@ -87,6 +96,6 @@ export function ElvixLogo({ size = 22, withText = false, className }: ElvixLogoP
           elvix
         </span>
       )}
-    </div>
+    </span>
   );
 }
