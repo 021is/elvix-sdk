@@ -23,6 +23,11 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   is `currentColor`, so it follows the host's text colour in light and dark, and the "e"
   is cut out of it; the accent dot is elvix violet. It reaches screen readers as "elvix".
 
+### Changed
+
+- `<ElvixLogo>`'s root is a `<span>` (was a `<div>`), so the mark is valid inside a
+  button or a link. It is `inline-flex` as before; nothing moves.
+
 ## [0.14.4] — 2026-10-12
 
 ### Added

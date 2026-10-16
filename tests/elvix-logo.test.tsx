@@ -26,6 +26,16 @@ describe("ElvixLogo", () => {
     expect(mark.querySelector("path")?.getAttribute("fill")).toBe("currentColor");
   });
 
+  it("is phrasing content, valid inside a host's button or link", () => {
+    render(
+      <button type="button">
+        <ElvixLogo size={14} /> Username
+      </button>,
+    );
+    const mark = screen.getByRole("img", { name: "elvix" });
+    expect(mark.tagName).toBe("SPAN");
+  });
+
   it("shows the wordmark only when asked", () => {
     render(<ElvixLogo />);
     expect(screen.queryByText("elvix")).toBeNull();

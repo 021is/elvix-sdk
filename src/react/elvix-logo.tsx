@@ -30,9 +30,11 @@ export type ElvixLogoProps = {
 export function ElvixLogo({ size = 22, withText = false, className }: ElvixLogoProps) {
   const wordmarkSize = Math.round(size * 0.84);
   return (
-    // role="img" is what makes the aria-label count: on a bare <div> the
-    // label is ignored, so the logo reached screen readers unnamed.
-    <div
+    // role="img" is what makes the aria-label count: on a bare element the
+    // label is ignored, so the logo reached screen readers unnamed. A <span>,
+    // not a <div>: hosts put the mark inside buttons and links (0.14.5), where
+    // only phrasing content is valid; inline-flex looks the same either way.
+    <span
       role="img"
       aria-label="elvix"
       className={`inline-flex items-center gap-[7px] ${className ?? ""}`}
@@ -94,6 +96,6 @@ export function ElvixLogo({ size = 22, withText = false, className }: ElvixLogoP
           elvix
         </span>
       )}
-    </div>
+    </span>
   );
 }
