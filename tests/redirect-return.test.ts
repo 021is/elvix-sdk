@@ -105,6 +105,19 @@ describe("redirect return: the state nonce (login CSRF)", () => {
     const enroll = new URL(hostedCeremonyUrl("https://elvix.test", "passkey-register", "pub_x"));
     expect(enroll.searchParams.get("state")).toBe(state);
   });
+
+  it.each([
+    ["same-origin baseUrl", window.location.origin],
+    ['baseUrl ""', ""],
+  ])("sends no returnUrl from elvix's own hosted page (%s)", (_name, baseUrl) => {
+    // elvix refuses a returnUrl on its own origin (no app lists elvix.is):
+    // the hosted page completes with the cookie session instead.
+    const href = oauthStartHref("google", baseUrl, "app", "pub_x");
+    const google = new URL(href, window.location.href);
+    expect(google.searchParams.get("returnUrl")).toBeNull();
+    expect(google.searchParams.get("state")).toBeNull();
+    expect(google.searchParams.get("clientId")).toBe("pub_x");
+  });
 });
 
 describe("redirect return: the fragment is always stripped", () => {

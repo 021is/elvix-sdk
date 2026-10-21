@@ -771,7 +771,7 @@ function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: string, i
     setBusy(false);
     if (result.ok) {
       flow.methodRef.current = "passkey";
-      flow.applyLanding({ next_step: "done", redirect: result.redirect, token: result.token });
+      flow.applyLanding(result.landing);
       return;
     }
     if (result.error === "passkey_cancelled") {

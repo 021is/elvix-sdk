@@ -21,10 +21,19 @@ afterEach(() => {
 const PANE = { timeout: 3000 };
 type Body = Record<string, unknown>;
 
-type Endpoint = "start" | "resolve" | "verify" | "check" | "claim";
+type Endpoint =
+  | "passkeyStart"
+  | "passkeyFinish"
+  | "start"
+  | "resolve"
+  | "verify"
+  | "check"
+  | "claim";
 
 /** [name, method, path, default reply]; the most specific path first. */
 const ENDPOINTS: [Endpoint, string, string, Body][] = [
+  ["passkeyStart", "POST", "/api/auth/passkey/sign-in/start", { options: { challenge: "Y2g" } }],
+  ["passkeyFinish", "POST", "/api/auth/passkey/sign-in/finish", { redirect: "/home", token: "t" }],
   ["start", "POST", "/api/auth/otp/start", { ok: true, challengeId: "c1" }],
   ["resolve", "POST", "/api/auth/identifier/resolve", { ok: true, challengeId: "c2" }],
   ["verify", "POST", "/api/auth/otp/verify", { ok: true, redirect: "/home", token: "tok_1" }],
@@ -160,6 +169,33 @@ describe("ElvixSignInForm", () => {
     await waitFor(() =>
       expect(onResult).toHaveBeenCalledWith(expect.objectContaining({ redirect: "/dashboard" })),
     );
+  });
+
+  it("a passkey sign-in still shows the username step the server names", async () => {
+    // 0.14.5 forced "done" here: the step was skipped and the user landed on "/".
+    const buf = (s: string) => new TextEncoder().encode(s).buffer;
+    const assertion = {
+      id: "cred1",
+      rawId: buf("raw"),
+      getClientExtensionResults: () => ({}),
+      response: { clientDataJSON: buf("cd"), authenticatorData: buf("ad"), signature: buf("s") },
+    };
+    Object.defineProperty(window, "PublicKeyCredential", { configurable: true, value: class {} });
+    Object.defineProperty(navigator, "credentials", {
+      configurable: true,
+      value: { get: vi.fn(async () => assertion) },
+    });
+    const { onResult } = mount(
+      {
+        passkeyFinish: { token: "t", next_step: "username", suggestions: ["ada"], final: "/w" },
+      },
+      { methodPasskey: true },
+    );
+    const passkey = await screen.findByRole("button", { name: /passkey/i });
+    await act(async () => fireEvent.click(passkey));
+
+    await screen.findByText("Pick a username", {}, PANE);
+    expect(onResult).not.toHaveBeenCalledWith(expect.objectContaining({ ok: true }));
   });
 
   it("surfaces a blocked OAuth redirect from ?elvix_error and strips it", async () => {

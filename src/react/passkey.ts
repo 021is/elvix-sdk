@@ -21,6 +21,7 @@
  */
 
 import { authInit, isSameOrigin, setElvixToken } from "./session";
+import type { Landing } from "./use-sign-in-flow";
 
 /** base64url string → ArrayBuffer. */
 function b64urlToBuf(b64url: string): ArrayBuffer {
@@ -105,8 +106,13 @@ type AssertionJSON = {
   };
 };
 
+/**
+ * A successful sign-in carries the finisher's whole landing: a passkey skips
+ * the passkey gate, not the username or restore steps, so dropping
+ * `next_step` here skipped them and navigated to "/" instead of `final`.
+ */
 export type PasskeySignInResult =
-  | { ok: true; redirect?: string; token?: string }
+  | { ok: true; landing: Landing }
   | { ok: false; error: string; message?: string };
 
 async function promptAssertion(
@@ -188,7 +194,7 @@ export async function runPasskeySignIn(
   const prompt = await promptAssertion(start.data.options);
   if (!prompt.ok) return prompt;
 
-  const finish = await postEnvelope<{ redirect?: string; token?: string }>(
+  const finish = await postEnvelope<Landing>(
     `${baseUrl}/api/auth/passkey/sign-in/finish`,
     { ...init, body: JSON.stringify({ ...scope, ...prompt.assertion }) },
     "passkey_verify_failed",
@@ -197,7 +203,7 @@ export async function runPasskeySignIn(
   // Cross-origin: store the session token returned in the body (no cookie is
   // set on a third-party origin) so every later SDK call carries it.
   if (finish.data?.token) setElvixToken(finish.data.token);
-  return { ok: true, redirect: finish.data?.redirect, token: finish.data?.token };
+  return { ok: true, landing: finish.data ?? {} };
 }
 
 // ─── Registration ────────────────────────────────────────────────────────────
