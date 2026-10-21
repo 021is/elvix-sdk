@@ -13,6 +13,17 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.14.7] — 2026-10-21
+
+### Security
+
+- **`@modelcontextprotocol/sdk` 1.32.1** (was 1.31.0), under the `elvix-mcp` server. 1.24 to
+  1.31 carry four advisories: bearer authentication accepting tokens issued for another
+  service (GHSA-rvq5-wwqv-78pq), one request exhausting memory during validation
+  (GHSA-46jr-4wx8-v453), experimental tasks not tied to their session (GHSA-22jm-h49p-29qw),
+  and client transports re-sending headers across a cross-origin redirect
+  (GHSA-6prh-2h8m-c8cw). Same major; nothing else changes.
+
 ## [0.14.6] — 2026-10-21
 
 ### Fixed
