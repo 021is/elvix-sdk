@@ -3,7 +3,7 @@
  * the OAuth start links, and where a finished sign-in lands by default.
  */
 
-import { signInState } from "./session";
+import { isSameOrigin, signInState } from "./session";
 
 export type Translator = (key: string, params?: Record<string, string | number>) => string;
 
@@ -86,7 +86,10 @@ export type OAuthProvider = (typeof OAuthProvider)[keyof typeof OAuthProvider];
  * can bounce the user back to THIS page with the session token in the
  * fragment; elvix checks that origin against the app's `allowedOrigins`, so
  * deriving it from the live location is safe. Account and console intents are
- * first-party and need none.
+ * first-party and need none, and neither does elvix's own hosted page: on
+ * elvix's origin the callback completes with the cookie session, and a
+ * `returnUrl` there is refused (elvix is in no app's `allowedOrigins`), which
+ * broke Google and GitHub on `/sign-in/<clientId>`.
  */
 export function oauthStartHref(
   provider: OAuthProvider,
@@ -96,7 +99,7 @@ export function oauthStartHref(
 ): string {
   const params = new URLSearchParams({ intent: intent ?? "app" });
   if (clientId) params.set("clientId", clientId);
-  if (intent === "app" && typeof window !== "undefined") {
+  if (intent === "app" && typeof window !== "undefined" && !isSameOrigin(baseUrl)) {
     params.set("returnUrl", window.location.href);
     const state = signInState();
     if (state) params.set("state", state);

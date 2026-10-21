@@ -13,6 +13,21 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.14.6] — 2026-10-21
+
+### Fixed
+
+- **Google and GitHub work on elvix's hosted sign-in page again.** `oauthStartHref` sent a
+  `returnUrl` (and `state`) from every `intent="app"` form, including the one elvix renders
+  at `/sign-in/<clientId>`. elvix refuses a return URL on its own origin, which no app
+  lists, so both buttons answered `403 return_url_not_allowed`. A form on elvix's own
+  origin (`baseUrl` same-origin or `""`) now sends neither and completes with the cookie
+  session, as elvix expects. Cross-origin forms are unchanged.
+- **A passkey sign-in shows the username and restore steps.** The passkey finish answer
+  was cut to `redirect` and `token` and treated as done, so a member who still owed a
+  username or a restore skipped it and was sent to `/` (the step names `final`, not
+  `redirect`). The whole landing now reaches the form, like every other method.
+
 ## [0.14.5] — 2026-10-16
 
 ### Added

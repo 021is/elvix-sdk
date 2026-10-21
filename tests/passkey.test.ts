@@ -55,8 +55,19 @@ describe("runPasskeySignIn", () => {
       "/sign-in/finish": () => ok({ token: "tok_1", redirect: "/app" }),
     });
     const r = await runPasskeySignIn(BASE, "client_1");
-    expect(r).toEqual({ ok: true, token: "tok_1", redirect: "/app" });
+    expect(r).toEqual({ ok: true, landing: { token: "tok_1", redirect: "/app" } });
     expect(getElvixToken()).toBe("tok_1");
+  });
+
+  it("keeps the onboarding step the server named", async () => {
+    // A passkey skips the passkey gate only: a username or a restore is still owed.
+    stubCredentials({ get: async () => assertion });
+    const landing = { token: "tok_1", next_step: "username", suggestions: ["ada"], final: "/w" };
+    stubFetch({
+      "/sign-in/start": () => ok({ options: { challenge: "Y2g" } }),
+      "/sign-in/finish": () => ok(landing),
+    });
+    expect(await runPasskeySignIn(BASE, "client_1")).toEqual({ ok: true, landing });
   });
 
   it("maps a dismissed prompt to passkey_cancelled", async () => {
