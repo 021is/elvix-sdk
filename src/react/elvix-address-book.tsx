@@ -53,6 +53,7 @@ import { EditableField, type PlaceDetails, ReturnTo, View } from "./address-book
 import type { AddressKind, AddressRecord } from "./address-schema";
 import { BRAND_FOCUS } from "./brand-focus";
 import { MaybeCard } from "./elvix-card";
+import { elvixFetch } from "./elvix-fetch";
 import { ElvixInput } from "./elvix-input";
 import { useElvixContext } from "./elvix-provider";
 import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
@@ -561,7 +562,7 @@ function SearchView({
           setSuggestions([]);
           return;
         }
-        const res = await fetch(url, {
+        const res = await elvixFetch(url, {
           signal: controller.signal,
           credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit",
         });
@@ -596,7 +597,7 @@ function SearchView({
           setPicking(null);
           return;
         }
-        const res = await fetch(url, {
+        const res = await elvixFetch(url, {
           credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit",
         });
         if (!res.ok) throw new Error(`http ${res.status}`);

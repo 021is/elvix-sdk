@@ -10,6 +10,7 @@
 import { switchLocale } from "@021.is/spine-i18n/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { applyMessages, bundledEnglishCatalog, fetchCatalog } from "../locale/runtime";
+import { elvixFetch } from "./elvix-fetch";
 import type { ElvixAppContext } from "./elvix-provider";
 import { startHeartbeat } from "./presence-heartbeat";
 import { jsonInit, send } from "./profile-request";
@@ -105,7 +106,7 @@ export function useBootstrap(
       }
       lastLoad.current = Date.now();
       try {
-        const r = await fetch(`${baseUrl}/api/v1/bootstrap/${encodeURIComponent(clientId)}`, {
+        const r = await elvixFetch(`${baseUrl}/api/v1/bootstrap/${encodeURIComponent(clientId)}`, {
           signal,
         });
         // Tolerate a non-JSON body: a CORS-blocked or 5xx response may have
@@ -190,7 +191,7 @@ export function useUserEnvelope(
       // a signed-out user until the form finishes it (see `isOnboardingPending`).
       if (isOnboardingPending()) return settle(null);
       try {
-        const r = await fetch(
+        const r = await elvixFetch(
           `${baseUrl}/api/account/apps/${encodeURIComponent(clientId)}/sdk-context`,
           { ...authInit(), signal },
         );

@@ -60,6 +60,9 @@ export { ElvixCard } from "./elvix-card";
 export { ElvixDeactivate } from "./elvix-deactivate";
 export { ElvixDeviceApproval, type ElvixDeviceApprovalProps } from "./elvix-device-approval";
 export { ElvixExport } from "./elvix-export";
+// `fetch` for your own calls to elvix with the session token: adds the DPoP
+// proof every SDK call carries, so an app with DPoP on accepts them (0.15).
+export { elvixFetch } from "./elvix-fetch";
 export { ElvixIdentityForm, type Gender, type Pronouns } from "./elvix-identity-form";
 export { ElvixLanguages } from "./elvix-languages";
 export { ElvixLeave } from "./elvix-leave";

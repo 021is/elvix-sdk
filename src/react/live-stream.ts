@@ -25,6 +25,7 @@
  *     whatever changed while disconnected has to be re-read.
  */
 
+import { elvixFetch } from "./elvix-fetch";
 import { authInit } from "./session";
 
 export type LiveEvent = { type: string; data: unknown };
@@ -116,7 +117,7 @@ async function open(conn: Connection) {
   const auth = authInit();
   let refused = false;
   try {
-    const res = await fetch(url, {
+    const res = await elvixFetch(url, {
       headers: { accept: "text/event-stream", ...auth.headers },
       credentials: auth.credentials,
       cache: "no-store",

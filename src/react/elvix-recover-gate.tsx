@@ -24,6 +24,7 @@ import { EyeOff, LogOut, Undo2, X } from "lucide-react";
 import { useState } from "react";
 import { useT } from "../locale/use-t";
 import { DonePane } from "./done-pane";
+import { elvixFetch } from "./elvix-fetch";
 import { STACK_4 } from "./pane-layout";
 import { authInit } from "./session";
 
@@ -117,7 +118,7 @@ export function ElvixRecoverGate({
     setError(null);
     try {
       const init = authInit();
-      const res = await fetch(`${baseUrl}/api/auth/recover-membership`, {
+      const res = await elvixFetch(`${baseUrl}/api/auth/recover-membership`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...init.headers },
         credentials: init.credentials,

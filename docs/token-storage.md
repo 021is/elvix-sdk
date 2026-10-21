@@ -1,7 +1,15 @@
 # Where the session token lives: trade-off and proposal
 
-Status: **proposal, nothing changed.** The default stays as it is until Edvard decides.
-Written 2026-10-12 for the 0.14.0 security review (item 10).
+Status: **decided 2026-10-21: option E, DPoP, shipped in 0.15** (phase 1). Written 2026-10-12 for
+the 0.14.0 security review (item 10); the options below are kept for the reasoning.
+
+**What shipped.** The token still rests in `localStorage`, but an app that switches DPoP on
+(elvix Console, Sessions) binds each session to a P-256 key the browser keeps in IndexedDB with
+`extractable: false`. Every SDK call carries a proof signed with it (`src/react/dpop.ts`,
+`src/react/elvix-fetch.ts`), and elvix refuses the bound token without one. An XSS can still act
+while the page is open (it can ask the browser to sign), but a token copied out of
+`localStorage` is useless anywhere else. Phase 2: `verifyElvixToken` checks proofs, so customer
+backends get the same protection.
 
 ## Today
 
@@ -32,6 +40,7 @@ leaked through URLs; they do not change where it rests.
 | **B. Memory only** | Partly: no copy at rest, nothing to read after the tab closes. A live XSS can still call the SDK or read the in-memory value. | Signed out on every reload and new tab unless the host re-establishes the session. Breaks the "open a second tab" and "refresh" cases for every host that relies on the SDK alone. |
 | **C. Memory + host-set httpOnly cookie** | **Yes** for the host's own session: the browser never exposes an httpOnly cookie to script. | The host needs a backend route that verifies the token once and sets its own cookie (most already do: they mirror `elvix_token` today, but from `document.cookie`, which is script-readable). The SDK would then call elvix through the host's backend or with the cookie, which means a proxy or a same-site elvix subdomain. Real integration work per host. |
 | **D. Short-lived access token + refresh** | Limits the window (minutes instead of the session). A stolen token dies quickly; a refresh token still has to live somewhere. | Needs a refresh endpoint, rotation, and a place for the refresh token that is not script-readable (back to option C). Moves the problem, shrinks the blast radius. |
+| **E. DPoP, sender-constrained tokens (chosen, 0.15)** | **Yes** for theft: the copied token is refused without the browser's non-extractable key. A live XSS can still act through the page. | One switch per app in the Console. No host change; browsers without WebCrypto stay unbound. Customer backends verifying the bare token are phase 2. |
 
 ## Recommendation
 

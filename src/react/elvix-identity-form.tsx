@@ -35,6 +35,7 @@ import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
 import { ElvixChipGroup } from "./elvix-chip-group";
 import { ElvixDateInput } from "./elvix-date-input";
+import { elvixFetch } from "./elvix-fetch";
 import { ElvixInput } from "./elvix-input";
 import { useElvixContext } from "./elvix-provider";
 import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
@@ -70,7 +71,7 @@ export function ElvixIdentityForm({
   useEffect(() => {
     if (initial !== undefined) return;
     let aborted = false;
-    fetch(`${ctx.baseUrl}/api/account/profile/identity`, { cache: "no-store", ...authInit() })
+    elvixFetch(`${ctx.baseUrl}/api/account/profile/identity`, { cache: "no-store", ...authInit() })
       .then((r) => (r.ok ? r.json() : null))
       .then((body) => {
         if (aborted || !body) return;

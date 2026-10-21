@@ -23,6 +23,7 @@
 
 import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
+import { elvixFetch } from "./elvix-fetch";
 import { ElvixInput } from "./elvix-input";
 import {
   useElvixApp,
@@ -208,7 +209,7 @@ function ElvixUsernameInner({
     const t = setTimeout(async () => {
       try {
         const auth = authInit();
-        const res = await fetch(`${ctx.baseUrl}/api/account/apps/${appId}/username/check`, {
+        const res = await elvixFetch(`${ctx.baseUrl}/api/account/apps/${appId}/username/check`, {
           method: "POST",
           headers: { "Content-Type": "application/json", ...auth.headers },
           credentials: auth.credentials,
@@ -252,7 +253,7 @@ function ElvixUsernameInner({
     setServerError(null);
     try {
       const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/apps/${appId}/username`, {
+      const res = await elvixFetch(`${ctx.baseUrl}/api/account/apps/${appId}/username`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", ...auth.headers },
         credentials: auth.credentials,

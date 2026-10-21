@@ -4,6 +4,7 @@
  */
 
 import type { ElvixActionResult } from "../types/index";
+import { elvixFetch } from "./elvix-fetch";
 import { authInit } from "./session";
 
 export type FetchOpts = {
@@ -24,7 +25,7 @@ export async function appPost<T>(
 ): Promise<ElvixActionResult<T>> {
   try {
     const auth = authInit();
-    const res = await fetch(`${opts.baseUrl}/api/account/apps/${opts.applicationId}${path}`, {
+    const res = await elvixFetch(`${opts.baseUrl}/api/account/apps/${opts.applicationId}${path}`, {
       method: "POST",
       headers: { "content-type": "application/json", ...auth.headers },
       credentials: auth.credentials,
@@ -51,7 +52,7 @@ export async function appPatch<T>(
 ): Promise<ElvixActionResult<T>> {
   try {
     const auth = authInit();
-    const res = await fetch(`${opts.baseUrl}/api/account/apps/${opts.applicationId}${path}`, {
+    const res = await elvixFetch(`${opts.baseUrl}/api/account/apps/${opts.applicationId}${path}`, {
       method: "PATCH",
       headers: { "content-type": "application/json", ...auth.headers },
       credentials: auth.credentials,
@@ -74,7 +75,7 @@ export async function appPatch<T>(
 export async function appDelete<T>(opts: FetchOpts, path: string): Promise<ElvixActionResult<T>> {
   try {
     const auth = authInit();
-    const res = await fetch(`${opts.baseUrl}/api/account/apps/${opts.applicationId}${path}`, {
+    const res = await elvixFetch(`${opts.baseUrl}/api/account/apps/${opts.applicationId}${path}`, {
       method: "DELETE",
       headers: { ...auth.headers },
       credentials: auth.credentials,

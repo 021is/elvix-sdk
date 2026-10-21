@@ -18,6 +18,7 @@ import { MaybeCard } from "./elvix-card";
  */
 
 import { useT } from "../locale/use-t";
+import { elvixFetch } from "./elvix-fetch";
 import { useElvixAppContext, useElvixContext } from "./elvix-provider";
 import { ElvixSaveButton } from "./elvix-save-button";
 import { OtpInput } from "./otp-input";
@@ -183,7 +184,7 @@ function PreviewPane({ target, go }: { target: ExportTarget; go: (p: Pane, d?: 1
         // LEGACY: spine-lint-disable-next-line spine/enum-over-string
         target.kind === "identity" ? "" : `?applicationId=${encodeURIComponent(target.appId)}`;
       try {
-        const res = await fetch(`${ctx.baseUrl}/api/account/export/preview${qs}`, {
+        const res = await elvixFetch(`${ctx.baseUrl}/api/account/export/preview${qs}`, {
           ...authInit(),
         });
         const body = unwrapEnvelope(await res.json());
@@ -306,7 +307,7 @@ function SendToPane({
     setErr(null);
     try {
       const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/export/challenge`, {
+      const res = await elvixFetch(`${ctx.baseUrl}/api/account/export/challenge`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...auth.headers },
         credentials: auth.credentials,
@@ -429,7 +430,7 @@ function OtpPane({
     setErr(null);
     try {
       const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/export/challenge`, {
+      const res = await elvixFetch(`${ctx.baseUrl}/api/account/export/challenge`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...auth.headers },
         credentials: auth.credentials,
@@ -466,7 +467,7 @@ function OtpPane({
     setErr(null);
     try {
       const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/export/apply`, {
+      const res = await elvixFetch(`${ctx.baseUrl}/api/account/export/apply`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...auth.headers },
         credentials: auth.credentials,

@@ -28,6 +28,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { elvixFetch } from "./elvix-fetch";
 import { ElvixSessionStatus, useElvixAppContext, useElvixContext } from "./elvix-provider";
 import { ensureLiveChannel, onMediaPublished } from "./live-media";
 import { subscribeMediaStream } from "./media-stream";
@@ -83,7 +84,7 @@ onMediaPublished(({ kind, userId, state }) => {
 
 async function fetchMedia(baseUrl: string, userId: string): Promise<UserMedia | null> {
   try {
-    const res = await fetch(
+    const res = await elvixFetch(
       `${baseUrl}/public/api/users/${encodeURIComponent(userId)}/media-meta`,
       // Public read: no cookies needed, and omitting them keeps the request
       // "simple" cross-origin (no credentialed-CORS echo requirement).

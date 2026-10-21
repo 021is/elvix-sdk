@@ -25,6 +25,7 @@ import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useT } from "../locale/use-t";
 import { findCountry } from "./countries";
 import { ElvixCountrySelect } from "./elvix-country-select";
+import { elvixFetch } from "./elvix-fetch";
 import { ElvixInput } from "./elvix-input";
 import { useElvixContext } from "./elvix-provider";
 import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
@@ -615,7 +616,7 @@ export function VerifyingTaxIdView({
     const trimmed = vatId.trim();
     (async () => {
       try {
-        const res = await fetch(
+        const res = await elvixFetch(
           `${ctx.baseUrl}/public/api/tax/validate?country=${encodeURIComponent(country)}&vatId=${encodeURIComponent(trimmed)}`,
           { signal: ctrl.signal, credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit" },
         );
@@ -916,7 +917,7 @@ export function PlaceOfBirthView({
           setSuggestions([]);
           return;
         }
-        const res = await fetch(url, {
+        const res = await elvixFetch(url, {
           signal: controller.signal,
           credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit",
         });
@@ -1080,7 +1081,7 @@ export function AddressSearchView({
           setSuggestions([]);
           return;
         }
-        const res = await fetch(url, {
+        const res = await elvixFetch(url, {
           signal: controller.signal,
           credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit",
         });
@@ -1115,7 +1116,7 @@ export function AddressSearchView({
           setPicking(null);
           return;
         }
-        const res = await fetch(url, {
+        const res = await elvixFetch(url, {
           credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit",
         });
         if (!res.ok) throw new Error(`http ${res.status}`);
