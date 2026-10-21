@@ -20,6 +20,7 @@
  * past a `run*` function: every failure is a `{ ok: false, error }`.
  */
 
+import { elvixFetch } from "./elvix-fetch";
 import { authInit, isSameOrigin, setElvixToken } from "./session";
 import type { Landing } from "./use-sign-in-flow";
 
@@ -61,7 +62,7 @@ const errorMessage = (e: unknown) => (e instanceof Error ? e.message : undefined
  */
 async function postEnvelope<T>(url: string, init: RequestInit, fallback: string): Promise<Step<T>> {
   try {
-    const res = await fetch(url, { method: "POST", ...init });
+    const res = await elvixFetch(url, { method: "POST", ...init });
     const body = (await res.json()) as { success?: boolean; data?: T; errorMessage?: string };
     if (!res.ok || !body.success) return { ok: false, error: body.errorMessage ?? fallback };
     return { ok: true, data: body.data };

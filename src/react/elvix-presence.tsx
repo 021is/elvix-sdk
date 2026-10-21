@@ -31,6 +31,7 @@
  */
 
 import { useEffect } from "react";
+import { elvixFetch } from "./elvix-fetch";
 import { useElvixApp, useResolvedBaseUrl } from "./elvix-provider";
 import { authInit } from "./session";
 
@@ -89,7 +90,7 @@ export function ElvixPresence({
         Date.now() - lastInputAt > IDLE_AFTER_MS ? PresenceStatus.IDLE : PresenceStatus.ONLINE;
       const init = authInit();
       try {
-        await fetch(`${baseUrl}/api/presence/heartbeat`, {
+        await elvixFetch(`${baseUrl}/api/presence/heartbeat`, {
           method: "POST",
           headers: { "Content-Type": "application/json", ...init.headers },
           credentials: init.credentials,

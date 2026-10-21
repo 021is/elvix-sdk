@@ -33,6 +33,7 @@
  */
 
 import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { elvixFetch } from "./elvix-fetch";
 import { safeRedirect } from "./safe-redirect";
 import { isSameOrigin, setElvixToken } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
@@ -243,7 +244,7 @@ export const GoogleOneTap = memo(function GoogleOneTap({
   const handleCredential = useCallback(
     async (response: { credential: string }) => {
       try {
-        const res = await fetch(`${baseUrl}/api/auth/google/credential`, {
+        const res = await elvixFetch(`${baseUrl}/api/auth/google/credential`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: isSameOrigin(baseUrl) ? "include" : "omit",

@@ -13,6 +13,26 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.15.0] — 2026-10-21
+
+### Added
+
+- **DPoP: sessions bound to the browser (RFC 9449).** The SDK keeps one P-256 key per browser in
+  IndexedDB, created with `extractable: false` so no script can read its private half, and every
+  call to elvix that carries the session token also carries a proof signed with it (method, URL,
+  the token's hash, elvix's nonce). An app that switches DPoP on in the Console (Sessions) binds
+  each session to that key at its first call, and from then on refuses the token alone: a token
+  copied out of `localStorage` is useless elsewhere. Browsers without IndexedDB or WebCrypto send
+  no proof and stay unbound, never an error. With DPoP off nothing changes. Needs elvix with the
+  DPoP proxy (live 2026-10-21): older elvix rejects the `DPoP` header in its CORS preflight.
+- **`elvixFetch`**, exported: `fetch` for your own calls to elvix with the session token, adding
+  the same proof, so they keep working when your app turns DPoP on.
+
+### Changed
+
+- Every SDK request goes through `elvixFetch` (one place for auth headers, the proof, and elvix's
+  nonce, with one retry when elvix answers 401 with a fresher nonce).
+
 ## [0.14.7] — 2026-10-21
 
 ### Security

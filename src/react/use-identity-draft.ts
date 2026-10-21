@@ -13,6 +13,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useT } from "../locale/use-t";
+import { elvixFetch } from "./elvix-fetch";
 import { useElvixContext, useElvixRefresh } from "./elvix-provider";
 import type { ElvixSaveState } from "./elvix-save-button";
 import { safeParseForm } from "./form";
@@ -106,7 +107,7 @@ export function useIdentityDraft(
     setState("saving");
     try {
       const auth = authInit();
-      const res = await fetch(`${ctx.baseUrl}/api/account/profile/identity`, {
+      const res = await elvixFetch(`${ctx.baseUrl}/api/account/profile/identity`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", ...auth.headers },
         credentials: auth.credentials,

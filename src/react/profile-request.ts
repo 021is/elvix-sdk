@@ -4,6 +4,7 @@
  * never rejects, and the CRUD of a profile collection.
  */
 
+import { elvixFetch } from "./elvix-fetch";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 
@@ -23,9 +24,9 @@ export async function failureBody(res: Response): Promise<Record<string, unknown
   return body && typeof body === "object" ? (body as Record<string, unknown>) : {};
 }
 
-/** `fetch` that resolves to `null` on a network error instead of rejecting. */
+/** `elvixFetch` that resolves to `null` on a network error instead of rejecting. */
 export function send(url: string, init: RequestInit): Promise<Response | null> {
-  return fetch(url, init).catch(() => null);
+  return elvixFetch(url, init).catch(() => null);
 }
 
 /**

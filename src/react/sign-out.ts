@@ -15,6 +15,7 @@
  *     wrappers.
  */
 
+import { elvixFetch } from "./elvix-fetch";
 import { announceSessionChange, authInit, markSignedOut, setElvixToken } from "./session";
 
 /** elvix answers 401 when the session to end had already ended. */
@@ -93,7 +94,7 @@ export async function signOut(options: SignOutOptions = {}): Promise<SignOutResu
   const base = typeof baseUrl === "string" ? baseUrl : "";
   let result: SignOutResult;
   try {
-    const res = await fetch(`${base}/api/auth/sign-out?surface=app`, {
+    const res = await elvixFetch(`${base}/api/auth/sign-out?surface=app`, {
       method: "POST",
       ...authInit(),
     });

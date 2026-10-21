@@ -10,6 +10,8 @@
  * poll mints its token.
  */
 
+import { elvixFetch } from "./elvix-fetch";
+
 const DEFAULT_BASE_URL = "https://elvix.is";
 
 export type ApproveDeviceResult = { ok: true } | { ok: false; error: string };
@@ -24,7 +26,7 @@ export async function approveDevice(args: {
 }): Promise<ApproveDeviceResult> {
   const origin = args.baseUrl ?? DEFAULT_BASE_URL;
   try {
-    const res = await fetch(`${origin}/api/v1/device/approve`, {
+    const res = await elvixFetch(`${origin}/api/v1/device/approve`, {
       method: "POST",
       headers: { "content-type": "application/json", authorization: `Bearer ${args.token}` },
       body: JSON.stringify({ user_code: args.userCode }),

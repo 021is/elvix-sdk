@@ -42,6 +42,7 @@ import {
 import { useEffect, useState } from "react";
 import { useT } from "../locale/use-t";
 import { DonePane } from "./done-pane";
+import { elvixFetch } from "./elvix-fetch";
 import { useElvixContext } from "./elvix-provider";
 import { STACK_2, STACK_3, STACK_4 } from "./pane-layout";
 import { authInit } from "./session";
@@ -266,7 +267,7 @@ function useSessionsList(args: {
     const ctrl = new AbortController();
     setLoading(true);
     setError(null);
-    fetch(`${baseUrl}${base}`, { ...authInit(), signal: ctrl.signal })
+    elvixFetch(`${baseUrl}${base}`, { ...authInit(), signal: ctrl.signal })
       .then(async (res) => {
         const body = unwrapEnvelope(await res.json());
         if (!res.ok || !body.ok) setError(loadError);
@@ -290,7 +291,10 @@ function useSessionsList(args: {
     setBusyId(id);
     setError(null);
     try {
-      const res = await fetch(`${baseUrl}${base}/${id}/revoke`, { method: "POST", ...authInit() });
+      const res = await elvixFetch(`${baseUrl}${base}/${id}/revoke`, {
+        method: "POST",
+        ...authInit(),
+      });
       if (!res.ok) return fail("revoke_failed", t("sessions.errorRevoke"));
       setItems((prev) => prev.filter((s) => s.id !== id));
       onChanged?.();
@@ -309,7 +313,7 @@ function useSessionsList(args: {
     const all = mode === "all";
     try {
       const auth = authInit();
-      const res = await fetch(`${baseUrl}${base}/revoke-all`, {
+      const res = await elvixFetch(`${baseUrl}${base}/revoke-all`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...auth.headers },
         credentials: auth.credentials,
