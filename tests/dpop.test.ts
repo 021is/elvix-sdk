@@ -64,6 +64,22 @@ const newPair = () =>
 
 afterEach(() => vi.unstubAllGlobals());
 
+/** Empty the key store (a first visit), leaving the database other tests hold open. */
+async function clearStoredKey(): Promise<void> {
+  const open = indexedDB.open("elvix-dpop", 1);
+  open.onupgradeneeded = () => open.result.createObjectStore("keys");
+  const db = await new Promise<IDBDatabase>((resolve, reject) => {
+    open.onsuccess = () => resolve(open.result);
+    open.onerror = () => reject(open.error);
+  });
+  const clear = db.transaction("keys", "readwrite").objectStore("keys").clear();
+  await new Promise((resolve, reject) => {
+    clear.onsuccess = resolve;
+    clear.onerror = () => reject(clear.error);
+  });
+  db.close();
+}
+
 describe("the browser's key", () => {
   it("is created once, kept in IndexedDB, and its private half cannot be exported", async () => {
     const first = await dpopKey();
@@ -76,6 +92,24 @@ describe("the browser's key", () => {
   it("is missing, never an error, where the browser cannot hold one", async () => {
     __setDpopKeyForTests(null);
     expect(await dpopProof("GET", URL_PROFILE, TOKEN)).toBeNull();
+  });
+
+  it("is the same key in two tabs that create one at the same moment", async () => {
+    // Two module instances are two tabs: each has its own in-memory key, both share IndexedDB.
+    await clearStoredKey();
+    vi.resetModules();
+    const tabA = await import("../src/react/dpop");
+    vi.resetModules();
+    const tabB = await import("../src/react/dpop");
+    const [a, b] = await Promise.all([tabA.dpopKey(), tabB.dpopKey()]);
+    const jwk = async (pair: CryptoKeyPair | null) =>
+      pair ? JSON.stringify(await crypto.subtle.exportKey("jwk", pair.publicKey)) : null;
+    // A session binds to whichever tab proves first; a tab holding another key is refused forever.
+    expect(await jwk(a)).not.toBeNull();
+    expect(await jwk(a)).toBe(await jwk(b));
+    vi.resetModules();
+    const reloaded = await import("../src/react/dpop");
+    expect(await jwk(await reloaded.dpopKey())).toBe(await jwk(a));
   });
 });
 
