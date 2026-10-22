@@ -1,6 +1,8 @@
 # Where the session token lives: trade-off and proposal
 
-Status: **decided 2026-10-21: option E, DPoP, shipped in 0.15** (phase 1). Written 2026-10-12 for
+Status: **decided 2026-10-21: option E, DPoP, shipped in 0.15** (phase 1), **phase 2 in 0.16**
+(2026-10-22: sessions bind at sign-in, customer backends check proofs through `elvixProof` +
+`verifyElvixToken`, DPoP-bound JWTs from `exchangeElvixToken`). Written 2026-10-12 for
 the 0.14.0 security review (item 10); the options below are kept for the reasoning.
 
 **What shipped.** The token still rests in `localStorage`, but an app that switches DPoP on
@@ -8,8 +10,10 @@ the 0.14.0 security review (item 10); the options below are kept for the reasoni
 `extractable: false`. Every SDK call carries a proof signed with it (`src/react/dpop.ts`,
 `src/react/elvix-fetch.ts`), and elvix refuses the bound token without one. An XSS can still act
 while the page is open (it can ask the browser to sign), but a token copied out of
-`localStorage` is useless anywhere else. Phase 2: `verifyElvixToken` checks proofs, so customer
-backends get the same protection.
+`localStorage` is useless anywhere else. Phase 2 (0.16): the session binds when it is minted (the
+finishing call carries a proof, a redirect start carries `dpop_jkt`), and customer backends get
+the same protection: the browser proves each request to the backend's own route
+(`elvixProof`), and `verifyElvixToken` forwards that proof to elvix.
 
 ## Today
 

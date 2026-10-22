@@ -76,6 +76,9 @@ export {
   type ElvixOnboardingStep,
 } from "./elvix-onboarding";
 export { ElvixPresence } from "./elvix-presence";
+// DPoP for your own backend (0.16): a proof for YOUR route, forwarded to
+// verifyElvixToken, and the session exchanged for a (DPoP-bound) JWT.
+export { type ElvixJwt, elvixProof, exchangeElvixToken } from "./elvix-proof";
 export type { ElvixAppContext } from "./elvix-provider";
 export {
   ElvixProvider,

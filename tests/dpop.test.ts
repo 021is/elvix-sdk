@@ -18,49 +18,10 @@ import {
   rememberDpopNonce,
 } from "../src/react/dpop";
 import { elvixFetch } from "../src/react/elvix-fetch";
+import { newPair, sha256b64url, verifyProof as verify } from "./helpers/dpop-verify";
 
 const URL_PROFILE = "https://elvix.test/api/account/profile/identity";
 const TOKEN = "session-token-abc";
-
-const fromB64url = (s: string) =>
-  Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0));
-const json = (part: string) => JSON.parse(new TextDecoder().decode(fromB64url(part)));
-
-async function sha256b64url(value: string) {
-  const digest = new Uint8Array(
-    await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value)),
-  );
-  return btoa(String.fromCharCode(...digest))
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/, "");
-}
-
-/** Verify like elvix: header, signature with the embedded key, then the claims. */
-async function verify(proof: string) {
-  const [h, p, s] = proof.split(".");
-  const header = json(h);
-  const key = await crypto.subtle.importKey(
-    "jwk",
-    header.jwk,
-    { name: "ECDSA", namedCurve: "P-256" },
-    false,
-    ["verify"],
-  );
-  const valid = await crypto.subtle.verify(
-    { name: "ECDSA", hash: "SHA-256" },
-    key,
-    fromB64url(s),
-    new TextEncoder().encode(`${h}.${p}`),
-  );
-  return { header, payload: json(p), valid };
-}
-
-const newPair = () =>
-  crypto.subtle.generateKey({ name: "ECDSA", namedCurve: "P-256" }, false, [
-    "sign",
-    "verify",
-  ]) as Promise<CryptoKeyPair>;
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -172,7 +133,7 @@ describe("elvixFetch", () => {
     expect((await verify(proof ?? "")).payload.ath).toBe(await sha256b64url(TOKEN));
   });
 
-  it("adds none to a call without the token (sign-in, public config)", async () => {
+  it("adds none to a call without the token that finishes no sign-in (public config)", async () => {
     await elvixFetch(URL_PROFILE, {});
     expect(calls[0].headers.get("dpop")).toBeNull();
   });

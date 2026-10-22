@@ -51,7 +51,33 @@ export type VerifyArgs = {
   baseUrl?: string;
   /** Per-request timeout in ms. Default 5000. */
   timeoutMs?: number;
+  /**
+   * DPoP (0.16): the proof the browser made for THIS request to your backend
+   * (`elvixProof` in `@elvix.is/sdk/react`), with the method and the public
+   * URL it was made for. An app with DPoP on answers a bound session only
+   * with one, so a token copied out of the browser is useless here. Take
+   * `htu` from your configured public origin, never from the `Host` header.
+   */
+  proof?: string;
+  htm?: string;
+  htu?: string;
 };
+
+/** The headers a backend forwards a browser's proof in (elvix `lib/dpop-backend.ts`). */
+const FORWARDED_DPOP = {
+  PROOF: "elvix-dpop-proof",
+  HTM: "elvix-dpop-htm",
+  HTU: "elvix-dpop-htu",
+} as const;
+
+function forwardedProof(args: VerifyArgs): Record<string, string> {
+  if (!args.proof) return {};
+  return {
+    [FORWARDED_DPOP.PROOF]: args.proof,
+    [FORWARDED_DPOP.HTM]: (args.htm ?? "").toUpperCase(),
+    [FORWARDED_DPOP.HTU]: args.htu ?? "",
+  };
+}
 
 /**
  * Verify an end-user session token (the value the SDK handed you via
@@ -93,6 +119,7 @@ export async function verifyElvixToken(
   try {
     const headers: Record<string, string> = {
       authorization: `Bearer ${token}`,
+      ...forwardedProof(args),
     };
     if (clientId) headers["x-elvix-client-id"] = clientId;
     const res = await fetch(url, {
@@ -124,6 +151,7 @@ export async function verifyElvixToken(
       bannerSizes?: number[];
       bannerUpdatedAt?: string | null;
       expiresAt?: string;
+      cnf?: { jkt?: string };
       error?: string;
     };
     if (!res.ok || !body.ok || !body.userId) {
@@ -164,6 +192,7 @@ export async function verifyElvixToken(
       bannerSizes: body.bannerSizes,
       bannerUpdatedAt: body.bannerUpdatedAt,
       expiresAt: body.expiresAt,
+      boundTo: body.cnf?.jkt,
     };
   } finally {
     clearTimeout(timer);
@@ -182,6 +211,8 @@ function pickError(
   ) {
     return raw;
   }
+  // elvix names the DPoP refusal (`dpop_wrong_key`, `dpop_nonce`, …); `message` keeps it.
+  if (raw?.startsWith("dpop_")) return "dpop_refused";
   if (status === 401) return "invalid_token";
   if (status === 403) return "membership_blocked";
   if (status === 429) return "rate_limited";

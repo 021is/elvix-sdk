@@ -13,6 +13,36 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.16.0] — 2026-10-22
+
+DPoP phase 2: the binding reaches your own backend, and a session binds the moment it exists.
+Needs elvix with DPoP phase 2 (live 2026-10-22); against an older elvix every addition is
+ignored, never an error.
+
+### Added
+
+- **`elvixProof(url, { method, token })`** (`@elvix.is/sdk/react`): a DPoP proof for one request
+  to YOUR backend's route. Send it next to the token; your backend passes it on. It fetches a
+  fresh nonce from elvix first when the tab holds none (`/api/v1/dpop/nonce`), since the backend
+  that forwards it cannot ask for a second one. Null where the browser holds no key.
+- **`verifyElvixToken({ token, proof, htm, htu })`** (`@elvix.is/sdk/server`): forwards the
+  browser's proof to elvix. An app with DPoP on answers a bound session only with one, so a token
+  copied out of the browser is useless at your backend too. The result carries `boundTo` (the
+  key's thumbprint) for a bound session, and a refusal is `error: "dpop_refused"` with elvix's
+  reason in `message`.
+- **`exchangeElvixToken()`** (`@elvix.is/sdk/react`): the session exchanged for a JWT your
+  backend verifies locally. A bound session gets a DPoP-bound one (`tokenType: "DPoP"`,
+  `cnf.jkt`): send it as `Authorization: DPoP <jwt>` with `elvixProof(url, { method, token: jwt })`.
+
+### Changed
+
+- **Sessions bind at sign-in.** The call that finishes an in-frame sign-in (email code, username,
+  passkey, One Tap) carries a proof with no token in it, and a redirect start (Google, GitHub,
+  the hosted passkey page) carries the key's thumbprint as `dpop_jkt` (RFC 9449 §10). elvix binds
+  the new session to the key at once, so a token taken before its first call cannot be bound to
+  someone else's. The finisher list lives in `elvixFetch` (`SIGN_IN_FINISHERS`), not at the call
+  sites, so no method can forget it.
+
 ## [0.15.1] — 2026-10-22
 
 ### Fixed

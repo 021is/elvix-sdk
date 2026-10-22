@@ -3,7 +3,16 @@
  * the OAuth start links, and where a finished sign-in lands by default.
  */
 
+import { currentDpopThumbprint } from "./dpop";
 import { isSameOrigin, signInState } from "./session";
+
+/** RFC 9449 §10: a redirect start names the browser key, so the session binds at mint. */
+const DPOP_JKT_PARAM = "dpop_jkt";
+
+function withDpopJkt(params: URLSearchParams): void {
+  const jkt = currentDpopThumbprint();
+  if (jkt) params.set(DPOP_JKT_PARAM, jkt);
+}
 
 export type Translator = (key: string, params?: Record<string, string | number>) => string;
 
@@ -103,6 +112,7 @@ export function oauthStartHref(
     params.set("returnUrl", window.location.href);
     const state = signInState();
     if (state) params.set("state", state);
+    withDpopJkt(params);
   }
   return `${baseUrl}/api/auth/${provider}/start?${params.toString()}`;
 }
@@ -120,6 +130,7 @@ export function hostedCeremonyUrl(
   const params = new URLSearchParams({ returnUrl: window.location.href });
   const state = signInState();
   if (state) params.set("state", state);
+  if (page === "passkey") withDpopJkt(params);
   return `${baseUrl}/auth/${page}/${encodeURIComponent(clientId)}?${params.toString()}`;
 }
 

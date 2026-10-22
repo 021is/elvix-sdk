@@ -11,6 +11,7 @@ import {
   useMemo,
 } from "react";
 import { buildEnglishRuntime } from "../locale/runtime";
+import { dpopThumbprint } from "./dpop";
 import type { Pronouns } from "./identity-schema";
 import type { LanguageLevel } from "./languages";
 import {
@@ -318,6 +319,9 @@ export function ElvixProvider({
   // strip it from the URL before anything else runs. No-op without one.
   useEffect(() => {
     consumeElvixReturnToken();
+    // The browser key's thumbprint, ready before any redirect sign-in starts
+    // (its start URL is built synchronously and carries it as `dpop_jkt`).
+    void dpopThumbprint();
   }, []);
 
   const { app, appError } = useBootstrap(clientId, resolvedBaseUrl, bootstrapRefreshMs);

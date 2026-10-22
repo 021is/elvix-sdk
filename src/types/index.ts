@@ -84,11 +84,30 @@ export type ElvixVerifyOk = {
   bannerUpdatedAt?: string | null;
   /** Session expiry, ISO-8601. */
   expiresAt?: string;
+  /**
+   * DPoP (0.16): the thumbprint of the browser key this session is bound to
+   * (`cnf.jkt`). Set, a bare token for this session is refused wherever it is
+   * checked; forward the browser's proof (`proof`, `htm`, `htu`). Absent for
+   * an unbound session or an app with DPoP off.
+   */
+  boundTo?: string;
 };
 
 export type ElvixVerifyErr = {
   ok: false;
-  error: "invalid_token" | "expired" | "revoked" | "membership_blocked" | "rate_limited";
+  /**
+   * `dpop_refused` (0.16): the session is bound to a browser key and the
+   * proof was missing or wrong; `message` names elvix's reason
+   * (`dpop_wrong_key`, `dpop_nonce`, …). Do not treat it as signed out
+   * without asking the browser for a fresh proof.
+   */
+  error:
+    | "invalid_token"
+    | "expired"
+    | "revoked"
+    | "membership_blocked"
+    | "rate_limited"
+    | "dpop_refused";
   message?: string;
 };
 

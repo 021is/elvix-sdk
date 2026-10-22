@@ -24,6 +24,9 @@ const NONCE_HEADER = "DPoP-Nonce";
 
 let keyPair: Promise<CryptoKeyPair | null> | null = null;
 let nonce: string | null = null;
+/** When the current nonce arrived; elvix accepts one for 5 to 10 minutes. */
+let nonceAt = 0;
+let thumbprint: string | null = null;
 
 function b64url(bytes: ArrayBuffer | Uint8Array): string {
   const u8 = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
@@ -94,18 +97,54 @@ export function dpopKey(): Promise<CryptoKeyPair | null> {
 export function __setDpopKeyForTests(pair: CryptoKeyPair | null): void {
   keyPair = Promise.resolve(pair);
   nonce = null;
+  nonceAt = 0;
+  thumbprint = null;
 }
 
 /** The nonce elvix last handed out; a proof echoes it. */
 export function rememberDpopNonce(res: Response): string | null {
   // Bookkeeping never fails a call, even on a response-like object without headers.
   const fresh = res.headers?.get(NONCE_HEADER) ?? null;
-  if (fresh) nonce = fresh;
+  if (fresh) {
+    nonce = fresh;
+    nonceAt = Date.now();
+  }
   return fresh;
 }
 
 export function currentDpopNonce(): string | null {
   return nonce;
+}
+
+/** How long ago the current nonce arrived, in ms; Infinity when there is none. */
+export function dpopNonceAge(): number {
+  return nonce ? Date.now() - nonceAt : Number.POSITIVE_INFINITY;
+}
+
+/**
+ * This browser's key thumbprint (RFC 7638, the `jkt` elvix binds a session
+ * to), or null where the browser holds no key. A redirect sign-in puts it on
+ * its start URL (`dpop_jkt`, RFC 9449 §10) so the session binds at once.
+ */
+export async function dpopThumbprint(): Promise<string | null> {
+  if (thumbprint) return thumbprint;
+  const pair = await dpopKey();
+  if (!pair) return null;
+  try {
+    const { crv, kty, x, y } = await crypto.subtle.exportKey("jwk", pair.publicKey);
+    // RFC 7638: the required members only, in lexicographic order, no whitespace.
+    const canonical = JSON.stringify({ crv, kty, x, y });
+    thumbprint = b64url(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(canonical)));
+    return thumbprint;
+  } catch {
+    // A key that cannot be exported publicly cannot be named: the start goes without it.
+    return null;
+  }
+}
+
+/** The thumbprint if it is known already; the redirect starts are built synchronously. */
+export function currentDpopThumbprint(): string | null {
+  return thumbprint;
 }
 
 /** RFC 9449 §4.2: the URL without query and fragment, absolute. */
@@ -114,26 +153,31 @@ function htu(url: string): string {
   return `${u.origin}${u.pathname}`;
 }
 
-/** A proof for one call with `accessToken`; null when this browser holds no key. */
+/**
+ * A proof for one call carrying `accessToken`; null when this browser holds
+ * no key. `accessToken: null` is a sign-in (the finishing call, before any
+ * token exists): the proof has no `ath`, and binds the new session at mint.
+ */
 export async function dpopProof(
   method: string,
   url: string,
-  accessToken: string,
+  accessToken: string | null,
 ): Promise<string | null> {
   const pair = await dpopKey();
   if (!pair) return null;
   try {
     const { kty, crv, x, y } = await crypto.subtle.exportKey("jwk", pair.publicKey);
     const header = { typ: "dpop+jwt", alg: "ES256", jwk: { kty, crv, x, y } };
-    const ath = b64url(
-      await crypto.subtle.digest("SHA-256", new TextEncoder().encode(accessToken)),
-    );
+    const ath =
+      accessToken === null
+        ? null
+        : b64url(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(accessToken)));
     const payload = {
       jti: b64url(crypto.getRandomValues(new Uint8Array(16))),
       htm: method.toUpperCase(),
       htu: htu(url),
       iat: Math.floor(Date.now() / 1000),
-      ath,
+      ...(ath ? { ath } : {}),
       ...(nonce ? { nonce } : {}),
     };
     const signingInput = `${b64urlJson(header)}.${b64urlJson(payload)}`;
