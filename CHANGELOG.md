@@ -13,6 +13,17 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.15.1] — 2026-10-22
+
+### Fixed
+
+- **DPoP: two tabs opened at the same moment now share one key.** On a first visit both tabs
+  found no key, both made one, and the last to store it won while each kept signing with its own.
+  The session bound to one of them, so the other tab was refused on every call, and after a reload
+  so was the first, with no way out but signing in again. The key is now stored with `add`: the
+  tab that loses the race takes the stored key. Sessions already bound to a key that was then
+  overwritten stay refused until they sign in again (DPoP is on for one app, since 2026-10-22).
+
 ## [0.15.0] — 2026-10-21
 
 ### Added

@@ -47,19 +47,37 @@ async function openStore(): Promise<IDBDatabase> {
   return request(open);
 }
 
+async function storedKey(store: IDBDatabase): Promise<CryptoKeyPair | null> {
+  const read = store.transaction(STORE, "readonly").objectStore(STORE);
+  const existing = (await request(read.get(KEY_ID))) as CryptoKeyPair | undefined;
+  return existing?.privateKey && existing.publicKey ? existing : null;
+}
+
+/**
+ * The stored key, or a new one stored with `add`, never `put`: two tabs that
+ * open at the same moment both find nothing and both generate, and with `put`
+ * the last write won while each tab kept signing with its own key. The session
+ * bound to one of them, so the other tab was refused on every call, and after
+ * a reload so was the first. With `add` the loser's write fails
+ * (ConstraintError) and it takes the winner's key.
+ */
 async function loadOrCreateKey(): Promise<CryptoKeyPair | null> {
   if (typeof indexedDB === "undefined" || !globalThis.crypto?.subtle) return null;
   try {
     const store = await openStore();
-    const read = store.transaction(STORE, "readonly").objectStore(STORE);
-    const existing = (await request(read.get(KEY_ID))) as CryptoKeyPair | undefined;
-    if (existing?.privateKey && existing.publicKey) return existing;
+    const existing = await storedKey(store);
+    if (existing) return existing;
     const pair = (await crypto.subtle.generateKey({ name: "ECDSA", namedCurve: "P-256" }, false, [
       "sign",
     ])) as CryptoKeyPair;
     const write = store.transaction(STORE, "readwrite").objectStore(STORE);
-    await request(write.put(pair, KEY_ID));
-    return pair;
+    try {
+      await request(write.add(pair, KEY_ID));
+      return pair;
+    } catch (error) {
+      if ((error as DOMException | null)?.name !== "ConstraintError") throw error;
+      return storedKey(store);
+    }
   } catch {
     // Storage refused or unavailable: no proofs, the session stays unbound.
     return null;
