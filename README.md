@@ -62,6 +62,8 @@ Sign-in and sign-up are the same door. There is no separate registration flow to
 
 If you would rather not call elvix on every request, exchange the session token once for a short-lived signed JWT and verify that locally against our JWKS. Same guide covers it.
 
+**Sessions bound to the browser (DPoP).** An app that turns DPoP on in the Console binds each session to a key the browser keeps and cannot export, so a token copied out of the page is useless anywhere else. Every SDK call proves itself, and a session binds the moment it is created. Your backend takes part with two calls: `elvixProof(url, { method, token })` in the browser makes a proof for your route, and `verifyElvixToken({ token, proof, htm, htu })` on the server passes it on. `exchangeElvixToken()` gives a DPoP-bound JWT for local verification. Same guide.
+
 ## The two rules worth knowing before you ship
 
 **Cross-origin passkeys must return to the page that launched them.** If your app is on its own domain, a passkey ceremony has to come back to the page holding the sign-in form, not to your final destination. Send the user straight to the dashboard and the passkey registers correctly but the session is never established, so they bounce back to the sign-in gate. The SDK does the right thing by default; this only bites if you override the return URL.
