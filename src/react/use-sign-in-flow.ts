@@ -115,6 +115,21 @@ function isDeferrable(step: NextStep | undefined): step is ElvixDeferredStep {
   return step === NextStep.USERNAME || step === NextStep.PASSKEY;
 }
 
+/** The onboarding step a landing opens, or `null` when the sign-in is done. */
+function gateOf(body: Landing): Step | null {
+  switch (body.next_step) {
+    case NextStep.USERNAME:
+      return Step.USERNAME;
+    case NextStep.PASSKEY:
+      return Step.PASSKEY;
+    case NextStep.RECOVER:
+      // A restore needs the membership it restores; without it there is nothing to ask.
+      return body.recover ? Step.RECOVER : null;
+    default:
+      return null;
+  }
+}
+
 /** What `previewStep` shows when there is no server to ask. */
 const PREVIEW_SUGGESTIONS = ["ada", "ada.dev", "ada_l"];
 const PREVIEW_RECOVER: RecoverState = {
@@ -203,6 +218,14 @@ export function useSignInFlow({
     [onResult],
   );
 
+  /** Moves the form to an onboarding step, with what that step needs from the landing. */
+  const openGate = useCallback((gate: Step, body: Landing) => {
+    if (gate === Step.USERNAME) setSuggestions(body.suggestions ?? []);
+    if (gate === Step.RECOVER) setRecover(body.recover ?? null);
+    setBackendFinal(body.final ?? "/");
+    setStep(gate);
+  }, []);
+
   /**
    * Applies a finisher's answer: an onboarding gate moves the form to that
    * step in place, anything else finishes. A cross-origin sign-in returns the
@@ -211,32 +234,16 @@ export function useSignInFlow({
   const applyLanding = useCallback(
     (body: Landing) => {
       if (body.token) setElvixToken(body.token);
+      const token = getElvixToken() ?? undefined;
       if (deferOnboarding && isDeferrable(body.next_step)) {
-        const redirect = finalRedirect(body.final);
-        void finishSignIn(redirect, body.token ?? getElvixToken() ?? undefined, body.next_step);
+        void finishSignIn(finalRedirect(body.final), token, body.next_step);
         return;
       }
-      if (body.next_step === NextStep.USERNAME) {
-        setSuggestions(body.suggestions ?? []);
-        setBackendFinal(body.final ?? "/");
-        setStep(Step.USERNAME);
-        return;
-      }
-      if (body.next_step === NextStep.PASSKEY) {
-        setBackendFinal(body.final ?? "/");
-        setStep(Step.PASSKEY);
-        return;
-      }
-      if (body.next_step === NextStep.RECOVER && body.recover) {
-        setRecover(body.recover);
-        setBackendFinal(body.final ?? "/");
-        setStep(Step.RECOVER);
-        return;
-      }
-      const redirect = finalRedirect(body.redirect ?? defaultRedirect(intent));
-      void finishSignIn(redirect, body.token ?? getElvixToken() ?? undefined);
+      const gate = gateOf(body);
+      if (gate) openGate(gate, body);
+      else void finishSignIn(finalRedirect(body.redirect ?? defaultRedirect(intent)), token);
     },
-    [intent, finalRedirect, finishSignIn, deferOnboarding],
+    [intent, finalRedirect, finishSignIn, deferOnboarding, openGate],
   );
 
   /** Leaves the form for a server-named destination, through the redirect guard. */

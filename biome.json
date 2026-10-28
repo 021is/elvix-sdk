@@ -23,14 +23,14 @@
         "noExcessiveLinesPerFunction": {
           "level": "error",
           "options": {
-            "maxLines": 150,
+            "maxLines": 80,
             "skipIifes": true
           }
         },
         "noExcessiveCognitiveComplexity": {
           "level": "error",
           "options": {
-            "maxAllowedComplexity": 25
+            "maxAllowedComplexity": 15
           }
         },
         "useMaxParams": {
@@ -77,5 +77,77 @@
         "organizeImports": "on"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "src/cli/doctor.ts",
+        "src/react/elvix-address-book.tsx",
+        "src/react/elvix-banner.tsx",
+        "src/react/elvix-deactivate.tsx",
+        "src/react/elvix-export.tsx",
+        "src/react/elvix-leave.tsx",
+        "src/react/elvix-recover-gate.tsx",
+        "src/react/elvix-sign-in-button.tsx",
+        "src/react/elvix-sign-in-form.tsx",
+        "src/react/elvix-sign-out-button.tsx",
+        "src/react/elvix-user-avatar.tsx",
+        "src/react/elvix-username.tsx",
+        "src/react/legal-entity-detail-views.tsx",
+        "src/react/legal-entity-payload.ts",
+        "src/react/legal-entity-wizard-views.tsx",
+        "src/react/lifecycle-watcher.tsx",
+        "src/react/session.ts",
+        "src/react/sign-in-steps.tsx",
+        "tests/catalogs.test.ts"
+      ],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noExcessiveCognitiveComplexity": {
+              "level": "error",
+              "options": { "maxAllowedComplexity": 25 }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "src/react/elvix-address-book.tsx",
+        "src/react/elvix-app-passkeys.tsx",
+        "src/react/elvix-card.tsx",
+        "src/react/elvix-country-select.tsx",
+        "src/react/elvix-export.tsx",
+        "src/react/elvix-recover-gate.tsx",
+        "src/react/elvix-region.tsx",
+        "src/react/elvix-sessions.tsx",
+        "src/react/elvix-sign-in-button.tsx",
+        "src/react/elvix-username.tsx",
+        "src/react/google-one-tap.tsx",
+        "src/react/legal-entity-detail-views.tsx",
+        "src/react/legal-entity-wizard-views.tsx",
+        "src/react/tax-validation.ts",
+        "src/react/use-address-book.ts",
+        "src/react/use-image-editor.ts",
+        "src/react/use-languages-editor.ts",
+        "src/react/use-legal-entities.ts",
+        "src/react/use-membership-challenge.ts",
+        "src/react/use-sign-in-flow.ts",
+        "tests/helpers/fake-elvix.ts",
+        "tests/sign-in-form.test.tsx",
+        "tests/verify.test.ts"
+      ],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noExcessiveLinesPerFunction": {
+              "level": "error",
+              "options": { "maxLines": 150, "skipIifes": true }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

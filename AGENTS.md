@@ -36,6 +36,8 @@ Public elvix SDK. Lives at github.com/021is/elvix-sdk. npm-published under `@elv
 
 - **A redirect return that carries a step must be shown** (0.14.3). A redirect reloads the page, so the modal is closed on return and nothing is mounted to render the step; `consumeElvixReturnToken` records it (`isOnboardingPending`), the modal / drawer form opens itself on it (`resumeOnReturn`), `<ElvixOnboarding>` is the standalone surface, and `useElvixOnboarding()` lets a host build its own. While a step is pending the provider reports the session as ANONYMOUS; `finishSignIn` clears it. In-frame methods (email code, username, passkey) never reload, so they are not affected. `tests/redirect-return-onboarding.test.tsx` and `tests/onboarding-component.test.tsx` pin it.
 
+- **`<ElvixEmailCodeSignIn>` sends one code per address, ever** (0.17, `email-code-once.ts`): a remount, StrictMode's double effect or a reload resumes the kept code; only "Send again" sends another. Its key is built from the provider's `clientId` PROP, never the bootstrap envelope's: the envelope lands after mount, the key changed, and the first draft sent two codes (caught by `tests/email-code-sign-in.test.tsx`). It is built from the form's own flow, code legs and panes; a fix to one is a fix to both.
+
 ## Lint rules turned off, and why
 
 Three biome rules are `off` in `biome.json` because they are wrong for a framework-neutral SDK,
@@ -96,18 +98,14 @@ build and test. Nothing measured function length, which is how
 cognitive complexity **255**, and how six components kept importing a symbol
 they had stopped using.
 
-`biome.json` now enforces, as errors:
+Since 2026-10-28 the limits are DanceClub web's: **files ≤ 300 lines, functions ≤ 80,
+cognitive complexity ≤ 15, at most 4 parameters**, all errors. What broke them that day is
+recorded debt that may only shrink (`.file-lines-baseline.json`, the `biome.json`
+`overrides`, `tests/debt-ratchet.test.ts`). The rules, their checks and the debt:
+**[CODING-RULES.md](CODING-RULES.md)**, read before writing code.
 
-| Rule | Limit |
-|---|---|
-| `noExcessiveLinesPerFunction` | 150 |
-| `noExcessiveCognitiveComplexity` | 25 |
-| `useMaxParams` | 4 |
-| `noUnusedImports` / `noUnusedVariables` | — |
-
-`bun run lint` runs in CI **before** typecheck. There is no `overrides`
-allowlist any more: every file meets these limits, and a file that stops
-meeting them fails CI.
+`bun run lint` runs in CI **before** typecheck, over `src`, `tests` and `scripts`
+(`scripts` went unlinted until 2026-10-28).
 
 ## How the components are built
 

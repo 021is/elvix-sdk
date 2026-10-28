@@ -11,7 +11,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { humanError, type Translator } from "./sign-in-copy";
-import { postJson, type SignInFlow, Step } from "./use-sign-in-flow";
+import { postJson, type Reply, type SignInFlow, Step } from "./use-sign-in-flow";
 import { useStableCallback } from "./use-stable-callback";
 import { isValidUsername } from "./username-rules";
 
@@ -37,9 +37,35 @@ type OtpOptions = {
   initialIdentifier?: string;
 };
 
+/** An email gets its code at `otp/start`; a username is resolved to its email first. */
+function requestCode(o: OtpOptions, identifier: string) {
+  if (identifier.includes("@")) {
+    return postJson(
+      `${o.baseUrl}/api/auth/otp/start`,
+      { email: identifier, intent: o.intent, clientId: o.clientId },
+      false,
+    );
+  }
+  return postJson(
+    `${o.baseUrl}/api/auth/identifier/resolve`,
+    {
+      username: identifier.toLowerCase(),
+      intent: o.intent,
+      ...(o.clientId ? { clientId: o.clientId } : {}),
+    },
+    false,
+  );
+}
+
+/** How long a refused send waits before Send again works, or `null` for no wait. */
+function cooldownOf(body: Reply, byUsername: boolean): number | null {
+  if (body.error !== "too_recent" && body.error !== "too_many") return null;
+  return body.retryAfterSeconds ?? (byUsername ? RESEND_SECONDS : 30);
+}
+
 /** The identifier step: an email gets a code; a username gets one at its email. */
 export function useOtpStart(o: OtpOptions) {
-  const { flow, baseUrl, t } = o;
+  const { flow, t } = o;
   const [identifier, setIdentifier] = useState(o.initialIdentifier ?? "");
   const [challengeId, setChallengeId] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
@@ -67,22 +93,7 @@ export function useOtpStart(o: OtpOptions) {
     flow.setError(null);
     setSending(true);
     const v = identifier.trim();
-    const byUsername = !v.includes("@");
-    const out = byUsername
-      ? await postJson(
-          `${baseUrl}/api/auth/identifier/resolve`,
-          {
-            username: v.toLowerCase(),
-            intent: o.intent,
-            ...(o.clientId ? { clientId: o.clientId } : {}),
-          },
-          false,
-        )
-      : await postJson(
-          `${baseUrl}/api/auth/otp/start`,
-          { email: v, intent: o.intent, clientId: o.clientId },
-          false,
-        );
+    const out = await requestCode(o, v);
     setSending(false);
     if (!out) {
       flow.reportError("network_error", t("signin.errorNetwork"));
@@ -90,9 +101,8 @@ export function useOtpStart(o: OtpOptions) {
     }
     const { body } = out;
     if (!out.ok || !body.challengeId) {
-      if (body.error === "too_recent" || body.error === "too_many") {
-        setResendIn(body.retryAfterSeconds ?? (byUsername ? RESEND_SECONDS : 30));
-      }
+      const wait = cooldownOf(body, !v.includes("@"));
+      if (wait !== null) setResendIn(wait);
       flow.reportError(body.error, humanError(t, body.error, body.retryAfterSeconds));
       return null;
     }

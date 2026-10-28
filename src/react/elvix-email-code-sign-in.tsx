@@ -12,22 +12,20 @@
  * (`useSignInFlow`, so the provider refreshes before `onResult`), the same
  * code legs (`use-otp.ts`) and the same onboarding panes. `deferOnboarding`
  * puts the optional ones off. Sign-in is sign-up: a new address creates the
- * account. The host stays on its page: the block never navigates.
+ * account. The host stays on its page: the block never navigates. State lives
+ * in `use-email-code.ts`.
  */
 
 import { Loader2 } from "lucide-react";
-import { type CSSProperties, useCallback, useEffect, useState } from "react";
-import { useT } from "../locale/use-t";
-import { brandCssVars, useElvixApp, useElvixContext } from "./elvix-provider";
+import type { CSSProperties } from "react";
+import { brandCssVars } from "./elvix-provider";
 import { EmailCodeOnboarding } from "./email-code-onboarding";
-import { codeKey, forgetCode, keepCode, sendOnce } from "./email-code-once";
 import { CompactCodePane, CompactEmailPane } from "./email-code-panes";
 import type { Cta } from "./sign-in-controls";
 import { type Theme, themeVars, useSignInTheme } from "./sign-in-theme";
 import type { ElvixSignInResult } from "./types";
-import { isEmail, type OtpStart, useOtpStart } from "./use-otp";
-import { Step, useSignInFlow } from "./use-sign-in-flow";
-import { useStableCallback } from "./use-stable-callback";
+import { useEmailCode } from "./use-email-code";
+import { Step } from "./use-sign-in-flow";
 
 /** Which pane preview mode draws. */
 export type ElvixEmailCodePreviewStep = "code" | "email" | "username" | "passkey" | "recover";
@@ -76,86 +74,9 @@ export function ElvixEmailCodeSignIn(props: ElvixEmailCodeSignInProps) {
   );
 }
 
-/** Sends the mount's code once per address (`email-code-once.ts`) and shows it. */
-function useCodeOnMount(key: string, otp: OtpStart, enabled: boolean) {
-  const start = useStableCallback(otp.start);
-  const resume = useStableCallback(otp.resume);
-  useEffect(() => {
-    if (!enabled) return;
-    let live = true;
-    void sendOnce(key, async () => (await start()) ?? null).then((sent) => {
-      if (live && sent) resume(sent.challengeId, sent.sentAt);
-    });
-    return () => {
-      live = false;
-    };
-  }, [key, enabled, start, resume]);
-}
-
-function previewOnboarding(step: ElvixEmailCodePreviewStep | undefined) {
-  return step === "username" || step === "passkey" || step === "recover" ? step : undefined;
-}
-
 function EmailCodeBody(p: ElvixEmailCodeSignInProps & { cta: Cta }) {
-  const t = useT();
-  const ctx = useElvixContext();
-  const { baseUrl } = ctx;
-  const app = useElvixApp();
-  const isPreview = p.mode === "preview";
-  // The provider's own prop, known at the first render: the bootstrap envelope
-  // lands later, and a key that changed then sent a second code.
-  const clientId = p.clientId ?? ctx.clientId ?? undefined;
-  const valid = isEmail(p.email);
-  const [sentTo, setSentTo] = useState(p.email.trim());
-  // A code that signed the person in is spent: a later mount must not offer it.
-  const hostResult = useStableCallback(p.onResult);
-  const onResult = useCallback(
-    (r: ElvixSignInResult) => {
-      if (r.ok) {
-        forgetCode(codeKey(baseUrl, clientId, sentTo));
-        forgetCode(codeKey(baseUrl, clientId, p.email));
-      }
-      hostResult(r);
-    },
-    [baseUrl, clientId, sentTo, p.email, hostResult],
-  );
-  const flow = useSignInFlow({
-    intent: "app",
-    onResult,
-    onAuthenticated: p.onAuthenticated,
-    navigate: false,
-    allowedOrigins: app?.allowedOrigins,
-    previewStep: isPreview ? previewOnboarding(p.previewStep) : undefined,
-    // An address that is not one (a typo in the wallet) opens on the email field.
-    startAt: (isPreview ? p.previewStep === "email" : !valid) ? Step.IDENTIFIER : Step.CODE,
-    deferOnboarding: p.deferOnboarding,
-  });
-  const otp = useOtpStart({
-    flow,
-    baseUrl,
-    intent: "app",
-    clientId,
-    isPreview,
-    methodEmailOtp: true,
-    methodUsername: false,
-    t,
-    initialIdentifier: p.email.trim(),
-  });
-  useCodeOnMount(codeKey(baseUrl, clientId, p.email), otp, valid && !isPreview);
-
-  const send = useCallback(async () => {
-    const to = otp.identifier.trim();
-    const challengeId = await otp.start();
-    if (!challengeId) return;
-    keepCode(codeKey(baseUrl, clientId, to), { challengeId, sentAt: Date.now() });
-    setSentTo(to);
-  }, [otp, baseUrl, clientId]);
-  const switchTo = (step: Step, identifier: string) => {
-    otp.setIdentifier(identifier);
-    flow.setError(null);
-    flow.setStep(step);
-  };
-
+  const { t, baseUrl, app, clientId, isPreview, flow, otp, sentTo, send, switchTo } =
+    useEmailCode(p);
   switch (flow.step) {
     case Step.CODE:
       return (

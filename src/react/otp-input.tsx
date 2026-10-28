@@ -26,6 +26,31 @@ const OTP_LENGTH = 6;
  *  reorders), so the slot number is its stable identity and React key. */
 const SLOTS = Array.from({ length: OTP_LENGTH }, (_, slot) => slot);
 
+/**
+ * What typing `raw` into box `i` makes of the code, and which box takes focus
+ * next (`null`: stay). Mobile browsers (Chrome on Android in particular) route
+ * the browser-suggested OTP autofill and a clipboard paste through the INPUT
+ * event instead of the PASTE event, so `raw` can arrive with the full code in
+ * one fire: it is spread over the boxes from `i` on instead of slicing off
+ * five of the six digits.
+ */
+function typeIntoBox(
+  digits: readonly string[],
+  i: number,
+  raw: string,
+): { value: string; focus: number | null } {
+  const stripped = raw.replace(/\D/g, "");
+  const next = [...digits];
+  if (stripped.length > 1) {
+    const fill = stripped.slice(0, OTP_LENGTH - i);
+    for (const [k, ch] of [...fill].entries()) next[i + k] = ch;
+    return { value: next.join(""), focus: Math.min(i + fill.length, OTP_LENGTH - 1) };
+  }
+  const ch = stripped.slice(-1);
+  next[i] = ch;
+  return { value: next.join(""), focus: ch && i < OTP_LENGTH - 1 ? i + 1 : null };
+}
+
 export function OtpInput({
   value,
   onChange,
@@ -55,27 +80,9 @@ export function OtpInput({
 
   const onCharChange = useCallback(
     (i: number, e: ChangeEvent<HTMLInputElement>) => {
-      // Mobile browsers (Chrome on Android in particular) route the
-      // browser-suggested OTP autofill + clipboard paste through the
-      // INPUT event instead of the PASTE event. When that happens,
-      // `e.target.value` arrives with the full 6-digit string in a
-      // single fire. Detect and distribute instead of slicing off
-      // five of the six digits.
-      const stripped = e.target.value.replace(/\D/g, "");
-      if (stripped.length > 1) {
-        const fill = stripped.slice(0, OTP_LENGTH - i);
-        const next = [...digits];
-        for (const [k, ch] of [...fill].entries()) next[i + k] = ch;
-        const merged = next.join("");
-        onChange(merged);
-        focus(Math.min(i + fill.length, OTP_LENGTH - 1));
-        return;
-      }
-      const ch = stripped.slice(-1);
-      const next = [...digits];
-      next[i] = ch;
-      onChange(next.join(""));
-      if (ch && i < OTP_LENGTH - 1) focus(i + 1);
+      const typed = typeIntoBox(digits, i, e.target.value);
+      onChange(typed.value);
+      if (typed.focus !== null) focus(typed.focus);
     },
     [digits, onChange, focus],
   );

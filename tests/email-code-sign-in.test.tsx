@@ -69,7 +69,7 @@ async function enterCode(code = "123456") {
   );
 }
 
-describe("ElvixEmailCodeSignIn", () => {
+describe("ElvixEmailCodeSignIn: the code", () => {
   it("sends one code on mount and signs in at the sixth digit", async () => {
     const { onResult, sent } = mount();
     const line = await screen.findByText(`We sent a code to ${ADA}`, {}, PANE);
@@ -114,7 +114,9 @@ describe("ElvixEmailCodeSignIn", () => {
     await screen.findByRole("button", { name: /Send again in \d+s/ }, PANE);
     expect(sent.start).toHaveLength(1);
   });
+});
 
+describe("ElvixEmailCodeSignIn: another email", () => {
   it("Use another email sends the code to the address typed instead", async () => {
     const { sent } = mount();
     await screen.findByText(`We sent a code to ${ADA}`, {}, PANE);
@@ -134,6 +136,14 @@ describe("ElvixEmailCodeSignIn", () => {
     expect(sent.start).toHaveLength(1);
   });
 
+  it("an address that is not one opens on the email field and sends nothing", async () => {
+    const { sent } = mount({}, { email: "ada@" });
+    expect((await screen.findByLabelText("Email", {}, PANE)).getAttribute("type")).toBe("email");
+    expect(sent.start).toHaveLength(0);
+  });
+});
+
+describe("ElvixEmailCodeSignIn: onboarding", () => {
   it("shows the app's onboarding step inside the block", async () => {
     const { onResult } = mount({
       verify: { ok: true, next_step: "username", suggestions: ["ada"], final: "/ticket" },
@@ -168,7 +178,9 @@ describe("ElvixEmailCodeSignIn", () => {
     await screen.findAllByText(/Acme/, {}, PANE);
     expect(onResult).not.toHaveBeenCalledWith(expect.objectContaining({ ok: true }));
   });
+});
 
+describe("ElvixEmailCodeSignIn: errors", () => {
   it.each([
     ["invalid_code", "That code didn't work. Try again."],
     ["expired", "That code expired. Send a new one."],
@@ -193,13 +205,9 @@ describe("ElvixEmailCodeSignIn", () => {
     mount({ start: { ok: false, error: "too_recent", retryAfterSeconds: 20 } });
     await screen.findByRole("button", { name: /Send again in (20|19)s/ }, PANE);
   });
+});
 
-  it("an address that is not one opens on the email field and sends nothing", async () => {
-    const { sent } = mount({}, { email: "ada@" });
-    expect((await screen.findByLabelText("Email", {}, PANE)).getAttribute("type")).toBe("email");
-    expect(sent.start).toHaveLength(0);
-  });
-
+describe("ElvixEmailCodeSignIn: preview", () => {
   it("preview draws the code step with demo digits and asks elvix nothing", async () => {
     const { sent } = mount({}, { mode: "preview" });
     await screen.findByText(`We sent a code to ${ADA}`, {}, PANE);
