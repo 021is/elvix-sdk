@@ -141,7 +141,7 @@ Rules the refactors above were driven by:
 - **A `switch` per pane group beats a ternary chain.** A 21-branch nested ternary
   was a complexity of 255 on its own.
 
-Publishing is tag-driven via GitHub Actions: tag `v0.1.0` on main → CI publishes to npm public registry.
+Publishing is tag-driven via GitHub Actions: tag `v0.1.0` on main → CI publishes to npm public registry. **elvix runs every release first** (2026-10-28): bump its exact pin the same day, before any customer moves; elvix's `tests/lib/sdk-is-latest.test.ts` holds every elvix deploy until it has.
 
 ## Source of truth
 
