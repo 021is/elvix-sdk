@@ -59,6 +59,12 @@ export { ElvixBanner } from "./elvix-banner";
 export { ElvixCard } from "./elvix-card";
 export { ElvixDeactivate } from "./elvix-deactivate";
 export { ElvixDeviceApproval, type ElvixDeviceApprovalProps } from "./elvix-device-approval";
+// A sign-in that starts at the code, for an email the host already knows (0.17).
+export {
+  type ElvixEmailCodePreviewStep,
+  ElvixEmailCodeSignIn,
+  type ElvixEmailCodeSignInProps,
+} from "./elvix-email-code-sign-in";
 export { ElvixExport } from "./elvix-export";
 // `fetch` for your own calls to elvix with the session token: adds the DPoP
 // proof every SDK call carries, so an app with DPoP on accepts them (0.15).
@@ -165,6 +171,7 @@ export type { ElvixSizeProps } from "./size";
 export type {
   ElvixBootstrapEnvelope,
   ElvixBrand,
+  ElvixDeferredStep,
   ElvixSignInMethod,
   ElvixSignInResult,
   ElvixSignInResultErr,

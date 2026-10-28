@@ -48,10 +48,7 @@ import {
   brandCssVars,
   ElvixSessionStatus,
   useElvixApp,
-  useElvixBrandPair,
   useElvixContext,
-  useElvixHostTheme,
-  useElvixResolvedTheme,
   useElvixSession,
 } from "./elvix-provider";
 import { ElvixSignInButton, type ElvixSignInButtonProps } from "./elvix-sign-in-button";
@@ -66,8 +63,11 @@ import {
   SignInHeader,
   UsernameStep,
 } from "./sign-in-steps";
+import { type Theme, themeVars, useSignInTheme } from "./sign-in-theme";
 import type { ElvixSignInResult } from "./types";
-import { Step, useOtpStart, useSignInFlow, useSignInReturns } from "./use-sign-in-flow";
+import { useOtpStart } from "./use-otp";
+import { Step, useSignInFlow } from "./use-sign-in-flow";
+import { useSignInReturns } from "./use-sign-in-returns";
 import { ELVIX_SDK_VERSION } from "./version";
 
 /** elvix marketing origin the "Secured by elvix" chip links to. In the
@@ -122,13 +122,6 @@ const DrawerSide = {
   RIGHT: "right",
 } as const;
 type DrawerSide = (typeof DrawerSide)[keyof typeof DrawerSide];
-
-const Theme = {
-  LIGHT: "light",
-  DARK: "dark",
-  AUTO: "auto",
-} as const;
-type Theme = (typeof Theme)[keyof typeof Theme];
 
 const SignInVerb = {
   SIGNIN: "signin",
@@ -345,37 +338,6 @@ export type AuthFormProps = {
   redirectIfAuthenticated?: boolean;
 };
 
-// Hard-coded theme values so the ElvixSignInForm's chrome can be isolated from the
-// surrounding page (e.g., Console can be dark while the preview shows the
-// light-theme appearance to the customer, or vice-versa). When the user
-// picks "auto", we don't override — descendants inherit the host's theme.
-const ELVIX_LIGHT_VARS: React.CSSProperties = {
-  ["--elvix-canvas" as string]: "#fafafa",
-  ["--elvix-surface" as string]: "#ffffff",
-  ["--elvix-surface-2" as string]: "#f4f4f5",
-  ["--elvix-surface-hover" as string]: "rgba(0, 0, 0, 0.04)",
-  ["--elvix-surface-active" as string]: "rgba(0, 0, 0, 0.06)",
-  ["--elvix-border" as string]: "rgba(0, 0, 0, 0.08)",
-  ["--elvix-border-strong" as string]: "rgba(0, 0, 0, 0.14)",
-  ["--elvix-fg-1" as string]: "#18181b",
-  ["--elvix-fg-2" as string]: "#52525b",
-  ["--elvix-fg-3" as string]: "#71717a",
-  ["--elvix-placeholder" as string]: "#a1a1aa",
-};
-const ELVIX_DARK_VARS: React.CSSProperties = {
-  ["--elvix-canvas" as string]: "#0a0a0b",
-  ["--elvix-surface" as string]: "#0d0d10",
-  ["--elvix-surface-2" as string]: "#08080a",
-  ["--elvix-surface-hover" as string]: "rgba(255, 255, 255, 0.04)",
-  ["--elvix-surface-active" as string]: "rgba(255, 255, 255, 0.06)",
-  ["--elvix-border" as string]: "rgba(255, 255, 255, 0.06)",
-  ["--elvix-border-strong" as string]: "rgba(255, 255, 255, 0.12)",
-  ["--elvix-fg-1" as string]: "#fafafa",
-  ["--elvix-fg-2" as string]: "#a1a1aa",
-  ["--elvix-fg-3" as string]: "#71717a",
-  ["--elvix-placeholder" as string]: "#52525b",
-};
-
 type AppEnvelope = ReturnType<typeof useElvixApp>;
 
 // Every explicit prop wins (the Console live preview passes unsaved state);
@@ -426,16 +388,7 @@ export function ElvixSignInForm(props: AuthFormProps) {
   // Every explicit prop wins (Console live-preview passes unsaved
   // state); context fills in everything the customer omitted.
   const app = useElvixApp();
-  // Theme: explicit prop > the host's theme pinned on <ElvixProvider theme> >
-  // the Console default. The brand pair follows the theme the card actually
-  // renders in ("auto" inherits the page, so it takes the provider's), which
-  // is how a Console `brandColorDark` reaches a dark card with no host props.
-  const hostTheme = useElvixHostTheme();
-  const providerTheme = useElvixResolvedTheme();
-  const theme = props.theme ?? hostTheme ?? (app?.theme as AuthFormProps["theme"]) ?? "light";
-  const brandPair = useElvixBrandPair(
-    theme === Theme.AUTO ? (providerTheme ?? Theme.LIGHT) : theme,
-  );
+  const { theme, brandPair } = useSignInTheme(props.theme);
   const resolved: AuthFormProps = {
     ...props,
     ...resolveIdentity(props, app),
@@ -472,19 +425,14 @@ export function ElvixSignInForm(props: AuthFormProps) {
   // renders directly on a host page (e.g. /sign-in/console), the host owns
   // the backdrop and we must stay transparent so radial-glow + grid overlays
   // continue under the card.
-  const wrapped =
-    // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-    theme === "auto" ? (
-      content
-    ) : (
-      <div
-        className={framed ? "bg-canvas" : undefined}
-        // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-        style={theme === "dark" ? ELVIX_DARK_VARS : ELVIX_LIGHT_VARS}
-      >
-        {content}
-      </div>
-    );
+  const pinnedVars = themeVars(theme);
+  const wrapped = pinnedVars ? (
+    <div className={framed ? "bg-canvas" : undefined} style={pinnedVars}>
+      {content}
+    </div>
+  ) : (
+    content
+  );
   if (!framed) return wrapped;
   return <FramedPreview>{wrapped}</FramedPreview>;
 }
@@ -581,9 +529,7 @@ function OverlayPresentation({
     [hostOnResult, setOpen],
   );
 
-  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  const themeVars =
-    theme === "auto" ? undefined : theme === "dark" ? ELVIX_DARK_VARS : ELVIX_LIGHT_VARS;
+  const pinnedVars = themeVars(theme);
 
   const triggerNode = trigger ? (
     trigger(openFn)
@@ -607,7 +553,7 @@ function OverlayPresentation({
           resolved={resolved}
           open={open}
           onOpenChange={setOpen}
-          themeVars={themeVars}
+          themeVars={pinnedVars}
           onResult={onResult}
         />
       ) : (
@@ -615,7 +561,7 @@ function OverlayPresentation({
           resolved={resolved}
           open={open}
           onClose={() => setOpen(false)}
-          themeVars={themeVars}
+          themeVars={pinnedVars}
           onResult={onResult}
         />
       )}

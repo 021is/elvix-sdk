@@ -252,6 +252,30 @@
       "useDifferentEmail": {
         "other": "Χρήση διαφορετικού email"
       },
+      "useAnotherEmail": {
+        "other": "Χρήση άλλου email"
+      },
+      "codeSending": {
+        "other": "Αποστολή κωδικού στο {email}…"
+      },
+      "codeNotSent": {
+        "other": "Δεν ήταν δυνατή η αποστολή κωδικού στο {email}"
+      },
+      "sendAgain": {
+        "other": "Αποστολή ξανά"
+      },
+      "sendAgainIn": {
+        "other": "Αποστολή ξανά σε {seconds}δ"
+      },
+      "errorTooManyAttempts": {
+        "other": "Πάρα πολλοί λάθος κωδικοί. Στείλτε έναν νέο."
+      },
+      "errorCodeUsed": {
+        "other": "Αυτός ο κωδικός έχει ήδη χρησιμοποιηθεί. Στείλτε έναν νέο."
+      },
+      "errorCodeGone": {
+        "other": "Αυτός ο κωδικός δεν ισχύει πια. Στείλτε έναν νέο."
+      },
       "resendInSeconds": {
         "other": "Επαναποστολή σε {seconds}δ"
       },

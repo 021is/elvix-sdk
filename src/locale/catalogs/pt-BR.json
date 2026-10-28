@@ -252,6 +252,30 @@
       "useDifferentEmail": {
         "other": "Usar outro e-mail"
       },
+      "useAnotherEmail": {
+        "other": "Usar outro e-mail"
+      },
+      "codeSending": {
+        "other": "Enviando um código para {email}…"
+      },
+      "codeNotSent": {
+        "other": "Não conseguimos enviar um código para {email}"
+      },
+      "sendAgain": {
+        "other": "Enviar de novo"
+      },
+      "sendAgainIn": {
+        "other": "Enviar de novo em {seconds}s"
+      },
+      "errorTooManyAttempts": {
+        "other": "Códigos errados demais. Envie um novo."
+      },
+      "errorCodeUsed": {
+        "other": "Esse código já foi usado. Envie um novo."
+      },
+      "errorCodeGone": {
+        "other": "Esse código não é mais válido. Envie um novo."
+      },
       "resendInSeconds": {
         "other": "Reenviar em {seconds}s"
       },

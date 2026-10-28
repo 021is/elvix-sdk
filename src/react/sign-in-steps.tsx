@@ -9,14 +9,7 @@
  */
 
 import { ArrowLeft, Check, Fingerprint, Loader2, X } from "lucide-react";
-import {
-  type CSSProperties,
-  type ReactNode,
-  type RefObject,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { type ReactNode, type RefObject, useEffect, useRef, useState } from "react";
 import { useT } from "../locale/use-t";
 import { BRAND_FOCUS } from "./brand-focus";
 import { ElvixRecoverGate } from "./elvix-recover-gate";
@@ -27,6 +20,7 @@ import { STACK_2, STACK_3, STACK_4 } from "./pane-layout";
 import { runPasskeyRegister, runPasskeySignIn } from "./passkey";
 import { send } from "./profile-request";
 import { authInit, getElvixToken, isSameOrigin } from "./session";
+import { type Cta, CtaButton, ErrorLine } from "./sign-in-controls";
 import {
   hostedCeremonyUrl,
   humanError,
@@ -36,87 +30,8 @@ import {
   usernameReasonLabel,
 } from "./sign-in-copy";
 import { unwrapEnvelope } from "./spine-fetch";
-import { type OtpStart, postJson, type SignInFlow, Step, useOtpVerify } from "./use-sign-in-flow";
-
-// ─── The branded call to action ──────────────────────────────────────
-
-/** Brand pair for the primary button: the customer picks both colours, so
- *  contrast is theirs; hover and press only change brightness. */
-export type Cta = { brand?: string; onBrand?: string };
-
-const CTA_CLASS =
-  "cursor-pointer w-full inline-flex items-center justify-center h-9 px-4 rounded-[10px] font-semibold text-[13px] tracking-tight transition hover:brightness-[0.94] active:brightness-[0.88] disabled:cursor-not-allowed disabled:hover:brightness-100";
-
-function ArrowGlyph() {
-  return (
-    <svg width="11" height="10" viewBox="0 0 11 10" fill="none" aria-hidden>
-      <path
-        d="M7.75 5L4.25 2.75V7.25L7.75 5Z"
-        fill="currentColor"
-        stroke="currentColor"
-        opacity="0.6"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-/** Solid brand fill with a soft top sheen and a grounded three-layer shadow,
- *  matching the Console's primary button. */
-function CtaButton({
-  cta,
-  busy,
-  disabled,
-  arrow = false,
-  faint = false,
-  submit = false,
-  className = "",
-  onClick,
-  children,
-}: {
-  cta: Cta;
-  busy: boolean;
-  disabled: boolean;
-  arrow?: boolean;
-  /** Disabled at half opacity rather than 60%: the identifier step's look. */
-  faint?: boolean;
-  submit?: boolean;
-  className?: string;
-  onClick?: () => void;
-  children: ReactNode;
-}) {
-  const style: CSSProperties = {
-    backgroundImage: "linear-gradient(to bottom, rgba(255,255,255,0.12), rgba(255,255,255,0) 40%)",
-    backgroundColor: cta.brand,
-    color: cta.onBrand,
-    boxShadow:
-      "0 1px 0 rgba(255,255,255,0.06) inset, 0 2px 3px -1px rgba(0,0,0,0.18), 0 0 0 1px rgba(25,28,33,0.08)",
-  };
-  return (
-    <button
-      type={submit ? "submit" : "button"}
-      onClick={onClick}
-      disabled={disabled}
-      className={`${CTA_CLASS} ${faint ? "disabled:opacity-50" : "disabled:opacity-60"} ${className}`}
-      style={style}
-    >
-      <span
-        className="inline-flex items-center gap-1.5"
-        style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.18))" }}
-      >
-        {busy ? <Loader2 className="size-4 animate-spin" /> : children}
-        {arrow && !busy && <ArrowGlyph />}
-      </span>
-    </button>
-  );
-}
-
-function ErrorLine({ error, center = false }: { error: string | null; center?: boolean }) {
-  if (!error) return null;
-  return <p className={`text-[11.5px] text-red-400${center ? " text-center" : ""}`}>{error}</p>;
-}
+import { type OtpStart, useOtpVerify } from "./use-otp";
+import { postJson, type SignInFlow, Step } from "./use-sign-in-flow";
 
 // ─── Header ──────────────────────────────────────────────────────────
 
@@ -201,7 +116,13 @@ function GateBadge({ gate, t }: { gate: string | undefined; t: Translator }) {
   );
 }
 
-function headerTitle(step: Step, p: AuthFormProps, recoverApp: string | undefined, t: Translator) {
+/** A step's title, in the card's header and above a compact block's onboarding step. */
+export function headerTitle(
+  step: Step,
+  p: AuthFormProps,
+  recoverApp: string | undefined,
+  t: Translator,
+) {
   const app = p.appName || t("signin.appNameFallback");
   switch (step) {
     case Step.CODE:
@@ -223,7 +144,7 @@ function headerTitle(step: Step, p: AuthFormProps, recoverApp: string | undefine
   }
 }
 
-function headerSubtitle(step: Step, p: AuthFormProps, identifier: string, t: Translator) {
+export function headerSubtitle(step: Step, p: AuthFormProps, identifier: string, t: Translator) {
   switch (step) {
     case Step.CODE:
       return t("signin.codeSentSubtitle", { email: identifier });

@@ -254,6 +254,30 @@
       "useDifferentEmail": {
         "other": "Использовать другую электронную почту"
       },
+      "useAnotherEmail": {
+        "other": "Другой адрес почты"
+      },
+      "codeSending": {
+        "other": "Отправляем код на {email}…"
+      },
+      "codeNotSent": {
+        "other": "Не удалось отправить код на {email}"
+      },
+      "sendAgain": {
+        "other": "Отправить снова"
+      },
+      "sendAgainIn": {
+        "other": "Снова через {seconds} с"
+      },
+      "errorTooManyAttempts": {
+        "other": "Слишком много неверных кодов. Отправьте новый."
+      },
+      "errorCodeUsed": {
+        "other": "Этот код уже использован. Отправьте новый."
+      },
+      "errorCodeGone": {
+        "other": "Этот код больше не действует. Отправьте новый."
+      },
       "resendInSeconds": {
         "other": "Повторно через {seconds} с"
       },

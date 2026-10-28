@@ -254,6 +254,30 @@
       "useDifferentEmail": {
         "other": "Використати іншу електронну пошту"
       },
+      "useAnotherEmail": {
+        "other": "Інша адреса пошти"
+      },
+      "codeSending": {
+        "other": "Надсилаємо код на {email}…"
+      },
+      "codeNotSent": {
+        "other": "Не вдалося надіслати код на {email}"
+      },
+      "sendAgain": {
+        "other": "Надіслати знову"
+      },
+      "sendAgainIn": {
+        "other": "Знову через {seconds}с"
+      },
+      "errorTooManyAttempts": {
+        "other": "Забагато неправильних кодів. Надішліть новий."
+      },
+      "errorCodeUsed": {
+        "other": "Цей код уже використано. Надішліть новий."
+      },
+      "errorCodeGone": {
+        "other": "Цей код більше не дійсний. Надішліть новий."
+      },
       "resendInSeconds": {
         "other": "Повторно надіслати через {seconds}с"
       },

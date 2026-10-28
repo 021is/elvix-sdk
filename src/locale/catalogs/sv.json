@@ -252,6 +252,30 @@
       "useDifferentEmail": {
         "other": "Använd en annan e-post"
       },
+      "useAnotherEmail": {
+        "other": "Använd en annan e-post"
+      },
+      "codeSending": {
+        "other": "Skickar en kod till {email}…"
+      },
+      "codeNotSent": {
+        "other": "Vi kunde inte skicka en kod till {email}"
+      },
+      "sendAgain": {
+        "other": "Skicka igen"
+      },
+      "sendAgainIn": {
+        "other": "Skicka igen om {seconds}s"
+      },
+      "errorTooManyAttempts": {
+        "other": "För många felaktiga koder. Skicka en ny."
+      },
+      "errorCodeUsed": {
+        "other": "Den koden har redan använts. Skicka en ny."
+      },
+      "errorCodeGone": {
+        "other": "Den koden gäller inte längre. Skicka en ny."
+      },
       "resendInSeconds": {
         "other": "Skicka igen om {seconds}s"
       },

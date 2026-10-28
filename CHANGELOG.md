@@ -13,6 +13,35 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+## [0.17.0] — 2026-10-28
+
+A sign-in that starts at the email code, for a host that already knows the address.
+
+### Added
+
+- **`<ElvixEmailCodeSignIn email>`**: sends a code to `email` once when it mounts and draws
+  only where it went, the six boxes, "Send again" and "Use another email" (an email field,
+  then the code, in the same frame). No card, header, method list or footer: it sits inside
+  the host's own card. A remount, React StrictMode or a reload within the code's life never
+  sends a second code; "Send again" is the only way to one. The onboarding steps after the
+  code are the form's own panes; `deferOnboarding` signs in at once instead and names the
+  step put off in the result's new `deferred` (`"username" | "passkey"`; restoring a
+  membership is never put off). Same results contract as `<ElvixSignInForm>`, DPoP
+  included. `mode="preview"` draws it with demo state and asks elvix nothing;
+  `previewStep` picks the pane. It never navigates.
+- **Themable fields**: `--elvix-field` (fill) and `--elvix-field-border` (outline), on any
+  ancestor, restyle the code boxes. The new block defaults to a tint with no outline.
+
+### Changed
+
+- The code group is described by the line that says where the code went, and every sign-in
+  error line is announced (`role="alert"`).
+
+### Fixed
+
+- Three refusals of a code read "Something went wrong": too many wrong codes, a code already
+  used, a code that no longer exists. Each now says what happened and to send a new one.
+
 ## [0.16.0] — 2026-10-22
 
 DPoP phase 2: the binding reaches your own backend, and a session binds the moment it exists.

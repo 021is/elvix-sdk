@@ -108,7 +108,16 @@ export type ElvixSignInResultOk = {
    * same-origin sign-in (the session rides a cookie instead).
    */
   token?: string;
+  /**
+   * The optional onboarding step `deferOnboarding` put off (0.17): the person
+   * is signed in without it and is offered it again at their next sign-in.
+   * Absent when nothing was put off.
+   */
+  deferred?: ElvixDeferredStep;
 };
+
+/** An onboarding step a host may put off: picking a username, adding a passkey. */
+export type ElvixDeferredStep = "username" | "passkey";
 
 export type ElvixSignInResultErr = {
   ok: false;

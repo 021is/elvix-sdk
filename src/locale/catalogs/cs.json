@@ -253,6 +253,30 @@
       "useDifferentEmail": {
         "other": "Použít jiný e-mail"
       },
+      "useAnotherEmail": {
+        "other": "Použít jiný e-mail"
+      },
+      "codeSending": {
+        "other": "Posíláme kód na {email}…"
+      },
+      "codeNotSent": {
+        "other": "Kód na {email} se nepodařilo poslat"
+      },
+      "sendAgain": {
+        "other": "Poslat znovu"
+      },
+      "sendAgainIn": {
+        "other": "Znovu za {seconds} s"
+      },
+      "errorTooManyAttempts": {
+        "other": "Příliš mnoho chybných kódů. Pošlete nový."
+      },
+      "errorCodeUsed": {
+        "other": "Tento kód už byl použit. Pošlete nový."
+      },
+      "errorCodeGone": {
+        "other": "Tento kód už neplatí. Pošlete nový."
+      },
       "resendInSeconds": {
         "other": "Znovu za {seconds} s"
       },

@@ -255,6 +255,30 @@
       "useDifferentEmail": {
         "other": "Use a different email"
       },
+      "useAnotherEmail": {
+        "other": "Use another email"
+      },
+      "codeSending": {
+        "other": "Sending a code to {email}…"
+      },
+      "codeNotSent": {
+        "other": "We couldn't send a code to {email}"
+      },
+      "sendAgain": {
+        "other": "Send again"
+      },
+      "sendAgainIn": {
+        "other": "Send again in {seconds}s"
+      },
+      "errorTooManyAttempts": {
+        "other": "Too many wrong codes. Send a new one."
+      },
+      "errorCodeUsed": {
+        "other": "That code was already used. Send a new one."
+      },
+      "errorCodeGone": {
+        "other": "That code is no longer valid. Send a new one."
+      },
       "resendInSeconds": {
         "other": "Resend in {seconds}s"
       },
