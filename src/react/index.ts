@@ -124,6 +124,8 @@ export { ElvixUserAvatar, type ElvixUserAvatarProps } from "./elvix-user-avatar"
 export { ElvixUserBanner, type ElvixUserBannerProps } from "./elvix-user-banner";
 // Identity
 export { ElvixUsername } from "./elvix-username";
+// The parts of <ElvixEmailCodeSignIn> a host can add classes to.
+export type { ElvixEmailCodeClassNames, ElvixEmailCodeSlot } from "./email-code-panes";
 // Live, read-only access: what the app's admins granted the signed-in user.
 // Pushed over one shared stream per user (works cross-origin with the bearer);
 // the watcher signs the user out on a ban / pause / delete as it happens.

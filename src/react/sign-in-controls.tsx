@@ -83,10 +83,21 @@ export function CtaButton({
 }
 
 /** An error, announced the moment it appears (`role="alert"`). */
-export function ErrorLine({ error, center = false }: { error: string | null; center?: boolean }) {
+export function ErrorLine({
+  error,
+  center = false,
+  className = "",
+}: {
+  error: string | null;
+  center?: boolean;
+  className?: string;
+}) {
   if (!error) return null;
   return (
-    <p role="alert" className={`text-[11.5px] text-red-400${center ? " text-center" : ""}`}>
+    <p
+      role="alert"
+      className={`text-[11.5px] text-red-400${center ? " text-center" : ""} ${className}`}
+    >
       {error}
     </p>
   );

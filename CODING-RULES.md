@@ -60,8 +60,8 @@ allowed only to shrink; nothing new is ever recorded.
 that a change touches pays some of it in that change (split it, move a pure helper out); say
 what was left and why. On 2026-10-28 the sign-in files paid this way: `use-sign-in-flow.ts`
 (551 lines before its split), `elvix-sign-in-form.tsx` (989 → 935), `sign-in-steps.tsx`
-(1012 → 933). `CHANGELOG.md` is recorded and cannot grow: the next release moves the oldest
-versions to `docs/changelog/`.
+(1012 → 933), and `CHANGELOG.md` (844 → 225; its older releases are in `docs/changelog/`,
+and move there whenever it passes 300 again).
 
 ## Size and structure
 

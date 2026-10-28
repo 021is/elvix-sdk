@@ -88,7 +88,9 @@ describe("ElvixEmailCodeSignIn: the code", () => {
     );
     expect(sent.start).toEqual([{ email: ADA, intent: "app", clientId: CLIENT_ID }]);
     expect(sent.verify).toEqual([{ challengeId: "c1", code: "123456" }]);
-    await screen.findByText("Signing you in…");
+    // Signed in: the block steps aside (no `signedIn` given), never a spinner that stays.
+    await waitFor(() => expect(screen.queryByRole("group")).toBeNull());
+    expect(screen.queryByText("Signing you in…")).toBeNull();
   });
 
   it("never sends a second code for a remount or StrictMode's double effect", async () => {
@@ -219,5 +221,48 @@ describe("ElvixEmailCodeSignIn: preview", () => {
   it("preview draws an onboarding step on request", async () => {
     mount({}, { mode: "preview", previewStep: "username" });
     await screen.findByText("Pick a username", {}, PANE);
+  });
+});
+
+describe("ElvixEmailCodeSignIn: the host's block", () => {
+  it("shows the title and line it is given, and nothing for those left out", async () => {
+    const { view } = mount(
+      {},
+      { title: "Your ticket is ready", description: "Sign in to keep it." },
+    );
+    expect((await screen.findByRole("heading", { level: 3 })).textContent).toBe(
+      "Your ticket is ready",
+    );
+    expect(screen.getByText("Sign in to keep it.")).toBeTruthy();
+    view.unmount();
+    window.sessionStorage.clear();
+    const bare = mount();
+    await screen.findByText(`We sent a code to ${ADA}`, {}, PANE);
+    expect(screen.queryByRole("heading")).toBeNull();
+    // One column: the code line is the first thing in it, with no header margin above.
+    const column = bare.view.container.firstElementChild as HTMLElement;
+    expect(column.firstElementChild?.textContent).toContain("We sent a code to");
+  });
+
+  it("calls onSignedIn once, then shows only what the host gave for that moment", async () => {
+    const onSignedIn = vi.fn();
+    mount({}, { title: "Your ticket is ready", onSignedIn, signedIn: <p>Ticket #42</p> });
+    await enterCode();
+    await screen.findByText("Ticket #42", {}, PANE);
+    expect(onSignedIn).toHaveBeenCalledTimes(1);
+    expect(onSignedIn).toHaveBeenCalledWith(
+      expect.objectContaining({ ok: true, method: "email_otp", token: "tok_1" }),
+    );
+    expect(screen.queryByText("Your ticket is ready")).toBeNull();
+  });
+
+  it("takes its classes, and leaves focus alone when told to", async () => {
+    mount({}, { autoFocus: false, classNames: { line: "host-line", code: "host-box" } });
+    const line = await screen.findByText(`We sent a code to ${ADA}`, {}, PANE);
+    expect(line.className).toContain("host-line");
+    const box = screen.getByLabelText("Digit 1 of 6");
+    expect(box.className).toContain("host-box");
+    expect(box.className).toContain("elvix-field");
+    expect(document.activeElement).not.toBe(box);
   });
 });

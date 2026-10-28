@@ -13,7 +13,7 @@ import type {
 } from "./elvix-email-code-sign-in";
 import { useElvixApp, useElvixContext } from "./elvix-provider";
 import { codeKey, forgetCode, keepCode, sendOnce } from "./email-code-once";
-import type { ElvixSignInResult } from "./types";
+import type { ElvixSignInResult, ElvixSignInResultOk } from "./types";
 import { isEmail, type OtpStart, useOtpStart } from "./use-otp";
 import { Step, useSignInFlow } from "./use-sign-in-flow";
 import { useStableCallback } from "./use-stable-callback";
@@ -54,17 +54,21 @@ export function useEmailCode(p: ElvixEmailCodeSignInProps) {
   // lands later, and a key that changed then sent a second code.
   const clientId = p.clientId ?? ctx.clientId ?? undefined;
   const [sentTo, setSentTo] = useState(p.email.trim());
-  // A code that signed the person in is spent: a later mount must not offer it.
+  const [signedIn, setSignedIn] = useState<ElvixSignInResultOk | null>(null);
   const hostResult = useStableCallback(p.onResult);
+  const hostSignedIn = useStableCallback(p.onSignedIn);
   const onResult = useCallback(
     (r: ElvixSignInResult) => {
       if (r.ok) {
+        // A code that signed the person in is spent: a later mount must not offer it.
         forgetCode(codeKey(baseUrl, clientId, sentTo));
         forgetCode(codeKey(baseUrl, clientId, p.email));
+        setSignedIn(r);
+        hostSignedIn(r);
       }
       hostResult(r);
     },
-    [baseUrl, clientId, sentTo, p.email, hostResult],
+    [baseUrl, clientId, sentTo, p.email, hostResult, hostSignedIn],
   );
   const flow = useSignInFlow({
     intent: "app",
@@ -105,5 +109,5 @@ export function useEmailCode(p: ElvixEmailCodeSignInProps) {
     flow.setStep(step);
   };
 
-  return { t, baseUrl, app, clientId, isPreview, flow, otp, sentTo, send, switchTo };
+  return { t, baseUrl, app, clientId, isPreview, flow, otp, sentTo, send, switchTo, signedIn };
 }

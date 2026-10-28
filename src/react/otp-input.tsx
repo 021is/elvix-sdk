@@ -4,10 +4,9 @@
  * Segmented 6-box OTP input, the one every code step uses (sign-in, export,
  * deactivate). No host dependencies — only React.
  *
- * The boxes' fill and outline are themable (0.17): `--elvix-field` and
- * `--elvix-field-border` on any ancestor (`brand-focus.ts`). `tinted` picks
- * the tint-with-no-outline default, which `<ElvixEmailCodeSignIn>` uses.
- * Focus keeps the brand ring.
+ * `compact` (0.17) draws the boxes as `<ElvixEmailCodeSignIn>`'s fields: a
+ * tint, no outline, every look a `--elvix-field*` variable
+ * (`styles/fields.css`). Otherwise they are the card's bordered boxes.
  */
 
 import {
@@ -19,7 +18,7 @@ import {
   useRef,
 } from "react";
 import { useT } from "../locale/use-t";
-import { BRAND_FOCUS, FIELD_OUTLINED, FIELD_TINTED } from "./brand-focus";
+import { BRAND_FOCUS, FIELD_COMPACT, FIELD_OUTLINED } from "./brand-focus";
 
 const OTP_LENGTH = 6;
 /** The six fixed positions. A box IS its position (it never moves or
@@ -56,17 +55,20 @@ export function OtpInput({
   onChange,
   disabled,
   autoFocus,
-  tinted = false,
+  compact = false,
   describedBy,
+  className = "",
 }: {
   value: string;
   onChange: (v: string) => void;
   disabled?: boolean;
   autoFocus?: boolean;
-  /** A tint with no outline (`FIELD_TINTED`) instead of the bordered boxes. */
-  tinted?: boolean;
+  /** `<ElvixEmailCodeSignIn>`'s fields (`FIELD_COMPACT`) instead of the bordered boxes. */
+  compact?: boolean;
   /** The id of the line that says where the code went, read with the group. */
   describedBy?: string;
+  /** More classes on each box (a host's `classNames.code`). */
+  className?: string;
 }) {
   const t = useT();
   const refs = useRef<(HTMLInputElement | null)[]>([]);
@@ -145,7 +147,7 @@ export function OtpInput({
           onKeyDown={(e) => onKeyDown(i, e)}
           onPaste={onPaste}
           onFocus={(e) => e.target.select()}
-          className={`w-full aspect-square min-w-0 max-w-12 mx-auto text-center text-[20px] font-semibold tabular-nums rounded-[10px] ${tinted ? FIELD_TINTED : FIELD_OUTLINED} text-fg-1 ${BRAND_FOCUS} transition disabled:opacity-50`}
+          className={`w-full aspect-square min-w-0 max-w-12 mx-auto text-center text-[20px] font-semibold tabular-nums ${compact ? FIELD_COMPACT : `rounded-[10px] ${FIELD_OUTLINED} text-fg-1 ${BRAND_FOCUS} transition disabled:opacity-50`} ${className}`}
         />
       ))}
     </fieldset>
