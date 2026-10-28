@@ -47,7 +47,7 @@ Sign-in and sign-up are the same door. There is no separate registration flow to
 | `@elvix.is/sdk/types` | Shared TypeScript types, no runtime code |
 | `@elvix.is/sdk/mcp` | The MCP server, embeddable in your own host |
 
-**Components** — sign-in, username, identity form, avatar, banner, region, languages, address book, legal entities, sessions, data export, deactivate, leave. Full catalogue with live previews: **[elvix.is/docs/components](https://elvix.is/docs/components)**.
+**Components** — sign-in, the compact email-code sign-in (`<ElvixEmailCodeSignIn email>`, for an address you already have), username, identity form, avatar, banner, region, languages, address book, legal entities, sessions, data export, deactivate, leave. Full catalogue with live previews: **[elvix.is/docs/components](https://elvix.is/docs/components)**.
 
 **Hooks** — read-only, current without polling. Read these instead of calling elvix yourself:
 

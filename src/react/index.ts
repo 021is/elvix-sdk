@@ -59,6 +59,12 @@ export { ElvixBanner } from "./elvix-banner";
 export { ElvixCard } from "./elvix-card";
 export { ElvixDeactivate } from "./elvix-deactivate";
 export { ElvixDeviceApproval, type ElvixDeviceApprovalProps } from "./elvix-device-approval";
+// A sign-in that starts at the code, for an email the host already knows (0.17).
+export {
+  type ElvixEmailCodePreviewStep,
+  ElvixEmailCodeSignIn,
+  type ElvixEmailCodeSignInProps,
+} from "./elvix-email-code-sign-in";
 export { ElvixExport } from "./elvix-export";
 // `fetch` for your own calls to elvix with the session token: adds the DPoP
 // proof every SDK call carries, so an app with DPoP on accepts them (0.15).
@@ -118,6 +124,8 @@ export { ElvixUserAvatar, type ElvixUserAvatarProps } from "./elvix-user-avatar"
 export { ElvixUserBanner, type ElvixUserBannerProps } from "./elvix-user-banner";
 // Identity
 export { ElvixUsername } from "./elvix-username";
+// The parts of <ElvixEmailCodeSignIn> a host can add classes to.
+export type { ElvixEmailCodeClassNames, ElvixEmailCodeSlot } from "./email-code-panes";
 // Live, read-only access: what the app's admins granted the signed-in user.
 // Pushed over one shared stream per user (works cross-origin with the bearer);
 // the watcher signs the user out on a ban / pause / delete as it happens.
@@ -165,6 +173,7 @@ export type { ElvixSizeProps } from "./size";
 export type {
   ElvixBootstrapEnvelope,
   ElvixBrand,
+  ElvixDeferredStep,
   ElvixSignInMethod,
   ElvixSignInResult,
   ElvixSignInResultErr,

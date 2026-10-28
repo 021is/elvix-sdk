@@ -251,6 +251,30 @@
       "useDifferentEmail": {
         "other": "Farklı bir e-posta kullan"
       },
+      "useAnotherEmail": {
+        "other": "Başka bir e-posta kullan"
+      },
+      "codeSending": {
+        "other": "{email} adresine kod gönderiliyor…"
+      },
+      "codeNotSent": {
+        "other": "{email} adresine kod gönderilemedi"
+      },
+      "sendAgain": {
+        "other": "Tekrar gönder"
+      },
+      "sendAgainIn": {
+        "other": "{seconds}sn içinde tekrar gönder"
+      },
+      "errorTooManyAttempts": {
+        "other": "Çok fazla yanlış kod. Yeni bir kod gönderin."
+      },
+      "errorCodeUsed": {
+        "other": "Bu kod zaten kullanıldı. Yeni bir kod gönderin."
+      },
+      "errorCodeGone": {
+        "other": "Bu kod artık geçerli değil. Yeni bir kod gönderin."
+      },
       "resendInSeconds": {
         "other": "{seconds}sn içinde tekrar gönder"
       },

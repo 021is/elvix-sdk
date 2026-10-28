@@ -1,6 +1,6 @@
 {
   "name": "@elvix.is/sdk",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "Official elvix SDK. Drop-in React components, server helpers, and an MCP server so AI coding agents integrate elvix on the first try.",
   "license": "MIT",
   "homepage": "https://elvix.is",
@@ -58,9 +58,9 @@
   "scripts": {
     "build": "node scripts/gen-version.mjs && tsup src/index.ts src/react.ts src/server.ts src/types.ts src/mcp/index.ts src/mcp/bin.ts src/cli/index.ts src/cli/doctor.ts src/cli/login.ts --format esm --dts --clean --external react --external react/jsx-runtime --external react-dom --external next && bun run build:css && node scripts/postbuild.mjs",
     "build:css": "tailwindcss --input src/styles/sdk.css --output dist/styles.css --minify",
-    "lint": "biome check src tests",
-    "lint:ci": "biome ci --error-on-warnings src tests",
-    "lint:fix": "biome check --write src tests",
+    "lint": "biome check src tests scripts",
+    "lint:ci": "biome ci --error-on-warnings src tests scripts",
+    "lint:fix": "biome check --write src tests scripts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

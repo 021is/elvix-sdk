@@ -37,11 +37,9 @@ function keysOf(catalog) {
 
 async function upload() {
   const { PutObjectCommand, S3Client } = await import("@aws-sdk/client-s3");
-  const need = [
-    "R2_I18N_ENDPOINT",
-    "R2_I18N_ACCESS_KEY_ID",
-    "R2_I18N_SECRET_ACCESS_KEY",
-  ].filter((name) => !process.env[name]);
+  const need = ["R2_I18N_ENDPOINT", "R2_I18N_ACCESS_KEY_ID", "R2_I18N_SECRET_ACCESS_KEY"].filter(
+    (name) => !process.env[name],
+  );
   if (need.length) throw new Error(`missing ${need.join(", ")}`);
   const client = new S3Client({
     region: "auto",

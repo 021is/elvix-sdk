@@ -251,6 +251,30 @@
       "useDifferentEmail": {
         "other": "Een ander e-mailadres gebruiken"
       },
+      "useAnotherEmail": {
+        "other": "Ander e-mailadres gebruiken"
+      },
+      "codeSending": {
+        "other": "Code wordt verstuurd naar {email}…"
+      },
+      "codeNotSent": {
+        "other": "We konden geen code versturen naar {email}"
+      },
+      "sendAgain": {
+        "other": "Opnieuw versturen"
+      },
+      "sendAgainIn": {
+        "other": "Opnieuw versturen over {seconds}s"
+      },
+      "errorTooManyAttempts": {
+        "other": "Te veel foute codes. Verstuur een nieuwe."
+      },
+      "errorCodeUsed": {
+        "other": "Die code is al gebruikt. Verstuur een nieuwe."
+      },
+      "errorCodeGone": {
+        "other": "Die code is niet meer geldig. Verstuur een nieuwe."
+      },
       "resendInSeconds": {
         "other": "Opnieuw versturen over {seconds}s"
       },

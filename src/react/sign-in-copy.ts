@@ -33,6 +33,10 @@ export function formatRetry(t: Translator, seconds: number): string {
 const ERROR_KEYS: Record<string, string> = {
   invalid_code: "signin.errorInvalidCode",
   expired: "signin.errorExpired",
+  // The code legs' own refusals (0.17): each says what to do, never "Something went wrong".
+  too_many_attempts: "signin.errorTooManyAttempts",
+  already_used: "signin.errorCodeUsed",
+  not_found: "signin.errorCodeGone",
   send_failed: "signin.errorSendFailed",
   user_paused: "signin.errorUserPaused",
   user_banned: "signin.errorUserBanned",

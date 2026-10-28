@@ -1,0 +1,48 @@
+/* The compact field (0.17): `<ElvixEmailCodeSignIn>`'s email field and code
+   boxes. Plain CSS, not utilities, so no host stylesheet and no load order
+   can change it: a host restyles it only through these variables, set on any
+   ancestor (they inherit). Each has a default that reads on any background:
+   a tint of the text colour, no outline at rest, a thin brand border on focus.
+
+     --elvix-field               fill
+     --elvix-field-hover         fill under the pointer
+     --elvix-field-border        outline at rest (default: none)
+     --elvix-field-focus         outline when focused (default: the brand)
+     --elvix-field-focus-ring    a ring around a focused field (default: none)
+     --elvix-field-radius        corner radius
+     --elvix-field-text          text colour
+*/
+.elvix-field {
+  background-color: var(--elvix-field, color-mix(in srgb, var(--elvix-fg-1) 6%, transparent));
+  border: 1px solid var(--elvix-field-border, transparent);
+  border-radius: var(--elvix-field-radius, 10px);
+  color: var(--elvix-field-text, var(--elvix-fg-1));
+  box-shadow: none;
+  outline: none;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.elvix-field:hover:not(:disabled) {
+  background-color: var(
+    --elvix-field-hover,
+    color-mix(in srgb, var(--elvix-fg-1) 9%, transparent)
+  );
+}
+
+.elvix-field:focus,
+.elvix-field:focus-visible {
+  border-color: var(--elvix-field-focus, var(--elvix-primary, var(--elvix-fg-2)));
+  box-shadow: var(--elvix-field-focus-ring, none);
+  outline: none;
+}
+
+.elvix-field::placeholder {
+  color: var(--elvix-placeholder);
+}
+
+.elvix-field:disabled {
+  opacity: 0.6;
+}
