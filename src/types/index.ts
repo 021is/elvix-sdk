@@ -125,6 +125,9 @@ export type ElvixActionResult<T = unknown> =
 /** A legal entity as an app reads it by id (0.18, `getElvixLegalEntity`). */
 export type {
   ElvixLegalEntity,
+  ElvixLegalEntityPerson,
+  ElvixLegalEntityPurpose,
   ElvixLegalEntityResult,
+  ElvixVatNameMatch,
   ElvixVatValidation,
 } from "./legal-entity";

@@ -8,7 +8,11 @@
  * never-granted or deleted entity is `not_found`. Never throws.
  */
 
-import type { ElvixLegalEntity, ElvixLegalEntityResult } from "../types/legal-entity";
+import type {
+  ElvixLegalEntity,
+  ElvixLegalEntityPurpose,
+  ElvixLegalEntityResult,
+} from "../types/legal-entity";
 
 const DEFAULT_BASE_URL = "https://elvix.is";
 
@@ -21,16 +25,21 @@ export type GetLegalEntityArgs = {
   userId: string;
   /** The id `onPick` handed the browser. */
   entityId: string;
+  /** What the user granted it for: `invoicing` (default) or `payouts`. */
+  purpose?: ElvixLegalEntityPurpose;
   /** Override the elvix origin for testing / proxy setups. */
   baseUrl?: string;
   /** Per-request timeout in ms. Default 5000. */
   timeoutMs?: number;
 };
 
-const path = (a: GetLegalEntityArgs) =>
-  ["api", "applications", a.applicationId, "users", a.userId, "legal-entities", a.entityId]
-    .map((part, i) => (i < 2 ? part : encodeURIComponent(part)))
-    .join("/");
+const PURPOSES: ReadonlySet<ElvixLegalEntityPurpose> = new Set(["invoicing", "payouts"]);
+
+const path = (a: GetLegalEntityArgs) => {
+  const parts = ["applications", a.applicationId, "users", a.userId, "legal-entities", a.entityId];
+  const purpose = a.purpose ? `?purpose=${a.purpose}` : "";
+  return `api/${parts.map((p, i) => (i < 1 ? p : encodeURIComponent(p))).join("/")}${purpose}`;
+};
 
 /** The record from a Spine envelope (`{ success, data: { entity } }`) or a bare body. */
 function entityOf(body: unknown): ElvixLegalEntity | null {
@@ -57,6 +66,10 @@ export async function getElvixLegalEntity(
 ): Promise<ElvixLegalEntityResult> {
   if (![args.applicationId, args.userId, args.entityId].every((id) => ID.test(id))) {
     return { ok: false, error: "invalid_id" };
+  }
+  // Typed for TypeScript callers; checked for JavaScript ones, since it lands in the query.
+  if (args.purpose !== undefined && !PURPOSES.has(args.purpose)) {
+    return { ok: false, error: "invalid_purpose" };
   }
   const url = `${args.baseUrl ?? DEFAULT_BASE_URL}/${path(args)}`;
   const ctrl = new AbortController();

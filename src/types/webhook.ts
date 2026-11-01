@@ -132,6 +132,8 @@ export type UserLegalEntityData = {
   entityId: string;
   /** The entity's `updatedAt` at the event; compare with your snapshot. */
   updatedAt: string;
+  /** The grant this event is about (an app may hold one per purpose). */
+  purpose?: "invoicing" | "payouts";
 };
 
 // ── Discriminated union ─────────────────────────────────────────

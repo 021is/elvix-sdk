@@ -41,6 +41,26 @@ const COUNTRY_CODE = /^[A-Z]{2}$/;
  */
 const NATIONALITY_LIST = /^[A-Z]{2}(,[A-Z]{2}){0,3}$/;
 
+/** E-invoice addresses: Peppol `<4-digit EAS>:<id>`, SDI code, Leitweg-ID. */
+export const PEPPOL_ID = /^\d{4}:[A-Za-z0-9._-]{1,64}$/;
+export const CODICE_DESTINATARIO = /^[A-Z0-9]{7}$/;
+export const LEITWEG_ID = /^[0-9]{2,12}(-[A-Za-z0-9]{1,30})?-[0-9]{2}$/;
+
+/** What an app was granted an entity for; each purpose reads its own fields. */
+export const LegalEntityPurpose = {
+  INVOICING: "invoicing",
+  PAYOUTS: "payouts",
+} as const;
+export type LegalEntityPurpose = (typeof LegalEntityPurpose)[keyof typeof LegalEntityPurpose];
+
+/** Does the legal name match the register's name for the VAT ID? (elvix's own check.) */
+export const VatNameMatch = {
+  MATCH: "match",
+  MISMATCH: "mismatch",
+  UNKNOWN: "unknown",
+} as const;
+export type VatNameMatch = (typeof VatNameMatch)[keyof typeof VatNameMatch];
+
 /**
  * Tax-validation level. Lifted into the schema so the SDK can
  * surface the current state on the detail view and route the live
@@ -67,6 +87,10 @@ const legalEntityShape = z.object({
     .max(180, "Keep it under 180 characters")
     .regex(/\p{L}/u, "Must include at least one letter"),
   tradingName: z.string().trim().max(180).optional().nullable(),
+  // A natural person's name in its two parts (0.18): payment providers ask
+  // for both, and `legalName` is built from them.
+  givenName: z.string().trim().max(120).optional().nullable(),
+  familyName: z.string().trim().max(120).optional().nullable(),
 
   dateOfBirth: dateString.optional().nullable(),
   placeOfBirth: z.string().trim().max(140).optional().nullable(),
@@ -99,6 +123,19 @@ const legalEntityShape = z.object({
   contactEmail: z.string().trim().email("Enter a real email").max(240).optional().nullable(),
   contactPhone: z.string().trim().max(40).optional().nullable(),
 
+  // Where e-invoices go (0.18), each optional: a Peppol participant
+  // (`<EAS scheme>:<identifier>`), Italy's SDI code or certified email, and a
+  // German public body's Leitweg-ID.
+  peppolId: z.string().trim().regex(PEPPOL_ID, "Enter scheme:identifier").optional().nullable(),
+  codiceDestinatario: z
+    .string()
+    .trim()
+    .regex(CODICE_DESTINATARIO, "7 letters or digits")
+    .optional()
+    .nullable(),
+  pecAddress: z.string().trim().email("Enter a real email").max(240).optional().nullable(),
+  leitwegId: z.string().trim().regex(LEITWEG_ID, "Enter a Leitweg-ID").optional().nullable(),
+
   // Embedded registered address — same shape as UserAddress, but
   // stored on the entity row (snapshot, not FK).
   addressLine1: z.string().trim().max(240).optional().nullable(),
@@ -128,6 +165,8 @@ type Report = (path: keyof Shape, message: string) => void;
  *  birth, and a legal name of at least two letter-bearing words (given +
  *  family). Companies may have single-word names ("Apple", "Edvone"). */
 function checkNaturalPerson(val: Shape, report: Report): void {
+  if (!val.givenName?.trim()) report("givenName", "Required");
+  if (!val.familyName?.trim()) report("familyName", "Required");
   if (!val.dateOfBirth) report("dateOfBirth", "Required");
   if (!val.nationality) report("nationality", "Required");
   if (!val.placeOfBirth) report("placeOfBirth", "Required");
@@ -220,10 +259,27 @@ export type VatVerdict = {
   vatIdRequestId?: string | null;
 };
 
+/**
+ * What elvix works out on every read (0.18), never input: all optional, so a
+ * host on an older elvix gets `undefined`.
+ */
+export type ServerComputed = {
+  /** Inside an app the personal fields come back null: they are write-only
+   *  there and shown only in the user's elvix account. */
+  withheld?: boolean;
+  /** The legal name against the register's name for this VAT ID. */
+  vatIdNameMatch?: VatNameMatch;
+  /** EAS codes for an e-invoice (`"9930"` for a German VAT ID), or null. */
+  vatIdScheme?: string | null;
+  taxIdScheme?: string | null;
+  registrationNumberScheme?: string | null;
+};
+
 /** Server-emitted record. Adds audit fields, normalises dates to ISO. */
 // LEGACY: spine-lint-disable-next-line spine/enum-over-string
 export type LegalEntityRecord = Omit<LegalEntityInput, "dateOfBirth" | "registeredSince"> &
-  VatVerdict & {
+  VatVerdict &
+  ServerComputed & {
     id: string;
     dateOfBirth: string | null;
     registeredSince: string | null;

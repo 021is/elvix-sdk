@@ -24,7 +24,10 @@ export type { VerifyWebhookArgs } from "./server/webhook";
 export { verifyElvixWebhook } from "./server/webhook";
 export type {
   ElvixLegalEntity,
+  ElvixLegalEntityPerson,
+  ElvixLegalEntityPurpose,
   ElvixLegalEntityResult,
+  ElvixVatNameMatch,
   ElvixVatValidation,
 } from "./types/legal-entity";
 export type {

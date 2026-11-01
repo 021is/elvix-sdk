@@ -35,6 +35,18 @@ describe("getElvixLegalEntity", () => {
     expect(init.redirect).toBe("error");
   });
 
+  it("asks for the purpose granted, and refuses one elvix does not know", async () => {
+    const fetchMock = stubFetch(async () => Response.json({ entity: { id: "le_1" } }));
+    await getElvixLegalEntity({ ...args, purpose: "payouts" });
+    const [url] = fetchMock.mock.calls[0] as unknown as [string];
+    expect(url).toBe(
+      "https://elvix.test/api/applications/app_1/users/usr_1/legal-entities/le_1?purpose=payouts",
+    );
+    const bogus = { ...args, purpose: "payouts&x=1" as "payouts" };
+    expect(await getElvixLegalEntity(bogus)).toEqual({ ok: false, error: "invalid_purpose" });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
   it.each([[".."], ["le/1"], ["le 1"], [""]])(
     "refuses the browser's id %j before any request",
     async (entityId) => {

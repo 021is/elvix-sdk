@@ -13,8 +13,10 @@ const issues = (input: Record<string, unknown>) => {
 const base = { legalName: "Acme", addressCountry: "DE", taxCountry: "DE" };
 
 describe("legalEntitySchema", () => {
-  it("individual: natural-person fields, two-word name, local tax id", () => {
+  it("individual: natural-person fields, the name in two parts, local tax id", () => {
     expect(issues({ ...base, type: "individual" })).toEqual([
+      ["givenName", "Required"],
+      ["familyName", "Required"],
       ["dateOfBirth", "Required"],
       ["nationality", "Required"],
       ["placeOfBirth", "Required"],
@@ -42,6 +44,8 @@ describe("legalEntitySchema", () => {
   it("sole_prop: natural-person fields, registration and the full address", () => {
     const got = issues({ ...base, type: "sole_prop", legalName: "Ada Lovelace" });
     expect(got).toEqual([
+      ["givenName", "Required"],
+      ["familyName", "Required"],
       ["dateOfBirth", "Required"],
       ["nationality", "Required"],
       ["placeOfBirth", "Required"],
