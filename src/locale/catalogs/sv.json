@@ -1952,6 +1952,9 @@
       "pickerAddCompany": {
         "other": "Lägg till ett företag"
       },
+      "pickerPayoutsNote": {
+        "other": "Väljer du ett företag här kan {app} läsa det födelsedatum, den födelseort, det medborgarskap och det telefonnummer du sparat, för att fylla i sitt utbetalningsformulär."
+      },
       "pickerGroupLabel": {
         "other": "Välj en juridisk person"
       },

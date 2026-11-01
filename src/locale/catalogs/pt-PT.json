@@ -1951,6 +1951,9 @@
       "pickerAddCompany": {
         "other": "Adicionar uma empresa"
       },
+      "pickerPayoutsNote": {
+        "other": "Ao escolher aqui uma empresa, permite que {app} leia a data e o local de nascimento, a nacionalidade e o telefone que guardou, para preencher o formulário de pagamentos."
+      },
       "pickerGroupLabel": {
         "other": "Escolha uma entidade"
       },

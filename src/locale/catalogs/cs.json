@@ -1955,6 +1955,9 @@
       "pickerAddCompany": {
         "other": "Přidat firmu"
       },
+      "pickerPayoutsNote": {
+        "other": "Výběrem firmy zde umožníte aplikaci {app} číst uložené datum a místo narození, státní příslušnost a telefon, aby vyplnila svůj formulář pro výplaty."
+      },
       "pickerGroupLabel": {
         "other": "Vyberte subjekt"
       },

@@ -1952,6 +1952,9 @@
       "pickerAddCompany": {
         "other": "Firma hinzufügen"
       },
+      "pickerPayoutsNote": {
+        "other": "Wenn Sie hier eine Firma wählen, kann {app} das gespeicherte Geburtsdatum, den Geburtsort, die Staatsangehörigkeit und die Telefonnummer lesen, um sein Auszahlungsformular auszufüllen."
+      },
       "pickerGroupLabel": {
         "other": "Rechtsträger auswählen"
       },

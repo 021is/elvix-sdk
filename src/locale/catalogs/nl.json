@@ -1951,6 +1951,9 @@
       "pickerAddCompany": {
         "other": "Bedrijf toevoegen"
       },
+      "pickerPayoutsNote": {
+        "other": "Als u hier een bedrijf kiest, kan {app} de opgeslagen geboortedatum, geboorteplaats, nationaliteit en telefoon lezen om zijn uitbetalingsformulier in te vullen."
+      },
       "pickerGroupLabel": {
         "other": "Kies een entiteit"
       },

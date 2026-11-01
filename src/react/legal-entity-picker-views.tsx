@@ -12,7 +12,8 @@
 
 import { AlertTriangle, BadgeCheck, Loader2, Plus } from "lucide-react";
 import { useT } from "../locale/use-t";
-import { type LegalEntityRecord, VatNameMatch } from "./legal-entity-schema";
+import { useElvixApp } from "./elvix-provider";
+import { LegalEntityPurpose, type LegalEntityRecord, VatNameMatch } from "./legal-entity-schema";
 import { ErrorLine } from "./sign-in-controls";
 import { NETWORK, PICKER_MISSING_CLIENT_ID } from "./use-legal-entity-picks";
 
@@ -41,6 +42,23 @@ export function pickErrorCopy(error: string, t: T): string {
   if (error === PICKER_MISSING_CLIENT_ID) return t("legalEntities.pickerMissingClientId");
   if (error === NETWORK) return t("common.errorNetwork");
   return t("legalEntities.pickerGrantFailed", { error });
+}
+
+/**
+ * What a payouts pick shares, said before the user picks; an invoicing pick
+ * shares only the record, so nothing is said. The host chooses the purpose,
+ * so without this line a pick could share birth data unannounced (second
+ * security review, 2026-11-01).
+ */
+export function PurposeNote({ purpose }: { purpose: LegalEntityPurpose }) {
+  const t = useT();
+  const app = useElvixApp()?.appName?.trim() || t("passkeys.thisApp");
+  if (purpose !== LegalEntityPurpose.PAYOUTS) return null;
+  return (
+    <p role="note" className="m-0 text-[12.5px] leading-[1.5] text-fg-3">
+      {t("legalEntities.pickerPayoutsNote", { app })}
+    </p>
+  );
 }
 
 type ListProps = {

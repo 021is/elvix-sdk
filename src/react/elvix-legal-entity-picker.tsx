@@ -35,7 +35,7 @@ import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
 import { FlowKind, needsBusinessSteps, View } from "./legal-entity-flow";
 import { type FrameSize, frameStyle, PaneFrame, Sizing } from "./legal-entity-frame";
-import { PickerList, PickerLoadFailed } from "./legal-entity-picker-views";
+import { PickerList, PickerLoadFailed, PurposeNote } from "./legal-entity-picker-views";
 import { SavingView } from "./legal-entity-primitives";
 import {
   LegalEntityPurpose,
@@ -138,6 +138,7 @@ export function ElvixLegalEntityPicker({
           <WizardPane flow={flow} types={types} />
         ) : (
           <div className="flex flex-col gap-2">
+            <PurposeNote purpose={purpose} />
             {flow.loadFailed && <PickerLoadFailed onRetry={flow.reload} />}
             <PickerList
               entities={offered}

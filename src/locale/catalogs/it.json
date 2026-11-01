@@ -1951,6 +1951,9 @@
       "pickerAddCompany": {
         "other": "Aggiungi un'azienda"
       },
+      "pickerPayoutsNote": {
+        "other": "Scegliendo qui un'azienda, {app} potrà leggere la data e il luogo di nascita, la cittadinanza e il telefono che hai salvato, per compilare il suo modulo per i pagamenti."
+      },
       "pickerGroupLabel": {
         "other": "Scegli un soggetto"
       },

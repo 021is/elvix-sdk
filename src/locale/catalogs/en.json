@@ -1952,6 +1952,9 @@
       "pickerAddCompany": {
         "other": "Add a company"
       },
+      "pickerPayoutsNote": {
+        "other": "Picking a company here lets {app} read the birth date, place of birth, nationality and phone you saved, to fill in its payout form."
+      },
       "pickerGroupLabel": {
         "other": "Choose a legal entity"
       },

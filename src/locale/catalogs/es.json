@@ -1952,6 +1952,9 @@
       "pickerAddCompany": {
         "other": "Añadir una empresa"
       },
+      "pickerPayoutsNote": {
+        "other": "Al elegir aquí una empresa, {app} podrá leer la fecha y el lugar de nacimiento, la nacionalidad y el teléfono que guardaste, para rellenar su formulario de pagos."
+      },
       "pickerGroupLabel": {
         "other": "Elige una entidad"
       },

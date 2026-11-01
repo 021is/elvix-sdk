@@ -54,10 +54,10 @@ as your own. Needs elvix.is with the legal-entity grants (deployed before this r
   prose: an optional pane's button says "Skip" while empty instead.
 - **A tap is a grant; the pre-selection is not.** `onPick(entity, { granted })`: a tap or a
   new entity grants your application that one entity for `purpose` (`invoicing`, default,
-  or `payouts`) before `onPick` fires with `granted: true`. The default (else the only
-  entity) is shown picked with `granted: false` and nothing shared: grant it from your
-  Continue with **`useElvixLegalEntityGrant()(entityId, purpose?)`**. The user can revoke
-  any grant in their elvix account.
+  or `payouts`, which a note above the list discloses: your app's name and what it reads)
+  before `onPick` fires with `granted: true`. The default (else the only entity) is shown
+  picked with `granted: false` and nothing shared: grant it from your Continue with
+  **`useElvixLegalEntityGrant()(entityId, purpose?)`**. The user revokes in their account.
 - **`getElvixLegalEntity({ apiKey, applicationId, userId, entityId, purpose? })`** in
   `@elvix.is/sdk/server`: the picked entity by id for the purpose granted
   (`ElvixLegalEntity`): elvix's VAT verdict, `vatIdNameMatch`, EAS schemes, e-invoice

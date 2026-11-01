@@ -1958,6 +1958,9 @@
       "pickerAddCompany": {
         "other": "Dodaj firmę"
       },
+      "pickerPayoutsNote": {
+        "other": "Wybierając tu firmę, pozwalasz aplikacji {app} odczytać zapisane datę i miejsce urodzenia, obywatelstwo i telefon, aby wypełniła swój formularz wypłat."
+      },
       "pickerGroupLabel": {
         "other": "Wybierz podmiot"
       },

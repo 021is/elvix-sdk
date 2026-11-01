@@ -1951,6 +1951,9 @@
       "pickerAddCompany": {
         "other": "Şirket ekle"
       },
+      "pickerPayoutsNote": {
+        "other": "Burada bir şirket seçmeniz, {app} uygulamasının ödeme formunu doldurmak için kaydettiğiniz doğum tarihini, doğum yerini, uyruğunuzu ve telefonunuzu okumasına izin verir."
+      },
       "pickerGroupLabel": {
         "other": "Bir tüzel kişi seçin"
       },

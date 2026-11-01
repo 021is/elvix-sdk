@@ -5,7 +5,8 @@
  *
  * A pick is what lets the host's backend read that one entity from elvix by
  * its id (`getElvixLegalEntity` in `@elvix.is/sdk/server`), for one purpose
- * (`invoicing`, or `payouts` with the birth data and the people). A TAP, or a
+ * (`invoicing`, or `payouts`: also what the person saved of their birth data,
+ * nationality and phone, to prefill a payout form). A TAP, or a
  * save in "Add a company", records the grant with elvix first, and `onPick`
  * fires with `granted: true` once elvix has it. The pre-selection (the
  * default, or the only entity) grants nothing (0.18, Edvard: no silent
