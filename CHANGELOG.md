@@ -17,6 +17,59 @@ file passes 300 lines, its oldest releases move there.
 
 ### Fixed
 
+## [0.18.0] — 2026-11-01
+
+Pick a legal entity for an invoice, read it by id on your server, and style fields and rows
+as your own. Needs elvix.is with the legal-entity grants (deployed before this release).
+
+### Added
+
+- **`<ElvixLegalEntityPicker types selectedId onPick>`**: the user's legal entities as a
+  list; a tap picks and tints the row, and your own Continue ends the flow (no confirm
+  button, no done pane). With nothing picked, the default entity (else the only one) is
+  picked once. "Add a company" runs the add wizard in place and comes back with the new
+  entity picked. Rows show what an invoice says: the legal name, the VAT ID or tax number
+  and the city, "Verified" only when elvix's own check confirmed the VAT ID. `types`
+  filters the list and the wizard (one type skips the type choice); `onResult` reports
+  each pick and a failed save; `card={false}` sits in your own pane.
+- **Every pick is a grant.** It lets your application read that one entity, and `onPick`
+  fires once elvix holds it. The user can revoke it in their elvix account.
+- **`getElvixLegalEntity({ apiKey, applicationId, userId, entityId })`** in
+  `@elvix.is/sdk/server`: the picked entity by id, VAT verdict included (`ElvixLegalEntity`).
+  `not_found` when never picked, revoked or deleted; never throws.
+- **Webhooks** `user.legal_entity_updated`, `user.legal_entity_deleted`,
+  `user.legal_entity_revoked` (`UserLegalEntityData`), to applications holding the grant.
+- **Row variables**: `--elvix-row`, `--elvix-row-hover`, `--elvix-picked`,
+  `--elvix-picked-text`, `--elvix-radius`, `--elvix-focus` (`rows.css`), next to the field
+  variables; `--elvix-danger` outlines a field whose value is wrong.
+- `LegalEntityRecord`, `LegalEntityType` and `VatVerdict` are exported from
+  `@elvix.is/sdk/react`.
+
+### Changed
+
+- **One field look.** `<ElvixInput>` and `<ElvixDateInput>`, so every SDK form, take
+  0.17's `.elvix-field`: a tint of the text colour, no outline at rest, the brand on
+  focus. Their own white fill and 55% brand outline are gone. Legal-entity rows, choices,
+  suggestions and tiles lose their borders; a tint shows state. Set the variables to
+  bring an outline back.
+- **A business starts at its VAT ID.** The prefix names the tax country, so a VAT holder
+  is not asked for it (Norway, Australia and Brazil, whose numbers carry none, are offered
+  beside the field). The authority's answer prefills the legal name and types its address
+  into the address search. "No VAT ID" takes a sole proprietor through tax country and
+  tax number. A private individual's steps are unchanged.
+- **elvix checks the VAT ID itself.** The save sends the VAT ID only; `vatIdValidation`,
+  `vatIdValidatedAt` and `vatIdValidatedName` left the input and are set by elvix (the
+  record adds `vatIdValidatedAddress` and `vatIdRequestId`). Until now the browser sent
+  the level it said it reached, which anyone could set to "live".
+- **A business has its full address** (EU VAT Directive art. 226(5)): street, postal code,
+  city and country are required for a sole proprietorship or company, and the address
+  review asks in place for any part Google Places left empty.
+
+### Fixed
+
+- A list of legal entities that could not be read showed as an empty list; the picker now
+  says so, with a retry.
+
 ## [0.17.0] — 2026-10-28
 
 A sign-in that starts at the email code, for a host that already knows the address.
