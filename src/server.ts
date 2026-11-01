@@ -4,6 +4,8 @@
  *   - `verifyElvixToken`   end-user session token → live user envelope
  *   - `verifyElvixWebhook` HMAC-verify an inbound webhook delivery and
  *                          get a typed `ElvixWebhookEvent` back
+ *   - `getElvixLegalEntity` the legal entity a user picked for your app,
+ *                          read by id with your API key (0.18)
  */
 
 import type { ElvixVerifyResult } from "./types/index";
@@ -16,11 +18,19 @@ export type {
 } from "./server/device";
 // Device Authorization Grant (RFC 8628) — for CLI / headless logins.
 export { pollDeviceToken, requestDeviceCode } from "./server/device";
+export type { GetLegalEntityArgs } from "./server/legal-entity";
+export { getElvixLegalEntity } from "./server/legal-entity";
 export type { VerifyWebhookArgs } from "./server/webhook";
 export { verifyElvixWebhook } from "./server/webhook";
 export type {
+  ElvixLegalEntity,
+  ElvixLegalEntityResult,
+  ElvixVatValidation,
+} from "./types/legal-entity";
+export type {
   ElvixWebhookEvent,
   ElvixWebhookVerifyResult,
+  UserLegalEntityData,
   UserLifecycleData,
   UserMembershipData,
   UserProfileData,
