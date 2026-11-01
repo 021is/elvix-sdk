@@ -1533,7 +1533,7 @@
         "other": "Datum narození"
       },
       "dobSubtitle": {
-        "other": "Vyžadováno pro fakturaci na vaše jméno a KYC, pokud o to zákazník požádá později."
+        "other": "Volitelné. Poskytovatel plateb o něj může požádat, aby ověřil vaši totožnost."
       },
       "dobAgeError": {
         "other": "Pro registraci subjektu musíte mít 18 let a více."
@@ -1545,7 +1545,7 @@
         "other": "Místo narození"
       },
       "placeOfBirthSubtitle": {
-        "other": "Město, jak je uvedeno ve vašem dokladu. Vyžadováno pro fakturaci a KYC."
+        "other": "Volitelné. Město, jak je uvedeno ve vašem dokladu, pro ověření totožnosti poskytovatelem plateb."
       },
       "placeOfBirthCityLabel": {
         "other": "Město"
@@ -1596,7 +1596,7 @@
         "other": "vydávající úřad"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Obojí je volitelné. Přidejte místní daňové číslo, pokud ho chcete na fakturách; DIČ jen pokud jste plátce DPH. Registrace podnikání je zachycena v dalším kroku."
+        "other": "Faktura potřebuje jedno z nich: DIČ, pokud jste plátce DPH, jinak místní daňové číslo."
       },
       "localTaxNumberLabel": {
         "other": "Místní daňové číslo"
@@ -1662,7 +1662,7 @@
         "other": "Registrace"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. Oficiální rejstřík, kde je tento subjekt zapsán."
+        "other": "Volitelné. Handelsregister, Companies House, KvK: pro poskytovatele plateb nebo smlouvu; faktura ho nepotřebuje."
       },
       "registrationNumberLabel": {
         "other": "Registrační číslo"

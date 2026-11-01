@@ -1529,7 +1529,7 @@
         "other": "Geboortedatum"
       },
       "dobSubtitle": {
-        "other": "Vereist voor facturering onder uw naam en KYC als een klant er later om vraagt."
+        "other": "Optioneel. Een betaalprovider kan erom vragen om uw identiteit te bevestigen."
       },
       "dobAgeError": {
         "other": "U moet 18 jaar of ouder zijn om een entiteit te registreren."
@@ -1541,7 +1541,7 @@
         "other": "Geboorteplaats"
       },
       "placeOfBirthSubtitle": {
-        "other": "Stad zoals deze op uw ID staat. Vereist voor facturering en KYC."
+        "other": "Optioneel. De stad zoals die op uw ID staat, voor de identiteitscontrole van een betaalprovider."
       },
       "placeOfBirthCityLabel": {
         "other": "Stad"
@@ -1592,7 +1592,7 @@
         "other": "de uitgevende instantie"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Beide zijn optioneel. Voeg het lokale belastingnummer toe als u dat op facturen wilt; btw alleen als u btw-geregistreerd bent. De bedrijfsregistratie wordt in de volgende stap vastgelegd."
+        "other": "Een factuur heeft er één nodig: uw btw-nummer als u btw-geregistreerd bent, anders uw lokale belastingnummer."
       },
       "localTaxNumberLabel": {
         "other": "Lokaal belastingnummer"
@@ -1658,7 +1658,7 @@
         "other": "Registratie"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. Het officiële register waar deze entiteit is geregistreerd."
+        "other": "Optioneel. Handelsregister, Companies House, KvK: voor een betaalprovider of een contract; een factuur heeft het niet nodig."
       },
       "registrationNumberLabel": {
         "other": "Registratienummer"

@@ -1530,7 +1530,7 @@
         "other": "Födelsedatum"
       },
       "dobSubtitle": {
-        "other": "Krävs för fakturering i ditt namn och KYC om en kund frågar senare."
+        "other": "Valfritt. En betalningsleverantör kan be om det för att bekräfta vem du är."
       },
       "dobAgeError": {
         "other": "Du måste vara 18 år eller äldre för att registrera en juridisk person."
@@ -1542,7 +1542,7 @@
         "other": "Födelseort"
       },
       "placeOfBirthSubtitle": {
-        "other": "Stad som den står på din ID-handling. Krävs för fakturering och KYC."
+        "other": "Valfritt. Staden som den står på din ID-handling, för en betalningsleverantörs identitetskontroll."
       },
       "placeOfBirthCityLabel": {
         "other": "Stad"
@@ -1593,7 +1593,7 @@
         "other": "den utfärdande myndigheten"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Båda är valfria. Lägg till det lokala skattenumret om du vill ha det på fakturor; moms endast om du är momsregistrerad. Företagsregistreringen fångas i nästa steg."
+        "other": "En faktura behöver ett av dem: ditt momsregistreringsnummer om du är momsregistrerad, annars ditt lokala skattenummer."
       },
       "localTaxNumberLabel": {
         "other": "Lokalt skattenummer"
@@ -1659,7 +1659,7 @@
         "other": "Registrering"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. Det officiella registret där den här juridiska personen är registrerad."
+        "other": "Valfritt. Handelsregister, Companies House, KvK: för en betalningsleverantör eller ett avtal; en faktura behöver det inte."
       },
       "registrationNumberLabel": {
         "other": "Registreringsnummer"

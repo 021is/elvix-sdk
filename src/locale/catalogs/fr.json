@@ -1530,7 +1530,7 @@
         "other": "Date de naissance"
       },
       "dobSubtitle": {
-        "other": "Requis pour la facturation à votre nom et la KYC si un client le demande plus tard."
+        "other": "Facultatif. Un prestataire de paiement peut la demander pour confirmer votre identité."
       },
       "dobAgeError": {
         "other": "Vous devez avoir 18 ans ou plus pour enregistrer une entité."
@@ -1542,7 +1542,7 @@
         "other": "Lieu de naissance"
       },
       "placeOfBirthSubtitle": {
-        "other": "Ville telle qu'elle apparaît sur votre pièce d'identité. Requis pour la facturation et la KYC."
+        "other": "Facultatif. La ville telle qu'elle figure sur votre pièce d'identité, pour la vérification d'identité d'un prestataire de paiement."
       },
       "placeOfBirthCityLabel": {
         "other": "Ville"
@@ -1593,7 +1593,7 @@
         "other": "l'autorité émettrice"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Les deux sont facultatifs. Ajoutez le numéro fiscal local si vous le voulez sur les factures ; la TVA uniquement si vous êtes assujetti. L'enregistrement de l'entreprise est saisi à l'étape suivante."
+        "other": "Une facture a besoin de l'un des deux : votre numéro de TVA si vous êtes assujetti, sinon votre numéro fiscal local."
       },
       "localTaxNumberLabel": {
         "other": "Numéro fiscal local"
@@ -1659,7 +1659,7 @@
         "other": "Enregistrement"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. Le registre officiel où cette entité est enregistrée."
+        "other": "Facultatif. Handelsregister, Companies House, KvK : pour un prestataire de paiement ou un contrat ; une facture n'en a pas besoin."
       },
       "registrationNumberLabel": {
         "other": "Numéro d'enregistrement"

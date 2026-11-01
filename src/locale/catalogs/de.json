@@ -1530,7 +1530,7 @@
         "other": "Geburtsdatum"
       },
       "dobSubtitle": {
-        "other": "Erforderlich für die Rechnungsstellung in Ihrem Namen und KYC, falls ein Kunde später danach fragt."
+        "other": "Optional. Ein Zahlungsanbieter kann es zur Bestätigung Ihrer Identität verlangen."
       },
       "dobAgeError": {
         "other": "Sie müssen 18 Jahre oder älter sein, um einen Rechtsträger zu registrieren."
@@ -1542,7 +1542,7 @@
         "other": "Geburtsort"
       },
       "placeOfBirthSubtitle": {
-        "other": "Stadt wie auf Ihrem Ausweis. Erforderlich für Rechnungsstellung und KYC."
+        "other": "Optional. Die Stadt wie auf Ihrem Ausweis, für die Identitätsprüfung eines Zahlungsanbieters."
       },
       "placeOfBirthCityLabel": {
         "other": "Stadt"
@@ -1593,7 +1593,7 @@
         "other": "die ausstellende Behörde"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Beides ist optional. Fügen Sie die lokale Steuernummer hinzu, wenn Sie sie auf Rechnungen wünschen; USt nur, wenn Sie umsatzsteuerpflichtig sind. Die Gewerberegistrierung wird im nächsten Schritt erfasst."
+        "other": "Eine Rechnung braucht eine davon: Ihre USt-IdNr., wenn Sie umsatzsteuerpflichtig sind, sonst Ihre Steuernummer."
       },
       "localTaxNumberLabel": {
         "other": "Lokale Steuernummer"
@@ -1659,7 +1659,7 @@
         "other": "Registrierung"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. Das offizielle Register, in dem dieser Rechtsträger eingetragen ist."
+        "other": "Optional. Handelsregister, Companies House, KvK: für einen Zahlungsanbieter oder einen Vertrag; eine Rechnung braucht es nicht."
       },
       "registrationNumberLabel": {
         "other": "Registrierungsnummer"

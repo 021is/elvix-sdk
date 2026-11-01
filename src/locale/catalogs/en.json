@@ -1530,7 +1530,7 @@
         "other": "Date of birth"
       },
       "dobSubtitle": {
-        "other": "Required for invoicing under your name and KYC if a customer asks later."
+        "other": "Optional. A payment provider may ask for it to confirm who you are."
       },
       "dobAgeError": {
         "other": "You must be 18 or older to register an entity."
@@ -1542,7 +1542,7 @@
         "other": "Place of birth"
       },
       "placeOfBirthSubtitle": {
-        "other": "City as it appears on your ID. Required for invoicing and KYC."
+        "other": "Optional. The city as it appears on your ID, for a payment provider's identity check."
       },
       "placeOfBirthCityLabel": {
         "other": "City"
@@ -1593,7 +1593,7 @@
         "other": "the issuing authority"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Both are optional. Add the local tax number if you want it on invoices; VAT only if you're VAT-registered. The business registration is captured in the next step."
+        "other": "An invoice needs one of them: your VAT ID if you're VAT-registered, otherwise your local tax number."
       },
       "localTaxNumberLabel": {
         "other": "Local tax number"
@@ -1659,7 +1659,7 @@
         "other": "Registration"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. The official register where this entity is recorded."
+        "other": "Optional. Handelsregister, Companies House, KvK: for a payment provider or a contract; an invoice doesn't need it."
       },
       "registrationNumberLabel": {
         "other": "Registration number"

@@ -1529,7 +1529,7 @@
         "other": "Doğum tarihi"
       },
       "dobSubtitle": {
-        "other": "Adınıza fatura kesmek ve müşteri daha sonra isterse KYC için gereklidir."
+        "other": "İsteğe bağlı. Bir ödeme sağlayıcısı kimliğinizi doğrulamak için isteyebilir."
       },
       "dobAgeError": {
         "other": "Bir tüzel kişi tescil ettirmek için 18 yaşında veya daha büyük olmalısınız."
@@ -1541,7 +1541,7 @@
         "other": "Doğum yeri"
       },
       "placeOfBirthSubtitle": {
-        "other": "Kimliğinizde göründüğü gibi şehir. Faturalama ve KYC için gereklidir."
+        "other": "İsteğe bağlı. Kimliğinizde göründüğü şekliyle şehir, bir ödeme sağlayıcısının kimlik doğrulaması için."
       },
       "placeOfBirthCityLabel": {
         "other": "Şehir"
@@ -1592,7 +1592,7 @@
         "other": "yetkili makam"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Her ikisi de isteğe bağlıdır. Faturalarda görünmesini istiyorsanız yerel vergi numarasını ekleyin; KDV yalnızca KDV mükellefiyseniz. İşletme tescili sonraki adımda alınır."
+        "other": "Bir fatura bunlardan birine ihtiyaç duyar: KDV mükellefiyseniz KDV numaranız, değilse yerel vergi numaranız."
       },
       "localTaxNumberLabel": {
         "other": "Yerel vergi numarası"
@@ -1658,7 +1658,7 @@
         "other": "Tescil"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. Bu tüzel kişinin kayıtlı olduğu resmi sicil."
+        "other": "İsteğe bağlı. Handelsregister, Companies House, KvK: bir ödeme sağlayıcısı veya sözleşme için; fatura için gerekmez."
       },
       "registrationNumberLabel": {
         "other": "Tescil numarası"

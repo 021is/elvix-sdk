@@ -1529,7 +1529,7 @@
         "other": "Data di nascita"
       },
       "dobSubtitle": {
-        "other": "Necessaria per la fatturazione a tuo nome e per il KYC se un cliente la richiede in seguito."
+        "other": "Facoltativa. Un fornitore di pagamenti può chiederla per confermare la tua identità."
       },
       "dobAgeError": {
         "other": "Devi avere 18 anni o più per registrare un soggetto."
@@ -1541,7 +1541,7 @@
         "other": "Luogo di nascita"
       },
       "placeOfBirthSubtitle": {
-        "other": "Città come appare sul tuo documento d'identità. Necessaria per fatturazione e KYC."
+        "other": "Facoltativa. La città come appare sul tuo documento d'identità, per la verifica dell'identità di un fornitore di pagamenti."
       },
       "placeOfBirthCityLabel": {
         "other": "Città"
@@ -1592,7 +1592,7 @@
         "other": "l'autorità emittente"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Entrambi sono facoltativi. Aggiungi il codice fiscale locale se vuoi che appaia sulle fatture; l'IVA solo se sei registrato IVA. La registrazione dell'attività viene acquisita nel passaggio successivo."
+        "other": "Una fattura ne richiede uno: la partita IVA se sei registrato IVA, altrimenti il tuo codice fiscale locale."
       },
       "localTaxNumberLabel": {
         "other": "Codice fiscale locale"
@@ -1658,7 +1658,7 @@
         "other": "Registrazione"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. Il registro ufficiale in cui questo soggetto è iscritto."
+        "other": "Facoltativa. Handelsregister, Companies House, KvK: per un fornitore di pagamenti o un contratto; una fattura non ne ha bisogno."
       },
       "registrationNumberLabel": {
         "other": "Numero di registrazione"

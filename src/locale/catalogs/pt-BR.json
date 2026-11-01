@@ -1530,7 +1530,7 @@
         "other": "Data de nascimento"
       },
       "dobSubtitle": {
-        "other": "Obrigatório para faturar em seu nome e para KYC caso um cliente peça depois."
+        "other": "Opcional. Um provedor de pagamentos pode pedi-la para confirmar sua identidade."
       },
       "dobAgeError": {
         "other": "Você precisa ter 18 anos ou mais para registrar uma pessoa jurídica."
@@ -1542,7 +1542,7 @@
         "other": "Local de nascimento"
       },
       "placeOfBirthSubtitle": {
-        "other": "Cidade como aparece no seu documento. Obrigatório para faturamento e KYC."
+        "other": "Opcional. A cidade como aparece no seu documento, para a verificação de identidade de um provedor de pagamentos."
       },
       "placeOfBirthCityLabel": {
         "other": "Cidade"
@@ -1593,7 +1593,7 @@
         "other": "a autoridade emissora"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Ambos são opcionais. Adicione o número fiscal local se quiser que apareça nas faturas; o VAT só se você for inscrito em VAT. O registro empresarial é capturado na próxima etapa."
+        "other": "Uma fatura precisa de um deles: seu número de VAT se você for inscrito em VAT; caso contrário, seu número fiscal local."
       },
       "localTaxNumberLabel": {
         "other": "Número fiscal local"
@@ -1659,7 +1659,7 @@
         "other": "Registro"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. O registro oficial onde esta pessoa jurídica está cadastrada."
+        "other": "Opcional. Handelsregister, Companies House, KvK: para um provedor de pagamentos ou um contrato; uma fatura não precisa disso."
       },
       "registrationNumberLabel": {
         "other": "Número de registro"

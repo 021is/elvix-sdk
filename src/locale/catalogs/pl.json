@@ -1536,7 +1536,7 @@
         "other": "Data urodzenia"
       },
       "dobSubtitle": {
-        "other": "Wymagana do wystawiania faktur na twoje imię i nazwisko oraz do KYC, jeśli klient zapyta później."
+        "other": "Opcjonalna. Dostawca płatności może o nią poprosić, aby potwierdzić twoją tożsamość."
       },
       "dobAgeError": {
         "other": "Musisz mieć ukończone 18 lat, aby zarejestrować podmiot."
@@ -1548,7 +1548,7 @@
         "other": "Miejsce urodzenia"
       },
       "placeOfBirthSubtitle": {
-        "other": "Miasto tak, jak pojawia się na twoim dokumencie tożsamości. Wymagane do faktur i KYC."
+        "other": "Opcjonalne. Miasto tak, jak widnieje na twoim dokumencie tożsamości, do weryfikacji tożsamości przez dostawcę płatności."
       },
       "placeOfBirthCityLabel": {
         "other": "Miasto"
@@ -1599,7 +1599,7 @@
         "other": "wydający organ"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Oba są opcjonalne. Dodaj lokalny numer podatkowy, jeśli chcesz mieć go na fakturach; VAT tylko, jeśli jesteś zarejestrowanym podatnikiem VAT. Rejestrację działalności zapiszemy w kolejnym kroku."
+        "other": "Faktura potrzebuje jednego z nich: numeru VAT, jeśli jesteś czynnym podatnikiem VAT, w przeciwnym razie lokalnego numeru podatkowego."
       },
       "localTaxNumberLabel": {
         "other": "Lokalny numer podatkowy"
@@ -1665,7 +1665,7 @@
         "other": "Rejestracja"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK, KRS. Oficjalny rejestr, w którym podmiot jest zarejestrowany."
+        "other": "Opcjonalne. Handelsregister, Companies House, KvK, KRS: dla dostawcy płatności lub umowy; faktura tego nie wymaga."
       },
       "registrationNumberLabel": {
         "other": "Numer rejestracyjny"

@@ -1530,7 +1530,7 @@
         "other": "Fecha de nacimiento"
       },
       "dobSubtitle": {
-        "other": "Necesaria para facturar a tu nombre y KYC si un cliente la pide más adelante."
+        "other": "Opcional. Un proveedor de pagos puede pedirla para confirmar tu identidad."
       },
       "dobAgeError": {
         "other": "Debes ser mayor de 18 años para registrar una entidad."
@@ -1542,7 +1542,7 @@
         "other": "Lugar de nacimiento"
       },
       "placeOfBirthSubtitle": {
-        "other": "Ciudad tal como aparece en tu DNI. Necesario para facturación y KYC."
+        "other": "Opcional. La ciudad tal como aparece en tu documento de identidad, para la verificación de un proveedor de pagos."
       },
       "placeOfBirthCityLabel": {
         "other": "Ciudad"
@@ -1593,7 +1593,7 @@
         "other": "la administración emisora"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Ambos son opcionales. Añade el número fiscal local si quieres que aparezca en las facturas; el IVA solo si estás registrado en IVA. El registro mercantil se recoge en el siguiente paso."
+        "other": "Una factura necesita uno de los dos: tu NIF-IVA si estás registrado en IVA; si no, tu número fiscal local."
       },
       "localTaxNumberLabel": {
         "other": "Número fiscal local"
@@ -1659,7 +1659,7 @@
         "other": "Registro"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. El registro oficial donde está inscrita esta entidad."
+        "other": "Opcional. Handelsregister, Companies House, KvK: para un proveedor de pagos o un contrato; una factura no lo necesita."
       },
       "registrationNumberLabel": {
         "other": "Número de registro"
