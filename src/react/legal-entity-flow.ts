@@ -76,9 +76,36 @@ export function needsPersonSteps(type: LegalEntityType | null): boolean {
   return type === "individual" || type === "sole_prop";
 }
 
+/** The e-invoice addresses a business may hold. */
+export type EInvoiceField = "peppolId" | "codiceDestinatario" | "pecAddress" | "leitwegId";
+
+/**
+ * The countries whose businesses must give an e-invoice ADDRESS for an
+ * invoice to reach them, and the fields each one uses (Edvard and DanceClub,
+ * 2026-11-01). Italy: every B2B invoice goes through SDI, to a recipient code
+ * or a certified email (PEC). Belgium: B2B e-invoices go over Peppol since
+ * 1 January 2026. Nowhere else is the add flow's step shown: a German
+ * e-invoice (XRechnung, ZUGFeRD) goes by plain email, which the invoice email
+ * already asks, and the Leitweg-ID is for public bodies only; Poland's KSeF,
+ * France's platforms (from September 2026), Romania's e-Factura and Croatia's
+ * 2026 system route by the tax number already held. The detail view still
+ * edits all four fields, for any country.
+ */
+export const E_INVOICE_FIELDS_BY_COUNTRY: Readonly<Record<string, readonly EInvoiceField[]>> = {
+  IT: ["codiceDestinatario", "pecAddress"],
+  BE: ["peppolId"],
+};
+
+/** Does the add flow ask this entity where its e-invoices go? */
+export function asksEInvoiceAddress(type: LegalEntityType | null, country: string | null) {
+  return needsBusinessSteps(type) && country !== null && country in E_INVOICE_FIELDS_BY_COUNTRY;
+}
+
 /** What the user has entered so far, insofar as it changes the route. */
 export type FlowContext = {
   type: LegalEntityType | null;
+  /** The tax country, once known (from the VAT ID's prefix, or chosen). */
+  country: string | null;
   /** A VAT id detours through the live-verification pane before continuing. */
   hasVatId: boolean;
   /** A sole proprietor said "No VAT ID": tax country and tax number instead. */
@@ -88,7 +115,7 @@ export type FlowContext = {
 };
 
 /** The route-changing part of the context, for walking back. */
-export type BackContext = Pick<FlowContext, "type" | "withoutVatId" | "kind">;
+export type BackContext = Pick<FlowContext, "type" | "country" | "withoutVatId" | "kind">;
 
 /** A business that starts at its VAT ID rather than at its tax country. */
 function startsAtVatId(ctx: BackContext): boolean {
@@ -158,7 +185,7 @@ function nextInvoicingView(current: View, ctx: FlowContext): View | null {
     case View.ADDRESS_APT_FLOOR:
       return View.INVOICE_EMAIL;
     case View.INVOICE_EMAIL:
-      return business ? View.E_INVOICE : View.SAVING;
+      return asksEInvoiceAddress(ctx.type, ctx.country) ? View.E_INVOICE : View.SAVING;
     case View.E_INVOICE:
       return View.SAVING;
     default:
@@ -167,9 +194,9 @@ function nextInvoicingView(current: View, ctx: FlowContext): View | null {
 }
 
 /**
- * The registered address and the contact form. A business is also asked
- * where its e-invoices go (optional, 0.18): mandatory e-invoicing reaches it
- * by a Peppol id, Italy's SDI code or a German public body's Leitweg-ID.
+ * The registered address and the contact form. An Italian or Belgian
+ * business is also asked where its e-invoices go (optional; see
+ * `E_INVOICE_FIELDS_BY_COUNTRY`).
  */
 function nextAddressStep(current: View, ctx: FlowContext): View | null {
   switch (current) {
@@ -180,7 +207,7 @@ function nextAddressStep(current: View, ctx: FlowContext): View | null {
     case View.ADDRESS_REVIEW:
       return View.ADDRESS_APT_FLOOR;
     case View.ADDRESS_APT_FLOOR:
-      return needsBusinessSteps(ctx.type) ? View.E_INVOICE : View.CONTACT_CHOICE;
+      return asksEInvoiceAddress(ctx.type, ctx.country) ? View.E_INVOICE : View.CONTACT_CHOICE;
     case View.E_INVOICE:
       return View.CONTACT_CHOICE;
     case View.CONTACT_INPUT:
@@ -212,11 +239,17 @@ export function previousView(current: View, ctx: BackContext): View | null {
  * How many panes a person answers in this flow, for "Step 1 of N": the
  * check that moves on by itself and the saving pane are not steps. With
  * several types offered, or "No VAT ID" open to a sole proprietor, the count
- * is the longest route, so N is never exceeded.
+ * is the longest route. The e-invoice step counts only for a `country` that
+ * shows it; the counter is drawn on the type pane, before any country is
+ * known, so it counts the route most countries take.
  */
-export function stepsInFlow(types: readonly LegalEntityType[], kind: FlowKind): number {
+export function stepsInFlow(
+  types: readonly LegalEntityType[],
+  kind: FlowKind,
+  country: string | null = null,
+): number {
   const answered = (type: LegalEntityType, withoutVatId: boolean) =>
-    walkFlow({ type, kind, hasVatId: false, withoutVatId }).filter(
+    walkFlow({ type, country, kind, hasVatId: false, withoutVatId }).filter(
       (v) => v !== View.VERIFYING_TAX_ID && v !== View.SAVING,
     ).length;
   return Math.max(

@@ -25,7 +25,8 @@ import {
  *     and Back never lands on that pane (it would move on by itself)
  */
 
-const base = { hasVatId: false, withoutVatId: false, kind: FlowKind.FULL } as const;
+/** No country, or one with no e-invoice step: the route most entities take. */
+const base = { country: null, hasVatId: false, withoutVatId: false, kind: FlowKind.FULL } as const;
 const individual = { ...base, type: "individual" as const };
 const soleProp = { ...base, type: "sole_prop" as const };
 const soleNoVat = { ...soleProp, withoutVatId: true };
@@ -36,14 +37,6 @@ const ADDRESS = [
   View.ADDRESS_SEARCH,
   View.ADDRESS_REVIEW,
   View.ADDRESS_APT_FLOOR,
-  View.CONTACT_CHOICE,
-];
-/** A business is also asked where its e-invoices go, before the contact question. */
-const BUSINESS_ADDRESS = [
-  View.ADDRESS_SEARCH,
-  View.ADDRESS_REVIEW,
-  View.ADDRESS_APT_FLOOR,
-  View.E_INVOICE,
   View.CONTACT_CHOICE,
 ];
 const PERSON = [View.DOB, View.PLACE_OF_BIRTH, View.NATIONALITY];
@@ -88,7 +81,7 @@ describe("journeys", () => {
       View.LEGAL_NAME,
       View.TRADING_NAME,
       View.REGISTRATION,
-      ...BUSINESS_ADDRESS,
+      ...ADDRESS,
     ]);
   });
 
@@ -101,7 +94,7 @@ describe("journeys", () => {
       View.TRADING_NAME,
       ...PERSON,
       View.REGISTRATION,
-      ...BUSINESS_ADDRESS,
+      ...ADDRESS,
     ]);
   });
 
@@ -115,15 +108,15 @@ describe("journeys", () => {
       View.TRADING_NAME,
       ...PERSON,
       View.REGISTRATION,
-      ...BUSINESS_ADDRESS,
+      ...ADDRESS,
     ]);
   });
 
-  it("asks a business where its e-invoices go, never an individual", () => {
-    expect(walkFlow(company)).toContain(View.E_INVOICE);
-    expect(walkFlow(individual)).not.toContain(View.E_INVOICE);
-    expect(previousView(View.CONTACT_CHOICE, company)).toBe(View.E_INVOICE);
-    expect(previousView(View.CONTACT_CHOICE, individual)).toBe(View.ADDRESS_APT_FLOOR);
+  it("asks no e-invoice address where the country has no step (legal-entity-e-invoice-gate)", () => {
+    for (const ctx of [individual, soleProp, soleNoVat, company]) {
+      expect(walkFlow(ctx)).not.toContain(View.E_INVOICE);
+      expect(previousView(View.CONTACT_CHOICE, ctx)).toBe(View.ADDRESS_APT_FLOOR);
+    }
   });
 
   it("asks a business with a VAT ID no tax country", () => {
@@ -202,7 +195,7 @@ describe("the invoice flow: only what an invoice needs", () => {
     ]);
   });
 
-  it("a company or a sole prop with a VAT ID: VAT ID → name → address → email → e-invoice", () => {
+  it("a company or a sole prop with a VAT ID: VAT ID → name → address → invoice email", () => {
     for (const ctx of [company, soleProp]) {
       expect(walkFlow(invoicing(ctx)), ctx.type).toEqual([
         View.TYPE_CHOICE,
@@ -211,7 +204,6 @@ describe("the invoice flow: only what an invoice needs", () => {
         View.LEGAL_NAME,
         ...INVOICE_ADDRESS,
         View.INVOICE_EMAIL,
-        View.E_INVOICE,
         View.SAVING,
       ]);
     }
@@ -226,7 +218,6 @@ describe("the invoice flow: only what an invoice needs", () => {
       View.LEGAL_NAME,
       ...INVOICE_ADDRESS,
       View.INVOICE_EMAIL,
-      View.E_INVOICE,
       View.SAVING,
     ]);
   });
@@ -255,12 +246,12 @@ describe("the invoice flow: only what an invoice needs", () => {
 
 describe("stepsInFlow: the N of 'Step 1 of N'", () => {
   it("counts the answered panes of the longest route, never the check or saving", () => {
-    expect(stepsInFlow(["company"], FlowKind.INVOICING)).toBe(8);
+    expect(stepsInFlow(["company"], FlowKind.INVOICING)).toBe(7);
     expect(stepsInFlow(["individual"], FlowKind.INVOICING)).toBe(8);
     // "No VAT ID" adds the tax country and number, one more than the check it skips.
-    expect(stepsInFlow(["sole_prop"], FlowKind.INVOICING)).toBe(10);
-    expect(stepsInFlow(["sole_prop", "company"], FlowKind.INVOICING)).toBe(10);
-    expect(stepsInFlow(["company"], FlowKind.FULL)).toBe(10);
-    expect(stepsInFlow(["individual", "sole_prop", "company"], FlowKind.FULL)).toBe(15);
+    expect(stepsInFlow(["sole_prop"], FlowKind.INVOICING)).toBe(9);
+    expect(stepsInFlow(["sole_prop", "company"], FlowKind.INVOICING)).toBe(9);
+    expect(stepsInFlow(["company"], FlowKind.FULL)).toBe(9);
+    expect(stepsInFlow(["individual", "sole_prop", "company"], FlowKind.FULL)).toBe(14);
   });
 });

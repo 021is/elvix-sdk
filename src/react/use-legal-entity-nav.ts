@@ -34,6 +34,7 @@ export type WizardNavArgs = {
 
 const contextOf = (d: LegalEntityDraft, kind: FlowKind): FlowContext => ({
   type: d.type,
+  country: d.taxCountry || null,
   hasVatId: d.vatId.trim() !== "",
   withoutVatId: d.withoutVatId,
   kind,
@@ -73,6 +74,7 @@ export function useLegalEntityNav(a: WizardNavArgs) {
     }
     const previous = previousView(step, {
       type: draft.type,
+      country: draft.taxCountry || null,
       withoutVatId: draft.withoutVatId,
       kind,
     });

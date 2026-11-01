@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 /**
  * The panes an entity may leave empty (0.18): birth date, registration and
- * the invoice email say "Skip" while empty, the flow's last pane saves and
+ * the invoice email say "Skip" while empty (the e-invoice pane's own test is
+ * legal-entity-e-invoice-gate.test.tsx), the flow's last pane saves and
  * shows a refused save, and a refusal returns to the pane that saved.
  */
 import { act, cleanup, fireEvent, render, renderHook, screen } from "@testing-library/react";
@@ -109,10 +110,21 @@ describe("saving from the flow's last pane", () => {
     expect(commit).toHaveBeenCalledWith(View.INVOICE_EMAIL);
   });
 
-  it("a business's invoice flow saves from its e-invoice address", () => {
+  it("a German business's invoice flow saves from the invoice email", () => {
     const commit = vi.fn();
     const { result } = renderHook(() => useNav(FlowKind.INVOICING, commit));
     act(() => result.current.draftApi.setField("type", "company"));
+    act(() => result.current.draftApi.setField("taxCountry", "DE"));
+    expect(result.current.nav.isLast(View.INVOICE_EMAIL)).toBe(true);
+    act(() => result.current.nav.advance(View.INVOICE_EMAIL));
+    expect(commit).toHaveBeenCalledWith(View.INVOICE_EMAIL);
+  });
+
+  it("an Italian business's invoice flow saves from its e-invoice address", () => {
+    const commit = vi.fn();
+    const { result } = renderHook(() => useNav(FlowKind.INVOICING, commit));
+    act(() => result.current.draftApi.setField("type", "company"));
+    act(() => result.current.draftApi.setField("taxCountry", "IT"));
     expect(result.current.nav.isLast(View.INVOICE_EMAIL)).toBe(false);
     expect(result.current.nav.isLast(View.E_INVOICE)).toBe(true);
     act(() => result.current.nav.advance(View.E_INVOICE));
