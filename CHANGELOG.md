@@ -36,8 +36,8 @@ as your own. Needs elvix.is with the legal-entity grants (deployed before this r
   country → tax number (an individual: name → tax country → tax number) → the check → the
   legal name, prefilled (a company in one field, a person in given and family name) → the
   address (search prefilled from the authority, review, any missing part, apartment or
-  floor optional) → an invoice email (optional) → a business's e-invoice address
-  (optional) → saved. No trading name, birth data, nationality, registration or phone.
+  floor optional) → an invoice email (optional) → an Italian or Belgian business's
+  e-invoice address (optional) → saved. No trading name, birth data, nationality, registration or phone.
   `purpose="payouts"` and `<ElvixLegalEntities>` keep the full flow. The last step's
   button saves and shows a refused save; "Step 1 of N" counts the flow shown.
 - **`sizing="fixed" | "flexible"`** on `<ElvixLegalEntityPicker>` and
@@ -48,10 +48,10 @@ as your own. Needs elvix.is with the legal-entity grants (deployed before this r
   no fixed height; `maxHeight` caps it and then it scrolls. The picker defaults to fixed in
   a card and flexible with `card={false}`; the manager to fixed. `ElvixLegalEntitySizing`
   names the two.
-- **The Enter hint is optional.** The "Enter" chip beside a save button carries
-  `.elvix-kbd-hint`; it hides on touch devices (`hover: none` and a coarse pointer), and
-  `--elvix-key-hints` on any ancestor forces it: `none` hides it everywhere,
-  `inline-flex` shows it everywhere.
+- **The Enter hint is off by default, on every device.** The "Enter" chip beside a save
+  button carries `.elvix-kbd-hint` (`hints.css`); a host turns it on with
+  `--elvix-key-hints: inline-flex` on any ancestor. The chip shows the key only, never
+  prose: an optional pane's button says "Skip" while empty instead.
 - **A tap is a grant; the pre-selection is not.** `onPick(entity, { granted })`: a tap or a
   new entity grants your application that one entity for `purpose` (`invoicing`, default,
   or `payouts`) before `onPick` fires with `granted: true`. The default (else the only
@@ -68,9 +68,9 @@ as your own. Needs elvix.is with the legal-entity grants (deployed before this r
   `user.legal_entity_revoked` (`UserLegalEntityData`, with `purpose`), to applications
   holding a grant.
 - **A person's name in two parts** (`givenName`, `familyName`, required for individuals
-  and sole proprietors; the legal name is built from them), **where e-invoices go** (an
-  optional step for businesses: a Peppol ID everywhere, Italy's SDI code and PEC, a German
-  public body's Leitweg-ID).
+  and sole proprietors), **where e-invoices go**: optional, asked only of an Italian (SDI
+  code or PEC) or Belgian (Peppol ID) business and counted in "Step 1 of N" only there; the
+  detail view edits all four fields, Leitweg-ID included, for any country.
 - **Row variables**: `--elvix-row`, `--elvix-row-hover`, `--elvix-picked`,
   `--elvix-picked-text`, `--elvix-radius`, `--elvix-focus` (`rows.css`), next to the field
   variables; `--elvix-danger` outlines a field whose value is wrong. **Icon bubbles** (the
