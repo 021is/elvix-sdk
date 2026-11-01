@@ -34,6 +34,14 @@ const ADDRESS = [
   View.ADDRESS_APT_FLOOR,
   View.CONTACT_CHOICE,
 ];
+/** A business is also asked where its e-invoices go, before the contact question. */
+const BUSINESS_ADDRESS = [
+  View.ADDRESS_SEARCH,
+  View.ADDRESS_REVIEW,
+  View.ADDRESS_APT_FLOOR,
+  View.E_INVOICE,
+  View.CONTACT_CHOICE,
+];
 const PERSON = [View.DOB, View.PLACE_OF_BIRTH, View.NATIONALITY];
 
 describe("step predicates", () => {
@@ -76,7 +84,7 @@ describe("journeys", () => {
       View.LEGAL_NAME,
       View.TRADING_NAME,
       View.REGISTRATION,
-      ...ADDRESS,
+      ...BUSINESS_ADDRESS,
     ]);
   });
 
@@ -89,7 +97,7 @@ describe("journeys", () => {
       View.TRADING_NAME,
       ...PERSON,
       View.REGISTRATION,
-      ...ADDRESS,
+      ...BUSINESS_ADDRESS,
     ]);
   });
 
@@ -103,8 +111,15 @@ describe("journeys", () => {
       View.TRADING_NAME,
       ...PERSON,
       View.REGISTRATION,
-      ...ADDRESS,
+      ...BUSINESS_ADDRESS,
     ]);
+  });
+
+  it("asks a business where its e-invoices go, never an individual", () => {
+    expect(walkFlow(company)).toContain(View.E_INVOICE);
+    expect(walkFlow(individual)).not.toContain(View.E_INVOICE);
+    expect(previousView(View.CONTACT_CHOICE, company)).toBe(View.E_INVOICE);
+    expect(previousView(View.CONTACT_CHOICE, individual)).toBe(View.ADDRESS_APT_FLOOR);
   });
 
   it("asks a business with a VAT ID no tax country", () => {

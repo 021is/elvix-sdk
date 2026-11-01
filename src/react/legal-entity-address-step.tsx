@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * The registered address, then the optional contact details, wired to the
- * wizard's state. The address search starts with the address the tax
+ * The registered address, where a business's e-invoices go, then the
+ * optional contact details, wired to the wizard's state. The address search starts with the address the tax
  * authority holds for the VAT ID already typed in (0.18), and a business
  * fills in any part Places left empty before it can continue: an invoice
  * needs all of it.
@@ -10,6 +10,7 @@
 
 import type { ReactNode } from "react";
 import { useT } from "../locale/use-t";
+import { EInvoiceView } from "./legal-entity-e-invoice-view";
 import { needsBusinessSteps, View } from "./legal-entity-flow";
 import type { WizardFlow } from "./legal-entity-steps";
 import {
@@ -69,6 +70,8 @@ export function LegalEntityAddressStep({ flow }: { flow: WizardFlow }): ReactNod
           optional
         />
       );
+    case View.E_INVOICE:
+      return <EInvoiceView draft={draft} setField={setField} {...nav} />;
     case View.CONTACT_CHOICE:
       return (
         <YesNoView

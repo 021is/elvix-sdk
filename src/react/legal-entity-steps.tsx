@@ -12,7 +12,8 @@ import { useT } from "../locale/use-t";
 import { TAX_VALIDATABLE_COUNTRIES } from "./countries";
 import { LegalEntityAddressStep } from "./legal-entity-address-step";
 import { typeTitleCopy } from "./legal-entity-copy";
-import { needsBusinessSteps, View } from "./legal-entity-flow";
+import { needsBusinessSteps, needsPersonSteps, View } from "./legal-entity-flow";
+import { PersonNameView } from "./legal-entity-person-name-view";
 import type { LegalEntityType } from "./legal-entity-schema";
 import { VatIdView } from "./legal-entity-vat-id-view";
 import { VerifyingTaxIdView } from "./legal-entity-verifying-view";
@@ -50,6 +51,7 @@ const ADDRESS_CONTACT_STEPS: ReadonlySet<View> = new Set([
   View.ADDRESS_SEARCH,
   View.ADDRESS_REVIEW,
   View.ADDRESS_APT_FLOOR,
+  View.E_INVOICE,
   View.CONTACT_CHOICE,
   View.CONTACT_INPUT,
 ]);
@@ -153,11 +155,25 @@ const LEGAL_NAME_SUBTITLE: Record<LegalEntityType, string> = {
   individual: "legalEntities.legalNameSubtitleIndividual",
 };
 
-/** The legal name, whose wording and validation depend on the entity type. */
+/** The legal name: two parts for a person, one for a company. */
 function LegalNameStep({ flow }: { flow: WizardFlow }) {
   const t = useT();
   const { draft, setField } = flow.draftApi;
   const company = draft.type === "company";
+  if (needsPersonSteps(draft.type)) {
+    return (
+      <PersonNameView
+        title={typeTitleCopy(draft.type, View.LEGAL_NAME, t)}
+        subtitle={t(LEGAL_NAME_SUBTITLE[draft.type ?? "individual"])}
+        given={draft.givenName}
+        family={draft.familyName}
+        setGiven={(value) => setField("givenName", value)}
+        setFamily={(value) => setField("familyName", value)}
+        onConfirm={() => flow.advance(View.LEGAL_NAME)}
+        onBack={() => flow.back(View.LEGAL_NAME)}
+      />
+    );
+  }
   return (
     <SingleTextView
       title={typeTitleCopy(draft.type, View.LEGAL_NAME, t)}

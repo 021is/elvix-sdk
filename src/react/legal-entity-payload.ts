@@ -5,8 +5,14 @@
  */
 
 import type { TaxIdValidationState } from "./elvix-tax-id-input";
-import { View } from "./legal-entity-flow";
-import type { LegalEntityInput, LegalEntityRecord } from "./legal-entity-schema";
+import { needsPersonSteps, View } from "./legal-entity-flow";
+import {
+  CODICE_DESTINATARIO,
+  LEITWEG_ID,
+  type LegalEntityInput,
+  type LegalEntityRecord,
+  PEPPOL_ID,
+} from "./legal-entity-schema";
 import type { PlaceDetails } from "./legal-entity-types";
 import type { LegalEntityDraft } from "./use-legal-entity-draft";
 
@@ -41,9 +47,43 @@ function addressFields(a: PlaceDetails | null, line2: string): Patch {
   };
 }
 
+/**
+ * A natural person's name: both parts, and the legal name built from them.
+ * A company keeps its one legal name.
+ */
+function nameFields(d: LegalEntityDraft): Patch {
+  if (!needsPersonSteps(d.type)) return { legalName: d.legalName.trim() };
+  const givenName = d.givenName.trim();
+  const familyName = d.familyName.trim();
+  return { givenName, familyName, legalName: `${givenName} ${familyName}` };
+}
+
+/** Where e-invoices go; an empty field clears it. */
+function eInvoiceFields(d: LegalEntityDraft): Patch {
+  return {
+    peppolId: orNull(d.peppolId),
+    codiceDestinatario: orNull(d.codiceDestinatario.toUpperCase()),
+    pecAddress: orNull(d.pecAddress),
+    leitwegId: orNull(d.leitwegId),
+  };
+}
+
+/** The e-invoice step may be left with any field empty, never with a malformed one. */
+export function eInvoiceReady(d: LegalEntityDraft): boolean {
+  const ok = (v: string, rx: RegExp) => v.trim() === "" || rx.test(v.trim());
+  const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return (
+    ok(d.peppolId, PEPPOL_ID) &&
+    ok(d.codiceDestinatario.toUpperCase(), CODICE_DESTINATARIO) &&
+    ok(d.pecAddress, email) &&
+    ok(d.leitwegId, LEITWEG_ID)
+  );
+}
+
 /** What each editable step writes when it is edited on its own. */
 const STEP_PATCH: Partial<Record<View, (d: LegalEntityDraft) => Patch>> = {
-  [View.LEGAL_NAME]: (d) => ({ legalName: d.legalName.trim() }),
+  [View.LEGAL_NAME]: nameFields,
+  [View.E_INVOICE]: eInvoiceFields,
   [View.TRADING_NAME]: (d) => ({ tradingName: orNull(d.tradingName) }),
   [View.DOB]: (d) => ({ dateOfBirth: d.dob || null }),
   [View.PLACE_OF_BIRTH]: (d) => ({
@@ -77,7 +117,11 @@ export function stepReady(step: View, d: LegalEntityDraft): boolean {
     case View.VAT_ID:
       return d.withoutVatId || (d.vatId.trim() !== "" && d.taxCountry !== "");
     case View.LEGAL_NAME:
-      return d.legalName.trim() !== "";
+      return needsPersonSteps(d.type)
+        ? d.givenName.trim() !== "" && d.familyName.trim() !== ""
+        : d.legalName.trim() !== "";
+    case View.E_INVOICE:
+      return eInvoiceReady(d);
     case View.REGISTRATION:
       return d.registrationNumber.trim() !== "" && d.registrationBody.trim() !== "";
     case View.ADDRESS_APT_FLOOR:
@@ -95,6 +139,7 @@ export function draftToEntityInput(d: LegalEntityDraft): LegalEntityInput | null
     label: null,
     isDefault: false,
     legalName: d.legalName,
+    ...nameFields(d),
     tradingName: d.tradingName || null,
     dateOfBirth: d.dob || null,
     placeOfBirth: d.placeOfBirth || null,
@@ -107,6 +152,7 @@ export function draftToEntityInput(d: LegalEntityDraft): LegalEntityInput | null
     registeredSince: d.registeredSince || null,
     contactEmail: orNull(d.contactEmail),
     contactPhone: orNull(d.contactPhone),
+    ...eInvoiceFields(d),
     ...addressFields(d.address, d.addressLine2),
   };
 }
@@ -120,7 +166,21 @@ export function prefillFrom(step: View, e: LegalEntityRecord): Partial<LegalEnti
   const base = { type: e.type };
   switch (step) {
     case View.LEGAL_NAME:
-      return { ...base, legalName: e.legalName };
+      return {
+        ...base,
+        legalName: e.legalName,
+        givenName: e.givenName ?? "",
+        familyName: e.familyName ?? "",
+      };
+    case View.E_INVOICE:
+      return {
+        ...base,
+        taxCountry: e.taxCountry,
+        peppolId: e.peppolId ?? "",
+        codiceDestinatario: e.codiceDestinatario ?? "",
+        pecAddress: e.pecAddress ?? "",
+        leitwegId: e.leitwegId ?? "",
+      };
     case View.TRADING_NAME:
       return { ...base, tradingName: e.tradingName ?? "" };
     case View.DOB:

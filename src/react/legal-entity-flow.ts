@@ -38,6 +38,7 @@ export const View = {
   ADDRESS_SEARCH: "address-search",
   ADDRESS_REVIEW: "address-review",
   ADDRESS_APT_FLOOR: "address-apt-floor",
+  E_INVOICE: "e-invoice",
   CONTACT_CHOICE: "contact-choice",
   CONTACT_INPUT: "contact-input",
   SAVING: "saving",
@@ -117,7 +118,7 @@ export function nextView(current: View, ctx: FlowContext): View | null {
     case View.VERIFYING_TAX_ID:
       return afterTaxIdentifiers(ctx);
     default:
-      return nextAddressStep(current);
+      return nextAddressStep(current, ctx);
   }
 }
 
@@ -126,8 +127,12 @@ function afterTaxIdentifiers(ctx: FlowContext): View {
   return needsBusinessSteps(ctx.type) ? View.LEGAL_NAME : View.ADDRESS_SEARCH;
 }
 
-/** The registered address and the contact form, the same for every type. */
-function nextAddressStep(current: View): View | null {
+/**
+ * The registered address and the contact form. A business is also asked
+ * where its e-invoices go (optional, 0.18): mandatory e-invoicing reaches it
+ * by a Peppol id, Italy's SDI code or a German public body's Leitweg-ID.
+ */
+function nextAddressStep(current: View, ctx: FlowContext): View | null {
   switch (current) {
     case View.REGISTRATION:
       return View.ADDRESS_SEARCH;
@@ -136,6 +141,8 @@ function nextAddressStep(current: View): View | null {
     case View.ADDRESS_REVIEW:
       return View.ADDRESS_APT_FLOOR;
     case View.ADDRESS_APT_FLOOR:
+      return needsBusinessSteps(ctx.type) ? View.E_INVOICE : View.CONTACT_CHOICE;
+    case View.E_INVOICE:
       return View.CONTACT_CHOICE;
     case View.CONTACT_INPUT:
       return View.SAVING;
