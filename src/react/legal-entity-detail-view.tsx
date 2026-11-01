@@ -75,7 +75,7 @@ function DetailHeader({ entity }: { entity: LegalEntityRecord }) {
   return (
     <div className="elvix-tile px-4 py-3.5">
       <div className="flex items-start gap-3">
-        <div className="grid size-10 shrink-0 place-items-center rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)] text-[var(--elvix-primary)]">
+        <div className="elvix-icon-bubble grid size-10 shrink-0 place-items-center rounded-full">
           {typeIcon(type, 5)}
         </div>
         <div className="min-w-0 flex-1">

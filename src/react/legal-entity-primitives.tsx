@@ -49,7 +49,7 @@ export function EmptyState({ onAdd }: { onAdd: () => void }) {
         onClick={onAdd}
         className="elvix-row group flex w-full max-w-[340px] flex-col items-center gap-3 px-6 py-8 cursor-pointer"
       >
-        <div className="grid size-12 place-items-center rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)] text-[var(--elvix-primary)] transition group-hover:scale-105">
+        <div className="elvix-icon-bubble grid size-12 place-items-center rounded-full transition group-hover:scale-105">
           <Building2 className="size-6" />
         </div>
         <div>
@@ -110,7 +110,7 @@ export function VerifyingBadge({
   if (phase === "checking") {
     return (
       <div className="flex flex-col items-center gap-3">
-        <div className="grid size-16 place-items-center rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)] text-[var(--elvix-primary)]">
+        <div className="elvix-icon-bubble grid size-16 place-items-center rounded-full">
           <Loader2 className="size-7 animate-spin" />
         </div>
         <div className="text-[12px] uppercase tracking-wide text-fg-3">
@@ -127,7 +127,7 @@ export function VerifyingBadge({
         transition={{ type: "spring", stiffness: 240, damping: 18 }}
         className="flex flex-col items-center gap-3"
       >
-        <div className="grid size-16 place-items-center rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_18%,transparent)] text-[var(--elvix-primary)]">
+        <div className="elvix-icon-bubble grid size-16 place-items-center rounded-full">
           <CheckCircle2 className="size-8" />
         </div>
         <div className="text-[12px] uppercase tracking-wide text-[var(--elvix-primary)]">
@@ -176,7 +176,7 @@ export function SavingView({ label }: { label?: string }) {
   return (
     <div className="grid h-full place-items-center">
       <div className="flex flex-col items-center gap-3">
-        <div className="grid size-12 place-items-center rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)] text-[var(--elvix-primary)]">
+        <div className="elvix-icon-bubble grid size-12 place-items-center rounded-full">
           <Loader2 className="size-5 animate-spin" />
         </div>
         <div className="text-[13px] font-medium text-fg-2">{effectiveLabel}</div>
@@ -237,7 +237,7 @@ export function ChoiceCard({
       onClick={onClick}
       className="elvix-row group flex w-full items-start gap-3 px-4 py-3 text-left cursor-pointer"
     >
-      <div className="grid size-9 shrink-0 place-items-center rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_15%,transparent)] text-[var(--elvix-primary)]">
+      <div className="elvix-icon-bubble grid size-9 shrink-0 place-items-center rounded-full">
         {icon}
       </div>
       <div className="min-w-0 flex-1">

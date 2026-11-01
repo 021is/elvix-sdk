@@ -10,6 +10,8 @@
      --elvix-picked-text    the picked row's title (`.elvix-row-title`)
      --elvix-radius         corner radius (default 12px)
      --elvix-focus          keyboard focus ring (default: the brand)
+     --elvix-icon           an icon bubble's icon (`.elvix-icon-bubble`; default: the brand)
+     --elvix-icon-bg        an icon bubble's fill (default: the brand at 15%)
 
    Text and muted text are --elvix-fg-1 and --elvix-fg-3, as everywhere.
 */
@@ -56,4 +58,15 @@
 .elvix-tile {
   background-color: var(--elvix-row, color-mix(in srgb, var(--elvix-fg-1) 4%, transparent));
   border-radius: var(--elvix-radius, 12px);
+}
+
+/* The round tint behind a type or brand icon (the type choices, the empty
+   state, the detail header, the saving and verifying panes). State colours
+   (a refused VAT ID's red) are not bubbles of this kind. */
+.elvix-icon-bubble {
+  background-color: var(
+    --elvix-icon-bg,
+    color-mix(in srgb, var(--elvix-primary, var(--elvix-fg-1)) 15%, transparent)
+  );
+  color: var(--elvix-icon, var(--elvix-primary, var(--elvix-fg-1)));
 }
