@@ -11,12 +11,24 @@ import {
   LEITWEG_ID,
   type LegalEntityInput,
   type LegalEntityRecord,
+  type LegalEntityType,
   PEPPOL_ID,
 } from "./legal-entity-schema";
 import type { PlaceDetails } from "./legal-entity-types";
 import type { LegalEntityDraft } from "./use-legal-entity-draft";
 
 type Patch = Partial<LegalEntityInput>;
+
+/**
+ * Is the local tax number required? For a person always; for a sole
+ * proprietor without a VAT ID too, since it is then the number the invoice
+ * prints. The tax pane's label and its Continue gate both ask this, so they
+ * cannot disagree: they did, and "(optional)" sat over a field Continue
+ * waited for.
+ */
+export function localTaxIdRequired(type: LegalEntityType | null, vatId: string): boolean {
+  return type === "individual" || (type === "sole_prop" && !vatId.trim());
+}
 
 const orNull = (s: string | null | undefined) => s?.trim() || null;
 

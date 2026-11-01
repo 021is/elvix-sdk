@@ -32,6 +32,7 @@ import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { ElvixTaxIdInput, type TaxIdValidationState } from "./elvix-tax-id-input";
 import { AddressGapFields, addressGaps } from "./legal-entity-address-gaps";
 import { taxIdFormatHint, taxIdPlaceholder, vatPlaceholder } from "./legal-entity-copy";
+import { localTaxIdRequired } from "./legal-entity-payload";
 import {
   ChoiceCard,
   CountryChip,
@@ -501,7 +502,7 @@ export function TaxIdsView({
         <label className="block">
           <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
             {t("legalEntities.localTaxNumberLabel")}
-            {isIndividual ? "" : t("common.optionalSuffix")}
+            {localTaxIdRequired(entityType, vatId) ? "" : t("common.optionalSuffix")}
           </span>
           <ElvixInput
             type="text"
@@ -573,8 +574,7 @@ export function taxIdsBlockReason(
 ): string | null {
   const tax = v.taxId.trim();
   const vat = v.vatId.trim();
-  const taxRequired = v.type === "individual" || (v.type === "sole_prop" && !vat);
-  if (taxRequired && !tax) return t("legalEntities.blockReasonTaxIdRequired");
+  if (localTaxIdRequired(v.type, vat) && !tax) return t("legalEntities.blockReasonTaxIdRequired");
   if (tax && !localTaxIdMatches(v.country, tax)) {
     return t("legalEntities.blockReasonTaxIdFormat", {
       country: findCountry(v.country)?.name ?? v.country,
