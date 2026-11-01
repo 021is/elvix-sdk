@@ -53,10 +53,11 @@ async function outcome(res: Response | null, fallback: string): Promise<Outcome>
 
 /**
  * CRUD for one collection under `/api/account/profile/<resource>`: the list
- * reads `{ ok, <resource>: [...] }`, writes address a row by `?id=`. Nothing
- * rejects; a failed write resolves to its worded error.
+ * reads `{ ok, <key>: [...] }` (`key` is the resource unless named, e.g.
+ * `entities/people` answers `people`), writes address a row by `?id=`.
+ * Nothing rejects; a failed write resolves to its worded error.
  */
-export function profileCollection<Row, Input>(baseUrl: string, resource: string) {
+export function profileCollection<Row, Input>(baseUrl: string, resource: string, key = resource) {
   const path = `${baseUrl}/api/account/profile/${resource}`;
   const row = (id: string) => `${path}?id=${encodeURIComponent(id)}`;
   return {
@@ -68,7 +69,7 @@ export function profileCollection<Row, Input>(baseUrl: string, resource: string)
         string,
         unknown
       > | null;
-      const rows = body?.[resource];
+      const rows = body?.[key];
       return body?.ok && Array.isArray(rows) ? (rows as Row[]) : null;
     },
     async create(input: Input): Promise<Outcome> {

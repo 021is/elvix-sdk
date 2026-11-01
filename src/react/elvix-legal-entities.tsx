@@ -36,12 +36,8 @@ import { AnimatePresence } from "framer-motion";
 import type { CSSProperties, ReactNode } from "react";
 import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
-import {
-  DefaultConfirmView,
-  DeleteConfirmView,
-  DetailView,
-  ListView,
-} from "./legal-entity-detail-views";
+import { DetailView } from "./legal-entity-detail-view";
+import { DefaultConfirmView, DeleteConfirmView, ListView } from "./legal-entity-detail-views";
 import { View } from "./legal-entity-flow";
 import { EmptyState, SavingView } from "./legal-entity-primitives";
 import type { LegalEntityRecord } from "./legal-entity-schema";
@@ -138,15 +134,7 @@ function ManagePane({ flow }: { flow: WizardFlow }): ReactNode | null {
           onBack={flow.closeDetail}
           onDelete={() => e && flow.askDelete(e.id)}
           onToggleDefault={() => e && flow.askDefault(e.id, !e.isDefault, ReturnTo.DETAIL)}
-          onEditLegalName={() => flow.editStep(View.LEGAL_NAME)}
-          onEditTradingName={() => flow.editStep(View.TRADING_NAME)}
-          onEditDob={() => flow.editStep(View.DOB)}
-          onEditPlaceOfBirth={() => flow.editStep(View.PLACE_OF_BIRTH)}
-          onEditNationality={() => flow.editStep(View.NATIONALITY)}
-          onEditTaxCountry={() => flow.editStep(View.TAX_COUNTRY)}
-          onEditTaxIds={() => flow.editStep(View.TAX_IDS)}
-          onEditRegistration={() => flow.editStep(View.REGISTRATION)}
-          onEditContact={() => flow.editStep(View.CONTACT_INPUT)}
+          onEdit={flow.editStep}
         />
       );
     case View.DELETE_CONFIRM:

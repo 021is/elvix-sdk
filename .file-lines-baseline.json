@@ -18,7 +18,6 @@
   "src/react/elvix-sign-out-button.tsx": 486,
   "src/react/elvix-username.tsx": 681,
   "src/react/google-one-tap.tsx": 348,
-  "src/react/legal-entity-detail-views.tsx": 506,
   "src/react/legal-entity-primitives.tsx": 303,
   "src/react/legal-entity-wizard-views.tsx": 1268,
   "src/react/passkey.ts": 345,
