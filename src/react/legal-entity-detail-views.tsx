@@ -45,7 +45,7 @@ export function ListView({
       <button
         type="button"
         onClick={onAdd}
-        className="group flex items-center justify-center gap-2 rounded-[12px] border border-dashed border-fg-3/30 px-4 py-3 text-[13px] font-medium text-fg-2 transition hover:border-[var(--elvix-primary)] hover:text-[var(--elvix-primary)] cursor-pointer"
+        className="elvix-row group flex items-center justify-center gap-2 px-4 py-3 text-[13px] font-medium text-fg-2 hover:text-[var(--elvix-primary)] cursor-pointer"
       >
         <Plus className="size-4" />
         {t("legalEntities.addAnotherCta")}
@@ -61,7 +61,7 @@ export function ListView({
         return (
           <div
             key={e.id}
-            className="group relative flex w-full items-start gap-3 rounded-[12px] border border-fg-3/15 bg-surface text-left shadow-[0_1px_0_rgba(0,0,0,0.02)] transition hover:border-[var(--elvix-primary)] hover:bg-[color-mix(in_srgb,var(--elvix-primary)_4%,transparent)]"
+            className="elvix-row group relative flex w-full items-start gap-3 text-left"
           >
             <button
               type="button"
@@ -178,7 +178,7 @@ export function DetailView({
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onBack} />
-      <div className="rounded-[14px] border border-fg-3/15 bg-surface px-4 py-3.5 shadow-[0_1px_0_rgba(0,0,0,0.02)]">
+      <div className="elvix-tile px-4 py-3.5">
         <div className="flex items-start gap-3">
           <div className="grid size-10 shrink-0 place-items-center rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)] text-[var(--elvix-primary)]">
             {typeIcon(type, 5)}
@@ -332,7 +332,7 @@ export function DetailView({
           <button
             type="button"
             onClick={onToggleDefault}
-            className="inline-flex h-10 items-center gap-1.5 rounded-[10px] border border-fg-3/20 bg-canvas px-4 text-[13px] font-medium text-fg-1 transition hover:border-[var(--elvix-primary)] hover:bg-[color-mix(in_srgb,var(--elvix-primary)_6%,transparent)] active:scale-[0.985] cursor-pointer"
+            className="elvix-row inline-flex h-10 items-center gap-1.5 px-4 text-[13px] font-medium text-fg-1 active:scale-[0.985] cursor-pointer"
           >
             <Star
               className={
@@ -375,7 +375,7 @@ export function DeleteConfirmView({
       <WizardHeader onBack={onCancel} />
       <Heading>{t("legalEntities.deleteConfirmTitle")}</Heading>
       <Subtitle>{t("legalEntities.deleteConfirmBody")}</Subtitle>
-      <div className="mt-4 rounded-[12px] border border-fg-3/15 bg-surface px-4 py-3">
+      <div className="elvix-tile mt-4 px-4 py-3">
         <div className="text-[14px] font-semibold text-fg-1">
           {entity.label?.trim() || entity.legalName}
         </div>
@@ -384,7 +384,7 @@ export function DeleteConfirmView({
         </div>
         {entity.vatId && <div className="mt-0.5 text-[12px] text-fg-3">{entity.vatId}</div>}
       </div>
-      <div className="mt-3 rounded-[10px] border border-amber-500/30 bg-amber-500/[0.08] px-3 py-2.5">
+      <div className="mt-3 rounded-[10px] bg-amber-500/[0.08] px-3 py-2.5">
         <div className="text-[12.5px] font-semibold text-amber-700 dark:text-amber-300">
           {t("legalEntities.sharedAcrossAppsHeading")}
         </div>
@@ -458,7 +458,7 @@ export function DefaultConfirmView({
           ? t("legalEntities.defaultConfirmBodySet")
           : t("legalEntities.defaultConfirmBodyUnset")}
       </Subtitle>
-      <div className="mt-4 rounded-[12px] border border-fg-3/15 bg-surface px-4 py-3">
+      <div className="elvix-tile mt-4 px-4 py-3">
         <div className="text-[14px] font-semibold text-fg-1">
           {entity.label?.trim() || entity.legalName}
         </div>
@@ -466,7 +466,7 @@ export function DefaultConfirmView({
           {humanType(entity.type as LegalEntityType, t)}
         </div>
       </div>
-      <div className="mt-3 rounded-[10px] border border-amber-500/30 bg-amber-500/[0.08] px-3 py-2.5">
+      <div className="mt-3 rounded-[10px] bg-amber-500/[0.08] px-3 py-2.5">
         <div className="text-[12.5px] font-semibold text-amber-700 dark:text-amber-300">
           {t("legalEntities.sharedAcrossAppsHeading")}
         </div>

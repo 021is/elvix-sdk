@@ -1,0 +1,58 @@
+/* Rows (0.18): a tappable line in a list, the legal-entity rows, the type
+   choices, the address suggestions, the picker's companies. Plain CSS like
+   fields.css, for the same reason: a host restyles rows only through these
+   variables, set on any ancestor, and no load order can undo them. No border
+   at rest or on hover; a tint shows state. The font is the host's.
+
+     --elvix-row            fill
+     --elvix-row-hover      fill under the pointer
+     --elvix-picked         fill of the picked row (`aria-checked="true"`)
+     --elvix-picked-text    the picked row's title (`.elvix-row-title`)
+     --elvix-radius         corner radius (default 12px)
+     --elvix-focus          keyboard focus ring (default: the brand)
+
+   Text and muted text are --elvix-fg-1 and --elvix-fg-3, as everywhere.
+*/
+.elvix-row {
+  background-color: var(--elvix-row, color-mix(in srgb, var(--elvix-fg-1) 4%, transparent));
+  border: 0;
+  border-radius: var(--elvix-radius, 12px);
+  color: var(--elvix-fg-1);
+  font: inherit;
+  outline: none;
+  transition: background-color 0.15s;
+}
+
+.elvix-row:hover:not(:disabled) {
+  background-color: var(
+    --elvix-row-hover,
+    color-mix(in srgb, var(--elvix-fg-1) 7%, transparent)
+  );
+}
+
+.elvix-row:focus-visible {
+  box-shadow: 0 0 0 2px var(--elvix-focus, var(--elvix-primary, var(--elvix-fg-2)));
+}
+
+.elvix-row[aria-checked="true"],
+.elvix-row[aria-checked="true"]:hover {
+  background-color: var(
+    --elvix-picked,
+    color-mix(in srgb, var(--elvix-primary, var(--elvix-fg-1)) 10%, transparent)
+  );
+}
+
+.elvix-row[aria-checked="true"] .elvix-row-title {
+  color: var(--elvix-picked-text, var(--elvix-primary, var(--elvix-fg-1)));
+}
+
+.elvix-row:disabled {
+  opacity: 0.5;
+}
+
+/* A block that shows rather than acts (a summary, a detail section): the
+   row's fill and radius, no hover. */
+.elvix-tile {
+  background-color: var(--elvix-row, color-mix(in srgb, var(--elvix-fg-1) 4%, transparent));
+  border-radius: var(--elvix-radius, 12px);
+}

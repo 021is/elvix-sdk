@@ -962,7 +962,7 @@ export function PlaceOfBirthView({
       <Subtitle>{t("legalEntities.placeOfBirthSubtitle")}</Subtitle>
 
       {hasPick && (
-        <div className="mt-4 flex items-start gap-3 rounded-[12px] border border-[var(--elvix-primary)] bg-[color-mix(in_srgb,var(--elvix-primary)_8%,transparent)] px-3 py-2.5">
+        <div className="mt-4 flex items-start gap-3 rounded-[12px] bg-[color-mix(in_srgb,var(--elvix-primary)_8%,transparent)] px-3 py-2.5">
           <MapPin className="mt-0.5 size-4 shrink-0 text-[var(--elvix-primary)]" />
           <div className="min-w-0 flex-1">
             <div className="text-[13.5px] font-medium text-fg-1">{label}</div>
@@ -1013,7 +1013,7 @@ export function PlaceOfBirthView({
                 <button
                   type="button"
                   onClick={() => pick(s)}
-                  className="group flex w-full items-start gap-3 rounded-[12px] border border-fg-3/15 bg-surface px-3 py-2.5 text-left shadow-[0_1px_0_rgba(0,0,0,0.02)] transition hover:border-[var(--elvix-primary)] hover:bg-[color-mix(in_srgb,var(--elvix-primary)_6%,transparent)] cursor-pointer"
+                  className="elvix-row group flex w-full items-start gap-3 px-3 py-2.5 text-left cursor-pointer"
                 >
                   <MapPin className="mt-0.5 size-4 shrink-0 text-fg-3 group-hover:text-[var(--elvix-primary)]" />
                   <div className="min-w-0 flex-1">
@@ -1169,7 +1169,7 @@ export function AddressSearchView({
                 type="button"
                 disabled={picking !== null}
                 onClick={() => pick(s.placeId)}
-                className="group flex w-full items-start gap-3 rounded-[12px] border border-fg-3/15 bg-surface px-3 py-2.5 text-left shadow-[0_1px_0_rgba(0,0,0,0.02)] transition hover:border-[var(--elvix-primary)] hover:bg-[color-mix(in_srgb,var(--elvix-primary)_6%,transparent)] disabled:opacity-50 cursor-pointer"
+                className="elvix-row group flex w-full items-start gap-3 px-3 py-2.5 text-left cursor-pointer"
               >
                 <MapPin className="mt-0.5 size-4 shrink-0 text-fg-3 group-hover:text-[var(--elvix-primary)]" />
                 <div className="min-w-0 flex-1">
@@ -1240,7 +1240,7 @@ export function AddressReviewView({
       <WizardHeader onBack={onChange} backLabel={t("legalEntities.addressChangeBackLabel")} />
       <Heading>{t("legalEntities.addressReviewTitle")}</Heading>
       <Subtitle>{t("legalEntities.addressReviewSubtitle")}</Subtitle>
-      <div className="mt-4 rounded-[12px] border border-fg-3/15 bg-surface px-4 py-3">
+      <div className="elvix-tile mt-4 px-4 py-3">
         <div className="flex items-start gap-3">
           <MapPin className="mt-0.5 size-4 shrink-0 text-[var(--elvix-primary)]" />
           <div className="min-w-0 flex-1">

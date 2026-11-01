@@ -47,7 +47,7 @@ export function EmptyState({ onAdd }: { onAdd: () => void }) {
       <button
         type="button"
         onClick={onAdd}
-        className="group flex w-full max-w-[340px] flex-col items-center gap-3 rounded-[14px] border border-dashed border-fg-3/30 px-6 py-8 transition hover:border-[var(--elvix-primary)] hover:bg-[color-mix(in_srgb,var(--elvix-primary)_6%,transparent)] cursor-pointer"
+        className="elvix-row group flex w-full max-w-[340px] flex-col items-center gap-3 px-6 py-8 cursor-pointer"
       >
         <div className="grid size-12 place-items-center rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_12%,transparent)] text-[var(--elvix-primary)] transition group-hover:scale-105">
           <Building2 className="size-6" />
@@ -77,7 +77,7 @@ export function CountryChip({
 }) {
   const t = useT();
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--elvix-primary)] bg-[color-mix(in_srgb,var(--elvix-primary)_10%,transparent)] px-2.5 py-1 text-[12.5px] font-medium text-fg-1">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_10%,transparent)] px-2.5 py-1 text-[12.5px] font-medium text-fg-1">
       <span aria-hidden className="text-[14px] leading-none">
         {country.flag}
       </span>
@@ -235,7 +235,7 @@ export function ChoiceCard({
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full items-start gap-3 rounded-[12px] border border-fg-3/15 bg-surface px-4 py-3 text-left shadow-[0_1px_0_rgba(0,0,0,0.02)] transition hover:border-[var(--elvix-primary)] hover:bg-[color-mix(in_srgb,var(--elvix-primary)_6%,transparent)] cursor-pointer"
+      className="elvix-row group flex w-full items-start gap-3 px-4 py-3 text-left cursor-pointer"
     >
       <div className="grid size-9 shrink-0 place-items-center rounded-full bg-[color-mix(in_srgb,var(--elvix-primary)_15%,transparent)] text-[var(--elvix-primary)]">
         {icon}
@@ -255,9 +255,7 @@ export function DetailSection({ title, children }: { title: string; children: Re
       <div className="mb-1.5 px-1 text-[11px] font-semibold uppercase tracking-[0.06em] text-fg-3">
         {title}
       </div>
-      <div className="overflow-hidden rounded-[12px] border border-fg-3/15 bg-surface divide-y divide-fg-3/10">
-        {children}
-      </div>
+      <div className="elvix-tile overflow-hidden divide-y divide-fg-3/10">{children}</div>
     </div>
   );
 }

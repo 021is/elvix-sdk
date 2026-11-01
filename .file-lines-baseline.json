@@ -20,7 +20,7 @@
   "src/react/elvix-username.tsx": 681,
   "src/react/google-one-tap.tsx": 348,
   "src/react/legal-entity-detail-views.tsx": 506,
-  "src/react/legal-entity-primitives.tsx": 305,
+  "src/react/legal-entity-primitives.tsx": 303,
   "src/react/legal-entity-wizard-views.tsx": 1434,
   "src/react/passkey.ts": 345,
   "src/react/regions.ts": 324,
