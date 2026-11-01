@@ -7,9 +7,9 @@ import { describe, expect, it } from "vitest";
 import { ElvixSaveButton } from "../src/react/elvix-save-button";
 
 /**
- * The "Enter" chip on a button is for a keyboard (Edvard, 2026-11-01: "for
- * mobile we don't have enter"). It carries `elvix-kbd-hint`, which hints.css
- * hides on a touch-only device and `--elvix-key-hints` forces either way.
+ * The "Enter" chip on a button is off by default everywhere (Edvard,
+ * 2026-11-01): it carries `elvix-kbd-hint`, which hints.css hides, and a host
+ * turns it on with `--elvix-key-hints: inline-flex`.
  */
 // jsdom's import.meta.url is not a file URL; vitest runs from the repo root.
 const css = readFileSync(join(process.cwd(), "src/styles/hints.css"), "utf8");
@@ -25,10 +25,10 @@ describe("key hints", () => {
     expect(kbd?.classList.contains("inline-flex")).toBe(false);
   });
 
-  it("is hidden on touch-only devices unless --elvix-key-hints says otherwise", () => {
-    expect(css).toContain("display: var(--elvix-key-hints, inline-flex)");
-    const touch = css.slice(css.indexOf("@media (hover: none) and (pointer: coarse)"));
-    expect(touch).toContain("display: var(--elvix-key-hints, none)");
+  it("is hidden on every device unless --elvix-key-hints turns it on", () => {
+    expect(css).toContain("display: var(--elvix-key-hints, none)");
+    expect(css).not.toContain("var(--elvix-key-hints, inline-flex)");
+    expect(css).not.toContain("@media");
     expect(sdk).toContain('@import "./hints.css"');
   });
 });
