@@ -22,7 +22,12 @@
  *     individual: legal-name → dob → place-of-birth → nationality →
  *                 tax-country → tax-ids
  *     then:       address-search → address-review → address-apt-floor
- *                 → contact-choice → [contact-input] → saving → list
+ *                 → [business: e-invoice] → contact-choice →
+ *                 [contact-input] → saving → list
+ *
+ *   The birth date, place of birth, nationality and registration may be
+ *   skipped (0.18). `<ElvixLegalEntityPicker purpose="invoicing">` walks a
+ *   shorter flow; `legal-entity-flow.ts` has both.
  *
  * The step order is `legal-entity-flow.ts` (tested), what each step reads
  * and writes is `legal-entity-payload.ts`, state plus requests are
@@ -32,28 +37,32 @@
  * confirm then PATCHes the one field instead of moving on.
  */
 
-import { AnimatePresence } from "framer-motion";
 import type { CSSProperties, ReactNode } from "react";
 import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
 import { DetailView } from "./legal-entity-detail-view";
 import { DefaultConfirmView, DeleteConfirmView, ListView } from "./legal-entity-detail-views";
 import { View } from "./legal-entity-flow";
+import { type FrameSize, frameScrolls, frameStyle, PaneFrame, Sizing } from "./legal-entity-frame";
 import { EmptyState, SavingView } from "./legal-entity-primitives";
 import type { LegalEntityRecord } from "./legal-entity-schema";
 import { isWizardStep, type WizardFlow, WizardStep } from "./legal-entity-steps";
 import { type ElvixLegalEntitiesResult, ReturnTo, useLegalEntities } from "./use-legal-entities";
-import { FadePane } from "./wizard-panes";
 
 export type { ElvixLegalEntitiesResult };
 
-export type ElvixLegalEntitiesProps = {
+/** The manager's fixed frame without a `height`: clamped to the viewport. */
+const MANAGER_FRAME: FrameSize = { height: "min(540px, 66dvh)", minHeight: 340, maxHeight: 700 };
+
+export type ElvixLegalEntitiesProps = FrameSize & {
   /** Render inside an <ElvixCard>. Default true; pass false for bare (no chrome). */
   card?: boolean;
-  /** Fixed frame height. Defaults to 580. */
-  height?: number;
-  minHeight?: number;
-  maxHeight?: number;
+  /**
+   * `"fixed"` (default): one height for every pane, `height` (default
+   * `min(540px, 66dvh)`, 340–700) bounded by `minHeight`/`maxHeight`.
+   * `"flexible"`: as tall as each pane, capped by `maxHeight` if given.
+   */
+  sizing?: Sizing;
   /** Frame width. Defaults to "100%". */
   width?: number | string;
   /** Optional callback fired after a successful save / delete. */
@@ -68,43 +77,36 @@ export function ElvixLegalEntities({
   minHeight,
   maxHeight,
   width = "100%",
+  sizing = Sizing.FIXED,
   onChange,
   onResult,
   card,
 }: ElvixLegalEntitiesProps) {
   const t = useT();
   const flow = useLegalEntities({ onChange, onResult });
-  // Default height clamps to the viewport so the card never overflows the
-  // AccountStage chrome on shorter screens; an explicit `height` still wins.
-  const frameStyle: CSSProperties = {
-    width: typeof width === "number" ? `${width}px` : width,
-    ...(height
-      ? { height: `${height}px` }
-      : {
-          height: "min(540px, 66dvh)",
-          minHeight: minHeight ?? 340,
-          maxHeight: maxHeight ?? 700,
-        }),
-  };
+  const size = { height, minHeight, maxHeight };
+  // The default height clamps to the viewport so the card never overflows
+  // the AccountStage chrome on shorter screens; an explicit `height` wins.
+  const style: CSSProperties = { width, ...frameStyle(sizing, size, MANAGER_FRAME) };
 
   return (
-    <div style={frameStyle} className="mx-auto">
-      <MaybeCard card={card} className="h-full">
-        <div className="relative h-full overflow-hidden">
-          <AnimatePresence initial={false}>
-            {flow.loading ? (
-              <FadePane key="loading">
-                <div className="grid h-full place-items-center text-fg-3 text-sm">
-                  {t("common.loading")}
-                </div>
-              </FadePane>
-            ) : (
-              <FadePane key={flow.view} fadeEdges={flow.view === View.LIST}>
-                {isWizardStep(flow.view) ? <WizardStep flow={flow} /> : <ManagePane flow={flow} />}
-              </FadePane>
-            )}
-          </AnimatePresence>
-        </div>
+    <div style={style} className={`mx-auto ${frameScrolls(sizing, size) ? "overflow-y-auto" : ""}`}>
+      <MaybeCard card={card} className={sizing === Sizing.FIXED ? "h-full" : undefined}>
+        <PaneFrame
+          sizing={sizing}
+          paneKey={flow.loading ? "loading" : flow.view}
+          fadeEdges={flow.view === View.LIST}
+        >
+          {flow.loading ? (
+            <div className="grid h-full min-h-24 place-items-center text-fg-3 text-sm">
+              {t("common.loading")}
+            </div>
+          ) : isWizardStep(flow.view) ? (
+            <WizardStep flow={flow} />
+          ) : (
+            <ManagePane flow={flow} />
+          )}
+        </PaneFrame>
       </MaybeCard>
     </div>
   );

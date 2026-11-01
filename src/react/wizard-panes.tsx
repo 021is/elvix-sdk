@@ -8,6 +8,10 @@
  *               the right). Username, sessions, deactivate, leave.
  *   FadePane  — cross-fade with a slight rise and blur, stacked absolutely so
  *               the card keeps its height. Languages, region, address book.
+ *   FlowPane  — the same rise in normal flow, opacity and transform only, so
+ *               the frame grows with each pane (the legal entities'
+ *               `sizing="flexible"`, 0.18). Its `<AnimatePresence>` takes
+ *               `mode="wait"`: two panes in flow at once would stack.
  *
  * Both are children of an `<AnimatePresence>` in the host component; give
  * each a stable `key`.
@@ -68,6 +72,27 @@ export function FadePane({
       transition={fadeTransition}
       className="absolute inset-0 overflow-y-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       style={fadeEdges ? { maskImage: FADE_MASK, WebkitMaskImage: FADE_MASK } : undefined}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+const flowVariants = {
+  enter: { opacity: 0, y: 6 },
+  center: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -4 },
+};
+
+export function FlowPane({ children }: { children: ReactNode }) {
+  return (
+    <motion.div
+      variants={flowVariants}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={fadeTransition}
+      className="px-1"
     >
       {children}
     </motion.div>

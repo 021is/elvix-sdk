@@ -153,6 +153,8 @@ export {
   useUserRoles,
   useUserScopes,
 } from "./hooks";
+// How tall the legal-entity components are: "fixed" or "flexible" (0.18).
+export { Sizing as ElvixLegalEntitySizing } from "./legal-entity-frame";
 // What a legal entity holds, the picker's `onPick` payload (0.18).
 export {
   LegalEntityPurpose,

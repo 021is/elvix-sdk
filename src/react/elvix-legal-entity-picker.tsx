@@ -31,10 +31,10 @@
  * (`src/styles/rows.css`, `src/styles/fields.css`).
  */
 
-import { AnimatePresence } from "framer-motion";
 import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
 import { FlowKind, needsBusinessSteps, View } from "./legal-entity-flow";
+import { type FrameSize, frameStyle, PaneFrame, Sizing } from "./legal-entity-frame";
 import { PickerList, PickerLoadFailed } from "./legal-entity-picker-views";
 import { SavingView } from "./legal-entity-primitives";
 import {
@@ -50,7 +50,6 @@ import {
   useLegalEntityPicks,
 } from "./use-legal-entity-picks";
 import { useStableCallback } from "./use-stable-callback";
-import { FadePane } from "./wizard-panes";
 
 export type { ElvixLegalEntityPickerResult, LegalEntityPick };
 
@@ -72,10 +71,17 @@ export type ElvixLegalEntityPickerProps = {
   onResult?: (result: ElvixLegalEntityPickerResult) => void;
   /** Render inside an <ElvixCard>. Default true; false to sit in the host's own pane. */
   card?: boolean;
-};
+  /**
+   * `"fixed"`: the list and every add step share one height (`height`,
+   * default `min(520px, 70dvh)`, capped by `maxHeight`), scrolling inside.
+   * `"flexible"`: as tall as each pane, capped by `maxHeight` if given.
+   * Defaults to `"fixed"` in a card, `"flexible"` with `card={false}`.
+   */
+  sizing?: Sizing;
+} & FrameSize;
 
-/** The wizard's frame: its panes stack absolutely and need a height. */
-const WIZARD_FRAME = { height: "min(520px, 70dvh)", minHeight: 380 } as const;
+/** The fixed frame without a `height`. */
+const PICKER_FRAME: FrameSize = { height: "min(520px, 70dvh)" };
 
 export function ElvixLegalEntityPicker({
   types,
@@ -84,6 +90,10 @@ export function ElvixLegalEntityPicker({
   onPick,
   onResult,
   card,
+  sizing = card === false ? Sizing.FLEXIBLE : Sizing.FIXED,
+  height,
+  minHeight,
+  maxHeight,
 }: ElvixLegalEntityPickerProps) {
   const t = useT();
   const report = useStableCallback(onResult);
@@ -110,29 +120,37 @@ export function ElvixLegalEntityPicker({
     onResult,
   });
   const businessOnly = Boolean(types?.length) && (types ?? []).every(needsBusinessSteps);
+  const wizard = isWizardOpen(flow);
+  const style = frameStyle(sizing, { height, minHeight, maxHeight }, PICKER_FRAME);
 
   return (
     <MaybeCard card={card}>
-      {flow.loading ? (
-        <div className="grid min-h-24 place-items-center text-fg-3 text-sm">
-          {t("common.loading")}
-        </div>
-      ) : isWizardOpen(flow) ? (
-        <WizardFrame flow={flow} types={types} />
-      ) : (
-        <div className="flex flex-col gap-2">
-          {flow.loadFailed && <PickerLoadFailed onRetry={flow.reload} />}
-          <PickerList
-            entities={offered}
-            pickedId={picks.pickedId}
-            pendingId={picks.pendingId}
-            error={picks.error}
-            addLabel={t(businessOnly ? "legalEntities.pickerAddCompany" : "legalEntities.addCta")}
-            onPick={picks.pick}
-            onAdd={flow.openAdd}
-          />
-        </div>
-      )}
+      <PaneFrame
+        sizing={sizing}
+        style={style}
+        paneKey={flow.loading ? "loading" : wizard ? flow.view : "list"}
+      >
+        {flow.loading ? (
+          <div className="grid h-full min-h-24 place-items-center text-fg-3 text-sm">
+            {t("common.loading")}
+          </div>
+        ) : wizard ? (
+          <WizardPane flow={flow} types={types} />
+        ) : (
+          <div className="flex flex-col gap-2">
+            {flow.loadFailed && <PickerLoadFailed onRetry={flow.reload} />}
+            <PickerList
+              entities={offered}
+              pickedId={picks.pickedId}
+              pendingId={picks.pendingId}
+              error={picks.error}
+              addLabel={t(businessOnly ? "legalEntities.pickerAddCompany" : "legalEntities.addCta")}
+              onPick={picks.pick}
+              onAdd={flow.openAdd}
+            />
+          </div>
+        )}
+      </PaneFrame>
     </MaybeCard>
   );
 }
@@ -141,19 +159,11 @@ function isWizardOpen(flow: WizardFlow): boolean {
   return isWizardStep(flow.view) || flow.view === View.SAVING;
 }
 
-function WizardFrame({ flow, types }: { flow: WizardFlow; types?: LegalEntityType[] }) {
+function WizardPane({ flow, types }: { flow: WizardFlow; types?: LegalEntityType[] }) {
   const t = useT();
-  return (
-    <div style={WIZARD_FRAME} className="relative overflow-hidden">
-      <AnimatePresence initial={false}>
-        <FadePane key={flow.view}>
-          {flow.view === View.SAVING ? (
-            <SavingView label={t("legalEntities.savingEntityLabel")} />
-          ) : (
-            <WizardStep flow={flow} types={types} />
-          )}
-        </FadePane>
-      </AnimatePresence>
-    </div>
+  return flow.view === View.SAVING ? (
+    <SavingView label={t("legalEntities.savingEntityLabel")} />
+  ) : (
+    <WizardStep flow={flow} types={types} />
   );
 }
