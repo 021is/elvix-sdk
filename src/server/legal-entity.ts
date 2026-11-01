@@ -15,7 +15,7 @@ const DEFAULT_BASE_URL = "https://elvix.is";
 export type GetLegalEntityArgs = {
   /** Your application's API key (Console → API credentials). Server only. */
   apiKey: string;
-  /** Your application's internal id or its public clientId. */
+  /** Your application's internal id (Console → API credentials), not its clientId. */
   applicationId: string;
   /** The elvix user id (the token's `sub`, `verifyElvixToken`'s `user.id`). */
   userId: string;
@@ -45,9 +45,19 @@ function failureOf(status: number): ElvixLegalEntityResult {
   return { ok: false, error: `http_${status}` };
 }
 
+/**
+ * An id is a plain token. The entity id comes from a browser, and
+ * `encodeURIComponent` leaves `.` and `..` alone, so `..` would move the keyed
+ * request up a level to another route; it is refused before any request.
+ */
+const ID = /^[A-Za-z0-9_-]{1,128}$/;
+
 export async function getElvixLegalEntity(
   args: GetLegalEntityArgs,
 ): Promise<ElvixLegalEntityResult> {
+  if (![args.applicationId, args.userId, args.entityId].every((id) => ID.test(id))) {
+    return { ok: false, error: "invalid_id" };
+  }
   const url = `${args.baseUrl ?? DEFAULT_BASE_URL}/${path(args)}`;
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), args.timeoutMs ?? 5000);

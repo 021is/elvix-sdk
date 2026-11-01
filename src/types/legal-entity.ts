@@ -77,7 +77,8 @@ export type ElvixLegalEntityResult =
        * `not_found`: never picked for your app, revoked, or deleted, all
        * answered alike so a key cannot probe for entities. `unauthorized`:
        * the API key is wrong or lacks the app. `network`: elvix was not
-       * reached in time. Anything else is `http_<status>`.
+       * reached in time. `invalid_id`: an id that is not a plain token (no
+       * request was made). Anything else is `http_<status>`.
        */
-      error: "not_found" | "unauthorized" | "network" | `http_${number}`;
+      error: "not_found" | "unauthorized" | "network" | "invalid_id" | `http_${number}`;
     };
