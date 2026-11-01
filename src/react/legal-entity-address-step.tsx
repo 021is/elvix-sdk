@@ -125,5 +125,5 @@ function InvoiceDeliveryStep({ flow }: { flow: WizardFlow }) {
       />
     );
   }
-  return <EInvoiceView draft={draft} setField={setField} {...nav} />;
+  return <EInvoiceView draft={draft} setField={setField} {...nav} allFields={flow.editing} />;
 }
