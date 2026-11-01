@@ -1925,6 +1925,39 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "The default entity is shared across every app you sign in to. Switching it here updates the auto-pick everywhere at once."
       },
+      "vatIdTitle": {
+        "other": "What's the VAT ID?"
+      },
+      "vatIdSubtitle": {
+        "other": "We check it with the tax authority and fill in what it knows."
+      },
+      "vatIdLabel": {
+        "other": "VAT ID"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Which country issued it?"
+      },
+      "noVatIdCta": {
+        "other": "No VAT ID"
+      },
+      "addressGapsHint": {
+        "other": "An invoice needs the full address. Add what's missing."
+      },
+      "pickerAddCompany": {
+        "other": "Add a company"
+      },
+      "pickerGroupLabel": {
+        "other": "Choose a legal entity"
+      },
+      "pickerGrantFailed": {
+        "other": "Couldn't choose this one: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "This picker needs the app's clientId on ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Couldn't load your legal entities."
+      },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "The default entity is shared across every app you sign in to. Removing it means no entity is pre-selected anywhere."
       }

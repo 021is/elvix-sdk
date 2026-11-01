@@ -87,10 +87,10 @@ const legalEntityShape = z.object({
       "We don't validate tax IDs for this country yet",
     ),
   taxId: z.string().trim().max(40).optional().nullable(),
+  // The VAT ID only. Its verdict (`vatIdValidation` and the rest) is elvix's
+  // own, asked of the authority when the VAT ID is saved (0.18): a browser
+  // that sends one is ignored, since zod drops keys the shape does not name.
   vatId: z.string().trim().max(40).optional().nullable(),
-  vatIdValidation: z.enum(TAX_VALIDATION_LEVELS).optional(),
-  vatIdValidatedAt: z.string().datetime().optional().nullable(),
-  vatIdValidatedName: z.string().trim().max(240).optional().nullable(),
 
   registrationNumber: z.string().trim().max(80).optional().nullable(),
   registrationBody: z.string().trim().max(180).optional().nullable(),
@@ -170,13 +170,26 @@ function checkRegistration(val: Shape, report: Report, registered: boolean): voi
   }
 }
 
+/** An invoice to a business carries its full address (EU VAT Directive art.
+ *  226(5)): street, postal code, city and country, so a business cannot be
+ *  saved without them. */
+function checkBusinessAddress(val: Shape, report: Report, registered: boolean): void {
+  if (!registered) return;
+  const parts = ["addressLine1", "addressPostalCode", "addressCity", "addressCountry"] as const;
+  for (const part of parts) {
+    if (!val[part]?.trim()) report(part, "Required for an invoice");
+  }
+}
+
 export const legalEntitySchema = legalEntityShape.superRefine((val, ctx) => {
   const report: Report = (path, message) => ctx.addIssue({ code: "custom", path: [path], message });
   // LEGACY: spine-lint-disable-next-line spine/enum-over-string
   if (val.type === "individual" || val.type === "sole_prop") checkNaturalPerson(val, report);
   checkTaxIds(val, report);
   // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  checkRegistration(val, report, val.type === "sole_prop" || val.type === "company");
+  const registered = val.type === "sole_prop" || val.type === "company";
+  checkRegistration(val, report, registered);
+  checkBusinessAddress(val, report, registered);
 });
 
 export type LegalEntityInput = z.infer<typeof legalEntitySchema>;
@@ -189,12 +202,29 @@ export type LegalEntityInput = z.infer<typeof legalEntitySchema>;
 export const legalEntityPatchSchema = legalEntityShape.partial();
 export type LegalEntityPatchInput = z.infer<typeof legalEntityPatchSchema>;
 
+/**
+ * The VAT check elvix ran on save: set by the server only, never input. The
+ * two newest fields are optional, so a host on an older elvix gets
+ * `undefined` rather than a type that lies.
+ */
+export type VatVerdict = {
+  vatIdValidation: TaxValidationLevel;
+  vatIdValidatedAt: string | null;
+  /** The authority's registered name; null when it shares none (VIES for DE). */
+  vatIdValidatedName: string | null;
+  /** The authority's registered address, one line, when it shares one. */
+  vatIdValidatedAddress?: string | null;
+  /** VIES's consultation number; only issued when a requester VAT ID is sent. */
+  vatIdRequestId?: string | null;
+};
+
 /** Server-emitted record. Adds audit fields, normalises dates to ISO. */
 // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-export type LegalEntityRecord = Omit<LegalEntityInput, "dateOfBirth" | "registeredSince"> & {
-  id: string;
-  dateOfBirth: string | null;
-  registeredSince: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
+export type LegalEntityRecord = Omit<LegalEntityInput, "dateOfBirth" | "registeredSince"> &
+  VatVerdict & {
+    id: string;
+    dateOfBirth: string | null;
+    registeredSince: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };

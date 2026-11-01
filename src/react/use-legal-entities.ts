@@ -1,18 +1,21 @@
 "use client";
 
 /**
- * State and requests behind `<ElvixLegalEntities>`: the user's entities, the
- * pane showing, the draft, and every write. Step order comes from
- * `legal-entity-flow.ts`, step data from `legal-entity-payload.ts`.
+ * State and requests behind `<ElvixLegalEntities>` and the add wizard inside
+ * `<ElvixLegalEntityPicker>`: the user's entities, the pane showing, the
+ * draft, and every write. Step order comes from `legal-entity-flow.ts`, step
+ * data from `legal-entity-payload.ts`, moving between steps from
+ * `use-legal-entity-nav.ts`.
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useElvixContext } from "./elvix-provider";
-import { nextView, previousView, View } from "./legal-entity-flow";
-import { draftToEntityInput, prefillFrom, stepPatch, stepReady } from "./legal-entity-payload";
+import { View } from "./legal-entity-flow";
+import { draftToEntityInput, prefillFrom } from "./legal-entity-payload";
 import type { LegalEntityInput, LegalEntityRecord, LegalEntityType } from "./legal-entity-schema";
 import { type Outcome, profileCollection } from "./profile-request";
 import { useLegalEntityDraft } from "./use-legal-entity-draft";
+import { useLegalEntityNav } from "./use-legal-entity-nav";
 import { useStableCallback } from "./use-stable-callback";
 
 export type ElvixLegalEntitiesResult =
@@ -30,6 +33,10 @@ type DefaultIntent = { id: string; setting: boolean; returnTo: ReturnTo };
 type Options = {
   onChange?: (entities: LegalEntityRecord[]) => void;
   onResult?: (result: ElvixLegalEntitiesResult) => void;
+  /** The types the add wizard offers; all three when omitted. */
+  types?: readonly LegalEntityType[];
+  /** The entity the add wizard just saved, read back from elvix. */
+  onCreated?: (entity: LegalEntityRecord) => void;
 };
 
 const restingView = (count: number): View => (count === 0 ? View.EMPTY : View.LIST);
@@ -48,14 +55,19 @@ function useEntityList(
 ) {
   const [entities, setEntities] = useState<LegalEntityRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  /** The last read failed: shown, never an empty list that looks like none. */
+  const [loadFailed, setLoadFailed] = useState(false);
+  /** The list as read, or `null` when it could not be. */
   const refresh = useCallback(
-    async (signal?: AbortSignal) => {
+    async (signal?: AbortSignal): Promise<LegalEntityRecord[] | null> => {
       const list = await api.list("", signal);
-      if (signal?.aborted) return;
+      if (signal?.aborted) return null;
       setLoading(false);
-      if (!list) return;
+      setLoadFailed(!list);
+      if (!list) return null;
       setEntities(list);
       onLoaded(list);
+      return list;
     },
     [api, onLoaded],
   );
@@ -64,10 +76,10 @@ function useEntityList(
     void refresh(controller.signal);
     return () => controller.abort();
   }, [refresh]);
-  return { entities, setEntities, loading, refresh };
+  return { entities, setEntities, loading, loadFailed, refresh };
 }
 
-export function useLegalEntities({ onChange, onResult }: Options) {
+export function useLegalEntities({ onChange, onResult, types, onCreated }: Options) {
   const { baseUrl } = useElvixContext();
   const api = useMemo(
     () => profileCollection<LegalEntityRecord, LegalEntityInput>(baseUrl, "entities"),
@@ -83,7 +95,8 @@ export function useLegalEntities({ onChange, onResult }: Options) {
     },
     [emitChange],
   );
-  const { entities, setEntities, loading, refresh } = useEntityList(api, onLoaded);
+  const { entities, setEntities, loading, loadFailed, refresh } = useEntityList(api, onLoaded);
+  const emitCreated = useStableCallback(onCreated);
   const draftApi = useLegalEntityDraft();
   const { draft } = draftApi;
   const [error, setError] = useState<string | null>(null);
@@ -118,35 +131,37 @@ export function useLegalEntities({ onChange, onResult }: Options) {
     if (!input) return;
     setError(null);
     setView(View.SAVING);
+    const known = new Set(entities.map((e) => e.id));
     const out = await api.create(input);
     if (!out.ok) {
       report(out, "save_failed", count);
       setView(View.CONTACT_CHOICE);
       return;
     }
-    await refresh();
+    const list = await refresh();
     report(out, "save_failed", count + 1);
     resetWizard();
+    // The one id the list did not hold before is the entity just saved.
+    const created = list?.find((e) => !known.has(e.id));
+    if (created) emitCreated(created);
   };
 
-  /** Leaves `step` forwards: PATCHes it when editing, else the next pane. */
-  const advance = (step: View) => {
-    if (!stepReady(step, draft)) return;
-    const next = nextView(step, { type: draft.type, hasVatId: draft.vatId.trim() !== "" });
-    const partial = stepPatch(step, draft);
-    if (editing && inspectingId && partial && next !== View.VERIFYING_TAX_ID) {
-      void patch(inspectingId, partial);
-    } else if (next === View.SAVING) {
-      void commit();
-    } else if (next) {
-      setView(next);
-    }
-  };
+  const nav = useLegalEntityNav({
+    draftApi,
+    types,
+    editingId: editing ? inspectingId : null,
+    setView,
+    restingView: () => restingView(count),
+    resetWizard,
+    patch: (id, partial) => void patch(id, partial),
+    commit: () => void commit(),
+  });
 
   return {
     view,
     setView,
     loading,
+    loadFailed,
     entities,
     error,
     editing,
@@ -155,27 +170,13 @@ export function useLegalEntities({ onChange, onResult }: Options) {
     deleting: find(deletingId),
     defaultIntent,
     defaultEntity: find(defaultIntent?.id),
-    advance,
+    ...nav,
     commit: () => void commit(),
-    /** Back from an add-flow step; while editing, back to the detail view. */
-    back: (step: View) => {
-      if (editing) {
-        resetWizard();
-        setView(View.DETAIL);
-        return;
-      }
-      const previous = previousView(step, draft.type);
-      if (!previous) resetWizard();
-      setView(previous ?? restingView(count));
-    },
+    /** Reads the list again, after a failed read. */
+    reload: () => void refresh(),
     openAdd: () => {
-      resetWizard();
       setError(null);
-      setView(View.TYPE_CHOICE);
-    },
-    pickType: (type: LegalEntityType) => {
-      draftApi.setField("type", type);
-      setView(View.LEGAL_NAME);
+      nav.openAdd();
     },
     openDetail: (id: string) => {
       setInspectingId(id);

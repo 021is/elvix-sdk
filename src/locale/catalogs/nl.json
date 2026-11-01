@@ -1924,6 +1924,39 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "De standaardentiteit wordt gedeeld met elke app waar u zich bij aanmeldt. Door het hier te wijzigen, wordt de automatische keuze overal tegelijk bijgewerkt."
       },
+      "vatIdTitle": {
+        "other": "Wat is het btw-nummer?"
+      },
+      "vatIdSubtitle": {
+        "other": "We controleren het bij de belastingdienst en vullen in wat die weet."
+      },
+      "vatIdLabel": {
+        "other": "Btw-nummer"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Welk land heeft het uitgegeven?"
+      },
+      "noVatIdCta": {
+        "other": "Geen btw-nummer"
+      },
+      "addressGapsHint": {
+        "other": "Een factuur heeft het volledige adres nodig. Vul aan wat ontbreekt."
+      },
+      "pickerAddCompany": {
+        "other": "Bedrijf toevoegen"
+      },
+      "pickerGroupLabel": {
+        "other": "Kies een entiteit"
+      },
+      "pickerGrantFailed": {
+        "other": "Kon deze niet kiezen: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Deze keuzelijst heeft de clientId van de app op ElvixProvider nodig."
+      },
+      "pickerLoadFailed": {
+        "other": "Uw entiteiten konden niet worden geladen."
+      },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "De standaardentiteit wordt gedeeld met elke app waar u zich bij aanmeldt. Door het te verwijderen, wordt nergens een entiteit vooraf geselecteerd."
       }

@@ -14,16 +14,13 @@ type Patch = Partial<LegalEntityInput>;
 
 const orNull = (s: string | null | undefined) => s?.trim() || null;
 
-/** The VAT fields, with the validation level the user actually reached. */
+/**
+ * The tax identifiers. Never the VAT check's verdict: elvix asks the
+ * authority itself when it saves a VAT ID (0.18). Until then this sent the
+ * level the browser said it reached, which anyone could set to "live".
+ */
 function vatFields(d: LegalEntityDraft): Patch {
-  const level = d.vatValidation.level;
-  return {
-    taxId: orNull(d.taxId),
-    vatId: orNull(d.vatId),
-    vatIdValidation: level === "live" || level === "format" ? level : "none",
-    vatIdValidatedAt: level === "live" ? new Date().toISOString() : null,
-    vatIdValidatedName: d.vatValidation.name,
-  };
+  return { taxId: orNull(d.taxId), vatId: orNull(d.vatId) };
 }
 
 function addressFields(a: PlaceDetails | null, line2: string): Patch {
@@ -77,6 +74,8 @@ export function stepPatch(step: View, draft: LegalEntityDraft): Patch | null {
 /** Whether `step` has what it needs to be left forwards. */
 export function stepReady(step: View, d: LegalEntityDraft): boolean {
   switch (step) {
+    case View.VAT_ID:
+      return d.withoutVatId || (d.vatId.trim() !== "" && d.taxCountry !== "");
     case View.LEGAL_NAME:
       return d.legalName.trim() !== "";
     case View.REGISTRATION:
@@ -147,6 +146,7 @@ export function prefillFrom(step: View, e: LegalEntityRecord): Partial<LegalEnti
           name: e.vatIdValidatedName ?? null,
           authority: null,
           normalisedId: e.vatId ?? "",
+          address: e.vatIdValidatedAddress ?? null,
         },
       };
     case View.REGISTRATION:

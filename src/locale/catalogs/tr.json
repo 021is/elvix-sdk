@@ -1924,6 +1924,39 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "Varsayılan tüzel kişi, oturum açtığınız her uygulama arasında paylaşılır. Burada değiştirmek otomatik seçimi her yerde aynı anda günceller."
       },
+      "vatIdTitle": {
+        "other": "KDV numarası nedir?"
+      },
+      "vatIdSubtitle": {
+        "other": "Vergi idaresiyle kontrol eder, bildiklerini doldururuz."
+      },
+      "vatIdLabel": {
+        "other": "KDV numarası"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Hangi ülke verdi?"
+      },
+      "noVatIdCta": {
+        "other": "KDV numarası yok"
+      },
+      "addressGapsHint": {
+        "other": "Bir fatura tam adres gerektirir. Eksik olanı ekleyin."
+      },
+      "pickerAddCompany": {
+        "other": "Şirket ekle"
+      },
+      "pickerGroupLabel": {
+        "other": "Bir tüzel kişi seçin"
+      },
+      "pickerGrantFailed": {
+        "other": "Seçilemedi: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Bu seçici, ElvixProvider üzerinde uygulamanın clientId değerine ihtiyaç duyar."
+      },
+      "pickerLoadFailed": {
+        "other": "Tüzel kişileriniz yüklenemedi."
+      },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Varsayılan tüzel kişi, oturum açtığınız her uygulama arasında paylaşılır. Kaldırmak, hiçbir yerde önceden tüzel kişi seçilmeyeceği anlamına gelir."
       }

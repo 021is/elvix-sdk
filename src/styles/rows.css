@@ -6,7 +6,7 @@
 
      --elvix-row            fill
      --elvix-row-hover      fill under the pointer
-     --elvix-picked         fill of the picked row (`aria-checked="true"`)
+     --elvix-picked         fill of the picked row (`aria-pressed="true"`)
      --elvix-picked-text    the picked row's title (`.elvix-row-title`)
      --elvix-radius         corner radius (default 12px)
      --elvix-focus          keyboard focus ring (default: the brand)
@@ -34,15 +34,16 @@
   box-shadow: 0 0 0 2px var(--elvix-focus, var(--elvix-primary, var(--elvix-fg-2)));
 }
 
-.elvix-row[aria-checked="true"],
-.elvix-row[aria-checked="true"]:hover {
+.elvix-row[aria-pressed="true"],
+.elvix-row[aria-pressed="true"]:hover {
   background-color: var(
     --elvix-picked,
     color-mix(in srgb, var(--elvix-primary, var(--elvix-fg-1)) 10%, transparent)
   );
 }
 
-.elvix-row[aria-checked="true"] .elvix-row-title {
+.elvix-row[aria-pressed="true"] .elvix-row-title,
+.elvix-row.elvix-row-title[aria-pressed="true"] {
   color: var(--elvix-picked-text, var(--elvix-primary, var(--elvix-fg-1)));
 }
 

@@ -1924,6 +1924,39 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "Il soggetto predefinito è condiviso tra tutte le app a cui accedi. Cambiarlo qui aggiorna la scelta automatica ovunque in una sola volta."
       },
+      "vatIdTitle": {
+        "other": "Qual è la partita IVA?"
+      },
+      "vatIdSubtitle": {
+        "other": "La verifichiamo con l'autorità fiscale e compiliamo ciò che conosce."
+      },
+      "vatIdLabel": {
+        "other": "Partita IVA"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Quale paese l'ha rilasciata?"
+      },
+      "noVatIdCta": {
+        "other": "Nessuna partita IVA"
+      },
+      "addressGapsHint": {
+        "other": "Una fattura richiede l'indirizzo completo. Aggiungi ciò che manca."
+      },
+      "pickerAddCompany": {
+        "other": "Aggiungi un'azienda"
+      },
+      "pickerGroupLabel": {
+        "other": "Scegli un soggetto"
+      },
+      "pickerGrantFailed": {
+        "other": "Impossibile sceglierlo: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Questo selettore richiede il clientId dell'app su ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Impossibile caricare i tuoi soggetti."
+      },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Il soggetto predefinito è condiviso tra tutte le app a cui accedi. Rimuoverlo significa che nessun soggetto sarà preselezionato da nessuna parte."
       }

@@ -27,6 +27,8 @@ export type TaxIdValidationState = {
   name: string | null;
   authority: string | null;
   normalisedId: string;
+  /** The authority's registered address, one line (0.18; older elvix: absent). */
+  address?: string | null;
 };
 
 export type ElvixTaxIdInputProps = {

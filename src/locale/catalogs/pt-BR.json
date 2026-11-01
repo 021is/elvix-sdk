@@ -1925,6 +1925,39 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "A pessoa jurídica padrão é compartilhada entre todos os apps em que você entra. Trocá-la aqui atualiza a escolha automática em todos os lugares de uma vez."
       },
+      "vatIdTitle": {
+        "other": "Qual é o número de VAT?"
+      },
+      "vatIdSubtitle": {
+        "other": "Verificamos com a autoridade fiscal e preenchemos o que ela sabe."
+      },
+      "vatIdLabel": {
+        "other": "Número de VAT"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Qual país o emitiu?"
+      },
+      "noVatIdCta": {
+        "other": "Sem número de VAT"
+      },
+      "addressGapsHint": {
+        "other": "Uma fatura precisa do endereço completo. Adicione o que falta."
+      },
+      "pickerAddCompany": {
+        "other": "Adicionar uma empresa"
+      },
+      "pickerGroupLabel": {
+        "other": "Escolha uma pessoa jurídica"
+      },
+      "pickerGrantFailed": {
+        "other": "Não foi possível escolher: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Este seletor precisa do clientId do app no ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Não foi possível carregar suas pessoas jurídicas."
+      },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "A pessoa jurídica padrão é compartilhada entre todos os apps em que você entra. Removê-la significa que nenhuma pessoa jurídica fica pré-selecionada em lugar nenhum."
       }

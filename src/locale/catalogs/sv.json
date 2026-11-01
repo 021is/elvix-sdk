@@ -1925,6 +1925,39 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "Standardpersonen delas mellan varje app du loggar in på. Att byta den här uppdaterar det automatiska valet överallt på en gång."
       },
+      "vatIdTitle": {
+        "other": "Vad är momsregistreringsnumret?"
+      },
+      "vatIdSubtitle": {
+        "other": "Vi kontrollerar det hos skattemyndigheten och fyller i det som är känt."
+      },
+      "vatIdLabel": {
+        "other": "Momsregistreringsnummer"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Vilket land utfärdade det?"
+      },
+      "noVatIdCta": {
+        "other": "Inget momsnummer"
+      },
+      "addressGapsHint": {
+        "other": "En faktura behöver hela adressen. Lägg till det som saknas."
+      },
+      "pickerAddCompany": {
+        "other": "Lägg till ett företag"
+      },
+      "pickerGroupLabel": {
+        "other": "Välj en juridisk person"
+      },
+      "pickerGrantFailed": {
+        "other": "Kunde inte välja den: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Den här väljaren behöver appens clientId på ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Dina juridiska personer kunde inte läsas in."
+      },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Standardpersonen delas mellan varje app du loggar in på. Att ta bort den innebär att ingen juridisk person är förvald någonstans."
       }

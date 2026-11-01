@@ -1924,6 +1924,39 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "A entidade predefinida é partilhada por todas as aplicações em que inicia sessão. Mudá-la aqui atualiza a escolha automática em todo o lado de uma vez."
       },
+      "vatIdTitle": {
+        "other": "Qual é o NIF de IVA?"
+      },
+      "vatIdSubtitle": {
+        "other": "Verificamo-lo junto da autoridade tributária e preenchemos o que ela sabe."
+      },
+      "vatIdLabel": {
+        "other": "NIF de IVA"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Que país o emitiu?"
+      },
+      "noVatIdCta": {
+        "other": "Sem NIF de IVA"
+      },
+      "addressGapsHint": {
+        "other": "Uma fatura precisa da morada completa. Acrescente o que falta."
+      },
+      "pickerAddCompany": {
+        "other": "Adicionar uma empresa"
+      },
+      "pickerGroupLabel": {
+        "other": "Escolha uma entidade"
+      },
+      "pickerGrantFailed": {
+        "other": "Não foi possível escolher: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Este seletor precisa do clientId da aplicação no ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Não foi possível carregar as suas entidades."
+      },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "A entidade predefinida é partilhada por todas as aplicações em que inicia sessão. Removê-la significa que nenhuma entidade será pré-selecionada em lado nenhum."
       }

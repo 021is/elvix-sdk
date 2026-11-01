@@ -1931,6 +1931,39 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "Основное лицо общее для всех приложений, в которые вы входите. Переключение здесь обновляет автоматический выбор везде сразу."
       },
+      "vatIdTitle": {
+        "other": "Какой у вас номер плательщика НДС?"
+      },
+      "vatIdSubtitle": {
+        "other": "Мы проверим его в налоговой службе и заполним то, что ей известно."
+      },
+      "vatIdLabel": {
+        "other": "Номер НДС"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Какая страна его выдала?"
+      },
+      "noVatIdCta": {
+        "other": "Нет номера НДС"
+      },
+      "addressGapsHint": {
+        "other": "Для счёта нужен полный адрес. Добавьте недостающее."
+      },
+      "pickerAddCompany": {
+        "other": "Добавить компанию"
+      },
+      "pickerGroupLabel": {
+        "other": "Выберите лицо"
+      },
+      "pickerGrantFailed": {
+        "other": "Не удалось выбрать: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Этому выбору нужен clientId приложения в ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Не удалось загрузить ваши лица."
+      },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Основное лицо общее для всех приложений, в которые вы входите. Если убрать его, ни одно лицо не будет выбрано заранее нигде."
       }

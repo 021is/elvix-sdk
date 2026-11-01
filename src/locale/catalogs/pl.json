@@ -1931,6 +1931,39 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "Domyślny podmiot jest współdzielony pomiędzy wszystkimi aplikacjami, do których się logujesz. Zmiana tutaj aktualizuje automatyczny wybór wszędzie naraz."
       },
+      "vatIdTitle": {
+        "other": "Jaki jest numer VAT UE?"
+      },
+      "vatIdSubtitle": {
+        "other": "Sprawdzamy go w urzędzie skarbowym i uzupełniamy to, co wiadomo."
+      },
+      "vatIdLabel": {
+        "other": "Numer VAT UE"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Który kraj go wydał?"
+      },
+      "noVatIdCta": {
+        "other": "Brak numeru VAT"
+      },
+      "addressGapsHint": {
+        "other": "Faktura wymaga pełnego adresu. Uzupełnij brakujące dane."
+      },
+      "pickerAddCompany": {
+        "other": "Dodaj firmę"
+      },
+      "pickerGroupLabel": {
+        "other": "Wybierz podmiot"
+      },
+      "pickerGrantFailed": {
+        "other": "Nie udało się wybrać: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Ten wybór wymaga clientId aplikacji w ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Nie udało się wczytać Twoich podmiotów."
+      },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Domyślny podmiot jest współdzielony pomiędzy wszystkimi aplikacjami, do których się logujesz. Usunięcie oznacza, że nigdzie nie będzie wstępnie wybranego podmiotu."
       }

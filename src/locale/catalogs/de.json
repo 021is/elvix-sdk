@@ -1925,6 +1925,39 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "Der Standard-Rechtsträger wird über alle Apps geteilt, in die Sie sich einloggen. Wenn Sie ihn hier ändern, wird die Auto-Auswahl überall gleichzeitig aktualisiert."
       },
+      "vatIdTitle": {
+        "other": "Wie lautet die USt-IdNr.?"
+      },
+      "vatIdSubtitle": {
+        "other": "Wir prüfen sie bei der Steuerbehörde und füllen aus, was dort bekannt ist."
+      },
+      "vatIdLabel": {
+        "other": "USt-IdNr."
+      },
+      "vatIdCountryNeeded": {
+        "other": "Welches Land hat sie vergeben?"
+      },
+      "noVatIdCta": {
+        "other": "Keine USt-IdNr."
+      },
+      "addressGapsHint": {
+        "other": "Eine Rechnung braucht die vollständige Adresse. Ergänzen Sie, was fehlt."
+      },
+      "pickerAddCompany": {
+        "other": "Firma hinzufügen"
+      },
+      "pickerGroupLabel": {
+        "other": "Rechtsträger auswählen"
+      },
+      "pickerGrantFailed": {
+        "other": "Konnte nicht ausgewählt werden: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Diese Auswahl braucht die clientId der App im ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Ihre Rechtsträger konnten nicht geladen werden."
+      },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Der Standard-Rechtsträger wird über alle Apps geteilt, in die Sie sich einloggen. Wenn Sie ihn entfernen, wird nirgendwo ein Rechtsträger vorausgewählt."
       }

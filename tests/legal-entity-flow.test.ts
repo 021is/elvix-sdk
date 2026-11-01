@@ -10,41 +10,44 @@ import {
 } from "../src/react/legal-entity-flow";
 
 /**
- * Characterization tests for the legal-entity wizard ordering.
- *
- * These were written by reading the sixteen `afterX()` callbacks the
- * component used to carry, so they pin the behaviour that shipped. Until 0.12
- * the component kept those callbacks and never called this module, so these
- * tests guarded a copy; it now routes every step through `nextView` and
- * `previousView`. If a step disappears for one entity type, this catches it.
+ * The legal-entity wizard's ordering, journey by journey.
  *
  * The product rules being protected:
+ *   - a business starts at its VAT ID (0.18), so the authority's answer can
+ *     prefill its name and address, and is not asked for its tax country
+ *   - a sole proprietor without a VAT ID gives tax country and tax number
  *   - a company is never asked for a date of birth or a nationality
- *   - a private individual is never asked for a trading name or a company
- *     registration number
- *   - a sole proprietorship is both, and walks the longest path
- *   - a VAT id always detours through live verification before continuing
+ *   - a private individual is never asked for a trading name, a VAT ID
+ *     first, or a company registration number
+ *   - a VAT id always detours through live verification before continuing,
+ *     and Back never lands on that pane (it would move on by itself)
  */
 
-const individual = { type: "individual" as const, hasVatId: false };
-const soleProp = { type: "sole_prop" as const, hasVatId: false };
-const company = { type: "company" as const, hasVatId: false };
+const individual = { type: "individual" as const, hasVatId: false, withoutVatId: false };
+const soleProp = { type: "sole_prop" as const, hasVatId: false, withoutVatId: false };
+const soleNoVat = { ...soleProp, withoutVatId: true };
+const company = { type: "company" as const, hasVatId: false, withoutVatId: false };
+
+const ADDRESS = [
+  View.ADDRESS_SEARCH,
+  View.ADDRESS_REVIEW,
+  View.ADDRESS_APT_FLOOR,
+  View.CONTACT_CHOICE,
+];
+const PERSON = [View.DOB, View.PLACE_OF_BIRTH, View.NATIONALITY];
 
 describe("step predicates", () => {
   it("treats sole_prop as both a business and a person", () => {
-    // The awkward case, and the reason both predicates exist.
     expect(needsBusinessSteps("sole_prop")).toBe(true);
     expect(needsPersonSteps("sole_prop")).toBe(true);
   });
 
-  it("treats a company as a business only", () => {
-    expect(needsBusinessSteps("company")).toBe(true);
-    expect(needsPersonSteps("company")).toBe(false);
-  });
-
-  it("treats an individual as a person only", () => {
-    expect(needsBusinessSteps("individual")).toBe(false);
-    expect(needsPersonSteps("individual")).toBe(true);
+  it("treats a company as a business only, an individual as a person only", () => {
+    expect([needsBusinessSteps("company"), needsPersonSteps("company")]).toEqual([true, false]);
+    expect([needsBusinessSteps("individual"), needsPersonSteps("individual")]).toEqual([
+      false,
+      true,
+    ]);
   });
 
   it("treats an unchosen type as neither", () => {
@@ -53,98 +56,77 @@ describe("step predicates", () => {
   });
 });
 
-describe("individual journey", () => {
-  it("walks name → personal details → tax → address → contact", () => {
+describe("journeys", () => {
+  it("an individual: name → personal details → tax → address, as before 0.18", () => {
     expect(walkFlow(individual)).toEqual([
       View.TYPE_CHOICE,
       View.LEGAL_NAME,
-      View.DOB,
-      View.PLACE_OF_BIRTH,
-      View.NATIONALITY,
+      ...PERSON,
       View.TAX_COUNTRY,
       View.TAX_IDS,
-      View.ADDRESS_SEARCH,
-      View.ADDRESS_REVIEW,
-      View.ADDRESS_APT_FLOOR,
-      View.CONTACT_CHOICE,
+      ...ADDRESS,
     ]);
   });
 
-  it("never asks an individual for business-only steps", () => {
-    const path = walkFlow(individual);
-    expect(path).not.toContain(View.TRADING_NAME);
-    expect(path).not.toContain(View.REGISTRATION);
-  });
-});
-
-describe("company journey", () => {
-  it("walks name → trading name → tax → registration → address", () => {
+  it("a company: VAT ID → verified → name → trading name → registration → address", () => {
     expect(walkFlow(company)).toEqual([
       View.TYPE_CHOICE,
+      View.VAT_ID,
+      View.VERIFYING_TAX_ID,
       View.LEGAL_NAME,
       View.TRADING_NAME,
-      View.TAX_COUNTRY,
-      View.TAX_IDS,
       View.REGISTRATION,
-      View.ADDRESS_SEARCH,
-      View.ADDRESS_REVIEW,
-      View.ADDRESS_APT_FLOOR,
-      View.CONTACT_CHOICE,
+      ...ADDRESS,
     ]);
   });
 
-  it("never asks a company for personal details", () => {
-    const path = walkFlow(company);
-    expect(path).not.toContain(View.DOB);
-    expect(path).not.toContain(View.PLACE_OF_BIRTH);
-    expect(path).not.toContain(View.NATIONALITY);
-  });
-});
-
-describe("sole proprietorship journey", () => {
-  it("walks the longest path, covering both business and personal steps", () => {
+  it("a sole prop with a VAT ID: the company's path plus the personal details", () => {
     expect(walkFlow(soleProp)).toEqual([
       View.TYPE_CHOICE,
+      View.VAT_ID,
+      View.VERIFYING_TAX_ID,
       View.LEGAL_NAME,
       View.TRADING_NAME,
-      View.DOB,
-      View.PLACE_OF_BIRTH,
-      View.NATIONALITY,
-      View.TAX_COUNTRY,
-      View.TAX_IDS,
+      ...PERSON,
       View.REGISTRATION,
-      View.ADDRESS_SEARCH,
-      View.ADDRESS_REVIEW,
-      View.ADDRESS_APT_FLOOR,
-      View.CONTACT_CHOICE,
+      ...ADDRESS,
     ]);
   });
 
-  it("is a superset of both other journeys", () => {
-    const path = walkFlow(soleProp);
-    for (const step of walkFlow(individual)) expect(path).toContain(step);
-    for (const step of walkFlow(company)) expect(path).toContain(step);
+  it("a sole prop without a VAT ID: tax country and number, then the same path", () => {
+    expect(walkFlow(soleNoVat)).toEqual([
+      View.TYPE_CHOICE,
+      View.VAT_ID,
+      View.TAX_COUNTRY,
+      View.TAX_IDS,
+      View.LEGAL_NAME,
+      View.TRADING_NAME,
+      ...PERSON,
+      View.REGISTRATION,
+      ...ADDRESS,
+    ]);
+  });
+
+  it("asks a business with a VAT ID no tax country", () => {
+    for (const ctx of [company, soleProp]) expect(walkFlow(ctx)).not.toContain(View.TAX_COUNTRY);
+  });
+
+  it("never asks a company for personal details, an individual for business ones", () => {
+    for (const step of PERSON) expect(walkFlow(company)).not.toContain(step);
+    for (const step of [View.VAT_ID, View.TRADING_NAME, View.REGISTRATION]) {
+      expect(walkFlow(individual)).not.toContain(step);
+    }
   });
 });
 
 describe("VAT verification detour", () => {
-  it("routes through live verification when a VAT id was entered", () => {
+  it("routes a typed VAT id through live verification", () => {
     expect(nextView(View.TAX_IDS, { ...individual, hasVatId: true })).toBe(View.VERIFYING_TAX_ID);
-  });
-
-  it("skips verification when no VAT id was entered", () => {
-    expect(nextView(View.TAX_IDS, individual)).toBe(View.ADDRESS_SEARCH);
-  });
-
-  it("rejoins the normal path after verifying, per type", () => {
-    // The detour must not change WHERE the user ends up, only how they got there.
-    expect(nextView(View.VERIFYING_TAX_ID, individual)).toBe(View.ADDRESS_SEARCH);
-    expect(nextView(View.VERIFYING_TAX_ID, company)).toBe(View.REGISTRATION);
-    expect(nextView(View.VERIFYING_TAX_ID, soleProp)).toBe(View.REGISTRATION);
+    expect(nextView(View.TAX_IDS, { ...soleNoVat, hasVatId: true })).toBe(View.VERIFYING_TAX_ID);
   });
 
   it("lands on the same next step with or without the detour", () => {
-    for (const ctx of [individual, soleProp, company]) {
+    for (const ctx of [individual, soleNoVat]) {
       const direct = nextView(View.TAX_IDS, ctx);
       const viaDetour = nextView(View.VERIFYING_TAX_ID, { ...ctx, hasVatId: true });
       expect(direct).toBe(viaDetour);
@@ -154,8 +136,6 @@ describe("VAT verification detour", () => {
 
 describe("panes that do not advance on their own", () => {
   it("returns null for terminal and choice-driven panes", () => {
-    // contact-choice branches on the user's yes/no, not on completion;
-    // saving and detail are terminal.
     for (const pane of [View.CONTACT_CHOICE, View.SAVING, View.DETAIL, View.LIST, View.EMPTY]) {
       expect(nextView(pane, individual)).toBeNull();
     }
@@ -167,19 +147,22 @@ describe("panes that do not advance on their own", () => {
 });
 
 describe("previousView", () => {
-  it("undoes every forward step, for every type", () => {
-    for (const ctx of [individual, soleProp, company]) {
-      const path = walkFlow(ctx);
+  it("undoes every forward step, for every journey, skipping verification", () => {
+    for (const ctx of [individual, soleProp, soleNoVat, company]) {
+      const path = walkFlow(ctx).filter((v) => v !== View.VERIFYING_TAX_ID);
       for (const [i, step] of path.entries()) {
-        expect(previousView(step, ctx.type)).toBe(i === 0 ? null : path[i - 1]);
+        expect(previousView(step, ctx), `${ctx.type} ${step}`).toBe(i === 0 ? null : path[i - 1]);
       }
     }
   });
 
-  it("returns from the detours the way they came", () => {
-    expect(previousView(View.VERIFYING_TAX_ID, "company")).toBe(View.TAX_IDS);
-    expect(previousView(View.CONTACT_INPUT, "company")).toBe(View.CONTACT_CHOICE);
-    // Registration is reached past the verification detour, but Back skips it.
-    expect(previousView(View.REGISTRATION, "company")).toBe(View.TAX_IDS);
+  it("leaves the verification pane to where the VAT ID was typed", () => {
+    expect(previousView(View.VERIFYING_TAX_ID, company)).toBe(View.VAT_ID);
+    expect(previousView(View.VERIFYING_TAX_ID, soleNoVat)).toBe(View.TAX_IDS);
+    expect(previousView(View.VERIFYING_TAX_ID, individual)).toBe(View.TAX_IDS);
+  });
+
+  it("returns from the contact form to its question", () => {
+    expect(previousView(View.CONTACT_INPUT, company)).toBe(View.CONTACT_CHOICE);
   });
 });

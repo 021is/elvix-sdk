@@ -1925,6 +1925,39 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "La entidad predeterminada se comparte entre todas las aplicaciones a las que inicias sesión. Cambiarla aquí actualiza la selección automática en todas partes a la vez."
       },
+      "vatIdTitle": {
+        "other": "¿Cuál es el NIF-IVA?"
+      },
+      "vatIdSubtitle": {
+        "other": "Lo comprobamos con la autoridad fiscal y rellenamos lo que sabe."
+      },
+      "vatIdLabel": {
+        "other": "NIF-IVA"
+      },
+      "vatIdCountryNeeded": {
+        "other": "¿Qué país lo emitió?"
+      },
+      "noVatIdCta": {
+        "other": "Sin NIF-IVA"
+      },
+      "addressGapsHint": {
+        "other": "Una factura necesita la dirección completa. Añade lo que falta."
+      },
+      "pickerAddCompany": {
+        "other": "Añadir una empresa"
+      },
+      "pickerGroupLabel": {
+        "other": "Elige una entidad"
+      },
+      "pickerGrantFailed": {
+        "other": "No se pudo elegir: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Este selector necesita el clientId de la app en ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "No se pudieron cargar tus entidades."
+      },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "La entidad predeterminada se comparte entre todas las aplicaciones a las que inicias sesión. Quitarla significa que no se preseleccionará ninguna entidad en ningún sitio."
       }

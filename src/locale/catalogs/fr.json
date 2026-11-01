@@ -1925,6 +1925,39 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "L'entité par défaut est partagée entre toutes les applications auxquelles vous vous connectez. La modifier ici met à jour le choix automatique partout en une fois."
       },
+      "vatIdTitle": {
+        "other": "Quel est le numéro de TVA ?"
+      },
+      "vatIdSubtitle": {
+        "other": "Nous le vérifions auprès de l'administration fiscale et remplissons ce qu'elle connaît."
+      },
+      "vatIdLabel": {
+        "other": "Numéro de TVA"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Quel pays l'a délivré ?"
+      },
+      "noVatIdCta": {
+        "other": "Pas de numéro de TVA"
+      },
+      "addressGapsHint": {
+        "other": "Une facture exige l'adresse complète. Ajoutez ce qui manque."
+      },
+      "pickerAddCompany": {
+        "other": "Ajouter une entreprise"
+      },
+      "pickerGroupLabel": {
+        "other": "Choisissez une entité"
+      },
+      "pickerGrantFailed": {
+        "other": "Impossible de la choisir : {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Ce sélecteur a besoin du clientId de l'app sur ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Impossible de charger vos entités."
+      },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "L'entité par défaut est partagée entre toutes les applications auxquelles vous vous connectez. La retirer signifie qu'aucune entité n'est pré-sélectionnée nulle part."
       }

@@ -1928,6 +1928,39 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "Výchozí subjekt je sdílený napříč všemi aplikacemi, do kterých se přihlašujete. Změna zde aktualizuje automatický výběr všude najednou."
       },
+      "vatIdTitle": {
+        "other": "Jaké je DIČ pro DPH?"
+      },
+      "vatIdSubtitle": {
+        "other": "Ověříme ho u daňového úřadu a doplníme, co o něm ví."
+      },
+      "vatIdLabel": {
+        "other": "DIČ pro DPH"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Která země ho vydala?"
+      },
+      "noVatIdCta": {
+        "other": "Nemám DIČ pro DPH"
+      },
+      "addressGapsHint": {
+        "other": "Faktura potřebuje úplnou adresu. Doplňte, co chybí."
+      },
+      "pickerAddCompany": {
+        "other": "Přidat firmu"
+      },
+      "pickerGroupLabel": {
+        "other": "Vyberte subjekt"
+      },
+      "pickerGrantFailed": {
+        "other": "Tento subjekt nelze vybrat: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Tento výběr potřebuje clientId aplikace v ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Vaše subjekty se nepodařilo načíst."
+      },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Výchozí subjekt je sdílený napříč všemi aplikacemi, do kterých se přihlašujete. Odebráním znamená, že nikde nebude předvybrán žádný subjekt."
       }

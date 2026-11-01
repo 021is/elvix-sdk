@@ -30,6 +30,8 @@ export type LegalEntityDraft = {
   taxCountry: string;
   taxId: string;
   vatId: string;
+  /** A sole proprietor answered "No VAT ID": the tax-country route instead. */
+  withoutVatId: boolean;
   vatValidation: TaxIdValidationState;
   registrationNumber: string;
   registrationBody: string;
@@ -64,6 +66,7 @@ export function emptyDraft(): LegalEntityDraft {
     taxCountry: "",
     taxId: "",
     vatId: "",
+    withoutVatId: false,
     vatValidation: { ...EMPTY_VAT_VALIDATION },
     registrationNumber: "",
     registrationBody: "",

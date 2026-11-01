@@ -1931,6 +1931,39 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "Юр. особа за замовчуванням спільна для всіх застосунків, у які ви входите. Зміна тут оновлює автовибір всюди одразу."
       },
+      "vatIdTitle": {
+        "other": "Який номер платника ПДВ?"
+      },
+      "vatIdSubtitle": {
+        "other": "Ми перевіримо його в податковій службі й заповнимо те, що їй відомо."
+      },
+      "vatIdLabel": {
+        "other": "Номер ПДВ"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Яка країна його видала?"
+      },
+      "noVatIdCta": {
+        "other": "Немає номера ПДВ"
+      },
+      "addressGapsHint": {
+        "other": "Для рахунку потрібна повна адреса. Додайте те, чого бракує."
+      },
+      "pickerAddCompany": {
+        "other": "Додати компанію"
+      },
+      "pickerGroupLabel": {
+        "other": "Виберіть юр. особу"
+      },
+      "pickerGrantFailed": {
+        "other": "Не вдалося вибрати: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Цьому вибору потрібен clientId застосунку в ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Не вдалося завантажити ваші юр. особи."
+      },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Юр. особа за замовчуванням спільна для всіх застосунків, у які ви входите. Прибирання означає, що жодна юр. особа не буде попередньо вибрана ніде."
       }
