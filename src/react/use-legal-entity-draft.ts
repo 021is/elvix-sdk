@@ -22,6 +22,9 @@ import type { PlaceDetails } from "./legal-entity-types";
 export type LegalEntityDraft = {
   type: LegalEntityType | null;
   legalName: string;
+  /** A natural person's two name parts; `legalName` is built from them. */
+  givenName: string;
+  familyName: string;
   tradingName: string;
   dob: string;
   placeOfBirth: string;
@@ -30,6 +33,8 @@ export type LegalEntityDraft = {
   taxCountry: string;
   taxId: string;
   vatId: string;
+  /** A sole proprietor answered "No VAT ID": the tax-country route instead. */
+  withoutVatId: boolean;
   vatValidation: TaxIdValidationState;
   registrationNumber: string;
   registrationBody: string;
@@ -38,6 +43,11 @@ export type LegalEntityDraft = {
   addressLine2: string;
   contactEmail: string;
   contactPhone: string;
+  /** Where e-invoices go: each optional. */
+  peppolId: string;
+  codiceDestinatario: string;
+  pecAddress: string;
+  leitwegId: string;
 };
 
 const EMPTY_VAT_VALIDATION: TaxIdValidationState = {
@@ -56,6 +66,8 @@ export function emptyDraft(): LegalEntityDraft {
   return {
     type: null,
     legalName: "",
+    givenName: "",
+    familyName: "",
     tradingName: "",
     dob: "",
     placeOfBirth: "",
@@ -64,6 +76,7 @@ export function emptyDraft(): LegalEntityDraft {
     taxCountry: "",
     taxId: "",
     vatId: "",
+    withoutVatId: false,
     vatValidation: { ...EMPTY_VAT_VALIDATION },
     registrationNumber: "",
     registrationBody: "",
@@ -72,6 +85,10 @@ export function emptyDraft(): LegalEntityDraft {
     addressLine2: "",
     contactEmail: "",
     contactPhone: "",
+    peppolId: "",
+    codiceDestinatario: "",
+    pecAddress: "",
+    leitwegId: "",
   };
 }
 

@@ -121,3 +121,12 @@ export type ElvixVerifyResult = ElvixVerifyOk | ElvixVerifyErr;
 export type ElvixActionResult<T = unknown> =
   | { ok: true; data?: T; redirect?: string }
   | { ok: false; error: string; message?: string };
+
+/** A legal entity as an app reads it by id (0.18, `getElvixLegalEntity`). */
+export type {
+  ElvixLegalEntity,
+  ElvixLegalEntityPurpose,
+  ElvixLegalEntityResult,
+  ElvixVatNameMatch,
+  ElvixVatValidation,
+} from "./legal-entity";

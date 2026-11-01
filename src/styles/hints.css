@@ -1,0 +1,11 @@
+/* Keyboard hints (0.18): the "Enter" chip on a Save or Continue button.
+   Off by default, on every device: the chip is the host's choice, not the
+   SDK's. Plain CSS like fields.css, so no host stylesheet or load order
+   changes it. A host turns it on with one variable on any ancestor:
+
+     --elvix-key-hints      inline-flex  shown
+                            none         hidden (the default)
+*/
+.elvix-kbd-hint {
+  display: var(--elvix-key-hints, none);
+}

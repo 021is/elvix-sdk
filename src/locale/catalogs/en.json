@@ -1463,8 +1463,14 @@
       "typeChoiceSubtitle": {
         "other": "Drives the questions we'll ask next."
       },
-      "step1of3": {
-        "other": "Step 1 of 3"
+      "stepOfTotal": {
+        "other": "Step {step} of {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Where should invoices go?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "The email address invoices are sent to. Optional."
       },
       "individualSubtitle": {
         "other": "Just you, no business. Invoices go in your personal name."
@@ -1524,7 +1530,7 @@
         "other": "Date of birth"
       },
       "dobSubtitle": {
-        "other": "Required for invoicing under your name and KYC if a customer asks later."
+        "other": "Optional. A payment provider may ask for it to confirm who you are."
       },
       "dobAgeError": {
         "other": "You must be 18 or older to register an entity."
@@ -1536,7 +1542,7 @@
         "other": "Place of birth"
       },
       "placeOfBirthSubtitle": {
-        "other": "City as it appears on your ID. Required for invoicing and KYC."
+        "other": "Optional. The city as it appears on your ID, for a payment provider's identity check."
       },
       "placeOfBirthCityLabel": {
         "other": "City"
@@ -1587,7 +1593,7 @@
         "other": "the issuing authority"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Both are optional. Add the local tax number if you want it on invoices; VAT only if you're VAT-registered. The business registration is captured in the next step."
+        "other": "An invoice needs one of them: your VAT ID if you're VAT-registered, otherwise your local tax number."
       },
       "localTaxNumberLabel": {
         "other": "Local tax number"
@@ -1653,7 +1659,7 @@
         "other": "Registration"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. The official register where this entity is recorded."
+        "other": "Optional. Handelsregister, Companies House, KvK: for a payment provider or a contract; an invoice doesn't need it."
       },
       "registrationNumberLabel": {
         "other": "Registration number"
@@ -1925,6 +1931,61 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "The default entity is shared across every app you sign in to. Switching it here updates the auto-pick everywhere at once."
       },
+      "vatIdTitle": {
+        "other": "What's the VAT ID?"
+      },
+      "vatIdSubtitle": {
+        "other": "We check it with the tax authority and fill in what it knows."
+      },
+      "vatIdLabel": {
+        "other": "VAT ID"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Which country issued it?"
+      },
+      "noVatIdCta": {
+        "other": "No VAT ID"
+      },
+      "addressGapsHint": {
+        "other": "An invoice needs the full address. Add what's missing."
+      },
+      "pickerAddCompany": {
+        "other": "Add a company"
+      },
+      "pickerPayoutsNote": {
+        "other": "Picking a company here lets {app} read the birth date, place of birth, nationality and phone you saved, to fill in its payout form."
+      },
+      "pickerGroupLabel": {
+        "other": "Choose a legal entity"
+      },
+      "pickerGrantFailed": {
+        "other": "Couldn't choose this one: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "This picker needs the app's clientId on ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Couldn't load your legal entities."
+      },
+      "withheldInApps": { "other": "Saved. Shown only in your elvix account." },
+      "nameMismatch": { "other": "Name differs from the register" },
+      "givenNameLabel": { "other": "Given name" },
+      "familyNameLabel": { "other": "Family name" },
+      "eInvoiceTitle": { "other": "Where do e-invoices go?" },
+      "eInvoiceSubtitle": { "other": "Optional. Fill in only what your business has; you can add it later." },
+      "eInvoiceSubtitleIT": { "other": "Italian businesses receive invoices through SDI: your recipient code or certified email (PEC)." },
+      "eInvoiceSubtitleBE": { "other": "Belgian businesses receive invoices over Peppol: your Peppol ID." },
+      "peppolIdLabel": { "other": "Peppol ID" },
+      "peppolIdHint": { "other": "Scheme and number, like 0208:0123456789" },
+      "peppolIdInvalid": { "other": "Enter it as scheme:number, like 0208:0123456789" },
+      "codiceDestinatarioLabel": { "other": "SDI code (codice destinatario)" },
+      "codiceInvalid": { "other": "7 letters or digits" },
+      "pecAddressLabel": { "other": "PEC address" },
+      "leitwegIdLabel": { "other": "Leitweg-ID" },
+      "leitwegIdHint": { "other": "Only public bodies have one." },
+      "leitwegIdInvalid": { "other": "This isn't a Leitweg-ID, like 04011000-1234512345-06" },
+      "detailSectionEInvoice": { "other": "E-invoicing" },
+      "detailEInvoiceNone": { "other": "Not set" },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "The default entity is shared across every app you sign in to. Removing it means no entity is pre-selected anywhere."
       }

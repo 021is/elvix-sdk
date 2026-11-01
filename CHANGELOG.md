@@ -5,7 +5,7 @@ All notable changes to `@elvix.is/sdk` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Older releases, each file under the 300-line limit: [0.12 to 0.14.0](docs/changelog/0.12-0.14.md),
+Older releases, each file under the 300-line limit: [0.12 to 0.14.2](docs/changelog/0.12-0.14.md),
 [0.7 to 0.11](docs/changelog/0.7-0.11.md), [0.1 to 0.6](docs/changelog/0.1-0.6.md). When this
 file passes 300 lines, its oldest releases move there.
 
@@ -16,6 +16,108 @@ file passes 300 lines, its oldest releases move there.
 ### Changed
 
 ### Fixed
+
+## [0.18.0] — 2026-11-01
+
+Pick a legal entity for an invoice, read it by id on your server, and style fields and rows
+as your own. Needs elvix.is with the legal-entity grants (deployed before this release).
+
+### Added
+
+- **`<ElvixLegalEntityPicker types selectedId purpose onPick>`**: the user's legal entities
+  as a list; a tap picks and tints the row, and your own Continue ends the flow (no confirm
+  button, no done pane). "Add a company" runs the add wizard in place and comes back with
+  the new entity picked. Rows show what an invoice says: the legal name, the VAT ID or tax
+  number and the city; "Verified" only when elvix's own check confirmed the VAT ID and the
+  register's name does not differ (else "Name differs from the register"). `types` filters
+  the list and the wizard; `onResult` reports each pick and a failed save.
+- **The picker asks only what an invoice needs.** With `purpose="invoicing"` (the default)
+  "Add" walks: the type (if more than one is offered) → the VAT ID, or "No VAT ID" → tax
+  country → tax number (an individual: name → tax country → tax number) → the check → the
+  legal name, prefilled (a company in one field, a person in given and family name) → the
+  address (search prefilled from the authority, review, any missing part, apartment or
+  floor optional) → an invoice email (optional) → an Italian or Belgian business's
+  e-invoice address (optional) → saved. No trading name, birth data, nationality, registration or phone.
+  `purpose="payouts"` and `<ElvixLegalEntities>` keep the full flow. The last step's
+  button saves and shows a refused save; "Step 1 of N" counts the flow shown.
+- **`sizing="fixed" | "flexible"`** on `<ElvixLegalEntityPicker>` and
+  `<ElvixLegalEntities>`, with `height`, `minHeight`, `maxHeight`. Fixed: the list and
+  every add step share one height (the picker's default `min(520px, 70dvh)`, the
+  manager's `min(540px, 66dvh)` within 340–700 px; `height` overrides, `maxHeight` caps)
+  and a longer pane scrolls inside. Flexible: as tall as each pane, nothing scrolls inside,
+  no fixed height; `maxHeight` caps it and then it scrolls. The picker defaults to fixed in
+  a card and flexible with `card={false}`; the manager to fixed. `ElvixLegalEntitySizing`
+  names the two.
+- **The Enter hint is off by default, on every device.** The "Enter" chip beside a save
+  button carries `.elvix-kbd-hint` (`hints.css`); a host turns it on with
+  `--elvix-key-hints: inline-flex` on any ancestor. The chip shows the key only, never
+  prose: an optional pane's button says "Skip" while empty instead.
+- **A tap is a grant; the pre-selection is not.** `onPick(entity, { granted })`: a tap or a
+  new entity grants your application that one entity for `purpose` (`invoicing`, default,
+  or `payouts`, which a note above the list discloses: your app's name and what it reads)
+  before `onPick` fires with `granted: true`. The default (else the only entity) is shown
+  picked with `granted: false` and nothing shared: grant it from your Continue with
+  **`useElvixLegalEntityGrant()(entityId, purpose?)`**. The user revokes in their account.
+- **`getElvixLegalEntity({ apiKey, applicationId, userId, entityId, purpose? })`** in
+  `@elvix.is/sdk/server`: the picked entity by id for the purpose granted
+  (`ElvixLegalEntity`): elvix's VAT verdict, `vatIdNameMatch`, EAS schemes, e-invoice
+  addresses; `payouts` adds what the person saved of their birth data and phone (a
+  payment provider's prefill; its own onboarding asks the rest). `not_found`, `invalid_id`,
+  `invalid_purpose`; never throws.
+- **Webhooks** `user.legal_entity_updated`, `user.legal_entity_deleted`,
+  `user.legal_entity_revoked` (`UserLegalEntityData`, with `purpose`), to applications
+  holding a grant.
+- **A person's name in two parts** (`givenName`, `familyName`, required for individuals
+  and sole proprietors), **where e-invoices go**: optional, asked only of an Italian (SDI
+  code or PEC) or Belgian (Peppol ID) business and counted in "Step 1 of N" only there; the
+  detail view edits all four fields, Leitweg-ID included, for any country.
+- **Row variables**: `--elvix-row`, `--elvix-row-hover`, `--elvix-picked`,
+  `--elvix-picked-text`, `--elvix-radius`, `--elvix-focus` (`rows.css`), next to the field
+  variables; `--elvix-danger` outlines a field whose value is wrong. **Icon bubbles** (the
+  tinted circle behind a type's icon, the empty state's, the detail header's) take
+  `--elvix-icon` (the icon, default the brand) and `--elvix-icon-bg` (the fill, default
+  the brand at 15%) through `.elvix-icon-bubble`.
+- `LegalEntityRecord`, `LegalEntityType` and `VatVerdict` are exported from
+  `@elvix.is/sdk/react`.
+
+### Changed
+
+- **One field look.** `<ElvixInput>` and `<ElvixDateInput>`, so every SDK form, take
+  0.17's `.elvix-field`: a tint of the text colour, no outline at rest, the brand on
+  focus. Their own white fill and 55% brand outline are gone. Legal-entity rows, choices,
+  suggestions and tiles lose their borders; a tint shows state. Set the variables to
+  bring an outline back.
+- **A business starts at its VAT ID.** The prefix names the tax country, so a VAT holder
+  is not asked for it (Norway, Australia and Brazil, whose numbers carry none, are offered
+  beside the field). The authority's answer prefills the legal name and types its address
+  into the address search. "No VAT ID" takes a sole proprietor through tax country and
+  tax number. A private individual's steps are unchanged.
+- **elvix checks the VAT ID itself.** The save sends the VAT ID only; `vatIdValidation`,
+  `vatIdValidatedAt` and `vatIdValidatedName` left the input and are set by elvix (the
+  record adds `vatIdValidatedAddress` and `vatIdRequestId`). Until now the browser sent
+  the level it said it reached, which anyone could set to "live".
+- **A business has its full address** (EU VAT Directive art. 226(5)): street, postal code,
+  city and country are required for a sole proprietorship or company, and the address
+  review asks in place for any part Google Places left empty. A sole proprietor without a
+  VAT ID gives its tax number.
+- **An entity needs what an invoice needs.** Date and place of birth, nationality and the
+  registration number and authority are optional for every type (a registration number
+  that is given must still match its country's format); their panes in the full flow say
+  "Skip" while empty. Still required: the legal name (given and family name for a
+  person), the tax country, a company's VAT ID, a sole proprietor's VAT ID or tax number,
+  an individual's tax number, and a business's street, postal code, city and country.
+- `<ElvixLegalEntities>`' `height`, `minHeight` and `maxHeight` take a CSS length as well
+  as a number.
+- **Inside an app, personal fields are write-only.** elvix answers an app's session with
+  birth data, nationality, phone (and an individual's tax number and address) withheld
+  (`withheld: true`); the detail view says they are shown only in the elvix account and
+  still lets the user set a new value.
+- The detail view takes one `onEdit(step)` instead of nine handlers, in its own file.
+
+### Fixed
+
+- A list of legal entities that could not be read showed as an empty list; the picker now
+  says so, with a retry.
 
 ## [0.17.0] — 2026-10-28
 
@@ -194,32 +296,5 @@ ignored, never an error.
   the step, on the right pane, and until the step is done the session is NOT
   reported to the host (`useElvixSession()` stays anonymous), so a host that reacts
   to "signed in" does not tear the form down first.
-
-## [0.14.2] — 2026-10-12
-
-### Fixed
-
-- **`<ElvixLifecycleWatcher>` reloaded the page on a cookie session.** Its
-  session check calls `/api/v1/session`, which only answers a bearer token. A
-  cookie session (elvix's own Console and Account, any same-origin host) has none,
-  so the check was always refused and, with the live stream open, that read as
-  "the session ended": the page reloaded on every poll (the Account security
-  wizard reloaded the moment it asked for an OTP). A session with no token is now
-  watched by the live stream alone; a bearer session still ends on a failed check.
-  Each refused poll also counted against the per-IP failure limiter on the
-  server; they no longer happen.
-
-## [0.14.1] — 2026-10-12
-
-### Fixed
-
-- **A refused passkey says why.** Picking a passkey made for another app, or one
-  that lives on the elvix account (which an app sign-in refuses), failed with
-  "Something went wrong". `credential_not_for_app` and `credential_not_for_surface`
-  now read "This passkey was made for a different app. Sign in another way, then
-  add a passkey for this one." in all 15 locales (`tests/passkey-errors.test.ts`
-  pins every refusal a person can act on). Pairs with an elvix server fix: an
-  account-level passkey that has never been used no longer counts as "you have a
-  passkey", so the add-a-passkey step is offered again.
 
 [Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.17.0...HEAD

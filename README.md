@@ -47,7 +47,7 @@ Sign-in and sign-up are the same door. There is no separate registration flow to
 | `@elvix.is/sdk/types` | Shared TypeScript types, no runtime code |
 | `@elvix.is/sdk/mcp` | The MCP server, embeddable in your own host |
 
-**Components** — sign-in, the compact email-code sign-in (`<ElvixEmailCodeSignIn email>`, for an address you already have), username, identity form, avatar, banner, region, languages, address book, legal entities, sessions, data export, deactivate, leave. Full catalogue with live previews: **[elvix.is/docs/components](https://elvix.is/docs/components)**.
+**Components** — sign-in, the compact email-code sign-in (`<ElvixEmailCodeSignIn email>`, for an address you already have), username, identity form, avatar, banner, region, languages, address book, legal entities, the legal-entity picker (`<ElvixLegalEntityPicker selectedId onPick>`, choose a company for an invoice or add one in place, asked only what an invoice needs), sessions, data export, deactivate, leave. The legal-entity components keep one height for every pane or grow with each (`sizing="fixed" | "flexible"`, with `maxHeight`). Fields, rows and icons take their look from CSS variables you set on any ancestor (`--elvix-field`, `--elvix-row`, `--elvix-picked`, `--elvix-radius`, `--elvix-icon`, `--elvix-key-hints`, …). Full catalogue with live previews: **[elvix.is/docs/components](https://elvix.is/docs/components)**.
 
 **Hooks** — read-only, current without polling. Read these instead of calling elvix yourself:
 
@@ -59,6 +59,8 @@ Sign-in and sign-up are the same door. There is no separate registration flow to
 - `useElvixUserMedia(userId?)` — "does this user have a photo", from the same cache the avatars use.
 
 **Server helpers** — verify a session token against elvix on each protected request and get the live user, roles, scopes and memberships back. Because it re-checks on every call, a banned or signed-out user stops verifying within one request, so bans take effect server-side without you writing anything. Details: **[elvix.is/docs/verify-backend](https://elvix.is/docs/verify-backend)**.
+
+`getElvixLegalEntity({ apiKey, applicationId, userId, entityId, purpose? })` reads the legal entity a user picked for your app, by id, for the purpose they granted (`invoicing`, or `payouts` with what the person saved of their birth data and phone, for a payment provider's prefill), with elvix's own VAT check and name match: take only the id from the browser. A pre-selected entity is not shared until a tap or your Continue grants it (`useElvixLegalEntityGrant`).
 
 If you would rather not call elvix on every request, exchange the session token once for a short-lived signed JWT and verify that locally against our JWKS. Same guide covers it.
 

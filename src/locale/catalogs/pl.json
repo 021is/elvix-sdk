@@ -1469,8 +1469,14 @@
       "typeChoiceSubtitle": {
         "other": "Określa pytania, które zadamy w następnej kolejności."
       },
-      "step1of3": {
-        "other": "Krok 1 z 3"
+      "stepOfTotal": {
+        "other": "Krok {step} z {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Dokąd wysyłać faktury?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "Adres e-mail, na który trafiają faktury. Opcjonalnie."
       },
       "individualSubtitle": {
         "other": "Tylko ty, bez firmy. Faktury wystawiane na twoje imię i nazwisko."
@@ -1530,7 +1536,7 @@
         "other": "Data urodzenia"
       },
       "dobSubtitle": {
-        "other": "Wymagana do wystawiania faktur na twoje imię i nazwisko oraz do KYC, jeśli klient zapyta później."
+        "other": "Opcjonalna. Dostawca płatności może o nią poprosić, aby potwierdzić twoją tożsamość."
       },
       "dobAgeError": {
         "other": "Musisz mieć ukończone 18 lat, aby zarejestrować podmiot."
@@ -1542,7 +1548,7 @@
         "other": "Miejsce urodzenia"
       },
       "placeOfBirthSubtitle": {
-        "other": "Miasto tak, jak pojawia się na twoim dokumencie tożsamości. Wymagane do faktur i KYC."
+        "other": "Opcjonalne. Miasto tak, jak widnieje na twoim dokumencie tożsamości, do weryfikacji tożsamości przez dostawcę płatności."
       },
       "placeOfBirthCityLabel": {
         "other": "Miasto"
@@ -1593,7 +1599,7 @@
         "other": "wydający organ"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Oba są opcjonalne. Dodaj lokalny numer podatkowy, jeśli chcesz mieć go na fakturach; VAT tylko, jeśli jesteś zarejestrowanym podatnikiem VAT. Rejestrację działalności zapiszemy w kolejnym kroku."
+        "other": "Faktura potrzebuje jednego z nich: numeru VAT, jeśli jesteś czynnym podatnikiem VAT, w przeciwnym razie lokalnego numeru podatkowego."
       },
       "localTaxNumberLabel": {
         "other": "Lokalny numer podatkowy"
@@ -1659,7 +1665,7 @@
         "other": "Rejestracja"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK, KRS. Oficjalny rejestr, w którym podmiot jest zarejestrowany."
+        "other": "Opcjonalne. Handelsregister, Companies House, KvK, KRS: dla dostawcy płatności lub umowy; faktura tego nie wymaga."
       },
       "registrationNumberLabel": {
         "other": "Numer rejestracyjny"
@@ -1931,6 +1937,61 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "Domyślny podmiot jest współdzielony pomiędzy wszystkimi aplikacjami, do których się logujesz. Zmiana tutaj aktualizuje automatyczny wybór wszędzie naraz."
       },
+      "vatIdTitle": {
+        "other": "Jaki jest numer VAT UE?"
+      },
+      "vatIdSubtitle": {
+        "other": "Sprawdzamy go w urzędzie skarbowym i uzupełniamy to, co wiadomo."
+      },
+      "vatIdLabel": {
+        "other": "Numer VAT UE"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Który kraj go wydał?"
+      },
+      "noVatIdCta": {
+        "other": "Brak numeru VAT"
+      },
+      "addressGapsHint": {
+        "other": "Faktura wymaga pełnego adresu. Uzupełnij brakujące dane."
+      },
+      "pickerAddCompany": {
+        "other": "Dodaj firmę"
+      },
+      "pickerPayoutsNote": {
+        "other": "Wybierając tu firmę, pozwalasz aplikacji {app} odczytać zapisane datę i miejsce urodzenia, obywatelstwo i telefon, aby wypełniła swój formularz wypłat."
+      },
+      "pickerGroupLabel": {
+        "other": "Wybierz podmiot"
+      },
+      "pickerGrantFailed": {
+        "other": "Nie udało się wybrać: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Ten wybór wymaga clientId aplikacji w ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Nie udało się wczytać Twoich podmiotów."
+      },
+      "withheldInApps": { "other": "Zapisano. Widoczne tylko na Twoim koncie elvix." },
+      "nameMismatch": { "other": "Nazwa różni się od rejestru" },
+      "givenNameLabel": { "other": "Imię" },
+      "familyNameLabel": { "other": "Nazwisko" },
+      "eInvoiceTitle": { "other": "Dokąd trafiają e-faktury?" },
+      "eInvoiceSubtitle": { "other": "Opcjonalnie. Wypełnij tylko to, co ma Twoja firma; możesz dodać to później." },
+      "eInvoiceSubtitleIT": { "other": "Włoskie firmy otrzymują faktury przez SDI: Twój kod odbiorcy lub certyfikowany e-mail (PEC)." },
+      "eInvoiceSubtitleBE": { "other": "Belgijskie firmy otrzymują faktury przez Peppol: Twój identyfikator Peppol." },
+      "peppolIdLabel": { "other": "Identyfikator Peppol" },
+      "peppolIdHint": { "other": "Schemat i numer, np. 0208:0123456789" },
+      "peppolIdInvalid": { "other": "Wpisz jako schemat:numer, np. 0208:0123456789" },
+      "codiceDestinatarioLabel": { "other": "Kod SDI (codice destinatario)" },
+      "codiceInvalid": { "other": "7 liter lub cyfr" },
+      "pecAddressLabel": { "other": "Adres PEC" },
+      "leitwegIdLabel": { "other": "Leitweg-ID" },
+      "leitwegIdHint": { "other": "Mają go tylko instytucje publiczne." },
+      "leitwegIdInvalid": { "other": "To nie jest Leitweg-ID, np. 04011000-1234512345-06" },
+      "detailSectionEInvoice": { "other": "E-fakturowanie" },
+      "detailEInvoiceNone": { "other": "Nie podano" },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Domyślny podmiot jest współdzielony pomiędzy wszystkimi aplikacjami, do których się logujesz. Usunięcie oznacza, że nigdzie nie będzie wstępnie wybranego podmiotu."
       }

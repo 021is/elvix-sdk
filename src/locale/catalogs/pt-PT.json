@@ -1462,8 +1462,14 @@
       "typeChoiceSubtitle": {
         "other": "Determina as perguntas que faremos a seguir."
       },
-      "step1of3": {
-        "other": "Passo 1 de 3"
+      "stepOfTotal": {
+        "other": "Passo {step} de {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Para onde enviar as faturas?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "O endereço de e-mail para onde as faturas são enviadas. Opcional."
       },
       "individualSubtitle": {
         "other": "Apenas você, sem empresa. As faturas saem em seu nome pessoal."
@@ -1523,7 +1529,7 @@
         "other": "Data de nascimento"
       },
       "dobSubtitle": {
-        "other": "Obrigatória para faturar em seu nome e para KYC, caso um cliente o solicite mais tarde."
+        "other": "Opcional. Um prestador de pagamentos pode pedi-la para confirmar a sua identidade."
       },
       "dobAgeError": {
         "other": "Tem de ter 18 anos ou mais para registar uma entidade."
@@ -1535,7 +1541,7 @@
         "other": "Local de nascimento"
       },
       "placeOfBirthSubtitle": {
-        "other": "Cidade tal como consta do seu documento de identificação. Obrigatória para faturação e KYC."
+        "other": "Opcional. A cidade tal como consta do seu documento de identificação, para a verificação de identidade de um prestador de pagamentos."
       },
       "placeOfBirthCityLabel": {
         "other": "Cidade"
@@ -1586,7 +1592,7 @@
         "other": "a autoridade emissora"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Ambos são opcionais. Adicione o número fiscal local se quiser que apareça nas faturas; VAT apenas se estiver registado para VAT. O registo comercial é capturado no passo seguinte."
+        "other": "Uma fatura precisa de um deles: o seu número de IVA se estiver registado para IVA; caso contrário, o seu número fiscal local."
       },
       "localTaxNumberLabel": {
         "other": "Número fiscal local"
@@ -1652,7 +1658,7 @@
         "other": "Registo"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. O registo oficial onde esta entidade está inscrita."
+        "other": "Opcional. Handelsregister, Companies House, KvK: para um prestador de pagamentos ou um contrato; uma fatura não precisa disso."
       },
       "registrationNumberLabel": {
         "other": "Número de registo"
@@ -1924,6 +1930,61 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "A entidade predefinida é partilhada por todas as aplicações em que inicia sessão. Mudá-la aqui atualiza a escolha automática em todo o lado de uma vez."
       },
+      "vatIdTitle": {
+        "other": "Qual é o NIF de IVA?"
+      },
+      "vatIdSubtitle": {
+        "other": "Verificamo-lo junto da autoridade tributária e preenchemos o que ela sabe."
+      },
+      "vatIdLabel": {
+        "other": "NIF de IVA"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Que país o emitiu?"
+      },
+      "noVatIdCta": {
+        "other": "Sem NIF de IVA"
+      },
+      "addressGapsHint": {
+        "other": "Uma fatura precisa da morada completa. Acrescente o que falta."
+      },
+      "pickerAddCompany": {
+        "other": "Adicionar uma empresa"
+      },
+      "pickerPayoutsNote": {
+        "other": "Ao escolher aqui uma empresa, permite que {app} leia a data e o local de nascimento, a nacionalidade e o telefone que guardou, para preencher o formulário de pagamentos."
+      },
+      "pickerGroupLabel": {
+        "other": "Escolha uma entidade"
+      },
+      "pickerGrantFailed": {
+        "other": "Não foi possível escolher: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Este seletor precisa do clientId da aplicação no ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Não foi possível carregar as suas entidades."
+      },
+      "withheldInApps": { "other": "Guardado. Visível apenas na sua conta elvix." },
+      "nameMismatch": { "other": "O nome difere do registo" },
+      "givenNameLabel": { "other": "Nome próprio" },
+      "familyNameLabel": { "other": "Apelido" },
+      "eInvoiceTitle": { "other": "Para onde vão as faturas eletrónicas?" },
+      "eInvoiceSubtitle": { "other": "Opcional. Preencha apenas o que a sua empresa tem; pode acrescentar mais tarde." },
+      "eInvoiceSubtitleIT": { "other": "As empresas italianas recebem faturas através do SDI: o seu código de destinatário ou o seu e-mail certificado (PEC)." },
+      "eInvoiceSubtitleBE": { "other": "As empresas belgas recebem faturas através da Peppol: o seu ID Peppol." },
+      "peppolIdLabel": { "other": "ID Peppol" },
+      "peppolIdHint": { "other": "Esquema e número, p. ex. 0208:0123456789" },
+      "peppolIdInvalid": { "other": "Escreva como esquema:número, p. ex. 0208:0123456789" },
+      "codiceDestinatarioLabel": { "other": "Código SDI (codice destinatario)" },
+      "codiceInvalid": { "other": "7 letras ou dígitos" },
+      "pecAddressLabel": { "other": "Endereço PEC" },
+      "leitwegIdLabel": { "other": "Leitweg-ID" },
+      "leitwegIdHint": { "other": "Só os organismos públicos têm um." },
+      "leitwegIdInvalid": { "other": "Isto não é um Leitweg-ID, p. ex. 04011000-1234512345-06" },
+      "detailSectionEInvoice": { "other": "Faturação eletrónica" },
+      "detailEInvoiceNone": { "other": "Não indicado" },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "A entidade predefinida é partilhada por todas as aplicações em que inicia sessão. Removê-la significa que nenhuma entidade será pré-selecionada em lado nenhum."
       }

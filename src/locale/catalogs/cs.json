@@ -1466,8 +1466,14 @@
       "typeChoiceSubtitle": {
         "other": "Určí otázky, které vám položíme dál."
       },
-      "step1of3": {
-        "other": "Krok 1 z 3"
+      "stepOfTotal": {
+        "other": "Krok {step} z {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Kam posílat faktury?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "E-mailová adresa, na kterou chodí faktury. Nepovinné."
       },
       "individualSubtitle": {
         "other": "Jen vy, žádný podnik. Faktury jdou na vaše osobní jméno."
@@ -1527,7 +1533,7 @@
         "other": "Datum narození"
       },
       "dobSubtitle": {
-        "other": "Vyžadováno pro fakturaci na vaše jméno a KYC, pokud o to zákazník požádá později."
+        "other": "Volitelné. Poskytovatel plateb o něj může požádat, aby ověřil vaši totožnost."
       },
       "dobAgeError": {
         "other": "Pro registraci subjektu musíte mít 18 let a více."
@@ -1539,7 +1545,7 @@
         "other": "Místo narození"
       },
       "placeOfBirthSubtitle": {
-        "other": "Město, jak je uvedeno ve vašem dokladu. Vyžadováno pro fakturaci a KYC."
+        "other": "Volitelné. Město, jak je uvedeno ve vašem dokladu, pro ověření totožnosti poskytovatelem plateb."
       },
       "placeOfBirthCityLabel": {
         "other": "Město"
@@ -1590,7 +1596,7 @@
         "other": "vydávající úřad"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Obojí je volitelné. Přidejte místní daňové číslo, pokud ho chcete na fakturách; DIČ jen pokud jste plátce DPH. Registrace podnikání je zachycena v dalším kroku."
+        "other": "Faktura potřebuje jedno z nich: DIČ, pokud jste plátce DPH, jinak místní daňové číslo."
       },
       "localTaxNumberLabel": {
         "other": "Místní daňové číslo"
@@ -1656,7 +1662,7 @@
         "other": "Registrace"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. Oficiální rejstřík, kde je tento subjekt zapsán."
+        "other": "Volitelné. Handelsregister, Companies House, KvK: pro poskytovatele plateb nebo smlouvu; faktura ho nepotřebuje."
       },
       "registrationNumberLabel": {
         "other": "Registrační číslo"
@@ -1928,6 +1934,61 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "Výchozí subjekt je sdílený napříč všemi aplikacemi, do kterých se přihlašujete. Změna zde aktualizuje automatický výběr všude najednou."
       },
+      "vatIdTitle": {
+        "other": "Jaké je DIČ pro DPH?"
+      },
+      "vatIdSubtitle": {
+        "other": "Ověříme ho u daňového úřadu a doplníme, co o něm ví."
+      },
+      "vatIdLabel": {
+        "other": "DIČ pro DPH"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Která země ho vydala?"
+      },
+      "noVatIdCta": {
+        "other": "Nemám DIČ pro DPH"
+      },
+      "addressGapsHint": {
+        "other": "Faktura potřebuje úplnou adresu. Doplňte, co chybí."
+      },
+      "pickerAddCompany": {
+        "other": "Přidat firmu"
+      },
+      "pickerPayoutsNote": {
+        "other": "Výběrem firmy zde umožníte aplikaci {app} číst uložené datum a místo narození, státní příslušnost a telefon, aby vyplnila svůj formulář pro výplaty."
+      },
+      "pickerGroupLabel": {
+        "other": "Vyberte subjekt"
+      },
+      "pickerGrantFailed": {
+        "other": "Tento subjekt nelze vybrat: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Tento výběr potřebuje clientId aplikace v ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Vaše subjekty se nepodařilo načíst."
+      },
+      "withheldInApps": { "other": "Uloženo. Zobrazeno jen ve vašem účtu elvix." },
+      "nameMismatch": { "other": "Název se liší od rejstříku" },
+      "givenNameLabel": { "other": "Jméno" },
+      "familyNameLabel": { "other": "Příjmení" },
+      "eInvoiceTitle": { "other": "Kam posílat e-faktury?" },
+      "eInvoiceSubtitle": { "other": "Nepovinné. Vyplňte jen to, co vaše firma má; můžete to doplnit později." },
+      "eInvoiceSubtitleIT": { "other": "Italské firmy dostávají faktury přes SDI: váš kód příjemce nebo certifikovaný e-mail (PEC)." },
+      "eInvoiceSubtitleBE": { "other": "Belgické firmy dostávají faktury přes Peppol: vaše Peppol ID." },
+      "peppolIdLabel": { "other": "Peppol ID" },
+      "peppolIdHint": { "other": "Schéma a číslo, např. 0208:0123456789" },
+      "peppolIdInvalid": { "other": "Zadejte ve tvaru schéma:číslo, např. 0208:0123456789" },
+      "codiceDestinatarioLabel": { "other": "Kód SDI (codice destinatario)" },
+      "codiceInvalid": { "other": "7 písmen nebo číslic" },
+      "pecAddressLabel": { "other": "Adresa PEC" },
+      "leitwegIdLabel": { "other": "Leitweg-ID" },
+      "leitwegIdHint": { "other": "Mají ji jen veřejné instituce." },
+      "leitwegIdInvalid": { "other": "Toto není Leitweg-ID, např. 04011000-1234512345-06" },
+      "detailSectionEInvoice": { "other": "E-fakturace" },
+      "detailEInvoiceNone": { "other": "Nenastaveno" },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Výchozí subjekt je sdílený napříč všemi aplikacemi, do kterých se přihlašujete. Odebráním znamená, že nikde nebude předvybrán žádný subjekt."
       }

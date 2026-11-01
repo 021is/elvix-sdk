@@ -1,6 +1,7 @@
-/* The compact field (0.17): `<ElvixEmailCodeSignIn>`'s email field and code
-   boxes. Plain CSS, not utilities, so no host stylesheet and no load order
-   can change it: a host restyles it only through these variables, set on any
+/* Every SDK text field (0.18; 0.17 had it on `<ElvixEmailCodeSignIn>` only):
+   `<ElvixInput>`, `<ElvixDateInput>`, the email field and the code boxes.
+   Plain CSS, not utilities, so no host stylesheet and no load order can
+   change it: a host restyles it only through these variables, set on any
    ancestor (they inherit). Each has a default that reads on any background:
    a tint of the text colour, no outline at rest, a thin brand border on focus.
 
@@ -11,6 +12,7 @@
      --elvix-field-focus-ring    a ring around a focused field (default: none)
      --elvix-field-radius        corner radius
      --elvix-field-text          text colour
+     --elvix-danger              outline of a field whose value is wrong
 */
 .elvix-field {
   background-color: var(--elvix-field, color-mix(in srgb, var(--elvix-fg-1) 6%, transparent));
@@ -37,6 +39,12 @@
   border-color: var(--elvix-field-focus, var(--elvix-primary, var(--elvix-fg-2)));
   box-shadow: var(--elvix-field-focus-ring, none);
   outline: none;
+}
+
+/* A wrong value keeps its outline while focused: the cause stays visible. */
+.elvix-field[aria-invalid="true"],
+.elvix-field[aria-invalid="true"]:focus {
+  border-color: var(--elvix-danger, rgb(239 68 68 / 0.75));
 }
 
 .elvix-field::placeholder {

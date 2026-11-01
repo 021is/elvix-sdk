@@ -1462,8 +1462,14 @@
       "typeChoiceSubtitle": {
         "other": "Guida le domande che faremo dopo."
       },
-      "step1of3": {
-        "other": "Passaggio 1 di 3"
+      "stepOfTotal": {
+        "other": "Passaggio {step} di {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Dove inviare le fatture?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "L'indirizzo email a cui vengono inviate le fatture. Facoltativo."
       },
       "individualSubtitle": {
         "other": "Solo tu, nessuna attività. Le fatture vanno a tuo nome personale."
@@ -1523,7 +1529,7 @@
         "other": "Data di nascita"
       },
       "dobSubtitle": {
-        "other": "Necessaria per la fatturazione a tuo nome e per il KYC se un cliente la richiede in seguito."
+        "other": "Facoltativa. Un fornitore di pagamenti può chiederla per confermare la tua identità."
       },
       "dobAgeError": {
         "other": "Devi avere 18 anni o più per registrare un soggetto."
@@ -1535,7 +1541,7 @@
         "other": "Luogo di nascita"
       },
       "placeOfBirthSubtitle": {
-        "other": "Città come appare sul tuo documento d'identità. Necessaria per fatturazione e KYC."
+        "other": "Facoltativa. La città come appare sul tuo documento d'identità, per la verifica dell'identità di un fornitore di pagamenti."
       },
       "placeOfBirthCityLabel": {
         "other": "Città"
@@ -1586,7 +1592,7 @@
         "other": "l'autorità emittente"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Entrambi sono facoltativi. Aggiungi il codice fiscale locale se vuoi che appaia sulle fatture; l'IVA solo se sei registrato IVA. La registrazione dell'attività viene acquisita nel passaggio successivo."
+        "other": "Una fattura ne richiede uno: la partita IVA se sei registrato IVA, altrimenti il tuo codice fiscale locale."
       },
       "localTaxNumberLabel": {
         "other": "Codice fiscale locale"
@@ -1652,7 +1658,7 @@
         "other": "Registrazione"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. Il registro ufficiale in cui questo soggetto è iscritto."
+        "other": "Facoltativa. Handelsregister, Companies House, KvK: per un fornitore di pagamenti o un contratto; una fattura non ne ha bisogno."
       },
       "registrationNumberLabel": {
         "other": "Numero di registrazione"
@@ -1924,6 +1930,61 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "Il soggetto predefinito è condiviso tra tutte le app a cui accedi. Cambiarlo qui aggiorna la scelta automatica ovunque in una sola volta."
       },
+      "vatIdTitle": {
+        "other": "Qual è la partita IVA?"
+      },
+      "vatIdSubtitle": {
+        "other": "La verifichiamo con l'autorità fiscale e compiliamo ciò che conosce."
+      },
+      "vatIdLabel": {
+        "other": "Partita IVA"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Quale paese l'ha rilasciata?"
+      },
+      "noVatIdCta": {
+        "other": "Nessuna partita IVA"
+      },
+      "addressGapsHint": {
+        "other": "Una fattura richiede l'indirizzo completo. Aggiungi ciò che manca."
+      },
+      "pickerAddCompany": {
+        "other": "Aggiungi un'azienda"
+      },
+      "pickerPayoutsNote": {
+        "other": "Scegliendo qui un'azienda, {app} potrà leggere la data e il luogo di nascita, la cittadinanza e il telefono che hai salvato, per compilare il suo modulo per i pagamenti."
+      },
+      "pickerGroupLabel": {
+        "other": "Scegli un soggetto"
+      },
+      "pickerGrantFailed": {
+        "other": "Impossibile sceglierlo: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Questo selettore richiede il clientId dell'app su ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Impossibile caricare i tuoi soggetti."
+      },
+      "withheldInApps": { "other": "Salvato. Visibile solo nel tuo account elvix." },
+      "nameMismatch": { "other": "Il nome è diverso dal registro" },
+      "givenNameLabel": { "other": "Nome" },
+      "familyNameLabel": { "other": "Cognome" },
+      "eInvoiceTitle": { "other": "Dove vanno le fatture elettroniche?" },
+      "eInvoiceSubtitle": { "other": "Facoltativo. Compila solo ciò che la tua impresa ha; puoi aggiungerlo più tardi." },
+      "eInvoiceSubtitleIT": { "other": "Le aziende italiane ricevono le fatture tramite SDI: il tuo codice destinatario o la tua PEC." },
+      "eInvoiceSubtitleBE": { "other": "Le aziende belghe ricevono le fatture tramite Peppol: il tuo ID Peppol." },
+      "peppolIdLabel": { "other": "ID Peppol" },
+      "peppolIdHint": { "other": "Schema e numero, es. 0208:0123456789" },
+      "peppolIdInvalid": { "other": "Scrivilo come schema:numero, es. 0208:0123456789" },
+      "codiceDestinatarioLabel": { "other": "Codice destinatario SDI" },
+      "codiceInvalid": { "other": "7 lettere o cifre" },
+      "pecAddressLabel": { "other": "Indirizzo PEC" },
+      "leitwegIdLabel": { "other": "Leitweg-ID" },
+      "leitwegIdHint": { "other": "Ce l'hanno solo gli enti pubblici." },
+      "leitwegIdInvalid": { "other": "Non è un Leitweg-ID, es. 04011000-1234512345-06" },
+      "detailSectionEInvoice": { "other": "Fatturazione elettronica" },
+      "detailEInvoiceNone": { "other": "Non indicato" },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Il soggetto predefinito è condiviso tra tutte le app a cui accedi. Rimuoverlo significa che nessun soggetto sarà preselezionato da nessuna parte."
       }

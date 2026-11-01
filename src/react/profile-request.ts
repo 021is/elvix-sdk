@@ -53,8 +53,8 @@ async function outcome(res: Response | null, fallback: string): Promise<Outcome>
 
 /**
  * CRUD for one collection under `/api/account/profile/<resource>`: the list
- * reads `{ ok, <resource>: [...] }`, writes address a row by `?id=`. Nothing
- * rejects; a failed write resolves to its worded error.
+ * reads `{ ok, <resource>: [...] }`, writes address a row by `?id=`.
+ * Nothing rejects; a failed write resolves to its worded error.
  */
 export function profileCollection<Row, Input>(baseUrl: string, resource: string) {
   const path = `${baseUrl}/api/account/profile/${resource}`;

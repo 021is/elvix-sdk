@@ -1463,8 +1463,14 @@
       "typeChoiceSubtitle": {
         "other": "Determina las preguntas que vendrán a continuación."
       },
-      "step1of3": {
-        "other": "Paso 1 de 3"
+      "stepOfTotal": {
+        "other": "Paso {step} de {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "¿A dónde van las facturas?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "El correo electrónico al que se envían las facturas. Opcional."
       },
       "individualSubtitle": {
         "other": "Solo tú, sin negocio. Las facturas van a tu nombre personal."
@@ -1524,7 +1530,7 @@
         "other": "Fecha de nacimiento"
       },
       "dobSubtitle": {
-        "other": "Necesaria para facturar a tu nombre y KYC si un cliente la pide más adelante."
+        "other": "Opcional. Un proveedor de pagos puede pedirla para confirmar tu identidad."
       },
       "dobAgeError": {
         "other": "Debes ser mayor de 18 años para registrar una entidad."
@@ -1536,7 +1542,7 @@
         "other": "Lugar de nacimiento"
       },
       "placeOfBirthSubtitle": {
-        "other": "Ciudad tal como aparece en tu DNI. Necesario para facturación y KYC."
+        "other": "Opcional. La ciudad tal como aparece en tu documento de identidad, para la verificación de un proveedor de pagos."
       },
       "placeOfBirthCityLabel": {
         "other": "Ciudad"
@@ -1587,7 +1593,7 @@
         "other": "la administración emisora"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Ambos son opcionales. Añade el número fiscal local si quieres que aparezca en las facturas; el IVA solo si estás registrado en IVA. El registro mercantil se recoge en el siguiente paso."
+        "other": "Una factura necesita uno de los dos: tu NIF-IVA si estás registrado en IVA; si no, tu número fiscal local."
       },
       "localTaxNumberLabel": {
         "other": "Número fiscal local"
@@ -1653,7 +1659,7 @@
         "other": "Registro"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. El registro oficial donde está inscrita esta entidad."
+        "other": "Opcional. Handelsregister, Companies House, KvK: para un proveedor de pagos o un contrato; una factura no lo necesita."
       },
       "registrationNumberLabel": {
         "other": "Número de registro"
@@ -1925,6 +1931,61 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "La entidad predeterminada se comparte entre todas las aplicaciones a las que inicias sesión. Cambiarla aquí actualiza la selección automática en todas partes a la vez."
       },
+      "vatIdTitle": {
+        "other": "¿Cuál es el NIF-IVA?"
+      },
+      "vatIdSubtitle": {
+        "other": "Lo comprobamos con la autoridad fiscal y rellenamos lo que sabe."
+      },
+      "vatIdLabel": {
+        "other": "NIF-IVA"
+      },
+      "vatIdCountryNeeded": {
+        "other": "¿Qué país lo emitió?"
+      },
+      "noVatIdCta": {
+        "other": "Sin NIF-IVA"
+      },
+      "addressGapsHint": {
+        "other": "Una factura necesita la dirección completa. Añade lo que falta."
+      },
+      "pickerAddCompany": {
+        "other": "Añadir una empresa"
+      },
+      "pickerPayoutsNote": {
+        "other": "Al elegir aquí una empresa, {app} podrá leer la fecha y el lugar de nacimiento, la nacionalidad y el teléfono que guardaste, para rellenar su formulario de pagos."
+      },
+      "pickerGroupLabel": {
+        "other": "Elige una entidad"
+      },
+      "pickerGrantFailed": {
+        "other": "No se pudo elegir: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Este selector necesita el clientId de la app en ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "No se pudieron cargar tus entidades."
+      },
+      "withheldInApps": { "other": "Guardado. Solo se muestra en tu cuenta de elvix." },
+      "nameMismatch": { "other": "El nombre no coincide con el registro" },
+      "givenNameLabel": { "other": "Nombre" },
+      "familyNameLabel": { "other": "Apellidos" },
+      "eInvoiceTitle": { "other": "¿Adónde van las facturas electrónicas?" },
+      "eInvoiceSubtitle": { "other": "Opcional. Rellena solo lo que tenga tu empresa; puedes añadirlo más tarde." },
+      "eInvoiceSubtitleIT": { "other": "Las empresas italianas reciben las facturas a través del SDI: tu código de destinatario o tu correo certificado (PEC)." },
+      "eInvoiceSubtitleBE": { "other": "Las empresas belgas reciben las facturas por Peppol: tu ID de Peppol." },
+      "peppolIdLabel": { "other": "ID de Peppol" },
+      "peppolIdHint": { "other": "Esquema y número, p. ej. 0208:0123456789" },
+      "peppolIdInvalid": { "other": "Escríbelo como esquema:número, p. ej. 0208:0123456789" },
+      "codiceDestinatarioLabel": { "other": "Código SDI (codice destinatario)" },
+      "codiceInvalid": { "other": "7 letras o dígitos" },
+      "pecAddressLabel": { "other": "Dirección PEC" },
+      "leitwegIdLabel": { "other": "Leitweg-ID" },
+      "leitwegIdHint": { "other": "Solo lo tienen los organismos públicos." },
+      "leitwegIdInvalid": { "other": "No es un Leitweg-ID, p. ej. 04011000-1234512345-06" },
+      "detailSectionEInvoice": { "other": "Facturación electrónica" },
+      "detailEInvoiceNone": { "other": "Sin indicar" },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "La entidad predeterminada se comparte entre todas las aplicaciones a las que inicias sesión. Quitarla significa que no se preseleccionará ninguna entidad en ningún sitio."
       }

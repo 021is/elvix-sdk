@@ -16,15 +16,18 @@ import { localTaxIdMatches, registrationNumberMatches } from "./tax-validation";
  *                                the detail view PATCHes only its
  *                                own field.
  *
- * Required-field gates by type:
+ * Required-field gates by type: what an invoice needs (VAT Directive art. 226),
+ * nothing more (2026-11-01: birth data and registration are a payment
+ * provider's to ask, not an invoice's):
  *
- *   individual   → legalName · dateOfBirth · nationality · taxCountry
- *   sole_prop    → legalName · dateOfBirth · nationality · taxCountry
- *                  + registrationNumber + registrationBody
- *   company      → legalName · taxCountry
- *                  + registrationNumber + registrationBody
+ *   individual   → legalName (given + family) · taxCountry · taxId
+ *   sole_prop    → legalName (given + family) · taxCountry · vatId or taxId
+ *                  + address line, postal code, city, country
+ *   company      → legalName · taxCountry · vatId
+ *                  + address line, postal code, city, country
  *
- * Everything else is optional but recorded if provided.
+ * Everything else is optional but recorded if provided; a supplied tax or
+ * registration number must match its country's format.
  */
 
 export const LEGAL_ENTITY_TYPES = ["individual", "sole_prop", "company"] as const;
@@ -40,6 +43,26 @@ const COUNTRY_CODE = /^[A-Z]{2}$/;
  * the lot — allow up to 4 codes.
  */
 const NATIONALITY_LIST = /^[A-Z]{2}(,[A-Z]{2}){0,3}$/;
+
+/** E-invoice addresses: Peppol `<4-digit EAS>:<id>`, SDI code, Leitweg-ID. */
+export const PEPPOL_ID = /^\d{4}:[A-Za-z0-9._-]{1,64}$/;
+export const CODICE_DESTINATARIO = /^[A-Z0-9]{7}$/;
+export const LEITWEG_ID = /^[0-9]{2,12}(-[A-Za-z0-9]{1,30})?-[0-9]{2}$/;
+
+/** What an app was granted an entity for; each purpose reads its own fields. */
+export const LegalEntityPurpose = {
+  INVOICING: "invoicing",
+  PAYOUTS: "payouts",
+} as const;
+export type LegalEntityPurpose = (typeof LegalEntityPurpose)[keyof typeof LegalEntityPurpose];
+
+/** Does the legal name match the register's name for the VAT ID? (elvix's own check.) */
+export const VatNameMatch = {
+  MATCH: "match",
+  MISMATCH: "mismatch",
+  UNKNOWN: "unknown",
+} as const;
+export type VatNameMatch = (typeof VatNameMatch)[keyof typeof VatNameMatch];
 
 /**
  * Tax-validation level. Lifted into the schema so the SDK can
@@ -67,6 +90,10 @@ const legalEntityShape = z.object({
     .max(180, "Keep it under 180 characters")
     .regex(/\p{L}/u, "Must include at least one letter"),
   tradingName: z.string().trim().max(180).optional().nullable(),
+  // A natural person's name in its two parts (0.18): payment providers ask
+  // for both, and `legalName` is built from them.
+  givenName: z.string().trim().max(120).optional().nullable(),
+  familyName: z.string().trim().max(120).optional().nullable(),
 
   dateOfBirth: dateString.optional().nullable(),
   placeOfBirth: z.string().trim().max(140).optional().nullable(),
@@ -87,10 +114,10 @@ const legalEntityShape = z.object({
       "We don't validate tax IDs for this country yet",
     ),
   taxId: z.string().trim().max(40).optional().nullable(),
+  // The VAT ID only. Its verdict (`vatIdValidation` and the rest) is elvix's
+  // own, asked of the authority when the VAT ID is saved (0.18): a browser
+  // that sends one is ignored, since zod drops keys the shape does not name.
   vatId: z.string().trim().max(40).optional().nullable(),
-  vatIdValidation: z.enum(TAX_VALIDATION_LEVELS).optional(),
-  vatIdValidatedAt: z.string().datetime().optional().nullable(),
-  vatIdValidatedName: z.string().trim().max(240).optional().nullable(),
 
   registrationNumber: z.string().trim().max(80).optional().nullable(),
   registrationBody: z.string().trim().max(180).optional().nullable(),
@@ -98,6 +125,19 @@ const legalEntityShape = z.object({
 
   contactEmail: z.string().trim().email("Enter a real email").max(240).optional().nullable(),
   contactPhone: z.string().trim().max(40).optional().nullable(),
+
+  // Where e-invoices go (0.18), each optional: a Peppol participant
+  // (`<EAS scheme>:<identifier>`), Italy's SDI code or certified email, and a
+  // German public body's Leitweg-ID.
+  peppolId: z.string().trim().regex(PEPPOL_ID, "Enter scheme:identifier").optional().nullable(),
+  codiceDestinatario: z
+    .string()
+    .trim()
+    .regex(CODICE_DESTINATARIO, "7 letters or digits")
+    .optional()
+    .nullable(),
+  pecAddress: z.string().trim().email("Enter a real email").max(240).optional().nullable(),
+  leitwegId: z.string().trim().regex(LEITWEG_ID, "Enter a Leitweg-ID").optional().nullable(),
 
   // Embedded registered address — same shape as UserAddress, but
   // stored on the entity row (snapshot, not FK).
@@ -124,13 +164,13 @@ const legalEntityShape = z.object({
 type Shape = z.infer<typeof legalEntityShape>;
 type Report = (path: keyof Shape, message: string) => void;
 
-/** Individual + sole-prop are natural persons: DOB, nationality, place of
- *  birth, and a legal name of at least two letter-bearing words (given +
- *  family). Companies may have single-word names ("Apple", "Edvone"). */
+/** Individual + sole-prop are natural persons: the name in its two parts and
+ *  a legal name of at least two letter-bearing words. Birth date, place and
+ *  nationality are optional (a payment provider asks for them, an invoice
+ *  does not). Companies may have single-word names ("Apple", "Edvone"). */
 function checkNaturalPerson(val: Shape, report: Report): void {
-  if (!val.dateOfBirth) report("dateOfBirth", "Required");
-  if (!val.nationality) report("nationality", "Required");
-  if (!val.placeOfBirth) report("placeOfBirth", "Required");
+  if (!val.givenName?.trim()) report("givenName", "Required");
+  if (!val.familyName?.trim()) report("familyName", "Required");
   const words =
     val.legalName
       ?.trim()
@@ -141,13 +181,15 @@ function checkNaturalPerson(val: Shape, report: Report): void {
 
 /** Tax-id gating mirrors the wizard's TaxIdsView:
  *    individual → local tax number required, VAT hidden
- *    sole_prop  → both optional (registration is the canonical business
- *                 identity for sole props)
+ *    sole_prop  → a VAT ID, or else the local tax number (an invoice needs
+ *                 one: a German Kleinunternehmer prints the Steuernummer,
+ *                 §14(4) Nr. 2 UStG)
  *    company    → VAT required, local tax number optional
  *  A supplied local number must match its country's format. */
 function checkTaxIds(val: Shape, report: Report): void {
-  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  if (val.type === "individual" && !val.taxId?.trim()) report("taxId", "Required");
+  const soleWithoutVat = val.type === "sole_prop" && !val.vatId?.trim();
+  const taxIdRequired = val.type === "individual" || soleWithoutVat;
+  if (taxIdRequired && !val.taxId?.trim()) report("taxId", "Required");
   if (val.taxId?.trim() && val.taxCountry && !localTaxIdMatches(val.taxCountry, val.taxId)) {
     report("taxId", `Doesn't match the expected format for ${val.taxCountry}`);
   }
@@ -155,18 +197,23 @@ function checkTaxIds(val: Shape, report: Report): void {
   if (val.type === "company" && !val.vatId?.trim()) report("vatId", "Required");
 }
 
-/** Sole-prop + company are registered businesses: a registration number and
- *  its issuing body. A supplied number must match its country's format. */
-function checkRegistration(val: Shape, report: Report, registered: boolean): void {
-  if (registered && !val.registrationNumber) {
-    report("registrationNumber", "Required for sole proprietorships and companies");
-  }
-  if (registered && !val.registrationBody) {
-    report("registrationBody", "Required — the issuing authority");
-  }
+/** A register number is optional (an invoice does not carry the buyer's);
+ *  one that is given must match its country's format. */
+function checkRegistration(val: Shape, report: Report): void {
   const number = val.registrationNumber;
   if (number?.trim() && val.taxCountry && !registrationNumberMatches(val.taxCountry, number)) {
     report("registrationNumber", `Doesn't match the expected format for ${val.taxCountry}`);
+  }
+}
+
+/** An invoice to a business carries its full address (EU VAT Directive art.
+ *  226(5)): street, postal code, city and country, so a business cannot be
+ *  saved without them. */
+function checkBusinessAddress(val: Shape, report: Report, registered: boolean): void {
+  if (!registered) return;
+  const parts = ["addressLine1", "addressPostalCode", "addressCity", "addressCountry"] as const;
+  for (const part of parts) {
+    if (!val[part]?.trim()) report(part, "Required for an invoice");
   }
 }
 
@@ -176,7 +223,9 @@ export const legalEntitySchema = legalEntityShape.superRefine((val, ctx) => {
   if (val.type === "individual" || val.type === "sole_prop") checkNaturalPerson(val, report);
   checkTaxIds(val, report);
   // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  checkRegistration(val, report, val.type === "sole_prop" || val.type === "company");
+  const registered = val.type === "sole_prop" || val.type === "company";
+  checkRegistration(val, report);
+  checkBusinessAddress(val, report, registered);
 });
 
 export type LegalEntityInput = z.infer<typeof legalEntitySchema>;
@@ -189,12 +238,46 @@ export type LegalEntityInput = z.infer<typeof legalEntitySchema>;
 export const legalEntityPatchSchema = legalEntityShape.partial();
 export type LegalEntityPatchInput = z.infer<typeof legalEntityPatchSchema>;
 
+/**
+ * The VAT check elvix ran on save: set by the server only, never input. The
+ * two newest fields are optional, so a host on an older elvix gets
+ * `undefined` rather than a type that lies.
+ */
+export type VatVerdict = {
+  vatIdValidation: TaxValidationLevel;
+  vatIdValidatedAt: string | null;
+  /** The authority's registered name; null when it shares none (VIES for DE). */
+  vatIdValidatedName: string | null;
+  /** The authority's registered address, one line, when it shares one. */
+  vatIdValidatedAddress?: string | null;
+  /** VIES's consultation number; only issued when a requester VAT ID is sent. */
+  vatIdRequestId?: string | null;
+};
+
+/**
+ * What elvix works out on every read (0.18), never input: all optional, so a
+ * host on an older elvix gets `undefined`.
+ */
+export type ServerComputed = {
+  /** Inside an app the personal fields come back null: they are write-only
+   *  there and shown only in the user's elvix account. */
+  withheld?: boolean;
+  /** The legal name against the register's name for this VAT ID. */
+  vatIdNameMatch?: VatNameMatch;
+  /** EAS codes for an e-invoice (`"9930"` for a German VAT ID), or null. */
+  vatIdScheme?: string | null;
+  taxIdScheme?: string | null;
+  registrationNumberScheme?: string | null;
+};
+
 /** Server-emitted record. Adds audit fields, normalises dates to ISO. */
 // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-export type LegalEntityRecord = Omit<LegalEntityInput, "dateOfBirth" | "registeredSince"> & {
-  id: string;
-  dateOfBirth: string | null;
-  registeredSince: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
+export type LegalEntityRecord = Omit<LegalEntityInput, "dateOfBirth" | "registeredSince"> &
+  VatVerdict &
+  ServerComputed & {
+    id: string;
+    dateOfBirth: string | null;
+    registeredSince: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };

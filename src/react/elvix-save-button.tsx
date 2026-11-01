@@ -197,6 +197,8 @@ function KbdHint({ text }: { text: string }) {
   // Inline (not absolute) so the button grows naturally to fit
   // label + hint. The previous absolute layout overlapped the label
   // on auto-width buttons (e.g. `!w-auto` overrides in wizards).
+  // `elvix-kbd-hint` (hints.css) hides it on a touch-only device, where
+  // there is no Enter to press; `--elvix-key-hints` overrides either way.
   return (
     <kbd
       aria-hidden
@@ -205,7 +207,7 @@ function KbdHint({ text }: { text: string }) {
         color: "color-mix(in srgb, var(--elvix-on-primary) 85%, transparent)",
       }}
       className={
-        "inline-flex items-center px-1.5 py-0.5 " +
+        "elvix-kbd-hint items-center px-1.5 py-0.5 " +
         "rounded-[6px] text-[10px] font-medium " +
         "group-disabled:opacity-50"
       }

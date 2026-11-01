@@ -45,6 +45,12 @@ export const ElvixWebhookEventType = {
   USER_AVATAR_CHANGED: "user.avatar_changed",
   USER_BANNER_CHANGED: "user.banner_changed",
   USER_IDENTITY_CHANGED: "user.identity_changed",
+
+  // ── Legal entities a user picked for your app (0.18) ─────────
+  // Sent only to an application holding the entity's grant.
+  USER_LEGAL_ENTITY_UPDATED: "user.legal_entity_updated",
+  USER_LEGAL_ENTITY_DELETED: "user.legal_entity_deleted",
+  USER_LEGAL_ENTITY_REVOKED: "user.legal_entity_revoked",
 } as const;
 export type ElvixWebhookEventType =
   (typeof ElvixWebhookEventType)[keyof typeof ElvixWebhookEventType];
@@ -118,6 +124,18 @@ export type UserProfileData = UserRef & {
   changed: Array<"name" | "email" | "username" | "avatar" | "banner" | "identity">;
 };
 
+/** A granted legal entity changed, was deleted, or its grant was revoked:
+ *  read it again with `getElvixLegalEntity` (deleted and revoked answer
+ *  `not_found`). What you already issued keeps its own snapshot. */
+export type UserLegalEntityData = {
+  userId: string;
+  entityId: string;
+  /** The entity's `updatedAt` at the event; compare with your snapshot. */
+  updatedAt: string;
+  /** The grant this event is about (an app may hold one per purpose). */
+  purpose?: "invoicing" | "payouts";
+};
+
 // ── Discriminated union ─────────────────────────────────────────
 
 export type ElvixWebhookEvent =
@@ -148,7 +166,11 @@ export type ElvixWebhookEvent =
   | Base<"user.username_changed", UserProfileData>
   | Base<"user.avatar_changed", UserProfileData>
   | Base<"user.banner_changed", UserProfileData>
-  | Base<"user.identity_changed", UserProfileData>;
+  | Base<"user.identity_changed", UserProfileData>
+  // Legal entities
+  | Base<"user.legal_entity_updated", UserLegalEntityData>
+  | Base<"user.legal_entity_deleted", UserLegalEntityData>
+  | Base<"user.legal_entity_revoked", UserLegalEntityData>;
 
 /** Outcome of `verifyElvixWebhook`. Discriminated on `ok`. */
 export type ElvixWebhookVerifyResult =

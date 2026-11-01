@@ -1462,8 +1462,14 @@
       "typeChoiceSubtitle": {
         "other": "Bepaalt welke vragen we hierna stellen."
       },
-      "step1of3": {
-        "other": "Stap 1 van 3"
+      "stepOfTotal": {
+        "other": "Stap {step} van {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Waar moeten facturen heen?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "Het e-mailadres waar facturen naartoe gaan. Optioneel."
       },
       "individualSubtitle": {
         "other": "Alleen u, geen bedrijf. Facturen worden op uw persoonlijke naam gezet."
@@ -1523,7 +1529,7 @@
         "other": "Geboortedatum"
       },
       "dobSubtitle": {
-        "other": "Vereist voor facturering onder uw naam en KYC als een klant er later om vraagt."
+        "other": "Optioneel. Een betaalprovider kan erom vragen om uw identiteit te bevestigen."
       },
       "dobAgeError": {
         "other": "U moet 18 jaar of ouder zijn om een entiteit te registreren."
@@ -1535,7 +1541,7 @@
         "other": "Geboorteplaats"
       },
       "placeOfBirthSubtitle": {
-        "other": "Stad zoals deze op uw ID staat. Vereist voor facturering en KYC."
+        "other": "Optioneel. De stad zoals die op uw ID staat, voor de identiteitscontrole van een betaalprovider."
       },
       "placeOfBirthCityLabel": {
         "other": "Stad"
@@ -1586,7 +1592,7 @@
         "other": "de uitgevende instantie"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Beide zijn optioneel. Voeg het lokale belastingnummer toe als u dat op facturen wilt; btw alleen als u btw-geregistreerd bent. De bedrijfsregistratie wordt in de volgende stap vastgelegd."
+        "other": "Een factuur heeft er één nodig: uw btw-nummer als u btw-geregistreerd bent, anders uw lokale belastingnummer."
       },
       "localTaxNumberLabel": {
         "other": "Lokaal belastingnummer"
@@ -1652,7 +1658,7 @@
         "other": "Registratie"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. Het officiële register waar deze entiteit is geregistreerd."
+        "other": "Optioneel. Handelsregister, Companies House, KvK: voor een betaalprovider of een contract; een factuur heeft het niet nodig."
       },
       "registrationNumberLabel": {
         "other": "Registratienummer"
@@ -1924,6 +1930,61 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "De standaardentiteit wordt gedeeld met elke app waar u zich bij aanmeldt. Door het hier te wijzigen, wordt de automatische keuze overal tegelijk bijgewerkt."
       },
+      "vatIdTitle": {
+        "other": "Wat is het btw-nummer?"
+      },
+      "vatIdSubtitle": {
+        "other": "We controleren het bij de belastingdienst en vullen in wat die weet."
+      },
+      "vatIdLabel": {
+        "other": "Btw-nummer"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Welk land heeft het uitgegeven?"
+      },
+      "noVatIdCta": {
+        "other": "Geen btw-nummer"
+      },
+      "addressGapsHint": {
+        "other": "Een factuur heeft het volledige adres nodig. Vul aan wat ontbreekt."
+      },
+      "pickerAddCompany": {
+        "other": "Bedrijf toevoegen"
+      },
+      "pickerPayoutsNote": {
+        "other": "Als u hier een bedrijf kiest, kan {app} de opgeslagen geboortedatum, geboorteplaats, nationaliteit en telefoon lezen om zijn uitbetalingsformulier in te vullen."
+      },
+      "pickerGroupLabel": {
+        "other": "Kies een entiteit"
+      },
+      "pickerGrantFailed": {
+        "other": "Kon deze niet kiezen: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Deze keuzelijst heeft de clientId van de app op ElvixProvider nodig."
+      },
+      "pickerLoadFailed": {
+        "other": "Uw entiteiten konden niet worden geladen."
+      },
+      "withheldInApps": { "other": "Opgeslagen. Alleen zichtbaar in je elvix-account." },
+      "nameMismatch": { "other": "Naam wijkt af van het register" },
+      "givenNameLabel": { "other": "Voornaam" },
+      "familyNameLabel": { "other": "Achternaam" },
+      "eInvoiceTitle": { "other": "Waar gaan e-facturen heen?" },
+      "eInvoiceSubtitle": { "other": "Optioneel. Vul alleen in wat je bedrijf heeft; je kunt het later aanvullen." },
+      "eInvoiceSubtitleIT": { "other": "Italiaanse bedrijven ontvangen facturen via SDI: je ontvangerscode of gecertificeerd e-mailadres (PEC)." },
+      "eInvoiceSubtitleBE": { "other": "Belgische bedrijven ontvangen facturen via Peppol: je Peppol-ID." },
+      "peppolIdLabel": { "other": "Peppol-ID" },
+      "peppolIdHint": { "other": "Schema en nummer, bijv. 0208:0123456789" },
+      "peppolIdInvalid": { "other": "Vul het in als schema:nummer, bijv. 0208:0123456789" },
+      "codiceDestinatarioLabel": { "other": "SDI-code (codice destinatario)" },
+      "codiceInvalid": { "other": "7 letters of cijfers" },
+      "pecAddressLabel": { "other": "PEC-adres" },
+      "leitwegIdLabel": { "other": "Leitweg-ID" },
+      "leitwegIdHint": { "other": "Alleen overheidsinstanties hebben er een." },
+      "leitwegIdInvalid": { "other": "Dit is geen Leitweg-ID, bijv. 04011000-1234512345-06" },
+      "detailSectionEInvoice": { "other": "E-facturatie" },
+      "detailEInvoiceNone": { "other": "Niet ingesteld" },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "De standaardentiteit wordt gedeeld met elke app waar u zich bij aanmeldt. Door het te verwijderen, wordt nergens een entiteit vooraf geselecteerd."
       }

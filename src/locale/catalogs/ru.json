@@ -1469,8 +1469,14 @@
       "typeChoiceSubtitle": {
         "other": "От этого зависят вопросы, которые мы зададим дальше."
       },
-      "step1of3": {
-        "other": "Шаг 1 из 3"
+      "stepOfTotal": {
+        "other": "Шаг {step} из {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Куда отправлять счета?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "Адрес электронной почты, на который приходят счета. Необязательно."
       },
       "individualSubtitle": {
         "other": "Только вы, без бизнеса. Счета на ваше личное имя."
@@ -1530,7 +1536,7 @@
         "other": "Дата рождения"
       },
       "dobSubtitle": {
-        "other": "Требуется для счетов на ваше имя и KYC, если позже спросит клиент."
+        "other": "Необязательно. Платёжный провайдер может запросить её, чтобы подтвердить вашу личность."
       },
       "dobAgeError": {
         "other": "Чтобы зарегистрировать лицо, вам должно быть 18 лет или больше."
@@ -1542,7 +1548,7 @@
         "other": "Место рождения"
       },
       "placeOfBirthSubtitle": {
-        "other": "Город, как указан в вашем удостоверении личности. Требуется для счетов и KYC."
+        "other": "Необязательно. Город, как указан в вашем удостоверении личности, для проверки личности платёжным провайдером."
       },
       "placeOfBirthCityLabel": {
         "other": "Город"
@@ -1593,7 +1599,7 @@
         "other": "выдающий орган"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Оба поля опциональны. Добавьте местный налоговый номер, если хотите видеть его в счетах; VAT только если вы зарегистрированы как плательщик VAT. Регистрация бизнеса фиксируется на следующем шаге."
+        "other": "Для счёта нужен один из них: ваш номер VAT, если вы плательщик VAT, иначе местный налоговый номер."
       },
       "localTaxNumberLabel": {
         "other": "Местный налоговый номер"
@@ -1659,7 +1665,7 @@
         "other": "Регистрация"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. Официальный реестр, где зарегистрировано это лицо."
+        "other": "Необязательно. Handelsregister, Companies House, KvK: для платёжного провайдера или договора; для счёта это не нужно."
       },
       "registrationNumberLabel": {
         "other": "Номер регистрации"
@@ -1931,6 +1937,61 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "Основное лицо общее для всех приложений, в которые вы входите. Переключение здесь обновляет автоматический выбор везде сразу."
       },
+      "vatIdTitle": {
+        "other": "Какой у вас номер плательщика НДС?"
+      },
+      "vatIdSubtitle": {
+        "other": "Мы проверим его в налоговой службе и заполним то, что ей известно."
+      },
+      "vatIdLabel": {
+        "other": "Номер НДС"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Какая страна его выдала?"
+      },
+      "noVatIdCta": {
+        "other": "Нет номера НДС"
+      },
+      "addressGapsHint": {
+        "other": "Для счёта нужен полный адрес. Добавьте недостающее."
+      },
+      "pickerAddCompany": {
+        "other": "Добавить компанию"
+      },
+      "pickerPayoutsNote": {
+        "other": "Выбрав здесь компанию, вы разрешаете {app} прочитать сохранённые дату и место рождения, гражданство и телефон, чтобы заполнить форму выплат."
+      },
+      "pickerGroupLabel": {
+        "other": "Выберите лицо"
+      },
+      "pickerGrantFailed": {
+        "other": "Не удалось выбрать: {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Этому выбору нужен clientId приложения в ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Не удалось загрузить ваши лица."
+      },
+      "withheldInApps": { "other": "Сохранено. Видно только в вашем аккаунте elvix." },
+      "nameMismatch": { "other": "Название не совпадает с реестром" },
+      "givenNameLabel": { "other": "Имя" },
+      "familyNameLabel": { "other": "Фамилия" },
+      "eInvoiceTitle": { "other": "Куда отправлять электронные счета?" },
+      "eInvoiceSubtitle": { "other": "Необязательно. Заполните только то, что есть у вашей компании; можно добавить позже." },
+      "eInvoiceSubtitleIT": { "other": "Итальянские компании получают счета через SDI: ваш код получателя или сертифицированная почта (PEC)." },
+      "eInvoiceSubtitleBE": { "other": "Бельгийские компании получают счета через Peppol: ваш Peppol ID." },
+      "peppolIdLabel": { "other": "Peppol ID" },
+      "peppolIdHint": { "other": "Схема и номер, например 0208:0123456789" },
+      "peppolIdInvalid": { "other": "Введите в виде схема:номер, например 0208:0123456789" },
+      "codiceDestinatarioLabel": { "other": "Код SDI (codice destinatario)" },
+      "codiceInvalid": { "other": "7 букв или цифр" },
+      "pecAddressLabel": { "other": "Адрес PEC" },
+      "leitwegIdLabel": { "other": "Leitweg-ID" },
+      "leitwegIdHint": { "other": "Есть только у государственных учреждений." },
+      "leitwegIdInvalid": { "other": "Это не Leitweg-ID, например 04011000-1234512345-06" },
+      "detailSectionEInvoice": { "other": "Электронные счета" },
+      "detailEInvoiceNone": { "other": "Не указано" },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Основное лицо общее для всех приложений, в которые вы входите. Если убрать его, ни одно лицо не будет выбрано заранее нигде."
       }

@@ -5,25 +5,40 @@
  */
 
 import type { TaxIdValidationState } from "./elvix-tax-id-input";
-import { View } from "./legal-entity-flow";
-import type { LegalEntityInput, LegalEntityRecord } from "./legal-entity-schema";
+import { needsPersonSteps, View } from "./legal-entity-flow";
+import {
+  CODICE_DESTINATARIO,
+  LEITWEG_ID,
+  type LegalEntityInput,
+  type LegalEntityRecord,
+  type LegalEntityType,
+  PEPPOL_ID,
+} from "./legal-entity-schema";
 import type { PlaceDetails } from "./legal-entity-types";
 import type { LegalEntityDraft } from "./use-legal-entity-draft";
 
 type Patch = Partial<LegalEntityInput>;
 
+/**
+ * Is the local tax number required? For a person always; for a sole
+ * proprietor without a VAT ID too, since it is then the number the invoice
+ * prints. The tax pane's label and its Continue gate both ask this, so they
+ * cannot disagree: they did, and "(optional)" sat over a field Continue
+ * waited for.
+ */
+export function localTaxIdRequired(type: LegalEntityType | null, vatId: string): boolean {
+  return type === "individual" || (type === "sole_prop" && !vatId.trim());
+}
+
 const orNull = (s: string | null | undefined) => s?.trim() || null;
 
-/** The VAT fields, with the validation level the user actually reached. */
+/**
+ * The tax identifiers. Never the VAT check's verdict: elvix asks the
+ * authority itself when it saves a VAT ID (0.18). Until then this sent the
+ * level the browser said it reached, which anyone could set to "live".
+ */
 function vatFields(d: LegalEntityDraft): Patch {
-  const level = d.vatValidation.level;
-  return {
-    taxId: orNull(d.taxId),
-    vatId: orNull(d.vatId),
-    vatIdValidation: level === "live" || level === "format" ? level : "none",
-    vatIdValidatedAt: level === "live" ? new Date().toISOString() : null,
-    vatIdValidatedName: d.vatValidation.name,
-  };
+  return { taxId: orNull(d.taxId), vatId: orNull(d.vatId) };
 }
 
 function addressFields(a: PlaceDetails | null, line2: string): Patch {
@@ -44,9 +59,49 @@ function addressFields(a: PlaceDetails | null, line2: string): Patch {
   };
 }
 
+/**
+ * A natural person's name: both parts, and the legal name built from them.
+ * A company keeps its one legal name.
+ */
+function nameFields(d: LegalEntityDraft): Patch {
+  if (!needsPersonSteps(d.type)) return { legalName: d.legalName.trim() };
+  const givenName = d.givenName.trim();
+  const familyName = d.familyName.trim();
+  return { givenName, familyName, legalName: `${givenName} ${familyName}` };
+}
+
+/** Where e-invoices go; an empty field clears it. */
+function eInvoiceFields(d: LegalEntityDraft): Patch {
+  return {
+    peppolId: orNull(d.peppolId),
+    codiceDestinatario: orNull(d.codiceDestinatario.toUpperCase()),
+    pecAddress: orNull(d.pecAddress),
+    leitwegId: orNull(d.leitwegId),
+  };
+}
+
+/** The invoice email may be left empty, never malformed. */
+export function invoiceEmailReady(email: string): boolean {
+  const v = email.trim();
+  return v === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+
+/** The e-invoice step may be left with any field empty, never with a malformed one. */
+export function eInvoiceReady(d: LegalEntityDraft): boolean {
+  const ok = (v: string, rx: RegExp) => v.trim() === "" || rx.test(v.trim());
+  const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return (
+    ok(d.peppolId, PEPPOL_ID) &&
+    ok(d.codiceDestinatario.toUpperCase(), CODICE_DESTINATARIO) &&
+    ok(d.pecAddress, email) &&
+    ok(d.leitwegId, LEITWEG_ID)
+  );
+}
+
 /** What each editable step writes when it is edited on its own. */
 const STEP_PATCH: Partial<Record<View, (d: LegalEntityDraft) => Patch>> = {
-  [View.LEGAL_NAME]: (d) => ({ legalName: d.legalName.trim() }),
+  [View.LEGAL_NAME]: nameFields,
+  [View.E_INVOICE]: eInvoiceFields,
   [View.TRADING_NAME]: (d) => ({ tradingName: orNull(d.tradingName) }),
   [View.DOB]: (d) => ({ dateOfBirth: d.dob || null }),
   [View.PLACE_OF_BIRTH]: (d) => ({
@@ -77,10 +132,16 @@ export function stepPatch(step: View, draft: LegalEntityDraft): Patch | null {
 /** Whether `step` has what it needs to be left forwards. */
 export function stepReady(step: View, d: LegalEntityDraft): boolean {
   switch (step) {
+    case View.VAT_ID:
+      return d.withoutVatId || (d.vatId.trim() !== "" && d.taxCountry !== "");
     case View.LEGAL_NAME:
-      return d.legalName.trim() !== "";
-    case View.REGISTRATION:
-      return d.registrationNumber.trim() !== "" && d.registrationBody.trim() !== "";
+      return needsPersonSteps(d.type)
+        ? d.givenName.trim() !== "" && d.familyName.trim() !== ""
+        : d.legalName.trim() !== "";
+    case View.E_INVOICE:
+      return eInvoiceReady(d);
+    case View.INVOICE_EMAIL:
+      return invoiceEmailReady(d.contactEmail);
     case View.ADDRESS_APT_FLOOR:
       return d.address !== null;
     default:
@@ -96,6 +157,7 @@ export function draftToEntityInput(d: LegalEntityDraft): LegalEntityInput | null
     label: null,
     isDefault: false,
     legalName: d.legalName,
+    ...nameFields(d),
     tradingName: d.tradingName || null,
     dateOfBirth: d.dob || null,
     placeOfBirth: d.placeOfBirth || null,
@@ -108,6 +170,7 @@ export function draftToEntityInput(d: LegalEntityDraft): LegalEntityInput | null
     registeredSince: d.registeredSince || null,
     contactEmail: orNull(d.contactEmail),
     contactPhone: orNull(d.contactPhone),
+    ...eInvoiceFields(d),
     ...addressFields(d.address, d.addressLine2),
   };
 }
@@ -121,7 +184,21 @@ export function prefillFrom(step: View, e: LegalEntityRecord): Partial<LegalEnti
   const base = { type: e.type };
   switch (step) {
     case View.LEGAL_NAME:
-      return { ...base, legalName: e.legalName };
+      return {
+        ...base,
+        legalName: e.legalName,
+        givenName: e.givenName ?? "",
+        familyName: e.familyName ?? "",
+      };
+    case View.E_INVOICE:
+      return {
+        ...base,
+        taxCountry: e.taxCountry,
+        peppolId: e.peppolId ?? "",
+        codiceDestinatario: e.codiceDestinatario ?? "",
+        pecAddress: e.pecAddress ?? "",
+        leitwegId: e.leitwegId ?? "",
+      };
     case View.TRADING_NAME:
       return { ...base, tradingName: e.tradingName ?? "" };
     case View.DOB:
@@ -147,6 +224,7 @@ export function prefillFrom(step: View, e: LegalEntityRecord): Partial<LegalEnti
           name: e.vatIdValidatedName ?? null,
           authority: null,
           normalisedId: e.vatId ?? "",
+          address: e.vatIdValidatedAddress ?? null,
         },
       };
     case View.REGISTRATION:

@@ -30,19 +30,14 @@ import { ElvixInput } from "./elvix-input";
 import { useElvixContext } from "./elvix-provider";
 import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { ElvixTaxIdInput, type TaxIdValidationState } from "./elvix-tax-id-input";
-import {
-  regNumberFormatHint,
-  regNumberPlaceholder,
-  taxIdFormatHint,
-  taxIdPlaceholder,
-  vatPlaceholder,
-} from "./legal-entity-copy";
+import { AddressGapFields, addressGaps } from "./legal-entity-address-gaps";
+import { taxIdFormatHint, taxIdPlaceholder, vatPlaceholder } from "./legal-entity-copy";
+import { localTaxIdRequired } from "./legal-entity-payload";
 import {
   ChoiceCard,
   CountryChip,
   Heading,
   Subtitle,
-  VerifyingBadge,
   WizardHeader,
 } from "./legal-entity-primitives";
 import type { LegalEntityType } from "./legal-entity-schema";
@@ -51,15 +46,21 @@ import { MAPS_MISSING_CLIENT_ID, mapsUrl } from "./maps-url";
 import { STACK_3 } from "./pane-layout";
 import { isSameOrigin } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
-import { localTaxIdMatches, registrationNumberMatches } from "./tax-validation";
+import { localTaxIdMatches } from "./tax-validation";
 
 /** Nationality is multi-select but capped; more than a few is a data-entry error. */
 const MAX_NATIONALITIES = 4;
 
 export function TypeChoiceView({
+  types,
+  total,
   onPick,
   onBack,
 }: {
+  /** The types offered; all three when omitted. */
+  types?: readonly LegalEntityType[];
+  /** The steps the flow asks, for "Step 1 of N". */
+  total: number;
   onPick: (t: LegalEntityType) => void;
   onBack: () => void;
 }) {
@@ -91,11 +92,14 @@ export function TypeChoiceView({
   ];
   return (
     <div className="flex h-full flex-col">
-      <WizardHeader stepLabel={t("legalEntities.step1of3")} onBack={onBack} />
+      <WizardHeader
+        stepLabel={t("legalEntities.stepOfTotal", { step: 1, total })}
+        onBack={onBack}
+      />
       <Heading>{t("legalEntities.typeChoiceTitle")}</Heading>
       <Subtitle>{t("legalEntities.typeChoiceSubtitle")}</Subtitle>
       <div className="mt-4 flex flex-col gap-2">
-        {TYPES.map((opt) => (
+        {TYPES.filter((opt) => !types || types.includes(opt.type)).map((opt) => (
           <ChoiceCard
             key={opt.type}
             onClick={() => onPick(opt.type)}
@@ -212,6 +216,7 @@ export function DateView({
   minDate,
   maxDate,
   outOfRangeMessage,
+  optional = false,
 }: {
   title: string;
   subtitle: string;
@@ -225,6 +230,8 @@ export function DateView({
   /** ISO yyyy-mm-dd upper bound (inclusive). Defaults to today. */
   maxDate?: string;
   outOfRangeMessage?: string;
+  /** Empty may continue, as "Skip". */
+  optional?: boolean;
 }) {
   const t = useT();
   const fallbackOutOfRangeMessage = outOfRangeMessage ?? t("legalEntities.dobOutOfRange");
@@ -235,7 +242,8 @@ export function DateView({
   // `max` HTML attrs are only soft hints. Validate in JS too.
   const parseable = formatOk && !Number.isNaN(new Date(value).getTime());
   const withinRange = parseable && value <= upper && (minDate ? value >= minDate : true);
-  const valid = parseable && withinRange;
+  const skip = optional && value === "";
+  const valid = skip || (parseable && withinRange);
   const showError = formatOk && parseable && !withinRange;
   return (
     <form
@@ -270,7 +278,7 @@ export function DateView({
           state="idle"
           disabled={!valid}
           onClick={() => valid && onConfirm()}
-          label={t("common.continue")}
+          label={t(skip ? "common.skip" : "common.continue")}
           savedLabel={t("common.continue")}
           hint={t("common.enterHint")}
           className="!w-auto !px-5"
@@ -348,11 +356,14 @@ export function NationalityView({
   onChange,
   onConfirm,
   onBack,
+  optional = false,
 }: {
   value: string;
   onChange: (next: string) => void;
   onConfirm: () => void;
   onBack: () => void;
+  /** None picked may continue, as "Skip". */
+  optional?: boolean;
 }) {
   const t = useT();
   const codes = value
@@ -370,7 +381,8 @@ export function NationalityView({
   };
   const remove = (code: string) => setCodes(codes.filter((c) => c !== code));
   const atCap = codes.length >= MAX_NATIONALITIES;
-  const valid = codes.length >= 1;
+  const skip = optional && codes.length === 0;
+  const valid = skip || codes.length >= 1;
 
   return (
     <div className="flex h-full flex-col">
@@ -417,7 +429,7 @@ export function NationalityView({
           state="idle"
           disabled={!valid}
           onClick={() => valid && onConfirm()}
-          label={t("common.continue")}
+          label={t(skip ? "common.skip" : "common.continue")}
           savedLabel={t("common.continue")}
           hint={null}
           className="!w-auto !px-5"
@@ -429,6 +441,7 @@ export function NationalityView({
 
 export function TaxIdsView({
   entityType,
+  showVat: offerVat = true,
   country,
   taxId,
   vatId,
@@ -440,6 +453,8 @@ export function TaxIdsView({
   onBack,
 }: {
   entityType: LegalEntityType | null;
+  /** Off when the user already said they have no VAT ID. */
+  showVat?: boolean;
   country: string;
   taxId: string;
   vatId: string;
@@ -453,7 +468,7 @@ export function TaxIdsView({
   const t = useT();
   const isIndividual = entityType === "individual";
   // Natural persons hold no VAT id; a company must have one.
-  const showVat = !isIndividual;
+  const showVat = !isIndividual && offerVat;
   const vatRequired = entityType === "company";
   const taxIdFormatOk = !taxId.trim() || localTaxIdMatches(country, taxId.trim());
   const blockReason = taxIdsBlockReason(
@@ -487,7 +502,7 @@ export function TaxIdsView({
         <label className="block">
           <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
             {t("legalEntities.localTaxNumberLabel")}
-            {isIndividual ? "" : t("common.optionalSuffix")}
+            {localTaxIdRequired(entityType, vatId) ? "" : t("common.optionalSuffix")}
           </span>
           <ElvixInput
             type="text"
@@ -538,8 +553,8 @@ export function TaxIdsView({
  *
  *   Individual → the local tax number (Steuernummer, NINO, …) is required;
  *                there is no VAT id.
- *   Sole prop  → both optional: the business identity comes from the
- *                registration pane next, VAT only if VAT-registered.
+ *   Sole prop  → the VAT id, or else the local tax number: an invoice prints
+ *                one (a Kleinunternehmer's Steuernummer, §14(4) Nr. 2 UStG).
  *   Company    → VAT required; the local number is optional (some
  *                jurisdictions issue only one).
  *
@@ -559,308 +574,16 @@ export function taxIdsBlockReason(
 ): string | null {
   const tax = v.taxId.trim();
   const vat = v.vatId.trim();
-  if (v.type === "individual" && !tax) return t("legalEntities.blockReasonTaxIdRequired");
+  if (localTaxIdRequired(v.type, vat) && !tax) return t("legalEntities.blockReasonTaxIdRequired");
   if (tax && !localTaxIdMatches(v.country, tax)) {
     return t("legalEntities.blockReasonTaxIdFormat", {
       country: findCountry(v.country)?.name ?? v.country,
       hint: taxIdFormatHint(v.country, t),
     });
   }
-  if (v.type === "individual") return null;
   if (v.type === "company" && !vat) return t("legalEntities.blockReasonVatRequired");
   if (vat && v.vatLevel === "invalid") return t("legalEntities.blockReasonVatFormat");
   return null;
-}
-
-/**
- * `<VerifyingTaxIdView>` — confidence pane shown between Tax
- * identifiers and the next step. Re-runs the authority lookup live,
- * shows a spinner during the call, then routes:
- *
- *   live    → ✓ animation + "Verified as {name}" + auto-advance
- *   format  → ⚠ "Authority unreachable" + manual Continue (we store
- *              the entry anyway; the next sync will re-verify)
- *   invalid → ✗ "Authority couldn't confirm this VAT" + Back to fix
- *
- * Minimum display time of ~900ms so the animation always feels
- * intentional, even on fast networks where the cached state is
- * already known.
- */
-export function VerifyingTaxIdView({
-  country,
-  vatId,
-  validation,
-  onPass,
-  onBack,
-}: {
-  country: string;
-  vatId: string;
-  validation: TaxIdValidationState;
-  onPass: () => void;
-  onBack: () => void;
-}) {
-  // Local state tracks the verification lifecycle independently from
-  // the cached `validation` prop. We always re-run so the user sees
-  // a fresh authority call, not a cached verdict.
-  const ctx = useElvixContext();
-  const t = useT();
-  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  const [phase, setPhase] = useState<"checking" | "settled">("checking");
-  const [result, setResult] = useState<TaxIdValidationState>(validation);
-  const startedAt = useRef<number>(Date.now());
-
-  useEffect(() => {
-    const ctrl = new AbortController();
-    let cancelled = false;
-    const minDisplay = 900;
-    const trimmed = vatId.trim();
-    (async () => {
-      try {
-        const res = await elvixFetch(
-          `${ctx.baseUrl}/public/api/tax/validate?country=${encodeURIComponent(country)}&vatId=${encodeURIComponent(trimmed)}`,
-          { signal: ctrl.signal, credentials: isSameOrigin(ctx.baseUrl) ? "include" : "omit" },
-        );
-        if (!res.ok) throw new Error(`http ${res.status}`);
-        const body = unwrapEnvelope(await res.json()) as {
-          ok: boolean;
-          result: {
-            level: TaxIdValidationState["level"];
-            name: string | null;
-            authority: string | null;
-            normalisedId: string;
-          };
-        };
-        if (cancelled) return;
-        const elapsed = Date.now() - startedAt.current;
-        const wait = Math.max(0, minDisplay - elapsed);
-        setTimeout(() => {
-          if (cancelled) return;
-          setResult({
-            level: body.result.level,
-            name: body.result.name,
-            authority: body.result.authority,
-            normalisedId: body.result.normalisedId,
-          });
-          setPhase("settled");
-        }, wait);
-      } catch (e) {
-        if (cancelled) return;
-        const elapsed = Date.now() - startedAt.current;
-        const wait = Math.max(0, minDisplay - elapsed);
-        setTimeout(() => {
-          if (cancelled) return;
-          // Network blew up → degrade to format-only, let the user proceed.
-          setResult({
-            level: "format",
-            name: null,
-            authority: null,
-            normalisedId: trimmed,
-          });
-          setPhase("settled");
-        }, wait);
-        void e;
-      }
-    })();
-    return () => {
-      cancelled = true;
-      ctrl.abort();
-    };
-  }, [country, vatId, ctx.baseUrl]);
-
-  // Auto-advance on live after a brief celebration delay so the user
-  // registers the success state, then the wizard moves on.
-  useEffect(() => {
-    // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-    if (phase !== "settled") return;
-    if (result.level !== "live") return;
-    const handle = setTimeout(onPass, 850);
-    return () => clearTimeout(handle);
-  }, [phase, result.level, onPass]);
-
-  const authorityName = result.authority ?? t("legalEntities.authorityFallback");
-  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  const isChecking = phase === "checking";
-  const isLive = phase === "settled" && result.level === "live";
-  const isInvalid = phase === "settled" && result.level === "invalid";
-  const isFormat = phase === "settled" && result.level === "format";
-
-  return (
-    <div className="flex h-full flex-col">
-      <WizardHeader onBack={onBack} backLabel={t("legalEntities.editTaxIdsBackLabel")} />
-      <Heading>
-        {isChecking
-          ? t("legalEntities.verifyHeadingChecking")
-          : isLive
-            ? t("legalEntities.verifyHeadingLive")
-            : isInvalid
-              ? t("legalEntities.verifyHeadingInvalid")
-              : t("legalEntities.verifyHeadingFormat")}
-      </Heading>
-      <Subtitle>
-        {isChecking
-          ? t("legalEntities.verifySubtitleChecking", {
-              vatId,
-              country: findCountry(country)?.name ?? country,
-            })
-          : isLive && result.name
-            ? t("legalEntities.verifySubtitleLiveNamed", {
-                authority: authorityName,
-                name: result.name,
-              })
-            : isLive
-              ? t("legalEntities.verifySubtitleLive", { authority: authorityName })
-              : isInvalid
-                ? t("legalEntities.verifySubtitleInvalid", { authority: authorityName, vatId })
-                : t("legalEntities.verifySubtitleFormat", { authority: authorityName })}
-      </Subtitle>
-
-      <div className="mt-6 grid flex-1 place-items-center">
-        <VerifyingBadge phase={phase} level={result.level} />
-      </div>
-
-      {isInvalid ? (
-        <ElvixSaveRow>
-          <ElvixSaveButton
-            state="idle"
-            onClick={onBack}
-            label={t("legalEntities.fixVatCta")}
-            savedLabel={t("legalEntities.fixVatCta")}
-            hint={null}
-            className="!w-auto !px-5"
-          />
-        </ElvixSaveRow>
-      ) : isFormat ? (
-        <ElvixSaveRow
-          leading={
-            <button
-              type="button"
-              onClick={onBack}
-              className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
-            >
-              {t("common.back")}
-            </button>
-          }
-        >
-          <ElvixSaveButton
-            state="idle"
-            onClick={onPass}
-            label={t("legalEntities.continueAnywayCta")}
-            savedLabel={t("common.continue")}
-            hint={null}
-            className="!w-auto !px-5"
-          />
-        </ElvixSaveRow>
-      ) : null}
-    </div>
-  );
-}
-
-export function RegistrationView({
-  country,
-  number,
-  body,
-  since,
-  setNumber,
-  setBody,
-  setSince,
-  onConfirm,
-  onBack,
-}: {
-  country: string;
-  number: string;
-  body: string;
-  since: string;
-  setNumber: (v: string) => void;
-  setBody: (v: string) => void;
-  setSince: (v: string) => void;
-  onConfirm: () => void;
-  onBack: () => void;
-}) {
-  const t = useT();
-  const today = new Date().toISOString().slice(0, 10);
-  const sinceFormatOk = since === "" || /^\d{4}-\d{2}-\d{2}$/.test(since);
-  const sinceRangeOk = since === "" || (since <= today && since >= "1900-01-01");
-  const sinceOk = sinceFormatOk && sinceRangeOk;
-  const trimmedNumber = number.trim();
-  const numberFormatOk =
-    trimmedNumber.length === 0 ? false : registrationNumberMatches(country, trimmedNumber);
-  const showNumberError = trimmedNumber.length > 0 && !numberFormatOk;
-  const valid = numberFormatOk && body.trim().length >= 2 && sinceOk;
-  return (
-    <form
-      className="flex h-full flex-col"
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (valid) onConfirm();
-      }}
-    >
-      <WizardHeader onBack={onBack} />
-      <Heading>{t("legalEntities.registrationTitle")}</Heading>
-      <Subtitle>{t("legalEntities.registrationSubtitle")}</Subtitle>
-      <div className={`mt-4 ${STACK_3}`}>
-        <label className="block">
-          <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
-            {t("legalEntities.registrationNumberLabel")}
-          </span>
-          <ElvixInput
-            type="text"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            placeholder={regNumberPlaceholder(country)}
-            autoFocus
-            maxLength={80}
-            hasError={showNumberError}
-          />
-          {showNumberError && (
-            <span className="mt-1.5 block text-[12px] text-red-600 dark:text-red-300">
-              {regNumberFormatHint(country, t)}
-            </span>
-          )}
-        </label>
-        <label className="block">
-          <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
-            {t("legalEntities.issuingAuthorityLabel")}
-          </span>
-          <ElvixInput
-            type="text"
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-            placeholder={t("legalEntities.issuingAuthorityPlaceholder")}
-            maxLength={180}
-          />
-        </label>
-        <label className="block">
-          <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
-            {t("legalEntities.registeredSinceLabel")}
-          </span>
-          <ElvixInput
-            type="date"
-            value={since}
-            onChange={(e) => setSince(e.target.value)}
-            max={today}
-            min="1900-01-01"
-            hasError={!sinceOk}
-          />
-          {!sinceOk && (
-            <span className="mt-1.5 block text-[12px] text-red-600 dark:text-red-300">
-              {t("legalEntities.registeredSinceRangeError")}
-            </span>
-          )}
-        </label>
-      </div>
-      <ElvixSaveRow>
-        <ElvixSaveButton
-          state="idle"
-          disabled={!valid}
-          onClick={() => valid && onConfirm()}
-          label={t("common.continue")}
-          savedLabel={t("common.continue")}
-          hint={null}
-          className="!w-auto !px-5"
-        />
-      </ElvixSaveRow>
-    </form>
-  );
 }
 
 /**
@@ -962,7 +685,7 @@ export function PlaceOfBirthView({
       <Subtitle>{t("legalEntities.placeOfBirthSubtitle")}</Subtitle>
 
       {hasPick && (
-        <div className="mt-4 flex items-start gap-3 rounded-[12px] border border-[var(--elvix-primary)] bg-[color-mix(in_srgb,var(--elvix-primary)_8%,transparent)] px-3 py-2.5">
+        <div className="mt-4 flex items-start gap-3 rounded-[12px] bg-[color-mix(in_srgb,var(--elvix-primary)_8%,transparent)] px-3 py-2.5">
           <MapPin className="mt-0.5 size-4 shrink-0 text-[var(--elvix-primary)]" />
           <div className="min-w-0 flex-1">
             <div className="text-[13.5px] font-medium text-fg-1">{label}</div>
@@ -1013,7 +736,7 @@ export function PlaceOfBirthView({
                 <button
                   type="button"
                   onClick={() => pick(s)}
-                  className="group flex w-full items-start gap-3 rounded-[12px] border border-fg-3/15 bg-surface px-3 py-2.5 text-left shadow-[0_1px_0_rgba(0,0,0,0.02)] transition hover:border-[var(--elvix-primary)] hover:bg-[color-mix(in_srgb,var(--elvix-primary)_6%,transparent)] cursor-pointer"
+                  className="elvix-row group flex w-full items-start gap-3 px-3 py-2.5 text-left cursor-pointer"
                 >
                   <MapPin className="mt-0.5 size-4 shrink-0 text-fg-3 group-hover:text-[var(--elvix-primary)]" />
                   <div className="min-w-0 flex-1">
@@ -1035,9 +758,8 @@ export function PlaceOfBirthView({
       <ElvixSaveRow>
         <ElvixSaveButton
           state="idle"
-          disabled={!hasPick}
-          onClick={() => hasPick && onConfirm()}
-          label={t("common.continue")}
+          onClick={onConfirm}
+          label={t(hasPick ? "common.continue" : "common.skip")}
           savedLabel={t("common.continue")}
           hint={null}
           className="!w-auto !px-5"
@@ -1048,15 +770,18 @@ export function PlaceOfBirthView({
 }
 
 export function AddressSearchView({
+  initialQuery = "",
   onPick,
   onBack,
 }: {
+  /** Typed in already: the address the tax authority holds for the VAT ID. */
+  initialQuery?: string;
   onPick: (details: PlaceDetails) => void;
   onBack: () => void;
 }) {
   const ctx = useElvixContext();
   const t = useT();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
   const [searching, setSearching] = useState(false);
   const [picking, setPicking] = useState<string | null>(null);
@@ -1169,7 +894,7 @@ export function AddressSearchView({
                 type="button"
                 disabled={picking !== null}
                 onClick={() => pick(s.placeId)}
-                className="group flex w-full items-start gap-3 rounded-[12px] border border-fg-3/15 bg-surface px-3 py-2.5 text-left shadow-[0_1px_0_rgba(0,0,0,0.02)] transition hover:border-[var(--elvix-primary)] hover:bg-[color-mix(in_srgb,var(--elvix-primary)_6%,transparent)] disabled:opacity-50 cursor-pointer"
+                className="elvix-row group flex w-full items-start gap-3 px-3 py-2.5 text-left cursor-pointer"
               >
                 <MapPin className="mt-0.5 size-4 shrink-0 text-fg-3 group-hover:text-[var(--elvix-primary)]" />
                 <div className="min-w-0 flex-1">
@@ -1196,14 +921,22 @@ export function AddressSearchView({
 
 export function AddressReviewView({
   details,
+  needsPostalCode = false,
+  onFill,
   onConfirm,
   onChange,
 }: {
   details: PlaceDetails | null;
+  /** A business: an invoice needs the postal code too (art. 226(5)). */
+  needsPostalCode?: boolean;
+  /** A part typed in where Places left it empty. */
+  onFill: (details: PlaceDetails) => void;
   onConfirm: () => void;
   onChange: () => void;
 }) {
   const t = useT();
+  // The parts missing when the pane opened keep their fields while typed in.
+  const [gapParts] = useState(() => (details ? addressGaps(details, needsPostalCode) : []));
   if (!details) {
     return (
       <div className="grid h-full place-items-center text-sm text-fg-3">
@@ -1228,19 +961,16 @@ export function AddressReviewView({
     { label: t("legalEntities.addressFieldRegion"), value: region },
     { label: t("legalEntities.addressFieldCountry"), value: country },
   ];
-  const missing: string[] = [];
-  if (!details.line1?.trim()) missing.push(t("legalEntities.addressFieldStreet").toLowerCase());
-  if (!details.city?.trim()) missing.push(t("legalEntities.addressFieldCity").toLowerCase());
-  if (!details.country || !/^[A-Z]{2}$/.test(details.country))
-    missing.push(t("legalEntities.addressFieldCountry").toLowerCase());
-  const canContinue = missing.length === 0;
+  // Only the country cannot be typed in: a missing one means another address.
+  const countryMissing = !details.country || !/^[A-Z]{2}$/.test(details.country);
+  const canContinue = !countryMissing && addressGaps(details, needsPostalCode).length === 0;
 
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onChange} backLabel={t("legalEntities.addressChangeBackLabel")} />
       <Heading>{t("legalEntities.addressReviewTitle")}</Heading>
       <Subtitle>{t("legalEntities.addressReviewSubtitle")}</Subtitle>
-      <div className="mt-4 rounded-[12px] border border-fg-3/15 bg-surface px-4 py-3">
+      <div className="elvix-tile mt-4 px-4 py-3">
         <div className="flex items-start gap-3">
           <MapPin className="mt-0.5 size-4 shrink-0 text-[var(--elvix-primary)]" />
           <div className="min-w-0 flex-1">
@@ -1262,9 +992,12 @@ export function AddressReviewView({
             </Fragment>
           ))}
         </dl>
-        {!canContinue && (
+        <AddressGapFields details={details} parts={gapParts} onFill={onFill} />
+        {countryMissing && (
           <div className="mt-3 rounded-md bg-amber-500/10 px-3 py-2 text-[12.5px] text-amber-700 dark:text-amber-300">
-            {t("legalEntities.addressMissing", { fields: missing.join(", ") })}
+            {t("legalEntities.addressMissing", {
+              fields: t("legalEntities.addressFieldCountry").toLowerCase(),
+            })}
           </div>
         )}
       </div>

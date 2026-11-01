@@ -1463,8 +1463,14 @@
       "typeChoiceSubtitle": {
         "other": "Détermine les questions que nous poserons ensuite."
       },
-      "step1of3": {
-        "other": "Étape 1 sur 3"
+      "stepOfTotal": {
+        "other": "Étape {step} sur {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Où envoyer les factures ?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "L'adresse e-mail à laquelle les factures sont envoyées. Facultatif."
       },
       "individualSubtitle": {
         "other": "Juste vous, sans entreprise. Les factures sont à votre nom personnel."
@@ -1524,7 +1530,7 @@
         "other": "Date de naissance"
       },
       "dobSubtitle": {
-        "other": "Requis pour la facturation à votre nom et la KYC si un client le demande plus tard."
+        "other": "Facultatif. Un prestataire de paiement peut la demander pour confirmer votre identité."
       },
       "dobAgeError": {
         "other": "Vous devez avoir 18 ans ou plus pour enregistrer une entité."
@@ -1536,7 +1542,7 @@
         "other": "Lieu de naissance"
       },
       "placeOfBirthSubtitle": {
-        "other": "Ville telle qu'elle apparaît sur votre pièce d'identité. Requis pour la facturation et la KYC."
+        "other": "Facultatif. La ville telle qu'elle figure sur votre pièce d'identité, pour la vérification d'identité d'un prestataire de paiement."
       },
       "placeOfBirthCityLabel": {
         "other": "Ville"
@@ -1587,7 +1593,7 @@
         "other": "l'autorité émettrice"
       },
       "taxIdsSubtitleSoleProp": {
-        "other": "Les deux sont facultatifs. Ajoutez le numéro fiscal local si vous le voulez sur les factures ; la TVA uniquement si vous êtes assujetti. L'enregistrement de l'entreprise est saisi à l'étape suivante."
+        "other": "Une facture a besoin de l'un des deux : votre numéro de TVA si vous êtes assujetti, sinon votre numéro fiscal local."
       },
       "localTaxNumberLabel": {
         "other": "Numéro fiscal local"
@@ -1653,7 +1659,7 @@
         "other": "Enregistrement"
       },
       "registrationSubtitle": {
-        "other": "Handelsregister, Companies House, KvK. Le registre officiel où cette entité est enregistrée."
+        "other": "Facultatif. Handelsregister, Companies House, KvK : pour un prestataire de paiement ou un contrat ; une facture n'en a pas besoin."
       },
       "registrationNumberLabel": {
         "other": "Numéro d'enregistrement"
@@ -1925,6 +1931,61 @@
       "defaultSharedAcrossAppsBodySet": {
         "other": "L'entité par défaut est partagée entre toutes les applications auxquelles vous vous connectez. La modifier ici met à jour le choix automatique partout en une fois."
       },
+      "vatIdTitle": {
+        "other": "Quel est le numéro de TVA ?"
+      },
+      "vatIdSubtitle": {
+        "other": "Nous le vérifions auprès de l'administration fiscale et remplissons ce qu'elle connaît."
+      },
+      "vatIdLabel": {
+        "other": "Numéro de TVA"
+      },
+      "vatIdCountryNeeded": {
+        "other": "Quel pays l'a délivré ?"
+      },
+      "noVatIdCta": {
+        "other": "Pas de numéro de TVA"
+      },
+      "addressGapsHint": {
+        "other": "Une facture exige l'adresse complète. Ajoutez ce qui manque."
+      },
+      "pickerAddCompany": {
+        "other": "Ajouter une entreprise"
+      },
+      "pickerPayoutsNote": {
+        "other": "En choisissant une entreprise ici, vous permettez à {app} de lire la date et le lieu de naissance, la nationalité et le téléphone que vous avez enregistrés, pour remplir son formulaire de versement."
+      },
+      "pickerGroupLabel": {
+        "other": "Choisissez une entité"
+      },
+      "pickerGrantFailed": {
+        "other": "Impossible de la choisir : {error}"
+      },
+      "pickerMissingClientId": {
+        "other": "Ce sélecteur a besoin du clientId de l'app sur ElvixProvider."
+      },
+      "pickerLoadFailed": {
+        "other": "Impossible de charger vos entités."
+      },
+      "withheldInApps": { "other": "Enregistré. Visible seulement dans votre compte elvix." },
+      "nameMismatch": { "other": "Le nom diffère du registre" },
+      "givenNameLabel": { "other": "Prénom" },
+      "familyNameLabel": { "other": "Nom" },
+      "eInvoiceTitle": { "other": "Où envoyer les factures électroniques ?" },
+      "eInvoiceSubtitle": { "other": "Facultatif. Indiquez seulement ce que votre entreprise possède ; vous pourrez l'ajouter plus tard." },
+      "eInvoiceSubtitleIT": { "other": "Les entreprises italiennes reçoivent leurs factures via le SDI : votre code destinataire ou votre e-mail certifié (PEC)." },
+      "eInvoiceSubtitleBE": { "other": "Les entreprises belges reçoivent leurs factures via Peppol : votre identifiant Peppol." },
+      "peppolIdLabel": { "other": "Identifiant Peppol" },
+      "peppolIdHint": { "other": "Schéma et numéro, par ex. 0208:0123456789" },
+      "peppolIdInvalid": { "other": "Saisissez schéma:numéro, par ex. 0208:0123456789" },
+      "codiceDestinatarioLabel": { "other": "Code SDI (codice destinatario)" },
+      "codiceInvalid": { "other": "7 lettres ou chiffres" },
+      "pecAddressLabel": { "other": "Adresse PEC" },
+      "leitwegIdLabel": { "other": "Leitweg-ID" },
+      "leitwegIdHint": { "other": "Seuls les organismes publics en ont un." },
+      "leitwegIdInvalid": { "other": "Ce n'est pas un Leitweg-ID, par ex. 04011000-1234512345-06" },
+      "detailSectionEInvoice": { "other": "Facturation électronique" },
+      "detailEInvoiceNone": { "other": "Non renseigné" },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "L'entité par défaut est partagée entre toutes les applications auxquelles vous vous connectez. La retirer signifie qu'aucune entité n'est pré-sélectionnée nulle part."
       }
