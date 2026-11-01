@@ -5,7 +5,7 @@ All notable changes to `@elvix.is/sdk` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Older releases, each file under the 300-line limit: [0.12 to 0.14.0](docs/changelog/0.12-0.14.md),
+Older releases, each file under the 300-line limit: [0.12 to 0.14.2](docs/changelog/0.12-0.14.md),
 [0.7 to 0.11](docs/changelog/0.7-0.11.md), [0.1 to 0.6](docs/changelog/0.1-0.6.md). When this
 file passes 300 lines, its oldest releases move there.
 
@@ -296,32 +296,5 @@ ignored, never an error.
   the step, on the right pane, and until the step is done the session is NOT
   reported to the host (`useElvixSession()` stays anonymous), so a host that reacts
   to "signed in" does not tear the form down first.
-
-## [0.14.2] — 2026-10-12
-
-### Fixed
-
-- **`<ElvixLifecycleWatcher>` reloaded the page on a cookie session.** Its
-  session check calls `/api/v1/session`, which only answers a bearer token. A
-  cookie session (elvix's own Console and Account, any same-origin host) has none,
-  so the check was always refused and, with the live stream open, that read as
-  "the session ended": the page reloaded on every poll (the Account security
-  wizard reloaded the moment it asked for an OTP). A session with no token is now
-  watched by the live stream alone; a bearer session still ends on a failed check.
-  Each refused poll also counted against the per-IP failure limiter on the
-  server; they no longer happen.
-
-## [0.14.1] — 2026-10-12
-
-### Fixed
-
-- **A refused passkey says why.** Picking a passkey made for another app, or one
-  that lives on the elvix account (which an app sign-in refuses), failed with
-  "Something went wrong". `credential_not_for_app` and `credential_not_for_surface`
-  now read "This passkey was made for a different app. Sign in another way, then
-  add a passkey for this one." in all 15 locales (`tests/passkey-errors.test.ts`
-  pins every refusal a person can act on). Pairs with an elvix server fix: an
-  account-level passkey that has never been used no longer counts as "you have a
-  passkey", so the add-a-passkey step is offered again.
 
 [Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.17.0...HEAD
