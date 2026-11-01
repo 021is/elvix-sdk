@@ -544,8 +544,8 @@ export function TaxIdsView({
  *
  *   Individual → the local tax number (Steuernummer, NINO, …) is required;
  *                there is no VAT id.
- *   Sole prop  → both optional: the business identity comes from the
- *                registration pane next, VAT only if VAT-registered.
+ *   Sole prop  → the VAT id, or else the local tax number: an invoice prints
+ *                one (a Kleinunternehmer's Steuernummer, §14(4) Nr. 2 UStG).
  *   Company    → VAT required; the local number is optional (some
  *                jurisdictions issue only one).
  *
@@ -565,14 +565,14 @@ export function taxIdsBlockReason(
 ): string | null {
   const tax = v.taxId.trim();
   const vat = v.vatId.trim();
-  if (v.type === "individual" && !tax) return t("legalEntities.blockReasonTaxIdRequired");
+  const taxRequired = v.type === "individual" || (v.type === "sole_prop" && !vat);
+  if (taxRequired && !tax) return t("legalEntities.blockReasonTaxIdRequired");
   if (tax && !localTaxIdMatches(v.country, tax)) {
     return t("legalEntities.blockReasonTaxIdFormat", {
       country: findCountry(v.country)?.name ?? v.country,
       hint: taxIdFormatHint(v.country, t),
     });
   }
-  if (v.type === "individual") return null;
   if (v.type === "company" && !vat) return t("legalEntities.blockReasonVatRequired");
   if (vat && v.vatLevel === "invalid") return t("legalEntities.blockReasonVatFormat");
   return null;

@@ -141,13 +141,15 @@ function checkNaturalPerson(val: Shape, report: Report): void {
 
 /** Tax-id gating mirrors the wizard's TaxIdsView:
  *    individual → local tax number required, VAT hidden
- *    sole_prop  → both optional (registration is the canonical business
- *                 identity for sole props)
+ *    sole_prop  → a VAT ID, or else the local tax number (an invoice needs
+ *                 one: a German Kleinunternehmer prints the Steuernummer,
+ *                 §14(4) Nr. 2 UStG)
  *    company    → VAT required, local tax number optional
  *  A supplied local number must match its country's format. */
 function checkTaxIds(val: Shape, report: Report): void {
-  // LEGACY: spine-lint-disable-next-line spine/enum-over-string
-  if (val.type === "individual" && !val.taxId?.trim()) report("taxId", "Required");
+  const soleWithoutVat = val.type === "sole_prop" && !val.vatId?.trim();
+  const taxIdRequired = val.type === "individual" || soleWithoutVat;
+  if (taxIdRequired && !val.taxId?.trim()) report("taxId", "Required");
   if (val.taxId?.trim() && val.taxCountry && !localTaxIdMatches(val.taxCountry, val.taxId)) {
     report("taxId", `Doesn't match the expected format for ${val.taxCountry}`);
   }

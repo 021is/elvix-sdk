@@ -45,6 +45,8 @@ describe("legalEntitySchema", () => {
       ["dateOfBirth", "Required"],
       ["nationality", "Required"],
       ["placeOfBirth", "Required"],
+      // No VAT ID, so the invoice prints the tax number.
+      ["taxId", "Required"],
       ["registrationNumber", "Required for sole proprietorships and companies"],
       ["registrationBody", "Required — the issuing authority"],
       ...INVOICE_ADDRESS,

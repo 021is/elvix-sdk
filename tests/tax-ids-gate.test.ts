@@ -24,8 +24,10 @@ describe("taxIdsBlockReason", () => {
     expect(gate({ vatId: "DE123456789", vatLevel: "format" })).toBeNull();
   });
 
-  it("lets a sole proprietor continue with neither", () => {
-    expect(gate({ type: "sole_prop" })).toBeNull();
+  it("needs a sole proprietor's tax number when there is no VAT id (an invoice prints one)", () => {
+    expect(gate({ type: "sole_prop" })).toBe("legalEntities.blockReasonTaxIdRequired");
+    expect(gate({ type: "sole_prop", taxId: "1234567890" })).toBeNull();
+    expect(gate({ type: "sole_prop", vatId: "DE123456789", vatLevel: "format" })).toBeNull();
   });
 
   it("checks the local number's format whenever one is entered", () => {
