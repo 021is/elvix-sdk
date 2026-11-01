@@ -31,6 +31,27 @@ as your own. Needs elvix.is with the legal-entity grants (deployed before this r
   number and the city; "Verified" only when elvix's own check confirmed the VAT ID and the
   register's name does not differ (else "Name differs from the register"). `types` filters
   the list and the wizard; `onResult` reports each pick and a failed save.
+- **The picker asks only what an invoice needs.** With `purpose="invoicing"` (the default)
+  "Add" walks: the type (if more than one is offered) → the VAT ID, or "No VAT ID" → tax
+  country → tax number (an individual: name → tax country → tax number) → the check → the
+  legal name, prefilled (a company in one field, a person in given and family name) → the
+  address (search prefilled from the authority, review, any missing part, apartment or
+  floor optional) → an invoice email (optional) → a business's e-invoice address
+  (optional) → saved. No trading name, birth data, nationality, registration or phone.
+  `purpose="payouts"` and `<ElvixLegalEntities>` keep the full flow. The last step's
+  button saves and shows a refused save; "Step 1 of N" counts the flow shown.
+- **`sizing="fixed" | "flexible"`** on `<ElvixLegalEntityPicker>` and
+  `<ElvixLegalEntities>`, with `height`, `minHeight`, `maxHeight`. Fixed: the list and
+  every add step share one height (the picker's default `min(520px, 70dvh)`, the
+  manager's `min(540px, 66dvh)` within 340–700 px; `height` overrides, `maxHeight` caps)
+  and a longer pane scrolls inside. Flexible: as tall as each pane, nothing scrolls inside,
+  no fixed height; `maxHeight` caps it and then it scrolls. The picker defaults to fixed in
+  a card and flexible with `card={false}`; the manager to fixed. `ElvixLegalEntitySizing`
+  names the two.
+- **The Enter hint is optional.** The "Enter" chip beside a save button carries
+  `.elvix-kbd-hint`; it hides on touch devices (`hover: none` and a coarse pointer), and
+  `--elvix-key-hints` on any ancestor forces it: `none` hides it everywhere,
+  `inline-flex` shows it everywhere.
 - **A tap is a grant; the pre-selection is not.** `onPick(entity, { granted })`: a tap or a
   new entity grants your application that one entity for `purpose` (`invoicing`, default,
   or `payouts`) before `onPick` fires with `granted: true`. The default (else the only
@@ -52,7 +73,10 @@ as your own. Needs elvix.is with the legal-entity grants (deployed before this r
   public body's Leitweg-ID).
 - **Row variables**: `--elvix-row`, `--elvix-row-hover`, `--elvix-picked`,
   `--elvix-picked-text`, `--elvix-radius`, `--elvix-focus` (`rows.css`), next to the field
-  variables; `--elvix-danger` outlines a field whose value is wrong.
+  variables; `--elvix-danger` outlines a field whose value is wrong. **Icon bubbles** (the
+  tinted circle behind a type's icon, the empty state's, the detail header's) take
+  `--elvix-icon` (the icon, default the brand) and `--elvix-icon-bg` (the fill, default
+  the brand at 15%) through `.elvix-icon-bubble`.
 - `LegalEntityRecord`, `LegalEntityType` and `VatVerdict` are exported from
   `@elvix.is/sdk/react`.
 
@@ -76,6 +100,14 @@ as your own. Needs elvix.is with the legal-entity grants (deployed before this r
   city and country are required for a sole proprietorship or company, and the address
   review asks in place for any part Google Places left empty. A sole proprietor without a
   VAT ID gives its tax number.
+- **An entity needs what an invoice needs.** Date and place of birth, nationality and the
+  registration number and authority are optional for every type (a registration number
+  that is given must still match its country's format); their panes in the full flow say
+  "Skip" while empty. Still required: the legal name (given and family name for a
+  person), the tax country, a company's VAT ID, a sole proprietor's VAT ID or tax number,
+  an individual's tax number, and a business's street, postal code, city and country.
+- `<ElvixLegalEntities>`' `height`, `minHeight` and `maxHeight` take a CSS length as well
+  as a number.
 - **Inside an app, personal fields are write-only.** elvix answers an app's session with
   birth data, nationality, phone (and an individual's tax number and address) withheld
   (`withheld: true`); the detail view says they are shown only in the elvix account and
