@@ -24,21 +24,32 @@ as your own. Needs elvix.is with the legal-entity grants (deployed before this r
 
 ### Added
 
-- **`<ElvixLegalEntityPicker types selectedId onPick>`**: the user's legal entities as a
-  list; a tap picks and tints the row, and your own Continue ends the flow (no confirm
-  button, no done pane). With nothing picked, the default entity (else the only one) is
-  picked once. "Add a company" runs the add wizard in place and comes back with the new
-  entity picked. Rows show what an invoice says: the legal name, the VAT ID or tax number
-  and the city, "Verified" only when elvix's own check confirmed the VAT ID. `types`
-  filters the list and the wizard (one type skips the type choice); `onResult` reports
-  each pick and a failed save; `card={false}` sits in your own pane.
-- **Every pick is a grant.** It lets your application read that one entity, and `onPick`
-  fires once elvix holds it. The user can revoke it in their elvix account.
-- **`getElvixLegalEntity({ apiKey, applicationId, userId, entityId })`** in
-  `@elvix.is/sdk/server`: the picked entity by id, VAT verdict included (`ElvixLegalEntity`).
-  `not_found` when never picked, revoked or deleted; never throws.
+- **`<ElvixLegalEntityPicker types selectedId purpose onPick>`**: the user's legal entities
+  as a list; a tap picks and tints the row, and your own Continue ends the flow (no confirm
+  button, no done pane). "Add a company" runs the add wizard in place and comes back with
+  the new entity picked. Rows show what an invoice says: the legal name, the VAT ID or tax
+  number and the city; "Verified" only when elvix's own check confirmed the VAT ID and the
+  register's name does not differ (else "Name differs from the register"). `types` filters
+  the list and the wizard; `onResult` reports each pick and a failed save.
+- **A tap is a grant; the pre-selection is not.** `onPick(entity, { granted })`: a tap or a
+  new entity grants your application that one entity for `purpose` (`invoicing`, default,
+  or `payouts`) before `onPick` fires with `granted: true`. The default (else the only
+  entity) is shown picked with `granted: false` and nothing shared: grant it from your
+  Continue with **`useElvixLegalEntityGrant()(entityId, purpose?)`**. The user can revoke
+  any grant in their elvix account.
+- **`getElvixLegalEntity({ apiKey, applicationId, userId, entityId, purpose? })`** in
+  `@elvix.is/sdk/server`: the picked entity by id for the purpose granted
+  (`ElvixLegalEntity`): elvix's VAT verdict, `vatIdNameMatch`, EAS schemes, e-invoice
+  addresses; `payouts` adds birth data, phone and `people`. `not_found`, `invalid_id`,
+  `invalid_purpose`; never throws.
 - **Webhooks** `user.legal_entity_updated`, `user.legal_entity_deleted`,
-  `user.legal_entity_revoked` (`UserLegalEntityData`), to applications holding the grant.
+  `user.legal_entity_revoked` (`UserLegalEntityData`, with `purpose`), to applications
+  holding a grant.
+- **A person's name in two parts** (`givenName`, `familyName`, required for individuals
+  and sole proprietors; the legal name is built from them), **where e-invoices go** (an
+  optional step for businesses: a Peppol ID everywhere, Italy's SDI code and PEC, a German
+  public body's Leitweg-ID), and **the people of a business** (representative, owners with
+  their share, directors, executives) in the detail view (`LegalEntityPerson`).
 - **Row variables**: `--elvix-row`, `--elvix-row-hover`, `--elvix-picked`,
   `--elvix-picked-text`, `--elvix-radius`, `--elvix-focus` (`rows.css`), next to the field
   variables; `--elvix-danger` outlines a field whose value is wrong.
@@ -63,7 +74,13 @@ as your own. Needs elvix.is with the legal-entity grants (deployed before this r
   the level it said it reached, which anyone could set to "live".
 - **A business has its full address** (EU VAT Directive art. 226(5)): street, postal code,
   city and country are required for a sole proprietorship or company, and the address
-  review asks in place for any part Google Places left empty.
+  review asks in place for any part Google Places left empty. A sole proprietor without a
+  VAT ID gives its tax number.
+- **Inside an app, personal fields are write-only.** elvix answers an app's session with
+  birth data, nationality, phone (and an individual's tax number and address) withheld
+  (`withheld: true`); the detail view says they are shown only in the elvix account and
+  still lets the user set a new value.
+- The detail view takes one `onEdit(step)` instead of nine handlers, in its own file.
 
 ### Fixed
 
