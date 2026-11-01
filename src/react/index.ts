@@ -25,6 +25,7 @@
  *   - <ElvixLeave onResult>
  *   - <ElvixAddressBook onResult>
  *   - <ElvixLegalEntities onResult>
+ *   - <ElvixLegalEntityPicker selectedId onPick>
  *
  * Hooks: useElvixApp(), useElvixContext(), useElvixAppContext(),
  *        useElvixRefresh(), useElvixUserMedia(userId?)
@@ -73,6 +74,13 @@ export { ElvixIdentityForm, type Gender, type Pronouns } from "./elvix-identity-
 export { ElvixLanguages } from "./elvix-languages";
 export { ElvixLeave } from "./elvix-leave";
 export { ElvixLegalEntities } from "./elvix-legal-entities";
+// Pick one legal entity for the host, or add one inline (0.18); each pick
+// lets the host's backend read that entity by id.
+export {
+  ElvixLegalEntityPicker,
+  type ElvixLegalEntityPickerProps,
+  type ElvixLegalEntityPickerResult,
+} from "./elvix-legal-entity-picker";
 // The mark, for a host to show what elvix handles (a settings row, a
 // "managed by" note). The shield follows the host's text colour.
 export { ElvixLogo, type ElvixLogoProps } from "./elvix-logo";
@@ -144,6 +152,8 @@ export {
   useUserRoles,
   useUserScopes,
 } from "./hooks";
+// What a legal entity holds, the picker's `onPick` payload (0.18).
+export type { LegalEntityRecord, LegalEntityType, VatVerdict } from "./legal-entity-schema";
 export { ElvixLifecycleWatcher } from "./lifecycle-watcher";
 // Read-only profile: who is signed in, and labels for rendering them.
 export {
