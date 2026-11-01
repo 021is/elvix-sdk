@@ -16,15 +16,18 @@ import { localTaxIdMatches, registrationNumberMatches } from "./tax-validation";
  *                                the detail view PATCHes only its
  *                                own field.
  *
- * Required-field gates by type:
+ * Required-field gates by type: what an invoice needs (VAT Directive art. 226),
+ * nothing more (2026-11-01: birth data and registration are a payment
+ * provider's to ask, not an invoice's):
  *
- *   individual   → legalName · dateOfBirth · nationality · taxCountry
- *   sole_prop    → legalName · dateOfBirth · nationality · taxCountry
- *                  + registrationNumber + registrationBody
- *   company      → legalName · taxCountry
- *                  + registrationNumber + registrationBody
+ *   individual   → legalName (given + family) · taxCountry · taxId
+ *   sole_prop    → legalName (given + family) · taxCountry · vatId or taxId
+ *                  + address line, postal code, city, country
+ *   company      → legalName · taxCountry · vatId
+ *                  + address line, postal code, city, country
  *
- * Everything else is optional but recorded if provided.
+ * Everything else is optional but recorded if provided; a supplied tax or
+ * registration number must match its country's format.
  */
 
 export const LEGAL_ENTITY_TYPES = ["individual", "sole_prop", "company"] as const;
@@ -161,15 +164,13 @@ const legalEntityShape = z.object({
 type Shape = z.infer<typeof legalEntityShape>;
 type Report = (path: keyof Shape, message: string) => void;
 
-/** Individual + sole-prop are natural persons: DOB, nationality, place of
- *  birth, and a legal name of at least two letter-bearing words (given +
- *  family). Companies may have single-word names ("Apple", "Edvone"). */
+/** Individual + sole-prop are natural persons: the name in its two parts and
+ *  a legal name of at least two letter-bearing words. Birth date, place and
+ *  nationality are optional (a payment provider asks for them, an invoice
+ *  does not). Companies may have single-word names ("Apple", "Edvone"). */
 function checkNaturalPerson(val: Shape, report: Report): void {
   if (!val.givenName?.trim()) report("givenName", "Required");
   if (!val.familyName?.trim()) report("familyName", "Required");
-  if (!val.dateOfBirth) report("dateOfBirth", "Required");
-  if (!val.nationality) report("nationality", "Required");
-  if (!val.placeOfBirth) report("placeOfBirth", "Required");
   const words =
     val.legalName
       ?.trim()
@@ -196,15 +197,9 @@ function checkTaxIds(val: Shape, report: Report): void {
   if (val.type === "company" && !val.vatId?.trim()) report("vatId", "Required");
 }
 
-/** Sole-prop + company are registered businesses: a registration number and
- *  its issuing body. A supplied number must match its country's format. */
-function checkRegistration(val: Shape, report: Report, registered: boolean): void {
-  if (registered && !val.registrationNumber) {
-    report("registrationNumber", "Required for sole proprietorships and companies");
-  }
-  if (registered && !val.registrationBody) {
-    report("registrationBody", "Required — the issuing authority");
-  }
+/** A register number is optional (an invoice does not carry the buyer's);
+ *  one that is given must match its country's format. */
+function checkRegistration(val: Shape, report: Report): void {
   const number = val.registrationNumber;
   if (number?.trim() && val.taxCountry && !registrationNumberMatches(val.taxCountry, number)) {
     report("registrationNumber", `Doesn't match the expected format for ${val.taxCountry}`);
@@ -229,7 +224,7 @@ export const legalEntitySchema = legalEntityShape.superRefine((val, ctx) => {
   checkTaxIds(val, report);
   // LEGACY: spine-lint-disable-next-line spine/enum-over-string
   const registered = val.type === "sole_prop" || val.type === "company";
-  checkRegistration(val, report, registered);
+  checkRegistration(val, report);
   checkBusinessAddress(val, report, registered);
 });
 

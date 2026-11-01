@@ -13,13 +13,12 @@ const issues = (input: Record<string, unknown>) => {
 const base = { legalName: "Acme", addressCountry: "DE", taxCountry: "DE" };
 
 describe("legalEntitySchema", () => {
-  it("individual: natural-person fields, the name in two parts, local tax id", () => {
+  // What an invoice needs, nothing more: birth date, place, nationality and the
+  // register number are a payment provider's to ask (2026-11-01).
+  it("individual: the name in two parts and the local tax id, no birth data", () => {
     expect(issues({ ...base, type: "individual" })).toEqual([
       ["givenName", "Required"],
       ["familyName", "Required"],
-      ["dateOfBirth", "Required"],
-      ["nationality", "Required"],
-      ["placeOfBirth", "Required"],
       ["legalName", "Enter both given name and family name"],
       ["taxId", "Required"],
     ]);
@@ -32,29 +31,27 @@ describe("legalEntitySchema", () => {
     ["addressCity", "Required for an invoice"],
   ];
 
-  it("company: VAT, registration and the full address, no natural-person fields", () => {
+  it("company: the VAT ID and the full address, no registration", () => {
     expect(issues({ ...base, type: "company" })).toEqual([
       ["vatId", "Required"],
-      ["registrationNumber", "Required for sole proprietorships and companies"],
-      ["registrationBody", "Required — the issuing authority"],
       ...INVOICE_ADDRESS,
     ]);
   });
 
-  it("sole_prop: natural-person fields, registration and the full address", () => {
+  it("sole_prop: the name in two parts, the tax number and the full address", () => {
     const got = issues({ ...base, type: "sole_prop", legalName: "Ada Lovelace" });
     expect(got).toEqual([
       ["givenName", "Required"],
       ["familyName", "Required"],
-      ["dateOfBirth", "Required"],
-      ["nationality", "Required"],
-      ["placeOfBirth", "Required"],
       // No VAT ID, so the invoice prints the tax number.
       ["taxId", "Required"],
-      ["registrationNumber", "Required for sole proprietorships and companies"],
-      ["registrationBody", "Required — the issuing authority"],
       ...INVOICE_ADDRESS,
     ]);
+  });
+
+  it("checks a register number that is given against its country", () => {
+    const got = issues({ ...base, type: "company", taxCountry: "NL", registrationNumber: "12" });
+    expect(got).toContainEqual(["registrationNumber", "Doesn't match the expected format for NL"]);
   });
 
   it("a business with the full address passes, and the country is asked too", () => {
@@ -62,8 +59,6 @@ describe("legalEntitySchema", () => {
       ...base,
       type: "company",
       vatId: "DE129273398",
-      registrationNumber: "HRB 1",
-      registrationBody: "AG Berlin",
       addressLine1: "Unter den Linden 1",
       addressPostalCode: "10117",
       addressCity: "Berlin",
