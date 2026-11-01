@@ -1976,22 +1976,6 @@
       "leitwegIdInvalid": { "other": "This isn't a Leitweg-ID, like 04011000-1234512345-06" },
       "detailSectionEInvoice": { "other": "E-invoicing" },
       "detailEInvoiceNone": { "other": "Not set" },
-      "detailSectionPeople": { "other": "People" },
-      "peopleLoadFailed": { "other": "Couldn't load the people. Tap to try again." },
-      "addPersonCta": { "other": "Add a person" },
-      "removePersonConfirm": { "other": "Remove {name}?" },
-      "removePersonAria": { "other": "Remove {name}" },
-      "personRoleLabel": { "other": "Role" },
-      "personRoleRepresentative": { "other": "Representative" },
-      "personRoleOwner": { "other": "Owner" },
-      "personRoleDirector": { "other": "Director" },
-      "personRoleExecutive": { "other": "Executive" },
-      "personOwnershipLabel": { "other": "Share owned (%)" },
-      "personTitleLabel": { "other": "Job title" },
-      "personSaveCta": { "other": "Save person" },
-      "personNameRequired": { "other": "Enter the given name and the family name." },
-      "personOwnershipInvalid": { "other": "Enter a share between 0.01 and 100." },
-      "personDateInvalid": { "other": "Pick a real date." },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "The default entity is shared across every app you sign in to. Removing it means no entity is pre-selected anywhere."
       }

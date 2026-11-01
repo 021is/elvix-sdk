@@ -1975,22 +1975,6 @@
       "leitwegIdInvalid": { "other": "Dit is geen Leitweg-ID, bijv. 04011000-1234512345-06" },
       "detailSectionEInvoice": { "other": "E-facturatie" },
       "detailEInvoiceNone": { "other": "Niet ingesteld" },
-      "detailSectionPeople": { "other": "Personen" },
-      "peopleLoadFailed": { "other": "De personen konden niet worden geladen. Tik om het opnieuw te proberen." },
-      "addPersonCta": { "other": "Persoon toevoegen" },
-      "removePersonConfirm": { "other": "{name} verwijderen?" },
-      "removePersonAria": { "other": "{name} verwijderen" },
-      "personRoleLabel": { "other": "Rol" },
-      "personRoleRepresentative": { "other": "Vertegenwoordiger" },
-      "personRoleOwner": { "other": "Eigenaar" },
-      "personRoleDirector": { "other": "Bestuurder" },
-      "personRoleExecutive": { "other": "Leidinggevende" },
-      "personOwnershipLabel": { "other": "Aandeel (%)" },
-      "personTitleLabel": { "other": "Functie" },
-      "personSaveCta": { "other": "Persoon opslaan" },
-      "personNameRequired": { "other": "Vul voornaam en achternaam in." },
-      "personOwnershipInvalid": { "other": "Vul een aandeel tussen 0,01 en 100 in." },
-      "personDateInvalid": { "other": "Kies een echte datum." },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "De standaardentiteit wordt gedeeld met elke app waar u zich bij aanmeldt. Door het te verwijderen, wordt nergens een entiteit vooraf geselecteerd."
       }

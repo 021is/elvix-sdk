@@ -1979,22 +1979,6 @@
       "leitwegIdInvalid": { "other": "Toto není Leitweg-ID, např. 04011000-1234512345-06" },
       "detailSectionEInvoice": { "other": "E-fakturace" },
       "detailEInvoiceNone": { "other": "Nenastaveno" },
-      "detailSectionPeople": { "other": "Osoby" },
-      "peopleLoadFailed": { "other": "Osoby se nepodařilo načíst. Klepněte a zkuste to znovu." },
-      "addPersonCta": { "other": "Přidat osobu" },
-      "removePersonConfirm": { "other": "Odebrat {name}?" },
-      "removePersonAria": { "other": "Odebrat {name}" },
-      "personRoleLabel": { "other": "Role" },
-      "personRoleRepresentative": { "other": "Zástupce" },
-      "personRoleOwner": { "other": "Vlastník" },
-      "personRoleDirector": { "other": "Jednatel" },
-      "personRoleExecutive": { "other": "Vedoucí pracovník" },
-      "personOwnershipLabel": { "other": "Podíl (%)" },
-      "personTitleLabel": { "other": "Funkce" },
-      "personSaveCta": { "other": "Uložit osobu" },
-      "personNameRequired": { "other": "Zadejte jméno a příjmení." },
-      "personOwnershipInvalid": { "other": "Zadejte podíl mezi 0,01 a 100." },
-      "personDateInvalid": { "other": "Vyberte skutečné datum." },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Výchozí subjekt je sdílený napříč všemi aplikacemi, do kterých se přihlašujete. Odebráním znamená, že nikde nebude předvybrán žádný subjekt."
       }

@@ -1982,22 +1982,6 @@
       "leitwegIdInvalid": { "other": "Це не Leitweg-ID, наприклад 04011000-1234512345-06" },
       "detailSectionEInvoice": { "other": "Електронні рахунки" },
       "detailEInvoiceNone": { "other": "Не вказано" },
-      "detailSectionPeople": { "other": "Люди" },
-      "peopleLoadFailed": { "other": "Не вдалося завантажити людей. Торкніться, щоб повторити." },
-      "addPersonCta": { "other": "Додати особу" },
-      "removePersonConfirm": { "other": "Видалити {name}?" },
-      "removePersonAria": { "other": "Видалити {name}" },
-      "personRoleLabel": { "other": "Роль" },
-      "personRoleRepresentative": { "other": "Представник" },
-      "personRoleOwner": { "other": "Власник" },
-      "personRoleDirector": { "other": "Директор" },
-      "personRoleExecutive": { "other": "Керівник" },
-      "personOwnershipLabel": { "other": "Частка (%)" },
-      "personTitleLabel": { "other": "Посада" },
-      "personSaveCta": { "other": "Зберегти особу" },
-      "personNameRequired": { "other": "Введіть ім'я та прізвище." },
-      "personOwnershipInvalid": { "other": "Введіть частку від 0,01 до 100." },
-      "personDateInvalid": { "other": "Виберіть справжню дату." },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Юр. особа за замовчуванням спільна для всіх застосунків, у які ви входите. Прибирання означає, що жодна юр. особа не буде попередньо вибрана ніде."
       }

@@ -153,8 +153,6 @@ export {
   useUserRoles,
   useUserScopes,
 } from "./hooks";
-// The people behind a business: representative, owners, directors (0.18).
-export type { LegalEntityPerson, PersonRole } from "./legal-entity-person";
 // What a legal entity holds, the picker's `onPick` payload (0.18).
 export {
   LegalEntityPurpose,

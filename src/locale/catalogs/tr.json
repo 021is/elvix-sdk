@@ -1975,22 +1975,6 @@
       "leitwegIdInvalid": { "other": "Bu bir Leitweg-ID değil, örn. 04011000-1234512345-06" },
       "detailSectionEInvoice": { "other": "E-fatura" },
       "detailEInvoiceNone": { "other": "Belirtilmedi" },
-      "detailSectionPeople": { "other": "Kişiler" },
-      "peopleLoadFailed": { "other": "Kişiler yüklenemedi. Yeniden denemek için dokunun." },
-      "addPersonCta": { "other": "Kişi ekle" },
-      "removePersonConfirm": { "other": "{name} kaldırılsın mı?" },
-      "removePersonAria": { "other": "{name} kaldır" },
-      "personRoleLabel": { "other": "Rol" },
-      "personRoleRepresentative": { "other": "Temsilci" },
-      "personRoleOwner": { "other": "Ortak" },
-      "personRoleDirector": { "other": "Yönetici" },
-      "personRoleExecutive": { "other": "Üst düzey yönetici" },
-      "personOwnershipLabel": { "other": "Pay (%)" },
-      "personTitleLabel": { "other": "Unvan" },
-      "personSaveCta": { "other": "Kişiyi kaydet" },
-      "personNameRequired": { "other": "Ad ve soyadı girin." },
-      "personOwnershipInvalid": { "other": "0,01 ile 100 arasında bir pay girin." },
-      "personDateInvalid": { "other": "Gerçek bir tarih seçin." },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Varsayılan tüzel kişi, oturum açtığınız her uygulama arasında paylaşılır. Kaldırmak, hiçbir yerde önceden tüzel kişi seçilmeyeceği anlamına gelir."
       }

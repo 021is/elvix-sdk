@@ -1976,22 +1976,6 @@
       "leitwegIdInvalid": { "other": "Das ist keine Leitweg-ID, z. B. 04011000-1234512345-06" },
       "detailSectionEInvoice": { "other": "E-Rechnung" },
       "detailEInvoiceNone": { "other": "Nicht angegeben" },
-      "detailSectionPeople": { "other": "Personen" },
-      "peopleLoadFailed": { "other": "Die Personen konnten nicht geladen werden. Tippe, um es erneut zu versuchen." },
-      "addPersonCta": { "other": "Person hinzufügen" },
-      "removePersonConfirm": { "other": "{name} entfernen?" },
-      "removePersonAria": { "other": "{name} entfernen" },
-      "personRoleLabel": { "other": "Rolle" },
-      "personRoleRepresentative": { "other": "Vertretung" },
-      "personRoleOwner": { "other": "Inhaber·in" },
-      "personRoleDirector": { "other": "Geschäftsführung" },
-      "personRoleExecutive": { "other": "Führungskraft" },
-      "personOwnershipLabel": { "other": "Anteil (%)" },
-      "personTitleLabel": { "other": "Funktion" },
-      "personSaveCta": { "other": "Person speichern" },
-      "personNameRequired": { "other": "Gib Vor- und Nachnamen ein." },
-      "personOwnershipInvalid": { "other": "Gib einen Anteil zwischen 0,01 und 100 ein." },
-      "personDateInvalid": { "other": "Wähle ein echtes Datum." },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Der Standard-Rechtsträger wird über alle Apps geteilt, in die Sie sich einloggen. Wenn Sie ihn entfernen, wird nirgendwo ein Rechtsträger vorausgewählt."
       }

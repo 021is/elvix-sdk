@@ -1976,22 +1976,6 @@
       "leitwegIdInvalid": { "other": "Δεν είναι Leitweg-ID, π.χ. 04011000-1234512345-06" },
       "detailSectionEInvoice": { "other": "Ηλεκτρονική τιμολόγηση" },
       "detailEInvoiceNone": { "other": "Δεν ορίστηκε" },
-      "detailSectionPeople": { "other": "Πρόσωπα" },
-      "peopleLoadFailed": { "other": "Δεν φορτώθηκαν τα πρόσωπα. Πατήστε για νέα προσπάθεια." },
-      "addPersonCta": { "other": "Προσθήκη προσώπου" },
-      "removePersonConfirm": { "other": "Αφαίρεση {name};" },
-      "removePersonAria": { "other": "Αφαίρεση {name}" },
-      "personRoleLabel": { "other": "Ρόλος" },
-      "personRoleRepresentative": { "other": "Εκπρόσωπος" },
-      "personRoleOwner": { "other": "Ιδιοκτήτης" },
-      "personRoleDirector": { "other": "Διαχειριστής" },
-      "personRoleExecutive": { "other": "Στέλεχος" },
-      "personOwnershipLabel": { "other": "Ποσοστό (%)" },
-      "personTitleLabel": { "other": "Θέση" },
-      "personSaveCta": { "other": "Αποθήκευση προσώπου" },
-      "personNameRequired": { "other": "Γράψτε όνομα και επώνυμο." },
-      "personOwnershipInvalid": { "other": "Γράψτε ποσοστό από 0,01 έως 100." },
-      "personDateInvalid": { "other": "Επιλέξτε πραγματική ημερομηνία." },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Το προεπιλεγμένο πρόσωπο μοιράζεται σε κάθε εφαρμογή στην οποία συνδέεστε. Η αφαίρεσή του σημαίνει ότι κανένα πρόσωπο δεν είναι προεπιλεγμένο πουθενά."
       }

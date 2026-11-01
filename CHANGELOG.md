@@ -40,7 +40,8 @@ as your own. Needs elvix.is with the legal-entity grants (deployed before this r
 - **`getElvixLegalEntity({ apiKey, applicationId, userId, entityId, purpose? })`** in
   `@elvix.is/sdk/server`: the picked entity by id for the purpose granted
   (`ElvixLegalEntity`): elvix's VAT verdict, `vatIdNameMatch`, EAS schemes, e-invoice
-  addresses; `payouts` adds birth data, phone and `people`. `not_found`, `invalid_id`,
+  addresses; `payouts` adds what the person saved of their birth data and phone (a
+  payment provider's prefill; its own onboarding asks the rest). `not_found`, `invalid_id`,
   `invalid_purpose`; never throws.
 - **Webhooks** `user.legal_entity_updated`, `user.legal_entity_deleted`,
   `user.legal_entity_revoked` (`UserLegalEntityData`, with `purpose`), to applications
@@ -48,8 +49,7 @@ as your own. Needs elvix.is with the legal-entity grants (deployed before this r
 - **A person's name in two parts** (`givenName`, `familyName`, required for individuals
   and sole proprietors; the legal name is built from them), **where e-invoices go** (an
   optional step for businesses: a Peppol ID everywhere, Italy's SDI code and PEC, a German
-  public body's Leitweg-ID), and **the people of a business** (representative, owners with
-  their share, directors, executives) in the detail view (`LegalEntityPerson`).
+  public body's Leitweg-ID).
 - **Row variables**: `--elvix-row`, `--elvix-row-hover`, `--elvix-picked`,
   `--elvix-picked-text`, `--elvix-radius`, `--elvix-focus` (`rows.css`), next to the field
   variables; `--elvix-danger` outlines a field whose value is wrong.

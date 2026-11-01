@@ -1,20 +1,11 @@
 /**
  * The 0.18 additions behind the legal-entity UI, pure: a person's name in
- * two parts, where e-invoices go, the people of a business, and the picker
- * row's VAT mark (a confirmed number whose register name differs is not
- * "Verified").
+ * two parts, where e-invoices go, and the picker row's VAT mark (a confirmed
+ * number whose register name differs is not "Verified").
  */
 import { describe, expect, it } from "vitest";
 import { View } from "../src/react/legal-entity-flow";
 import { eInvoiceReady, stepPatch, stepReady } from "../src/react/legal-entity-payload";
-import {
-  emptyPerson,
-  PersonProblem,
-  PersonRole,
-  personDraftFrom,
-  personInputFrom,
-  personProblem,
-} from "../src/react/legal-entity-person";
 import { VatMark, vatMark } from "../src/react/legal-entity-picker-views";
 import type { LegalEntityRecord } from "../src/react/legal-entity-schema";
 import { emptyDraft } from "../src/react/use-legal-entity-draft";
@@ -65,52 +56,6 @@ describe("where e-invoices go", () => {
       pecAddress: null,
       leitwegId: null,
     });
-  });
-});
-
-describe("the people of a business", () => {
-  it("needs both names, and an owner needs a share", () => {
-    expect(personProblem(emptyPerson())).toBe(PersonProblem.NAME);
-    const named = { ...emptyPerson(), givenName: "Ada", familyName: "Lovelace" };
-    expect(personProblem(named)).toBeNull();
-    expect(personProblem({ ...named, role: PersonRole.OWNER })).toBe(PersonProblem.OWNERSHIP);
-    expect(
-      personProblem({ ...named, role: PersonRole.OWNER, ownershipPercent: "25,5" }),
-    ).toBeNull();
-    expect(personProblem({ ...named, email: "nope" })).toBe(PersonProblem.EMAIL);
-  });
-
-  it("never sends an empty field, so a withheld value is not wiped", () => {
-    const body = personInputFrom({ ...emptyPerson(), givenName: "Ada", familyName: "Lovelace" });
-    expect(JSON.parse(JSON.stringify(body))).toEqual({
-      role: "representative",
-      givenName: "Ada",
-      familyName: "Lovelace",
-    });
-  });
-
-  it("opens a withheld person with the personal fields empty", () => {
-    const d = personDraftFrom({
-      id: "p1",
-      entityId: "le1",
-      role: "owner",
-      givenName: "Ada",
-      familyName: "Lovelace",
-      dateOfBirth: null,
-      nationality: null,
-      email: null,
-      phone: null,
-      title: "CEO",
-      ownershipPercent: 51,
-      addressLine1: null,
-      addressPostalCode: null,
-      addressCity: null,
-      addressCountry: null,
-      createdAt: "",
-      updatedAt: "",
-      withheld: true,
-    });
-    expect(d).toMatchObject({ dateOfBirth: "", ownershipPercent: "51", title: "CEO" });
   });
 });
 

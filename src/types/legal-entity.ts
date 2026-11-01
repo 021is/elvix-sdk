@@ -7,8 +7,9 @@
  * zod, so a server never loads the React schema.
  *
  * A field the purpose does not cover is ABSENT, not null: `invoicing` (the
- * default) carries what an invoice needs; `payouts` adds the birth data, the
- * phone and the business's people, for a payment provider's checks.
+ * default) carries what an invoice needs; `payouts` adds what the person
+ * saved of their birth data and phone, for a payment provider's prefill
+ * (the provider's own onboarding asks the rest).
  */
 
 /** How far elvix could confirm the VAT ID: `live` is the authority's yes. */
@@ -19,30 +20,6 @@ export type ElvixVatNameMatch = "match" | "mismatch" | "unknown";
 
 /** What a grant lets the app read. */
 export type ElvixLegalEntityPurpose = "invoicing" | "payouts";
-
-/** A business's representative, owner, director or executive (`payouts` only). */
-export type ElvixLegalEntityPerson = {
-  id: string;
-  entityId: string;
-  role: "representative" | "owner" | "director" | "executive";
-  givenName: string;
-  familyName: string;
-  /** `YYYY-MM-DD`. */
-  dateOfBirth: string | null;
-  /** ISO-3166-1 alpha-2. */
-  nationality: string | null;
-  email: string | null;
-  phone: string | null;
-  title: string | null;
-  /** 0 to 100; set for owners. */
-  ownershipPercent: number | null;
-  addressLine1: string | null;
-  addressPostalCode: string | null;
-  addressCity: string | null;
-  addressCountry: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
 
 export type ElvixLegalEntity = {
   id: string;
@@ -95,12 +72,14 @@ export type ElvixLegalEntity = {
   addressCountryName: string | null;
   addressFormatted: string | null;
 
-  // `payouts` only.
+  // `payouts` only: what the person saved, for a payment provider's prefill.
   dateOfBirth?: string | null;
+  placeOfBirth?: string | null;
   /** Comma-separated ISO-3166-1 alpha-2 codes. */
   nationality?: string | null;
   contactPhone?: string | null;
-  people?: ElvixLegalEntityPerson[];
+  tradingName?: string | null;
+  registeredSince?: string | null;
 
   /** Snapshot the entity onto what you issue together with this. */
   updatedAt: string;

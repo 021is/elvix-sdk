@@ -1982,22 +1982,6 @@
       "leitwegIdInvalid": { "other": "Это не Leitweg-ID, например 04011000-1234512345-06" },
       "detailSectionEInvoice": { "other": "Электронные счета" },
       "detailEInvoiceNone": { "other": "Не указано" },
-      "detailSectionPeople": { "other": "Люди" },
-      "peopleLoadFailed": { "other": "Не удалось загрузить людей. Нажмите, чтобы повторить." },
-      "addPersonCta": { "other": "Добавить человека" },
-      "removePersonConfirm": { "other": "Удалить {name}?" },
-      "removePersonAria": { "other": "Удалить {name}" },
-      "personRoleLabel": { "other": "Роль" },
-      "personRoleRepresentative": { "other": "Представитель" },
-      "personRoleOwner": { "other": "Владелец" },
-      "personRoleDirector": { "other": "Директор" },
-      "personRoleExecutive": { "other": "Руководитель" },
-      "personOwnershipLabel": { "other": "Доля (%)" },
-      "personTitleLabel": { "other": "Должность" },
-      "personSaveCta": { "other": "Сохранить" },
-      "personNameRequired": { "other": "Введите имя и фамилию." },
-      "personOwnershipInvalid": { "other": "Введите долю от 0,01 до 100." },
-      "personDateInvalid": { "other": "Выберите настоящую дату." },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Основное лицо общее для всех приложений, в которые вы входите. Если убрать его, ни одно лицо не будет выбрано заранее нигде."
       }

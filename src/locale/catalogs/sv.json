@@ -1976,22 +1976,6 @@
       "leitwegIdInvalid": { "other": "Detta är inget Leitweg-ID, t.ex. 04011000-1234512345-06" },
       "detailSectionEInvoice": { "other": "E-fakturering" },
       "detailEInvoiceNone": { "other": "Inte angivet" },
-      "detailSectionPeople": { "other": "Personer" },
-      "peopleLoadFailed": { "other": "Kunde inte läsa in personerna. Tryck för att försöka igen." },
-      "addPersonCta": { "other": "Lägg till en person" },
-      "removePersonConfirm": { "other": "Ta bort {name}?" },
-      "removePersonAria": { "other": "Ta bort {name}" },
-      "personRoleLabel": { "other": "Roll" },
-      "personRoleRepresentative": { "other": "Företrädare" },
-      "personRoleOwner": { "other": "Ägare" },
-      "personRoleDirector": { "other": "Styrelseledamot" },
-      "personRoleExecutive": { "other": "Ledande befattningshavare" },
-      "personOwnershipLabel": { "other": "Ägarandel (%)" },
-      "personTitleLabel": { "other": "Befattning" },
-      "personSaveCta": { "other": "Spara person" },
-      "personNameRequired": { "other": "Skriv förnamn och efternamn." },
-      "personOwnershipInvalid": { "other": "Skriv en andel mellan 0,01 och 100." },
-      "personDateInvalid": { "other": "Välj ett riktigt datum." },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Standardpersonen delas mellan varje app du loggar in på. Att ta bort den innebär att ingen juridisk person är förvald någonstans."
       }

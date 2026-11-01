@@ -1975,22 +1975,6 @@
       "leitwegIdInvalid": { "other": "Non è un Leitweg-ID, es. 04011000-1234512345-06" },
       "detailSectionEInvoice": { "other": "Fatturazione elettronica" },
       "detailEInvoiceNone": { "other": "Non indicato" },
-      "detailSectionPeople": { "other": "Persone" },
-      "peopleLoadFailed": { "other": "Impossibile caricare le persone. Tocca per riprovare." },
-      "addPersonCta": { "other": "Aggiungi una persona" },
-      "removePersonConfirm": { "other": "Rimuovere {name}?" },
-      "removePersonAria": { "other": "Rimuovi {name}" },
-      "personRoleLabel": { "other": "Ruolo" },
-      "personRoleRepresentative": { "other": "Legale rappresentante" },
-      "personRoleOwner": { "other": "Socio" },
-      "personRoleDirector": { "other": "Amministratore" },
-      "personRoleExecutive": { "other": "Dirigente" },
-      "personOwnershipLabel": { "other": "Quota (%)" },
-      "personTitleLabel": { "other": "Qualifica" },
-      "personSaveCta": { "other": "Salva persona" },
-      "personNameRequired": { "other": "Inserisci nome e cognome." },
-      "personOwnershipInvalid": { "other": "Inserisci una quota tra 0,01 e 100." },
-      "personDateInvalid": { "other": "Scegli una data reale." },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Il soggetto predefinito è condiviso tra tutte le app a cui accedi. Rimuoverlo significa che nessun soggetto sarà preselezionato da nessuna parte."
       }

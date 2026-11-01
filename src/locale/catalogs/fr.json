@@ -1976,22 +1976,6 @@
       "leitwegIdInvalid": { "other": "Ce n'est pas un Leitweg-ID, par ex. 04011000-1234512345-06" },
       "detailSectionEInvoice": { "other": "Facturation électronique" },
       "detailEInvoiceNone": { "other": "Non renseigné" },
-      "detailSectionPeople": { "other": "Personnes" },
-      "peopleLoadFailed": { "other": "Impossible de charger les personnes. Touchez pour réessayer." },
-      "addPersonCta": { "other": "Ajouter une personne" },
-      "removePersonConfirm": { "other": "Retirer {name} ?" },
-      "removePersonAria": { "other": "Retirer {name}" },
-      "personRoleLabel": { "other": "Rôle" },
-      "personRoleRepresentative": { "other": "Représentant légal" },
-      "personRoleOwner": { "other": "Associé" },
-      "personRoleDirector": { "other": "Dirigeant" },
-      "personRoleExecutive": { "other": "Cadre dirigeant" },
-      "personOwnershipLabel": { "other": "Part détenue (%)" },
-      "personTitleLabel": { "other": "Fonction" },
-      "personSaveCta": { "other": "Enregistrer la personne" },
-      "personNameRequired": { "other": "Saisissez le prénom et le nom." },
-      "personOwnershipInvalid": { "other": "Saisissez une part entre 0,01 et 100." },
-      "personDateInvalid": { "other": "Choisissez une vraie date." },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "L'entité par défaut est partagée entre toutes les applications auxquelles vous vous connectez. La retirer signifie qu'aucune entité n'est pré-sélectionnée nulle part."
       }

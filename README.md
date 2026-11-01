@@ -60,7 +60,7 @@ Sign-in and sign-up are the same door. There is no separate registration flow to
 
 **Server helpers** — verify a session token against elvix on each protected request and get the live user, roles, scopes and memberships back. Because it re-checks on every call, a banned or signed-out user stops verifying within one request, so bans take effect server-side without you writing anything. Details: **[elvix.is/docs/verify-backend](https://elvix.is/docs/verify-backend)**.
 
-`getElvixLegalEntity({ apiKey, applicationId, userId, entityId, purpose? })` reads the legal entity a user picked for your app, by id, for the purpose they granted (`invoicing`, or `payouts` with the birth data and the business's people), with elvix's own VAT check and name match: take only the id from the browser. A pre-selected entity is not shared until a tap or your Continue grants it (`useElvixLegalEntityGrant`).
+`getElvixLegalEntity({ apiKey, applicationId, userId, entityId, purpose? })` reads the legal entity a user picked for your app, by id, for the purpose they granted (`invoicing`, or `payouts` with what the person saved of their birth data and phone, for a payment provider's prefill), with elvix's own VAT check and name match: take only the id from the browser. A pre-selected entity is not shared until a tap or your Continue grants it (`useElvixLegalEntityGrant`).
 
 If you would rather not call elvix on every request, exchange the session token once for a short-lived signed JWT and verify that locally against our JWKS. Same guide covers it.
 

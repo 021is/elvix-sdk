@@ -1976,22 +1976,6 @@
       "leitwegIdInvalid": { "other": "No es un Leitweg-ID, p. ej. 04011000-1234512345-06" },
       "detailSectionEInvoice": { "other": "Facturación electrónica" },
       "detailEInvoiceNone": { "other": "Sin indicar" },
-      "detailSectionPeople": { "other": "Personas" },
-      "peopleLoadFailed": { "other": "No se pudieron cargar las personas. Toca para reintentar." },
-      "addPersonCta": { "other": "Añadir una persona" },
-      "removePersonConfirm": { "other": "¿Quitar a {name}?" },
-      "removePersonAria": { "other": "Quitar a {name}" },
-      "personRoleLabel": { "other": "Función" },
-      "personRoleRepresentative": { "other": "Representante" },
-      "personRoleOwner": { "other": "Propietario" },
-      "personRoleDirector": { "other": "Administrador" },
-      "personRoleExecutive": { "other": "Directivo" },
-      "personOwnershipLabel": { "other": "Participación (%)" },
-      "personTitleLabel": { "other": "Cargo" },
-      "personSaveCta": { "other": "Guardar persona" },
-      "personNameRequired": { "other": "Escribe el nombre y los apellidos." },
-      "personOwnershipInvalid": { "other": "Escribe una participación entre 0,01 y 100." },
-      "personDateInvalid": { "other": "Elige una fecha real." },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "La entidad predeterminada se comparte entre todas las aplicaciones a las que inicias sesión. Quitarla significa que no se preseleccionará ninguna entidad en ningún sitio."
       }

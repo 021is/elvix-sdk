@@ -1982,22 +1982,6 @@
       "leitwegIdInvalid": { "other": "To nie jest Leitweg-ID, np. 04011000-1234512345-06" },
       "detailSectionEInvoice": { "other": "E-fakturowanie" },
       "detailEInvoiceNone": { "other": "Nie podano" },
-      "detailSectionPeople": { "other": "Osoby" },
-      "peopleLoadFailed": { "other": "Nie udało się wczytać osób. Dotknij, aby spróbować ponownie." },
-      "addPersonCta": { "other": "Dodaj osobę" },
-      "removePersonConfirm": { "other": "Usunąć {name}?" },
-      "removePersonAria": { "other": "Usuń {name}" },
-      "personRoleLabel": { "other": "Rola" },
-      "personRoleRepresentative": { "other": "Przedstawiciel" },
-      "personRoleOwner": { "other": "Właściciel" },
-      "personRoleDirector": { "other": "Członek zarządu" },
-      "personRoleExecutive": { "other": "Kadra kierownicza" },
-      "personOwnershipLabel": { "other": "Udział (%)" },
-      "personTitleLabel": { "other": "Stanowisko" },
-      "personSaveCta": { "other": "Zapisz osobę" },
-      "personNameRequired": { "other": "Wpisz imię i nazwisko." },
-      "personOwnershipInvalid": { "other": "Wpisz udział od 0,01 do 100." },
-      "personDateInvalid": { "other": "Wybierz prawdziwą datę." },
       "defaultSharedAcrossAppsBodyUnset": {
         "other": "Domyślny podmiot jest współdzielony pomiędzy wszystkimi aplikacjami, do których się logujesz. Usunięcie oznacza, że nigdzie nie będzie wstępnie wybranego podmiotu."
       }

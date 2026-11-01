@@ -3,7 +3,7 @@
 /**
  * One legal entity, every part tap-to-edit: each row re-enters the wizard
  * step that asks it (`onEdit(step)`), and that step's confirm PATCHes the
- * one field. A business also lists where its e-invoices go and its people.
+ * one field. A business also lists where its e-invoices go.
  * Out of `legal-entity-detail-views.tsx` (0.18), which had passed 500 lines.
  */
 
@@ -20,7 +20,6 @@ import {
   TaxSection,
 } from "./legal-entity-detail-sections";
 import { needsBusinessSteps, type View } from "./legal-entity-flow";
-import { PeopleSection } from "./legal-entity-people-section";
 import { typeIcon, WizardHeader } from "./legal-entity-primitives";
 import type { LegalEntityRecord, LegalEntityType } from "./legal-entity-schema";
 import { FADE_MASK } from "./wizard-panes";
@@ -59,7 +58,6 @@ export function DetailView(props: {
         <AddressSection {...section} />
         {business && <EInvoiceSection {...section} />}
         <ContactSection {...section} />
-        {business && <PeopleSection entityId={entity.id} withheld={Boolean(entity.withheld)} />}
       </div>
       <DetailActions
         isDefault={Boolean(entity.isDefault)}
