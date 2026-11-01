@@ -1463,8 +1463,14 @@
       "typeChoiceSubtitle": {
         "other": "Determina las preguntas que vendrán a continuación."
       },
-      "step1of3": {
-        "other": "Paso 1 de 3"
+      "stepOfTotal": {
+        "other": "Paso {step} de {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "¿A dónde van las facturas?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "El correo electrónico al que se envían las facturas. Opcional."
       },
       "individualSubtitle": {
         "other": "Solo tú, sin negocio. Las facturas van a tu nombre personal."

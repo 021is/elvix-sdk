@@ -1463,8 +1463,14 @@
       "typeChoiceSubtitle": {
         "other": "Avgör frågorna vi ställer härnäst."
       },
-      "step1of3": {
-        "other": "Steg 1 av 3"
+      "stepOfTotal": {
+        "other": "Steg {step} av {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Vart ska fakturor skickas?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "E-postadressen som fakturor skickas till. Valfritt."
       },
       "individualSubtitle": {
         "other": "Bara du, inget företag. Fakturor utfärdas i ditt personliga namn."

@@ -9,7 +9,7 @@
  */
 
 import type { TaxIdValidationState } from "./elvix-tax-id-input";
-import { type FlowContext, nextView, previousView, View } from "./legal-entity-flow";
+import { type FlowContext, FlowKind, nextView, previousView, View } from "./legal-entity-flow";
 import { stepPatch, stepReady } from "./legal-entity-payload";
 import type { LegalEntityInput, LegalEntityType } from "./legal-entity-schema";
 import type { LegalEntityDraft, LegalEntityDraftApi } from "./use-legal-entity-draft";
@@ -18,6 +18,8 @@ export type WizardNavArgs = {
   draftApi: LegalEntityDraftApi;
   /** The types the host offers; one type skips the type choice. */
   types: readonly LegalEntityType[] | undefined;
+  /** The invoice's short flow, or the full one (the default). */
+  kind?: FlowKind;
   /** The entity a detail-view edit is changing, else null (adding). */
   editingId: string | null;
   setView: (view: View) => void;
@@ -26,13 +28,15 @@ export type WizardNavArgs = {
   /** Leaves the wizard: draft blank, not editing. */
   resetWizard: () => void;
   patch: (id: string, partial: Partial<LegalEntityInput>) => void;
-  commit: () => void;
+  /** Saves the draft; on a refusal the wizard returns to `from`. */
+  commit: (from: View) => void;
 };
 
-const contextOf = (d: LegalEntityDraft): FlowContext => ({
+const contextOf = (d: LegalEntityDraft, kind: FlowKind): FlowContext => ({
   type: d.type,
   hasVatId: d.vatId.trim() !== "",
   withoutVatId: d.withoutVatId,
+  kind,
 });
 
 /** The one type a host allows, when it allows only one. */
@@ -40,19 +44,23 @@ const onlyType = (types: WizardNavArgs["types"]) => (types?.length === 1 ? types
 
 export function useLegalEntityNav(a: WizardNavArgs) {
   const { draft, setField } = a.draftApi;
+  const kind = a.kind ?? FlowKind.FULL;
 
   const pickType = (type: LegalEntityType) => {
     setField("type", type);
-    a.setView(nextView(View.TYPE_CHOICE, { ...contextOf(draft), type }) ?? View.LEGAL_NAME);
+    const ctx = { ...contextOf(draft, kind), type };
+    a.setView(nextView(View.TYPE_CHOICE, ctx) ?? View.LEGAL_NAME);
   };
 
   /** Leaves `step` forwards: PATCHes it when editing, else the next pane. */
   const advance = (step: View) => {
     if (!stepReady(step, draft)) return;
-    const next = nextView(step, contextOf(draft));
+    const next = nextView(step, contextOf(draft, kind));
     const partial = stepPatch(step, draft);
     if (a.editingId && partial && next !== View.VERIFYING_TAX_ID) a.patch(a.editingId, partial);
-    else if (next === View.SAVING) a.commit();
+    // The contact form shows no error; its question, one pane back, does.
+    else if (next === View.SAVING)
+      a.commit(step === View.CONTACT_INPUT ? View.CONTACT_CHOICE : step);
     else if (next) a.setView(next);
   };
 
@@ -63,7 +71,11 @@ export function useLegalEntityNav(a: WizardNavArgs) {
       a.setView(View.DETAIL);
       return;
     }
-    const previous = previousView(step, { type: draft.type, withoutVatId: draft.withoutVatId });
+    const previous = previousView(step, {
+      type: draft.type,
+      withoutVatId: draft.withoutVatId,
+      kind,
+    });
     const skipped = previous === View.TYPE_CHOICE && onlyType(a.types) !== undefined;
     if (!previous || skipped) {
       a.resetWizard();
@@ -85,6 +97,8 @@ export function useLegalEntityNav(a: WizardNavArgs) {
     back,
     openAdd,
     pickType,
+    /** The flow saves after `step`: its button says so, and a refusal shows there. */
+    isLast: (step: View) => nextView(step, contextOf(draft, kind)) === View.SAVING,
     /** The VAT ID was typed: always the check next, whatever was chosen before. */
     confirmVatId: () => {
       setField("withoutVatId", false);

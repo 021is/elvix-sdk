@@ -1469,8 +1469,14 @@
       "typeChoiceSubtitle": {
         "other": "От этого зависят вопросы, которые мы зададим дальше."
       },
-      "step1of3": {
-        "other": "Шаг 1 из 3"
+      "stepOfTotal": {
+        "other": "Шаг {step} из {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Куда отправлять счета?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "Адрес электронной почты, на который приходят счета. Необязательно."
       },
       "individualSubtitle": {
         "other": "Только вы, без бизнеса. Счета на ваше личное имя."

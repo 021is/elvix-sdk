@@ -12,9 +12,10 @@ import { useT } from "../locale/use-t";
 import { TAX_VALIDATABLE_COUNTRIES } from "./countries";
 import { LegalEntityAddressStep } from "./legal-entity-address-step";
 import { typeTitleCopy } from "./legal-entity-copy";
-import { needsBusinessSteps, needsPersonSteps, View } from "./legal-entity-flow";
+import { needsBusinessSteps, needsPersonSteps, stepsInFlow, View } from "./legal-entity-flow";
 import { PersonNameView } from "./legal-entity-person-name-view";
-import type { LegalEntityType } from "./legal-entity-schema";
+import { RegistrationView } from "./legal-entity-registration-view";
+import { LEGAL_ENTITY_TYPES, type LegalEntityType } from "./legal-entity-schema";
 import { VatIdView } from "./legal-entity-vat-id-view";
 import { VerifyingTaxIdView } from "./legal-entity-verifying-view";
 import {
@@ -23,7 +24,6 @@ import {
   isoYearsAgo,
   NationalityView,
   PlaceOfBirthView,
-  RegistrationView,
   SingleTextView,
   TaxIdsView,
   TypeChoiceView,
@@ -52,6 +52,7 @@ const ADDRESS_CONTACT_STEPS: ReadonlySet<View> = new Set([
   View.ADDRESS_REVIEW,
   View.ADDRESS_APT_FLOOR,
   View.E_INVOICE,
+  View.INVOICE_EMAIL,
   View.CONTACT_CHOICE,
   View.CONTACT_INPUT,
 ]);
@@ -89,7 +90,14 @@ function PersonStep({
   const nav = { onConfirm: () => flow.advance(step), onBack: () => flow.back(step) };
   switch (step) {
     case View.TYPE_CHOICE:
-      return <TypeChoiceView types={types} onPick={flow.pickType} onBack={nav.onBack} />;
+      return (
+        <TypeChoiceView
+          types={types}
+          total={stepsInFlow(types ?? LEGAL_ENTITY_TYPES, flow.kind)}
+          onPick={flow.pickType}
+          onBack={nav.onBack}
+        />
+      );
     case View.LEGAL_NAME:
       return <LegalNameStep flow={flow} />;
     case View.TRADING_NAME:
@@ -118,6 +126,7 @@ function PersonStep({
           minDate={isoYearsAgo(120)}
           maxDate={isoYearsAgo(18)}
           outOfRangeMessage={t("legalEntities.dobAgeError")}
+          optional
         />
       );
     case View.PLACE_OF_BIRTH:
@@ -142,6 +151,7 @@ function PersonStep({
           value={draft.nationality}
           onChange={(value) => setField("nationality", value)}
           {...nav}
+          optional
         />
       );
     default:

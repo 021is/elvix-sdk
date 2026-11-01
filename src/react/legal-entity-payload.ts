@@ -68,6 +68,12 @@ function eInvoiceFields(d: LegalEntityDraft): Patch {
   };
 }
 
+/** The invoice email may be left empty, never malformed. */
+export function invoiceEmailReady(email: string): boolean {
+  const v = email.trim();
+  return v === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+
 /** The e-invoice step may be left with any field empty, never with a malformed one. */
 export function eInvoiceReady(d: LegalEntityDraft): boolean {
   const ok = (v: string, rx: RegExp) => v.trim() === "" || rx.test(v.trim());
@@ -122,8 +128,8 @@ export function stepReady(step: View, d: LegalEntityDraft): boolean {
         : d.legalName.trim() !== "";
     case View.E_INVOICE:
       return eInvoiceReady(d);
-    case View.REGISTRATION:
-      return d.registrationNumber.trim() !== "" && d.registrationBody.trim() !== "";
+    case View.INVOICE_EMAIL:
+      return invoiceEmailReady(d.contactEmail);
     case View.ADDRESS_APT_FLOOR:
       return d.address !== null;
     default:

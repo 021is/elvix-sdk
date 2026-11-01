@@ -1463,8 +1463,14 @@
       "typeChoiceSubtitle": {
         "other": "Καθορίζει τις ερωτήσεις που θα ακολουθήσουν."
       },
-      "step1of3": {
-        "other": "Βήμα 1 από 3"
+      "stepOfTotal": {
+        "other": "Βήμα {step} από {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Πού να στέλνονται τα τιμολόγια;"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "Η διεύθυνση email όπου στέλνονται τα τιμολόγια. Προαιρετικό."
       },
       "individualSubtitle": {
         "other": "Μόνο εσείς, χωρίς επιχείρηση. Τα τιμολόγια εκδίδονται στο προσωπικό σας όνομα."

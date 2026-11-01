@@ -1463,8 +1463,14 @@
       "typeChoiceSubtitle": {
         "other": "Drives the questions we'll ask next."
       },
-      "step1of3": {
-        "other": "Step 1 of 3"
+      "stepOfTotal": {
+        "other": "Step {step} of {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Where should invoices go?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "The email address invoices are sent to. Optional."
       },
       "individualSubtitle": {
         "other": "Just you, no business. Invoices go in your personal name."

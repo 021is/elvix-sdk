@@ -10,7 +10,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useElvixContext } from "./elvix-provider";
-import { View } from "./legal-entity-flow";
+import { FlowKind, View } from "./legal-entity-flow";
 import { draftToEntityInput, prefillFrom } from "./legal-entity-payload";
 import type { LegalEntityInput, LegalEntityRecord, LegalEntityType } from "./legal-entity-schema";
 import { type Outcome, profileCollection } from "./profile-request";
@@ -37,6 +37,8 @@ type Options = {
   types?: readonly LegalEntityType[];
   /** The entity the add wizard just saved, read back from elvix. */
   onCreated?: (entity: LegalEntityRecord) => void;
+  /** The invoice's short add flow, or the full one (the default). */
+  kind?: FlowKind;
 };
 
 const restingView = (count: number): View => (count === 0 ? View.EMPTY : View.LIST);
@@ -79,7 +81,7 @@ function useEntityList(
   return { entities, setEntities, loading, loadFailed, refresh };
 }
 
-export function useLegalEntities({ onChange, onResult, types, onCreated }: Options) {
+export function useLegalEntities({ onChange, onResult, types, onCreated, kind }: Options) {
   const { baseUrl } = useElvixContext();
   const api = useMemo(
     () => profileCollection<LegalEntityRecord, LegalEntityInput>(baseUrl, "entities"),
@@ -126,7 +128,8 @@ export function useLegalEntities({ onChange, onResult, types, onCreated }: Optio
     setView(View.DETAIL);
   };
 
-  const commit = async () => {
+  /** Saves the draft; a refusal goes back to `from`, the step that saved, and shows there. */
+  const commit = async (from: View) => {
     const input = draftToEntityInput(draft);
     if (!input) return;
     setError(null);
@@ -135,7 +138,7 @@ export function useLegalEntities({ onChange, onResult, types, onCreated }: Optio
     const out = await api.create(input);
     if (!out.ok) {
       report(out, "save_failed", count);
-      setView(View.CONTACT_CHOICE);
+      setView(from);
       return;
     }
     const list = await refresh();
@@ -149,17 +152,19 @@ export function useLegalEntities({ onChange, onResult, types, onCreated }: Optio
   const nav = useLegalEntityNav({
     draftApi,
     types,
+    kind,
     editingId: editing ? inspectingId : null,
     setView,
     restingView: () => restingView(count),
     resetWizard,
     patch: (id, partial) => void patch(id, partial),
-    commit: () => void commit(),
+    commit: (from) => void commit(from),
   });
 
   return {
     view,
     setView,
+    kind: kind ?? FlowKind.FULL,
     loading,
     loadFailed,
     entities,
@@ -171,7 +176,8 @@ export function useLegalEntities({ onChange, onResult, types, onCreated }: Optio
     defaultIntent,
     defaultEntity: find(defaultIntent?.id),
     ...nav,
-    commit: () => void commit(),
+    /** "No contact details" in the full flow's contact question saves from there. */
+    commit: () => void commit(View.CONTACT_CHOICE),
     /** Reads the list again, after a failed read. */
     reload: () => void refresh(),
     openAdd: () => {

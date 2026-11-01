@@ -2,8 +2,8 @@
 
 /**
  * One labelled text field with its error and hint, for the legal-entity
- * panes that ask for several values at once (a person's name, where
- * e-invoices go, a company's people). The input is `<ElvixInput>`, so the
+ * panes that ask for one or several values (a person's name, where
+ * e-invoices go, the invoice email). The input is `<ElvixInput>`, so the
  * host's field variables style it; the error line is announced.
  */
 

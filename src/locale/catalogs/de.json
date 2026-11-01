@@ -1463,8 +1463,14 @@
       "typeChoiceSubtitle": {
         "other": "Bestimmt die Fragen, die wir als nächstes stellen."
       },
-      "step1of3": {
-        "other": "Schritt 1 von 3"
+      "stepOfTotal": {
+        "other": "Schritt {step} von {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Wohin sollen Rechnungen gehen?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "Die E-Mail-Adresse, an die Rechnungen gehen. Optional."
       },
       "individualSubtitle": {
         "other": "Nur Sie, kein Unternehmen. Rechnungen laufen auf Ihren persönlichen Namen."

@@ -1462,8 +1462,14 @@
       "typeChoiceSubtitle": {
         "other": "Bepaalt welke vragen we hierna stellen."
       },
-      "step1of3": {
-        "other": "Stap 1 van 3"
+      "stepOfTotal": {
+        "other": "Stap {step} van {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Waar moeten facturen heen?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "Het e-mailadres waar facturen naartoe gaan. Optioneel."
       },
       "individualSubtitle": {
         "other": "Alleen u, geen bedrijf. Facturen worden op uw persoonlijke naam gezet."

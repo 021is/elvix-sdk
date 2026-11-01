@@ -34,7 +34,7 @@
 import { AnimatePresence } from "framer-motion";
 import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
-import { needsBusinessSteps, View } from "./legal-entity-flow";
+import { FlowKind, needsBusinessSteps, View } from "./legal-entity-flow";
 import { PickerList, PickerLoadFailed } from "./legal-entity-picker-views";
 import { SavingView } from "./legal-entity-primitives";
 import {
@@ -97,6 +97,8 @@ export function ElvixLegalEntityPicker({
     types,
     onCreated: pickCreated,
     onResult: (r) => !r.ok && report(r),
+    // An invoice asks only what an invoice needs; payouts walk the full flow.
+    kind: purpose === LegalEntityPurpose.INVOICING ? FlowKind.INVOICING : FlowKind.FULL,
   });
   const offered = flow.entities.filter(offeredType);
   const picks = useLegalEntityPicks({

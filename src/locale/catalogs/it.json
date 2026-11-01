@@ -1462,8 +1462,14 @@
       "typeChoiceSubtitle": {
         "other": "Guida le domande che faremo dopo."
       },
-      "step1of3": {
-        "other": "Passaggio 1 di 3"
+      "stepOfTotal": {
+        "other": "Passaggio {step} di {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Dove inviare le fatture?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "L'indirizzo email a cui vengono inviate le fatture. Facoltativo."
       },
       "individualSubtitle": {
         "other": "Solo tu, nessuna attività. Le fatture vanno a tuo nome personale."

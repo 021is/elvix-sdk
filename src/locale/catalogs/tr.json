@@ -1462,8 +1462,14 @@
       "typeChoiceSubtitle": {
         "other": "Bir sonraki adımda sorulacak soruları belirler."
       },
-      "step1of3": {
-        "other": "3 adımdan 1."
+      "stepOfTotal": {
+        "other": "{total} adımdan {step}."
+      },
+      "invoiceEmailTitle": {
+        "other": "Faturalar nereye gönderilsin?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "Faturaların gönderileceği e-posta adresi. İsteğe bağlı."
       },
       "individualSubtitle": {
         "other": "Sadece siz, işletme yok. Faturalar kişisel adınızla kesilir."

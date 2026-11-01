@@ -1469,8 +1469,14 @@
       "typeChoiceSubtitle": {
         "other": "Визначає питання, які ми поставимо далі."
       },
-      "step1of3": {
-        "other": "Крок 1 з 3"
+      "stepOfTotal": {
+        "other": "Крок {step} з {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Куди надсилати рахунки?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "Адреса електронної пошти, на яку надходять рахунки. Необов'язково."
       },
       "individualSubtitle": {
         "other": "Тільки ви, без бізнесу. Рахунки виставляються на ваше особисте ім'я."

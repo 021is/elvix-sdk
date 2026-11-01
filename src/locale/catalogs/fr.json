@@ -1463,8 +1463,14 @@
       "typeChoiceSubtitle": {
         "other": "Détermine les questions que nous poserons ensuite."
       },
-      "step1of3": {
-        "other": "Étape 1 sur 3"
+      "stepOfTotal": {
+        "other": "Étape {step} sur {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Où envoyer les factures ?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "L'adresse e-mail à laquelle les factures sont envoyées. Facultatif."
       },
       "individualSubtitle": {
         "other": "Juste vous, sans entreprise. Les factures sont à votre nom personnel."

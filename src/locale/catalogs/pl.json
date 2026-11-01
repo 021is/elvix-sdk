@@ -1469,8 +1469,14 @@
       "typeChoiceSubtitle": {
         "other": "Określa pytania, które zadamy w następnej kolejności."
       },
-      "step1of3": {
-        "other": "Krok 1 z 3"
+      "stepOfTotal": {
+        "other": "Krok {step} z {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Dokąd wysyłać faktury?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "Adres e-mail, na który trafiają faktury. Opcjonalnie."
       },
       "individualSubtitle": {
         "other": "Tylko ty, bez firmy. Faktury wystawiane na twoje imię i nazwisko."

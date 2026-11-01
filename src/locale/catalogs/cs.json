@@ -1466,8 +1466,14 @@
       "typeChoiceSubtitle": {
         "other": "Určí otázky, které vám položíme dál."
       },
-      "step1of3": {
-        "other": "Krok 1 z 3"
+      "stepOfTotal": {
+        "other": "Krok {step} z {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Kam posílat faktury?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "E-mailová adresa, na kterou chodí faktury. Nepovinné."
       },
       "individualSubtitle": {
         "other": "Jen vy, žádný podnik. Faktury jdou na vaše osobní jméno."

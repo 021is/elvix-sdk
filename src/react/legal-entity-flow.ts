@@ -19,7 +19,19 @@ import type { LegalEntityType } from "./legal-entity-schema";
  * country, so a business is not asked for it. A sole proprietor without a
  * VAT ID goes through the tax country and tax number instead. A private
  * individual has no VAT ID and keeps the order it had.
+ *
+ * Two flows (0.18, Edvard): the picker for an invoice asks only what an
+ * invoice needs (`FlowKind.INVOICING`: no trading name, birth data,
+ * nationality or registration; an invoice email, then where e-invoices go);
+ * the manager and a payouts pick walk the full flow, whose birth data,
+ * nationality and registration panes may be skipped.
  */
+
+export const FlowKind = {
+  FULL: "full",
+  INVOICING: "invoicing",
+} as const;
+export type FlowKind = (typeof FlowKind)[keyof typeof FlowKind];
 
 export const View = {
   EMPTY: "empty",
@@ -39,6 +51,7 @@ export const View = {
   ADDRESS_REVIEW: "address-review",
   ADDRESS_APT_FLOOR: "address-apt-floor",
   E_INVOICE: "e-invoice",
+  INVOICE_EMAIL: "invoice-email",
   CONTACT_CHOICE: "contact-choice",
   CONTACT_INPUT: "contact-input",
   SAVING: "saving",
@@ -70,10 +83,12 @@ export type FlowContext = {
   hasVatId: boolean;
   /** A sole proprietor said "No VAT ID": tax country and tax number instead. */
   withoutVatId: boolean;
+  /** Which flow: the invoice's short one, or the full one. */
+  kind: FlowKind;
 };
 
 /** The route-changing part of the context, for walking back. */
-export type BackContext = Pick<FlowContext, "type" | "withoutVatId">;
+export type BackContext = Pick<FlowContext, "type" | "withoutVatId" | "kind">;
 
 /** A business that starts at its VAT ID rather than at its tax country. */
 function startsAtVatId(ctx: BackContext): boolean {
@@ -89,6 +104,7 @@ function startsAtVatId(ctx: BackContext): boolean {
  * completing it.
  */
 export function nextView(current: View, ctx: FlowContext): View | null {
+  if (ctx.kind === FlowKind.INVOICING) return nextInvoicingView(current, ctx);
   switch (current) {
     case View.TYPE_CHOICE:
       return needsBusinessSteps(ctx.type) ? View.VAT_ID : View.LEGAL_NAME;
@@ -125,6 +141,29 @@ export function nextView(current: View, ctx: FlowContext): View | null {
 /** A business names itself next; an individual's tax details come last. */
 function afterTaxIdentifiers(ctx: FlowContext): View {
   return needsBusinessSteps(ctx.type) ? View.LEGAL_NAME : View.ADDRESS_SEARCH;
+}
+
+/**
+ * What an invoice needs (VAT Directive art. 226), in order: who (VAT ID or
+ * tax number, the name), where (the address), and where the invoice goes
+ * (an email, optional; a business's e-invoice address, optional). The
+ * identifier steps are the full flow's own.
+ */
+function nextInvoicingView(current: View, ctx: FlowContext): View | null {
+  const business = needsBusinessSteps(ctx.type);
+  switch (current) {
+    case View.LEGAL_NAME:
+      // A business named itself after its tax identifiers; a person names first.
+      return business ? View.ADDRESS_SEARCH : View.TAX_COUNTRY;
+    case View.ADDRESS_APT_FLOOR:
+      return View.INVOICE_EMAIL;
+    case View.INVOICE_EMAIL:
+      return business ? View.E_INVOICE : View.SAVING;
+    case View.E_INVOICE:
+      return View.SAVING;
+    default:
+      return nextView(current, { ...ctx, kind: FlowKind.FULL });
+  }
 }
 
 /**
@@ -167,6 +206,23 @@ export function previousView(current: View, ctx: BackContext): View | null {
   if (at <= 0) return null;
   const previous = path[at - 1] ?? null;
   return previous === View.VERIFYING_TAX_ID ? (path[at - 2] ?? null) : previous;
+}
+
+/**
+ * How many panes a person answers in this flow, for "Step 1 of N": the
+ * check that moves on by itself and the saving pane are not steps. With
+ * several types offered, or "No VAT ID" open to a sole proprietor, the count
+ * is the longest route, so N is never exceeded.
+ */
+export function stepsInFlow(types: readonly LegalEntityType[], kind: FlowKind): number {
+  const answered = (type: LegalEntityType, withoutVatId: boolean) =>
+    walkFlow({ type, kind, hasVatId: false, withoutVatId }).filter(
+      (v) => v !== View.VERIFYING_TAX_ID && v !== View.SAVING,
+    ).length;
+  return Math.max(
+    ...types.map((type) => answered(type, false)),
+    ...(types.includes("sole_prop") ? [answered("sole_prop", true)] : []),
+  );
 }
 
 /**

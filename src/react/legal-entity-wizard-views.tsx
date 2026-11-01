@@ -31,13 +31,7 @@ import { useElvixContext } from "./elvix-provider";
 import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { ElvixTaxIdInput, type TaxIdValidationState } from "./elvix-tax-id-input";
 import { AddressGapFields, addressGaps } from "./legal-entity-address-gaps";
-import {
-  regNumberFormatHint,
-  regNumberPlaceholder,
-  taxIdFormatHint,
-  taxIdPlaceholder,
-  vatPlaceholder,
-} from "./legal-entity-copy";
+import { taxIdFormatHint, taxIdPlaceholder, vatPlaceholder } from "./legal-entity-copy";
 import {
   ChoiceCard,
   CountryChip,
@@ -51,18 +45,21 @@ import { MAPS_MISSING_CLIENT_ID, mapsUrl } from "./maps-url";
 import { STACK_3 } from "./pane-layout";
 import { isSameOrigin } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
-import { localTaxIdMatches, registrationNumberMatches } from "./tax-validation";
+import { localTaxIdMatches } from "./tax-validation";
 
 /** Nationality is multi-select but capped; more than a few is a data-entry error. */
 const MAX_NATIONALITIES = 4;
 
 export function TypeChoiceView({
   types,
+  total,
   onPick,
   onBack,
 }: {
   /** The types offered; all three when omitted. */
   types?: readonly LegalEntityType[];
+  /** The steps the flow asks, for "Step 1 of N". */
+  total: number;
   onPick: (t: LegalEntityType) => void;
   onBack: () => void;
 }) {
@@ -94,7 +91,10 @@ export function TypeChoiceView({
   ];
   return (
     <div className="flex h-full flex-col">
-      <WizardHeader stepLabel={t("legalEntities.step1of3")} onBack={onBack} />
+      <WizardHeader
+        stepLabel={t("legalEntities.stepOfTotal", { step: 1, total })}
+        onBack={onBack}
+      />
       <Heading>{t("legalEntities.typeChoiceTitle")}</Heading>
       <Subtitle>{t("legalEntities.typeChoiceSubtitle")}</Subtitle>
       <div className="mt-4 flex flex-col gap-2">
@@ -215,6 +215,7 @@ export function DateView({
   minDate,
   maxDate,
   outOfRangeMessage,
+  optional = false,
 }: {
   title: string;
   subtitle: string;
@@ -228,6 +229,8 @@ export function DateView({
   /** ISO yyyy-mm-dd upper bound (inclusive). Defaults to today. */
   maxDate?: string;
   outOfRangeMessage?: string;
+  /** Empty may continue, as "Skip". */
+  optional?: boolean;
 }) {
   const t = useT();
   const fallbackOutOfRangeMessage = outOfRangeMessage ?? t("legalEntities.dobOutOfRange");
@@ -238,7 +241,8 @@ export function DateView({
   // `max` HTML attrs are only soft hints. Validate in JS too.
   const parseable = formatOk && !Number.isNaN(new Date(value).getTime());
   const withinRange = parseable && value <= upper && (minDate ? value >= minDate : true);
-  const valid = parseable && withinRange;
+  const skip = optional && value === "";
+  const valid = skip || (parseable && withinRange);
   const showError = formatOk && parseable && !withinRange;
   return (
     <form
@@ -273,7 +277,7 @@ export function DateView({
           state="idle"
           disabled={!valid}
           onClick={() => valid && onConfirm()}
-          label={t("common.continue")}
+          label={t(skip ? "common.skip" : "common.continue")}
           savedLabel={t("common.continue")}
           hint={t("common.enterHint")}
           className="!w-auto !px-5"
@@ -351,11 +355,14 @@ export function NationalityView({
   onChange,
   onConfirm,
   onBack,
+  optional = false,
 }: {
   value: string;
   onChange: (next: string) => void;
   onConfirm: () => void;
   onBack: () => void;
+  /** None picked may continue, as "Skip". */
+  optional?: boolean;
 }) {
   const t = useT();
   const codes = value
@@ -373,7 +380,8 @@ export function NationalityView({
   };
   const remove = (code: string) => setCodes(codes.filter((c) => c !== code));
   const atCap = codes.length >= MAX_NATIONALITIES;
-  const valid = codes.length >= 1;
+  const skip = optional && codes.length === 0;
+  const valid = skip || codes.length >= 1;
 
   return (
     <div className="flex h-full flex-col">
@@ -420,7 +428,7 @@ export function NationalityView({
           state="idle"
           disabled={!valid}
           onClick={() => valid && onConfirm()}
-          label={t("common.continue")}
+          label={t(skip ? "common.skip" : "common.continue")}
           savedLabel={t("common.continue")}
           hint={null}
           className="!w-auto !px-5"
@@ -576,114 +584,6 @@ export function taxIdsBlockReason(
   if (v.type === "company" && !vat) return t("legalEntities.blockReasonVatRequired");
   if (vat && v.vatLevel === "invalid") return t("legalEntities.blockReasonVatFormat");
   return null;
-}
-
-export function RegistrationView({
-  country,
-  number,
-  body,
-  since,
-  setNumber,
-  setBody,
-  setSince,
-  onConfirm,
-  onBack,
-}: {
-  country: string;
-  number: string;
-  body: string;
-  since: string;
-  setNumber: (v: string) => void;
-  setBody: (v: string) => void;
-  setSince: (v: string) => void;
-  onConfirm: () => void;
-  onBack: () => void;
-}) {
-  const t = useT();
-  const today = new Date().toISOString().slice(0, 10);
-  const sinceFormatOk = since === "" || /^\d{4}-\d{2}-\d{2}$/.test(since);
-  const sinceRangeOk = since === "" || (since <= today && since >= "1900-01-01");
-  const sinceOk = sinceFormatOk && sinceRangeOk;
-  const trimmedNumber = number.trim();
-  const numberFormatOk =
-    trimmedNumber.length === 0 ? false : registrationNumberMatches(country, trimmedNumber);
-  const showNumberError = trimmedNumber.length > 0 && !numberFormatOk;
-  const valid = numberFormatOk && body.trim().length >= 2 && sinceOk;
-  return (
-    <form
-      className="flex h-full flex-col"
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (valid) onConfirm();
-      }}
-    >
-      <WizardHeader onBack={onBack} />
-      <Heading>{t("legalEntities.registrationTitle")}</Heading>
-      <Subtitle>{t("legalEntities.registrationSubtitle")}</Subtitle>
-      <div className={`mt-4 ${STACK_3}`}>
-        <label className="block">
-          <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
-            {t("legalEntities.registrationNumberLabel")}
-          </span>
-          <ElvixInput
-            type="text"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            placeholder={regNumberPlaceholder(country)}
-            autoFocus
-            maxLength={80}
-            hasError={showNumberError}
-          />
-          {showNumberError && (
-            <span className="mt-1.5 block text-[12px] text-red-600 dark:text-red-300">
-              {regNumberFormatHint(country, t)}
-            </span>
-          )}
-        </label>
-        <label className="block">
-          <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
-            {t("legalEntities.issuingAuthorityLabel")}
-          </span>
-          <ElvixInput
-            type="text"
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-            placeholder={t("legalEntities.issuingAuthorityPlaceholder")}
-            maxLength={180}
-          />
-        </label>
-        <label className="block">
-          <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
-            {t("legalEntities.registeredSinceLabel")}
-          </span>
-          <ElvixInput
-            type="date"
-            value={since}
-            onChange={(e) => setSince(e.target.value)}
-            max={today}
-            min="1900-01-01"
-            hasError={!sinceOk}
-          />
-          {!sinceOk && (
-            <span className="mt-1.5 block text-[12px] text-red-600 dark:text-red-300">
-              {t("legalEntities.registeredSinceRangeError")}
-            </span>
-          )}
-        </label>
-      </div>
-      <ElvixSaveRow>
-        <ElvixSaveButton
-          state="idle"
-          disabled={!valid}
-          onClick={() => valid && onConfirm()}
-          label={t("common.continue")}
-          savedLabel={t("common.continue")}
-          hint={null}
-          className="!w-auto !px-5"
-        />
-      </ElvixSaveRow>
-    </form>
-  );
 }
 
 /**
@@ -858,9 +758,8 @@ export function PlaceOfBirthView({
       <ElvixSaveRow>
         <ElvixSaveButton
           state="idle"
-          disabled={!hasPick}
-          onClick={() => hasPick && onConfirm()}
-          label={t("common.continue")}
+          onClick={onConfirm}
+          label={t(hasPick ? "common.continue" : "common.skip")}
           savedLabel={t("common.continue")}
           hint={null}
           className="!w-auto !px-5"

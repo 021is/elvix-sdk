@@ -16,6 +16,7 @@ import { eInvoiceReady } from "./legal-entity-payload";
 import { Heading, Subtitle, WizardHeader } from "./legal-entity-primitives";
 import { CODICE_DESTINATARIO, LEITWEG_ID, PEPPOL_ID } from "./legal-entity-schema";
 import { STACK_3 } from "./pane-layout";
+import { ErrorLine } from "./sign-in-controls";
 import type { LegalEntityDraft } from "./use-legal-entity-draft";
 
 type Field = "peppolId" | "codiceDestinatario" | "pecAddress" | "leitwegId";
@@ -26,6 +27,10 @@ export function EInvoiceView(props: {
   setField: (key: Field, value: string) => void;
   onConfirm: () => void;
   onBack: () => void;
+  /** The flow's last step: the button saves the entity. */
+  last?: boolean;
+  /** A failed save, shown here when this step saved. */
+  error?: string | null;
 }) {
   const t = useT();
   const d = props.draft;
@@ -33,6 +38,7 @@ export function EInvoiceView(props: {
     v.trim() && !rx.test(v.trim()) ? t(key) : null;
   const ready = eInvoiceReady(d);
   const confirm = () => ready && props.onConfirm();
+  const label = t(props.last ? "legalEntities.saveEntityCta" : "common.continue");
   return (
     <form
       className="flex h-full flex-col"
@@ -85,13 +91,14 @@ export function EInvoiceView(props: {
           />
         )}
       </div>
+      <ErrorLine error={props.error ?? null} className="mt-3" />
       <ElvixSaveRow>
         <ElvixSaveButton
           state="idle"
           disabled={!ready}
           onClick={confirm}
-          label={t("common.continue")}
-          savedLabel={t("common.continue")}
+          label={label}
+          savedLabel={label}
           hint={t("legalEntities.eInvoiceSkipHint")}
           className="!w-auto !px-5"
         />

@@ -1463,8 +1463,14 @@
       "typeChoiceSubtitle": {
         "other": "Define as perguntas que faremos a seguir."
       },
-      "step1of3": {
-        "other": "Etapa 1 de 3"
+      "stepOfTotal": {
+        "other": "Etapa {step} de {total}"
+      },
+      "invoiceEmailTitle": {
+        "other": "Para onde vão as faturas?"
+      },
+      "invoiceEmailSubtitle": {
+        "other": "O e-mail para onde as faturas são enviadas. Opcional."
       },
       "individualSubtitle": {
         "other": "Só você, sem empresa. As faturas saem em seu nome pessoal."
