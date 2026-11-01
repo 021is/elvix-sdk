@@ -1,0 +1,18 @@
+/* Keyboard hints (0.18): the "Enter" chip on a Save or Continue button.
+   Shown where there is a keyboard to press it with, hidden on a touch-only
+   device (a phone has no Enter key to point at). Plain CSS like fields.css,
+   so no host stylesheet or load order changes it. A host forces it with one
+   variable on any ancestor:
+
+     --elvix-key-hints      none         hidden everywhere
+                            inline-flex  shown everywhere, touch included
+*/
+.elvix-kbd-hint {
+  display: var(--elvix-key-hints, inline-flex);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .elvix-kbd-hint {
+    display: var(--elvix-key-hints, none);
+  }
+}

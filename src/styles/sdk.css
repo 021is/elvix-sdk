@@ -21,6 +21,7 @@
 /* Unlayered on purpose: a host's utilities and load order cannot change it. */
 @import "./fields.css";
 @import "./rows.css";
+@import "./hints.css";
 
 /* Scan the extracted SDK React components so every Tailwind utility they
    reference is emitted into dist/styles.css. */
