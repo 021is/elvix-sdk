@@ -4,14 +4,15 @@
  * The picker's list: one row per entity, the picked one tinted
  * (`aria-pressed`), and the row that adds one. Rows show what an invoice
  * will say: the legal name, then the VAT ID (or the tax number) and the
- * city, and "Verified" only when elvix's own check confirmed the VAT ID. No
+ * city, and "Verified" only when elvix's own check confirmed the VAT ID and
+ * the register's name does not differ (else a quiet "name differs"). No
  * trading name, no default star, no delete: the picker picks, the manager
  * (`<ElvixLegalEntities>`) manages.
  */
 
-import { BadgeCheck, Loader2, Plus } from "lucide-react";
+import { AlertTriangle, BadgeCheck, Loader2, Plus } from "lucide-react";
 import { useT } from "../locale/use-t";
-import type { LegalEntityRecord } from "./legal-entity-schema";
+import { type LegalEntityRecord, VatNameMatch } from "./legal-entity-schema";
 import { ErrorLine } from "./sign-in-controls";
 import { NETWORK, PICKER_MISSING_CLIENT_ID } from "./use-legal-entity-picks";
 
@@ -20,6 +21,19 @@ type T = ReturnType<typeof useT>;
 /** Line 2 of a row: what identifies the entity on an invoice, and where it is. */
 export function rowDetail(e: LegalEntityRecord): string {
   return [e.vatId || e.taxId, e.addressCity].filter(Boolean).join(" · ");
+}
+
+export const VatMark = { VERIFIED: "verified", NAME_MISMATCH: "name-mismatch" } as const;
+export type VatMark = (typeof VatMark)[keyof typeof VatMark];
+
+/**
+ * The row's VAT mark. A confirmed number proves only that it is registered
+ * (German ones are public); when the register's name differs from the legal
+ * name, the row says so instead of "Verified" (0.18).
+ */
+export function vatMark(e: LegalEntityRecord): VatMark | null {
+  if (e.vatIdValidation !== "live") return null;
+  return e.vatIdNameMatch === VatNameMatch.MISMATCH ? VatMark.NAME_MISMATCH : VatMark.VERIFIED;
 }
 
 /** A refused pick, worded with its cause and what to do. */
@@ -78,8 +92,7 @@ function PickerRow(p: {
   disabled: boolean;
   onPick: () => void;
 }) {
-  const t = useT();
-  const verified = p.entity.vatIdValidation === "live";
+  const mark = vatMark(p.entity);
   return (
     <button
       type="button"
@@ -95,14 +108,23 @@ function PickerRow(p: {
         </span>
         <span className="mt-0.5 block truncate text-[12.5px] text-fg-3">{rowDetail(p.entity)}</span>
       </span>
-      {verified && (
-        <span className="inline-flex shrink-0 items-center gap-1 text-[11.5px] font-medium text-fg-2">
-          <BadgeCheck className="size-3.5" aria-hidden />
-          {t("legalEntities.verifiedBadge")}
-        </span>
-      )}
+      {mark && <VatMarkChip mark={mark} />}
       {p.pending && <Loader2 className="size-4 shrink-0 animate-spin text-fg-3" aria-hidden />}
     </button>
+  );
+}
+
+function VatMarkChip({ mark }: { mark: VatMark }) {
+  const t = useT();
+  const mismatch = mark === VatMark.NAME_MISMATCH;
+  const Icon = mismatch ? AlertTriangle : BadgeCheck;
+  return (
+    <span
+      className={`inline-flex shrink-0 items-center gap-1 text-[11.5px] font-medium ${mismatch ? "text-fg-3" : "text-fg-2"}`}
+    >
+      <Icon className="size-3.5" aria-hidden />
+      {mismatch ? t("legalEntities.nameMismatch") : t("legalEntities.verifiedBadge")}
+    </span>
   );
 }
 

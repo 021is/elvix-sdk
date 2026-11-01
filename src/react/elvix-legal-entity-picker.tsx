@@ -14,14 +14,16 @@
  * Controlled: the host holds the pick (`selectedId`) and ends the flow with
  * its own Continue. There is no confirm button and no done pane; a tap picks
  * and the list stays drawn, the picked row tinted. With nothing picked, the
- * default entity (or the only one) is picked once, so the host's Continue is
- * ready. "Add a company" runs `<ElvixLegalEntities>`' own add wizard in
- * place and comes back with the new entity picked.
+ * default entity (or the only one) is shown picked once, so the host's
+ * Continue is ready. "Add a company" runs `<ElvixLegalEntities>`' own add
+ * wizard in place and comes back with the new entity picked.
  *
- * Every pick grants the host's application read access to that one entity,
- * so its backend reads it from elvix by id (`getElvixLegalEntity`), never
- * from what a browser sent. `onPick` fires once elvix holds the grant. The
- * user can revoke it in their elvix account.
+ * A tap (or a new entity) grants the host's application read access to that
+ * one entity for `purpose`, so its backend reads it from elvix by id
+ * (`getElvixLegalEntity`), never from what a browser sent; `onPick` then says
+ * `granted: true`. The pre-selection grants nothing (`granted: false`): the
+ * host's Continue grants it with `useElvixLegalEntityGrant()`. The user can
+ * revoke a grant in their elvix account.
  *
  * Styled by CSS variables on any ancestor: `--elvix-row`,
  * `--elvix-row-hover`, `--elvix-picked`, `--elvix-picked-text`,
@@ -35,22 +37,37 @@ import { MaybeCard } from "./elvix-card";
 import { needsBusinessSteps, View } from "./legal-entity-flow";
 import { PickerList, PickerLoadFailed } from "./legal-entity-picker-views";
 import { SavingView } from "./legal-entity-primitives";
-import type { LegalEntityRecord, LegalEntityType } from "./legal-entity-schema";
+import {
+  LegalEntityPurpose,
+  type LegalEntityRecord,
+  type LegalEntityType,
+} from "./legal-entity-schema";
 import { isWizardStep, type WizardFlow, WizardStep } from "./legal-entity-steps";
 import { useLegalEntities } from "./use-legal-entities";
-import { type ElvixLegalEntityPickerResult, useLegalEntityPicks } from "./use-legal-entity-picks";
+import {
+  type ElvixLegalEntityPickerResult,
+  type LegalEntityPick,
+  useLegalEntityPicks,
+} from "./use-legal-entity-picks";
 import { useStableCallback } from "./use-stable-callback";
 import { FadePane } from "./wizard-panes";
 
-export type { ElvixLegalEntityPickerResult };
+export type { ElvixLegalEntityPickerResult, LegalEntityPick };
 
 export type ElvixLegalEntityPickerProps = {
   /** The types offered, in the list and when adding; all three when omitted. */
   types?: LegalEntityType[];
   /** The entity the host holds as picked; `null` or omitted when none yet. */
   selectedId?: string | null;
-  /** A pick elvix has granted: the full record, VAT verdict included. */
-  onPick: (entity: LegalEntityRecord) => void;
+  /** What the pick lets the host's backend read: `invoicing` (default) or `payouts`. */
+  purpose?: LegalEntityPurpose;
+  /**
+   * A pick: the record (inside an app, personal fields withheld), and whether
+   * elvix holds the grant yet. A tap or a new entity is granted; the
+   * pre-selected default is not, so grant it from your Continue with
+   * `useElvixLegalEntityGrant()`.
+   */
+  onPick: (entity: LegalEntityRecord, pick: LegalEntityPick) => void;
   /** Every pick's outcome, and a failed save in the add wizard. */
   onResult?: (result: ElvixLegalEntityPickerResult) => void;
   /** Render inside an <ElvixCard>. Default true; false to sit in the host's own pane. */
@@ -63,6 +80,7 @@ const WIZARD_FRAME = { height: "min(520px, 70dvh)", minHeight: 380 } as const;
 export function ElvixLegalEntityPicker({
   types,
   selectedId,
+  purpose = LegalEntityPurpose.INVOICING,
   onPick,
   onResult,
   card,
@@ -85,6 +103,7 @@ export function ElvixLegalEntityPicker({
     offered,
     ready: !flow.loading && !flow.loadFailed,
     selectedId,
+    purpose,
     onPick,
     onResult,
   });

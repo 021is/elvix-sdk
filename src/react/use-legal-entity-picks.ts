@@ -4,22 +4,29 @@
  * Picking one legal entity for the host: the grant, then `onPick`.
  *
  * A pick is what lets the host's backend read that one entity from elvix by
- * its id (`getElvixLegalEntity` in `@elvix.is/sdk/server`), so every pick,
- * tapped, pre-selected or just added, first records the grant with elvix,
- * and `onPick` fires only once elvix has it: a host that moved on before
- * would send its backend an id it cannot read. A refused grant is shown on
- * the row with its cause and a retry, and reported to `onResult`.
+ * its id (`getElvixLegalEntity` in `@elvix.is/sdk/server`), for one purpose
+ * (`invoicing`, or `payouts` with the birth data and the people). A TAP, or a
+ * save in "Add a company", records the grant with elvix first, and `onPick`
+ * fires with `granted: true` once elvix has it. The pre-selection (the
+ * default, or the only entity) grants nothing (0.18, Edvard: no silent
+ * sharing): it fires `onPick(entity, { granted: false })`, and the host
+ * grants from its own Continue with `useElvixLegalEntityGrant()`. A refused
+ * grant is shown on the row with its cause and a retry, and reported to
+ * `onResult`.
  */
 
 import { useEffect, useRef, useState } from "react";
 import { useElvixContext } from "./elvix-provider";
-import type { LegalEntityRecord } from "./legal-entity-schema";
+import { LegalEntityPurpose, type LegalEntityRecord } from "./legal-entity-schema";
 import { failureBody, humanizeApiError, jsonInit, send } from "./profile-request";
 import { useStableCallback } from "./use-stable-callback";
 
 export type ElvixLegalEntityPickerResult =
   | { ok: true; entityId: string }
   | { ok: false; error: string; message?: string };
+
+/** What `onPick` says beside the entity: whether elvix already holds the grant. */
+export type LegalEntityPick = { granted: boolean };
 
 /** The error code a picker reports when its provider has no clientId to grant for. */
 export const PICKER_MISSING_CLIENT_ID = "missing_client_id";
@@ -34,7 +41,8 @@ type Args = {
   /** The list has been read (not loading, not failed). */
   ready: boolean;
   selectedId: string | null | undefined;
-  onPick: (record: LegalEntityRecord) => void;
+  purpose: LegalEntityPurpose;
+  onPick: (record: LegalEntityRecord, pick: LegalEntityPick) => void;
   onResult?: (result: ElvixLegalEntityPickerResult) => void;
 };
 
@@ -43,15 +51,24 @@ export function autoPickOf(offered: LegalEntityRecord[]): LegalEntityRecord | un
   return offered.find((e) => e.isDefault) ?? (offered.length === 1 ? offered[0] : undefined);
 }
 
-async function grant(baseUrl: string, clientId: string, entityId: string): Promise<string | null> {
-  const app = encodeURIComponent(clientId);
-  const url = `${baseUrl}/api/account/apps/${app}/legal-entities/${encodeURIComponent(entityId)}/grant`;
-  const res = await send(url, jsonInit("POST", {}));
+/** Records the grant with elvix; `null` on success, else the worded refusal. */
+export async function grantLegalEntity(args: {
+  baseUrl: string;
+  clientId: string;
+  entityId: string;
+  purpose?: LegalEntityPurpose;
+}): Promise<string | null> {
+  const app = encodeURIComponent(args.clientId);
+  const id = encodeURIComponent(args.entityId);
+  const url = `${args.baseUrl}/api/account/apps/${app}/legal-entities/${id}/grant`;
+  const body = { purpose: args.purpose ?? LegalEntityPurpose.INVOICING };
+  const res = await send(url, jsonInit("POST", body));
   if (res?.ok) return null;
   return res ? humanizeApiError(await failureBody(res), "grant_failed") : NETWORK;
 }
 
-export function useLegalEntityPicks({ offered, ready, selectedId, onPick, onResult }: Args) {
+export function useLegalEntityPicks(args: Args) {
+  const { offered, ready, selectedId, purpose, onPick, onResult } = args;
   const { baseUrl, clientId } = useElvixContext();
   const emitPick = useStableCallback(onPick);
   const emitResult = useStableCallback(onResult);
@@ -67,26 +84,27 @@ export function useLegalEntityPicks({ offered, ready, selectedId, onPick, onResu
       return;
     }
     setPendingId(record.id);
-    const refused = await grant(baseUrl, clientId, record.id);
+    const refused = await grantLegalEntity({ baseUrl, clientId, entityId: record.id, purpose });
     setPendingId(null);
     if (refused) {
       setError({ entityId: record.id, error: refused });
       emitResult({ ok: false, error: "grant_failed", message: refused });
       return;
     }
-    emitPick(record);
+    emitPick(record, { granted: true });
     emitResult({ ok: true, entityId: record.id });
   });
 
-  // With nothing picked yet, the default (or the only entity) is, once, so
-  // the host's Continue is ready without a tap.
+  // With nothing picked yet, the default (or the only entity) is shown picked,
+  // once, so the host's Continue is ready; nothing is shared until a tap or
+  // the host's Continue grants it.
   useEffect(() => {
     if (!ready || autoPicked.current) return;
     autoPicked.current = true;
     if (selectedId) return;
     const auto = autoPickOf(offered);
-    if (auto) void pick(auto);
-  }, [ready, selectedId, offered, pick]);
+    if (auto) emitPick(auto, { granted: false });
+  }, [ready, selectedId, offered, emitPick]);
 
   return {
     /** Shown as picked: the one being granted, else the host's. */
