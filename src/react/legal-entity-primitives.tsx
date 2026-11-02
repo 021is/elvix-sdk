@@ -3,9 +3,14 @@
 /**
  * Presentational primitives shared by every legal-entity pane.
  *
- * The small pieces the wizard repeats: the header with its back arrow (offered
- * to the host instead when one draws its own), a heading, a subtitle, a choice
- * card, and the rows a detail view is built from. None of them talk to the API.
+ * These are the small pieces the wizard repeats: the header with its back
+ * arrow, a heading, a subtitle, a choice card, and
+ * the rows a detail view is built from. None of them own state or talk to the
+ * API, which is what makes them safe to reuse and boring to read.
+ *
+ * They lived in the middle of a 3,292-line component file, interleaved with
+ * the panes that used them, so "what does a DetailRow look like" meant
+ * scrolling past four hundred lines of wizard step.
  */
 
 import { motion } from "framer-motion";
@@ -23,7 +28,6 @@ import {
 
 import { useT } from "../locale/use-t";
 import type { TaxIdValidationState } from "./elvix-tax-id-input";
-import { HostedBack, useHostActions } from "./host-actions";
 import type { LegalEntityType } from "./legal-entity-schema";
 
 /**
@@ -193,8 +197,6 @@ export function WizardHeader({
   rightLabel?: string;
 }) {
   const t = useT();
-  const host = useHostActions();
-  if (host) return <HostedBack host={host} onBack={onBack} />;
   return (
     <div className="mb-3 flex items-center gap-2">
       <button

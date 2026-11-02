@@ -155,12 +155,6 @@ export {
 } from "./hooks";
 // How tall the legal-entity components are: "fixed" or "flexible" (0.18).
 export { Sizing as ElvixLegalEntitySizing } from "./legal-entity-frame";
-// The host's own Back and Continue drive the picker (0.19).
-export {
-  type ElvixLegalEntityPickerControls,
-  type ElvixLegalEntityPickerControlsState,
-  useElvixLegalEntityPickerControls,
-} from "./legal-entity-picker-controls";
 // What a legal entity holds, the picker's `onPick` payload (0.18).
 export {
   LegalEntityPurpose,

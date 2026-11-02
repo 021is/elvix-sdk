@@ -19,7 +19,6 @@ import { useT } from "../locale/use-t";
 import { findCountry } from "./countries";
 import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import type { TaxIdValidationState } from "./elvix-tax-id-input";
-import { useHostActions } from "./host-actions";
 import { Heading, Phase, Subtitle, VerifyingBadge, WizardHeader } from "./legal-entity-primitives";
 import { useStableCallback } from "./use-stable-callback";
 import { useTaxCheck } from "./use-tax-check";
@@ -114,10 +113,6 @@ export function VerifyingTaxIdView({
 
 function VerdictActions(p: { pane: Pane; onBack: () => void; onPass: () => void }) {
   const t = useT();
-  // A host drawing its own Back and Continue: "Fix it" is its Back, so an
-  // invalid number offers no Continue, and "format" no second Back.
-  const hosted = useHostActions() !== null;
-  if (p.pane === Pane.INVALID && hosted) return null;
   if (p.pane === Pane.INVALID) {
     return (
       <ElvixSaveRow>
@@ -136,15 +131,13 @@ function VerdictActions(p: { pane: Pane; onBack: () => void; onPass: () => void 
   return (
     <ElvixSaveRow
       leading={
-        !hosted && (
-          <button
-            type="button"
-            onClick={p.onBack}
-            className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
-          >
-            {t("common.back")}
-          </button>
-        )
+        <button
+          type="button"
+          onClick={p.onBack}
+          className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
+        >
+          {t("common.back")}
+        </button>
       }
     >
       <ElvixSaveButton
