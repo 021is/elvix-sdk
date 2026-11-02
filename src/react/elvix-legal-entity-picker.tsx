@@ -33,8 +33,10 @@
 
 import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
+import { HostActionsProvider } from "./host-actions";
 import { FlowKind, needsBusinessSteps, View } from "./legal-entity-flow";
 import { type FrameSize, frameStyle, PaneFrame, Sizing } from "./legal-entity-frame";
+import type { ElvixLegalEntityPickerControls } from "./legal-entity-picker-controls";
 import { PickerList, PickerLoadFailed, PurposeNote } from "./legal-entity-picker-views";
 import { SavingView } from "./legal-entity-primitives";
 import {
@@ -49,6 +51,7 @@ import {
   type LegalEntityPick,
   useLegalEntityPicks,
 } from "./use-legal-entity-picks";
+import { type PickerNow, usePickerHostBinding } from "./use-picker-host-binding";
 import { useStableCallback } from "./use-stable-callback";
 
 export type { ElvixLegalEntityPickerResult, LegalEntityPick };
@@ -78,6 +81,11 @@ export type ElvixLegalEntityPickerProps = {
    * Defaults to `"fixed"` in a card, `"flexible"` with `card={false}`.
    */
   sizing?: Sizing;
+  /**
+   * The host's own Back and Continue drive the picker
+   * (`useElvixLegalEntityPickerControls()`): it then draws none of its own.
+   */
+  controls?: ElvixLegalEntityPickerControls;
 } & FrameSize;
 
 /** The fixed frame without a `height`. */
@@ -94,6 +102,7 @@ export function ElvixLegalEntityPicker({
   height,
   minHeight,
   maxHeight,
+  controls,
 }: ElvixLegalEntityPickerProps) {
   const t = useT();
   const report = useStableCallback(onResult);
@@ -122,38 +131,56 @@ export function ElvixLegalEntityPicker({
   const businessOnly = Boolean(types?.length) && (types ?? []).every(needsBusinessSteps);
   const wizard = isWizardOpen(flow);
   const style = frameStyle(sizing, { height, minHeight, maxHeight }, PICKER_FRAME);
+  const host = usePickerHostBinding(controls, pickerNow(flow, picks, wizard));
 
   return (
     <MaybeCard card={card}>
-      <PaneFrame
-        sizing={sizing}
-        style={style}
-        paneKey={flow.loading ? "loading" : wizard ? flow.view : "list"}
-      >
-        {flow.loading ? (
-          <div className="grid h-full min-h-24 place-items-center text-fg-3 text-sm">
-            {t("common.loading")}
-          </div>
-        ) : wizard ? (
-          <WizardPane flow={flow} types={types} />
-        ) : (
-          <div className="flex flex-col gap-2">
-            <PurposeNote purpose={purpose} />
-            {flow.loadFailed && <PickerLoadFailed onRetry={flow.reload} />}
-            <PickerList
-              entities={offered}
-              pickedId={picks.pickedId}
-              pendingId={picks.pendingId}
-              error={picks.error}
-              addLabel={t(businessOnly ? "legalEntities.pickerAddCompany" : "legalEntities.addCta")}
-              onPick={picks.pick}
-              onAdd={flow.openAdd}
-            />
-          </div>
-        )}
-      </PaneFrame>
+      <HostActionsProvider value={host}>
+        <PaneFrame
+          sizing={sizing}
+          style={style}
+          paneKey={flow.loading ? "loading" : wizard ? flow.view : "list"}
+        >
+          {flow.loading ? (
+            <div className="grid h-full min-h-24 place-items-center text-fg-3 text-sm">
+              {t("common.loading")}
+            </div>
+          ) : wizard ? (
+            <WizardPane flow={flow} types={types} />
+          ) : (
+            <div className="flex flex-col gap-2">
+              <PurposeNote purpose={purpose} />
+              {flow.loadFailed && <PickerLoadFailed onRetry={flow.reload} />}
+              <PickerList
+                entities={offered}
+                pickedId={picks.pickedId}
+                pendingId={picks.pendingId}
+                error={picks.error}
+                addLabel={t(
+                  businessOnly ? "legalEntities.pickerAddCompany" : "legalEntities.addCta",
+                )}
+                onPick={picks.pick}
+                onAdd={flow.openAdd}
+              />
+            </div>
+          )}
+        </PaneFrame>
+      </HostActionsProvider>
     </MaybeCard>
   );
+}
+
+function pickerNow(
+  flow: WizardFlow,
+  picks: { pickedId: string | null; pendingId: string | null },
+  wizard: boolean,
+): PickerNow {
+  return {
+    step: wizard ? flow.view : null,
+    saving: flow.view === View.SAVING,
+    picked: picks.pickedId !== null,
+    granting: picks.pendingId !== null,
+  };
 }
 
 function isWizardOpen(flow: WizardFlow): boolean {

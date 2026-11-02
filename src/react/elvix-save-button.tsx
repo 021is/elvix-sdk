@@ -22,6 +22,7 @@
 
 import { Check, Loader2 } from "lucide-react";
 import { type ReactNode, useEffect, useState } from "react";
+import { HostedSaveButton, useHostActions } from "./host-actions";
 
 export const ElvixSaveState = {
   IDLE: "idle",
@@ -64,6 +65,10 @@ export function ElvixSaveRow({
   divided?: boolean;
   children: ReactNode;
 }) {
+  // A host drawing its own Continue: the row keeps only what is not the
+  // primary action (a "No VAT ID" link), and the unseen button.
+  const hosted = useHostActions() !== null;
+  if (hosted && !leading) return <>{children}</>;
   const justify = leading ? "justify-between" : "justify-end";
   const rule = divided ? "border-t border-fg-3/10" : "";
   return (
@@ -77,7 +82,24 @@ export function ElvixSaveRow({
   );
 }
 
-export function ElvixSaveButton({
+type SaveButtonProps = Parameters<typeof SaveButtonSurface>[0];
+
+/** The Save CTA; when a host draws its own Continue, the host presses it instead. */
+export function ElvixSaveButton(props: SaveButtonProps) {
+  const host = useHostActions();
+  if (!host) return <SaveButtonSurface {...props} />;
+  const busy = (props.state ?? "idle") !== "idle";
+  return (
+    <HostedSaveButton
+      host={host}
+      disabled={Boolean(props.disabled)}
+      busy={busy}
+      onClick={props.onClick}
+    />
+  );
+}
+
+function SaveButtonSurface({
   state = "idle",
   disabled = false,
   onClick,

@@ -5,9 +5,10 @@ All notable changes to `@elvix.is/sdk` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Older releases, each file under the 300-line limit: [0.12 to 0.14.2](docs/changelog/0.12-0.14.md),
-[0.7 to 0.11](docs/changelog/0.7-0.11.md), [0.1 to 0.6](docs/changelog/0.1-0.6.md). When this
-file passes 300 lines, its oldest releases move there.
+Older releases, each file under the 300-line limit: [0.14.3 to 0.14.7](docs/changelog/0.14.3-0.14.7.md),
+[0.12 to 0.14.2](docs/changelog/0.12-0.14.md), [0.7 to 0.11](docs/changelog/0.7-0.11.md),
+[0.1 to 0.6](docs/changelog/0.1-0.6.md). When this file passes 300 lines, its oldest
+releases move there.
 
 ## [Unreleased]
 
@@ -16,6 +17,27 @@ file passes 300 lines, its oldest releases move there.
 ### Changed
 
 ### Fixed
+
+## [0.19.0] — 2026-11-02
+
+Your own Back and Continue drive the legal-entity picker, so the screen holds one of each.
+
+### Added
+
+- **`useElvixLegalEntityPickerControls()`**, passed as `<ElvixLegalEntityPicker controls>`:
+  the picker then draws no Back, Continue or Save of its own at any step of "Add a
+  company". Read `adding`, `canContinue`, `busy` and `step` (`{ id }` while adding) for your
+  buttons; call `next()` (the step's own Continue or Save; the last step saves and picks)
+  and `back()` (one step back; `false` on the list, so your ‹ leaves its pane). On the list
+  nothing changes: a tap picks, your Continue grants. Enter in a field still submits the
+  step. Without `controls`, the picker is as in 0.18.
+
+### Changed
+
+- **A focused field is tinted, never outlined.** `--elvix-field-focus` is now the focused
+  fill (default: the brand at 12%); 0.18's brand border is gone, and
+  `--elvix-field-focus-border` brings one back. A host that set `--elvix-field-focus` to a
+  border colour now gets that colour as the fill.
 
 ## [0.18.0] — 2026-11-01
 
@@ -220,81 +242,4 @@ ignored, never an error.
 - Every SDK request goes through `elvixFetch` (one place for auth headers, the proof, and elvix's
   nonce, with one retry when elvix answers 401 with a fresher nonce).
 
-## [0.14.7] — 2026-10-21
-
-### Security
-
-- **`@modelcontextprotocol/sdk` 1.32.1** (was 1.31.0), under the `elvix-mcp` server. 1.24 to
-  1.31 carry four advisories: bearer authentication accepting tokens issued for another
-  service (GHSA-rvq5-wwqv-78pq), one request exhausting memory during validation
-  (GHSA-46jr-4wx8-v453), experimental tasks not tied to their session (GHSA-22jm-h49p-29qw),
-  and client transports re-sending headers across a cross-origin redirect
-  (GHSA-6prh-2h8m-c8cw). Same major; nothing else changes.
-
-## [0.14.6] — 2026-10-21
-
-### Fixed
-
-- **Google and GitHub work on elvix's hosted sign-in page again.** `oauthStartHref` sent a
-  `returnUrl` (and `state`) from every `intent="app"` form, including the one elvix renders
-  at `/sign-in/<clientId>`. elvix refuses a return URL on its own origin, which no app
-  lists, so both buttons answered `403 return_url_not_allowed`. A form on elvix's own
-  origin (`baseUrl` same-origin or `""`) now sends neither and completes with the cookie
-  session, as elvix expects. Cross-origin forms are unchanged.
-- **A passkey sign-in shows the username and restore steps.** The passkey finish answer
-  was cut to `redirect` and `token` and treated as done, so a member who still owed a
-  username or a restore skipped it and was sent to `/` (the step names `final`, not
-  `redirect`). The whole landing now reaches the form, like every other method.
-
-## [0.14.5] — 2026-10-16
-
-### Added
-
-- **`<ElvixLogo>` is exported** (`size`, `withText`, `className`; `ElvixLogoProps`): the
-  elvix mark, so a host can show what elvix handles, e.g. a small mark on the rows of its
-  own settings that open elvix's editors (name, username, languages, photo). The shield
-  is `currentColor`, so it follows the host's text colour in light and dark, and the "e"
-  is cut out of it; the accent dot is elvix violet. It reaches screen readers as "elvix".
-
-### Changed
-
-- `<ElvixLogo>`'s root is a `<span>` (was a `<div>`), so the mark is valid inside a
-  button or a link. It is `inline-flex` as before; nothing moves.
-
-## [0.14.4] — 2026-10-12
-
-### Added
-
-- **`previewStep` on `<ElvixSignInForm mode="preview">`** (`"username" | "passkey" | "recover"`):
-  renders a post-redirect onboarding step inline with demo data, inert (no session,
-  no network). For documentation and design tools; ignored in a real sign-in. It
-  lets the docs show what `<ElvixOnboarding>` opens on without faking a redirect
-  return, which would store a bearer token in the page.
-
-## [0.14.3] — 2026-10-12
-
-### Added
-
-- **`<ElvixOnboarding>`**: the surface for what happens AFTER a redirect sign-in.
-  Mount it once in a layout inside `<ElvixProvider>`; it renders nothing until a
-  Google / GitHub / hosted-passkey return brings a step (username, passkey,
-  recover), then opens itself on that step as a modal or drawer, finishes it in
-  place and closes. `steps={["passkey"]}` limits what it offers; closing it means
-  "not now". Props: `steps`, `presentation`, `drawerSide`, `width`, `dismissable`,
-  `redirectAfterSignIn`, `navigate` (default `false`), `onResult`, `onAuthenticated`.
-- **`useElvixOnboarding()`** returns `{ pending, step }` for hosts that build their
-  own surface.
-- **`resumeOnReturn`** on `<ElvixSignInForm presentation="modal" | "drawer">`
-  (default `true`): the form opens itself on a redirect return that carries a step.
-
-### Fixed
-
-- **Google / GitHub sign-in never offered the passkey (or username) step.** A
-  redirect reloads the page, so the sign-in modal was closed when the person came
-  back; the SDK read the step from the URL and dropped it. Username and email-code
-  sign-ins were fine (the modal was open the whole time). The modal now opens on
-  the step, on the right pane, and until the step is done the session is NOT
-  reported to the host (`useElvixSession()` stays anonymous), so a host that reacts
-  to "signed in" does not tear the form down first.
-
-[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.17.0...HEAD
+[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.19.0...HEAD
