@@ -29,6 +29,11 @@ A focused field is tinted, never outlined, in every SDK component.
   `--elvix-field-focus-border` brings one back. A host that set `--elvix-field-focus` to a
   border colour now gets that colour as the fill.
 
+### Fixed
+
+- **The apartment line (and every optional text step) says "Skip" while empty**, "Continue"
+  once typed, like the other optional steps; it always said "Continue".
+
 ## [0.18.0] — 2026-11-01
 
 Pick a legal entity for an invoice, read it by id on your server, and style fields and rows
