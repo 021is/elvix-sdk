@@ -20,7 +20,8 @@ releases move there.
 
 ## [0.19.0] — 2026-11-02
 
-A focused field is tinted, never outlined, in every SDK component.
+A focused field is tinted, never outlined, in every SDK component; an optional text step
+says "Skip" while empty.
 
 ### Changed
 
