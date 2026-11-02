@@ -20,17 +20,7 @@ releases move there.
 
 ## [0.19.0] — 2026-11-02
 
-Your own Back and Continue drive the legal-entity picker, so the screen holds one of each.
-
-### Added
-
-- **`useElvixLegalEntityPickerControls()`**, passed as `<ElvixLegalEntityPicker controls>`:
-  the picker then draws no Back, Continue or Save of its own at any step of "Add a
-  company". Read `adding`, `canContinue`, `busy` and `step` (`{ id }` while adding) for your
-  buttons; call `next()` (the step's own Continue or Save; the last step saves and picks)
-  and `back()` (one step back; `false` on the list, so your ‹ leaves its pane). On the list
-  nothing changes: a tap picks, your Continue grants. Enter in a field still submits the
-  step. Without `controls`, the picker is as in 0.18.
+A focused field is tinted, never outlined, in every SDK component.
 
 ### Changed
 
