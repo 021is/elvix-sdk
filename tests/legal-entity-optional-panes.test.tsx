@@ -1,16 +1,17 @@
 // @vitest-environment jsdom
 /**
- * The panes an entity may leave empty (0.18): birth date, registration and
- * the invoice email say "Skip" while empty (the e-invoice pane's own test is
- * legal-entity-e-invoice-gate.test.tsx), the flow's last pane saves and
- * shows a refused save, and a refusal returns to the pane that saved.
+ * The panes an entity may leave empty (0.18): birth date, registration, the
+ * apartment line (0.19) and the invoice email say "Skip" while empty (the
+ * e-invoice pane's own test is legal-entity-e-invoice-gate.test.tsx), the
+ * flow's last pane saves and shows a refused save, and a refusal returns to
+ * the pane that saved.
  */
 import { act, cleanup, fireEvent, render, renderHook, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { FlowKind, View } from "../src/react/legal-entity-flow";
 import { InvoiceEmailView } from "../src/react/legal-entity-invoice-email-view";
 import { registrationPaneState } from "../src/react/legal-entity-registration-view";
-import { DateView } from "../src/react/legal-entity-wizard-views";
+import { DateView, SingleTextView } from "../src/react/legal-entity-wizard-views";
 import { useLegalEntityDraft } from "../src/react/use-legal-entity-draft";
 import { useLegalEntityNav } from "../src/react/use-legal-entity-nav";
 
@@ -25,6 +26,19 @@ describe("panes that may be skipped", () => {
     render(<DateView {...props} value="" onConfirm={onConfirm} onBack={() => {}} optional />);
     fireEvent.click(button("Skip"));
     expect(onConfirm).toHaveBeenCalledTimes(1);
+  });
+
+  it("an optional text line says Skip while empty and Continue once typed", () => {
+    const onConfirm = vi.fn();
+    const props = { title: "Apt", subtitle: "", label: "Line 2", onBack: () => {}, onConfirm };
+    const { rerender } = render(
+      <SingleTextView {...props} value="" onChange={() => {}} optional />,
+    );
+    fireEvent.click(button("Skip"));
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+    rerender(<SingleTextView {...props} value="Apt 4B" onChange={() => {}} optional />);
+    expect(screen.queryByText("Skip")).toBeNull();
+    expect(button("Continue").disabled).toBe(false);
   });
 
   it("a required birth date does not", () => {

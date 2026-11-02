@@ -164,7 +164,7 @@ export function SingleTextView({
   const presenceOk = required ? trimmed.length > 0 : true;
   const valid = presenceOk && lengthOk && letterOk && wordsOk;
   const showError = trimmed.length > 0 && (!lengthOk || !letterOk || !wordsOk);
-  void optional;
+  const skip = optional && trimmed === "";
   return (
     <div className="flex h-full flex-col">
       <WizardHeader onBack={onBack} />
@@ -195,7 +195,7 @@ export function SingleTextView({
           state="idle"
           disabled={!valid}
           onClick={() => valid && onConfirm()}
-          label={t("common.continue")}
+          label={t(skip ? "common.skip" : "common.continue")}
           savedLabel={t("common.continue")}
           hint={t("common.enterHint")}
           className="!w-auto !px-5"
