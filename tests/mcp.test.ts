@@ -52,11 +52,14 @@ function stubResponse(
 }
 
 /** Route the manifest fetch; every other call is a tool call the test inspects. */
-function mockFetch(toolResponse: () => Response = () => stubResponse({ ok: true })): void {
+function mockFetch(
+  toolResponse: () => Response = () => stubResponse({ ok: true }),
+  manifest: unknown[] = SAMPLE_MANIFEST,
+): void {
   globalThis.fetch = vi.fn(async (input: unknown, init?: RequestInit) => {
     const url = String(input);
     calls.push({ url, init });
-    if (url.endsWith("/openapi.roles.json")) return stubResponse(SAMPLE_MANIFEST);
+    if (url.endsWith("/openapi.roles.json")) return stubResponse(manifest);
     return toolResponse();
   }) as unknown as typeof fetch;
 }
@@ -158,6 +161,31 @@ describe("tool list", () => {
     expect(names).toContain("post_v1_users");
     expect(names).toContain("delete_v1_users_id");
     expect(names).not.toContain("get_account_profile");
+  });
+
+  // elvix decides once which endpoints are agent tools (its manifest's
+  // `mcpTool`, 2026-11-03); this MCP used to filter on `role` alone and
+  // offered device login, OIDC, the sign-in routes and step-up approvals.
+  it("lists only what elvix's manifest marks as an agent tool", async () => {
+    mockFetch(undefined, [
+      { endpoint: "GET /api/v1/apps", summary: "List apps", role: "api", mcpTool: true },
+      { endpoint: "POST /api/v1/device/code", summary: "Device", role: "api", mcpTool: false },
+      { endpoint: "POST /api/v1/approvals", summary: "Ask", role: "api", mcpTool: false },
+    ]);
+    const client = await connectedClient({ readonly: false });
+    const names = (await client.listTools()).tools.map((t) => t.name);
+    expect(names).toEqual(["get_v1_apps"]);
+  });
+
+  it("with a manifest from before that mark, still skips end-user and system routes", async () => {
+    mockFetch(undefined, [
+      { endpoint: "GET /api/v1/apps", summary: "List apps", role: "api" },
+      { endpoint: "POST /api/v1/session", summary: "Session", role: "api", userAuth: true },
+      { endpoint: "POST /api/internal/tick", summary: "Tick", role: "api", system: true },
+    ]);
+    const client = await connectedClient({ readonly: false });
+    const names = (await client.listTools()).tools.map((t) => t.name);
+    expect(names).toEqual(["get_v1_apps"]);
   });
 
   it("advertises no free-form path input — only the template's placeholders", async () => {
