@@ -18,6 +18,12 @@ releases move there.
 
 ### Fixed
 
+- **`elvix-mcp` offers only what elvix marks as an agent tool.** It read every `api` route
+  of `openapi.roles.json` as a tool, so it offered device login, the OIDC flows, the public
+  sign-in routes and step-up approvals, which take no API key, and `/api/v1/session` and
+  `/api/v1/token`, which an API key can only 401 on. It now reads the manifest's `mcpTool`;
+  against an elvix from before that field it still skips end-user and system routes.
+
 ## [0.19.0] — 2026-11-02
 
 A focused field is tinted, never outlined, in every SDK component; an optional text step

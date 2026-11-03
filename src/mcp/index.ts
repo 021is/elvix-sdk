@@ -51,7 +51,20 @@ type RoleManifestEntry = {
   role: "api" | "sdk-only";
   adminScope?: boolean;
   system?: boolean;
+  /** Reads an end user's session: an API key can never call it. */
+  userAuth?: boolean;
+  /**
+   * elvix's own answer to "is this an agent tool" (since 2026-11-03): no
+   * keyless sign-in, OIDC, device-login or approval flow, no end-user route,
+   * no owner-only app lifecycle. Absent on an older elvix.
+   */
+  mcpTool?: boolean;
 };
+
+/** An agent tool: elvix's mark, or for an elvix from before it, an `api` route a key can call. */
+function isAgentTool(e: RoleManifestEntry): boolean {
+  return e.mcpTool ?? (e.role === "api" && !e.system && !e.userAuth);
+}
 
 type ElvixTool = {
   name: string;
@@ -159,7 +172,7 @@ function buildInputSchema(path: string): Record<string, unknown> {
 
 function buildTools(manifest: RoleManifestEntry[], readonly: boolean): ElvixTool[] {
   return manifest
-    .filter((e) => e.role === "api")
+    .filter(isAgentTool)
     .map((e) => ({ entry: e, ...splitEndpoint(e.endpoint) }))
     .filter(({ method }) => (readonly ? SAFE_METHODS.has(method.toUpperCase()) : true))
     .map(({ entry, method, path }) => ({
