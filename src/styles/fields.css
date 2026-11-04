@@ -15,8 +15,12 @@
      --elvix-field-radius        corner radius
      --elvix-field-text          text colour
      --elvix-danger              outline of a field whose value is wrong
+
+   `.elvix-input` (a plain field: the device code, elvix's own /device page)
+   takes the same look; its size is in sdk.css (0.21).
 */
-.elvix-field {
+.elvix-field,
+.elvix-input {
   background-color: var(--elvix-field, color-mix(in srgb, var(--elvix-fg-1) 6%, transparent));
   border: 1px solid var(--elvix-field-border, transparent);
   border-radius: var(--elvix-field-radius, 10px);
@@ -29,7 +33,8 @@
     box-shadow 0.15s;
 }
 
-.elvix-field:hover:not(:disabled):not(:focus) {
+.elvix-field:hover:not(:disabled):not(:focus),
+.elvix-input:hover:not(:disabled):not(:focus) {
   background-color: var(
     --elvix-field-hover,
     color-mix(in srgb, var(--elvix-fg-1) 9%, transparent)
@@ -37,7 +42,9 @@
 }
 
 .elvix-field:focus,
-.elvix-field:focus-visible {
+.elvix-field:focus-visible,
+.elvix-input:focus,
+.elvix-input:focus-visible {
   background-color: var(
     --elvix-field-focus,
     color-mix(in srgb, var(--elvix-primary, var(--elvix-fg-1)) 12%, transparent)
@@ -49,14 +56,18 @@
 
 /* A wrong value keeps its outline while focused: the cause stays visible. */
 .elvix-field[aria-invalid="true"],
-.elvix-field[aria-invalid="true"]:focus {
+.elvix-field[aria-invalid="true"]:focus,
+.elvix-input[aria-invalid="true"],
+.elvix-input[aria-invalid="true"]:focus {
   border-color: var(--elvix-danger, rgb(239 68 68 / 0.75));
 }
 
-.elvix-field::placeholder {
+.elvix-field::placeholder,
+.elvix-input::placeholder {
   color: var(--elvix-placeholder);
 }
 
-.elvix-field:disabled {
+.elvix-field:disabled,
+.elvix-input:disabled {
   opacity: 0.6;
 }

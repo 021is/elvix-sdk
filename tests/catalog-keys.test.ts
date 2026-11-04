@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { keysNamedIn } from "../scripts/english-plugin.mjs";
 import { PRESET_LABEL } from "../src/react/elvix-sign-in-button";
 
 /**
@@ -22,17 +23,14 @@ const catalogs = readdirSync(CATALOGS)
 const en = load("en.json");
 const namespaces = Object.keys(en.namespaces);
 
-/** Literals shaped like a key that are not one (a stream event name). */
-const NOT_KEYS = new Set(["lifecycle.snapshot"]);
-
-/** Every `"namespace.key"` string literal in the SDK's React sources. */
+/** Every `"namespace.key"` string literal in the SDK's React sources, found
+ *  by the scan the build registers English words from (0.21). */
 function referencedKeys(): Map<string, string> {
   const dir = join(ROOT, "src/react");
   const found = new Map<string, string>();
-  const pattern = new RegExp(`["'\`](${namespaces.join("|")})\\.([A-Za-z0-9_]+)["'\`]`, "g");
   for (const file of readdirSync(dir).filter((f) => /\.tsx?$/.test(f))) {
-    for (const m of readFileSync(join(dir, file), "utf8").matchAll(pattern)) {
-      if (!NOT_KEYS.has(`${m[1]}.${m[2]}`)) found.set(`${m[1]}.${m[2]}`, file);
+    for (const key of keysNamedIn(readFileSync(join(dir, file), "utf8"), namespaces)) {
+      found.set(key, file);
     }
   }
   return found;

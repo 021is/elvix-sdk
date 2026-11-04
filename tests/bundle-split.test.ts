@@ -23,8 +23,9 @@ const ROOT = resolve(__dirname, "..");
 const REACT_DIR = join(ROOT, "dist/react");
 const ENTRY = join(REACT_DIR, "index.js");
 const DIRECTIVE = '"use client";';
-/** Provider + badge, gzipped. Most of it is the bundled English catalog. */
-const BUDGET_BYTES = 23 * 1024;
+/** Provider + badge, gzipped: 21.8 KB in 0.20, when it carried every
+ *  component's English words; 9.2 KB since 0.21 (tests/english-split.test.ts). */
+const BUDGET_BYTES = 10 * 1024;
 /** Modules a page with only the provider and the badge must never load. */
 const UI_THEY_DO_NOT_RENDER =
   /sign-in|passkey|legal-entit|address-book|use-otp|sessions|onboarding/;

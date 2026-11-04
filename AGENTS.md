@@ -90,9 +90,20 @@ in `dist/react/`, each output carries `"use client"` (`scripts/postbuild.mjs`), 
 **The entry `dist/react/index.js` carries no directive** and re-exports SDK files only: a
 `"use client"` entry is one client reference Turbopack ships whole (provider + badge under
 Next 16: 249 KB gzip with it, 22 KB without). A third-party re-export goes through an SDK
-client file (`i18n-hooks.ts`). A new module at a top level must be side-effect free: with
-`sideEffects`, an import nothing uses is dropped. `tests/bundle-split.test.ts` pins it all,
-with a size budget for provider + badge.
+client file (`i18n-hooks.ts`). With `sideEffects`, an import nothing uses is dropped, so
+never import a module for its effect alone. `tests/bundle-split.test.ts` pins it all, with
+a size budget for provider + badge (10 KB gzip since 0.21).
+
+**English words come per module, written by the build** (0.21): `scripts/english-plugin.mjs`
+prepends to each `src/react` module a `registerEnglish(...)` of the namespaces of the keys it
+names, each namespace a virtual module cut from `src/locale/catalogs/en.json` (still the only
+copy, and what translation and the CDN use). The registry (`src/locale/english.ts`) is one
+object, always a runtime's FALLBACK by reference, never copied: a copy misses the namespaces
+of components mounted later. Never write a registration by hand; name keys as literals
+(`t("signin.title")`, or a table of literals), because the scan finds only those. Tests run on
+the source with every namespace registered (`tests/setup-english.ts`), so the build is what
+`tests/english-split.test.ts` checks: every export bundled alone ships the words of every key
+it ships.
 
 **What CI enforces** (`ci.yml`, job `test` — the required check on `main`, admins included):
 biome with **zero warnings and zero errors** (`--error-on-warnings`), typecheck, build, vitest.
