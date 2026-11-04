@@ -83,6 +83,29 @@ describe("the plain .elvix-input", () => {
   });
 });
 
+/**
+ * No text field outlines, anywhere (0.22). 0.19 tinted `<ElvixInput>` and its
+ * siblings, but the sign-in card's own fields, the code boxes, the country
+ * search and the address note kept a border and a brand focus ring (seen on
+ * danceclub.dev, 2026-11-04). Every text field is `.elvix-field` now; a
+ * button keeps its focus ring, which keyboard users need.
+ */
+describe("every text field", () => {
+  const SKIP = /type="(hidden|file|checkbox|radio)"|sr-only/;
+  const OUTLINE = /\bborder(-(?!0\b)[\w[\]/.-]+)?\b|focus:ring|\bring-\d/;
+  // The look itself, so a border hidden in a constant cannot pass either.
+  const FIELD_LOOK = /elvix-field|elvix-input|FIELD_CLASS/;
+  const files = readdirSync(DIR).filter((f) => f.endsWith(".tsx"));
+
+  it.each(files)("%s gives every input and textarea the field look, no outline", (f) => {
+    const fields = [...read(f).matchAll(/<(input|textarea)\b[\s\S]*?\/>/g)].map((m) => m[0]);
+    const outlined = fields.filter(
+      (el) => !SKIP.test(el) && (OUTLINE.test(el) || !FIELD_LOOK.test(el)),
+    );
+    expect(outlined.map((el) => el.replace(/\s+/g, " ").slice(0, 120))).toEqual([]);
+  });
+});
+
 describe("rows", () => {
   const files = readdirSync(DIR).filter((f) => /^(legal-entity-|elvix-legal-entit)/.test(f));
 

@@ -1,6 +1,6 @@
 {
   "src/react/countries.ts": 322,
-  "src/react/elvix-address-book.tsx": 1942,
+  "src/react/elvix-address-book.tsx": 1941,
   "src/react/elvix-app-passkeys.tsx": 370,
   "src/react/elvix-avatar.tsx": 664,
   "src/react/elvix-banner.tsx": 438,
@@ -23,7 +23,7 @@
   "src/react/passkey.ts": 345,
   "src/react/regions.ts": 324,
   "src/react/session.ts": 425,
-  "src/react/sign-in-steps.tsx": 933,
+  "src/react/sign-in-steps.tsx": 932,
   "src/react/tax-validation.ts": 408,
   "tests/helpers/fake-elvix.ts": 394
 }

@@ -51,7 +51,6 @@ import { type CSSProperties, Fragment, useCallback, useEffect, useRef, useState 
 import { useT } from "../locale/use-t";
 import { EditableField, type PlaceDetails, ReturnTo, View } from "./address-book-wizard";
 import type { AddressKind, AddressRecord } from "./address-schema";
-import { BRAND_FOCUS } from "./brand-focus";
 import { MaybeCard } from "./elvix-card";
 import { elvixFetch } from "./elvix-fetch";
 import { ElvixInput } from "./elvix-input";
@@ -1284,7 +1283,7 @@ function NoteInputView({
               ? t("addressBook.notePlaceholderBilling")
               : t("addressBook.notePlaceholderShipping")
           }
-          className={`w-full resize-none rounded-[10px] border border-fg-3/25 bg-canvas px-3 py-2 text-[14px] text-fg-1 placeholder:text-fg-3 ${BRAND_FOCUS}`}
+          className="elvix-field w-full resize-none px-3 py-2 text-[14px]"
         />
         <div className="mt-1 text-right text-[11px] text-fg-3">{trimmed.length}/500</div>
       </label>

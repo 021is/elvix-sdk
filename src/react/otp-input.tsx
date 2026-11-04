@@ -4,9 +4,9 @@
  * Segmented 6-box OTP input, the one every code step uses (sign-in, export,
  * deactivate). No host dependencies — only React.
  *
- * `compact` (0.17) draws the boxes as `<ElvixEmailCodeSignIn>`'s fields: a
- * tint, no outline, every look a `--elvix-field*` variable
- * (`styles/fields.css`). Otherwise they are the card's bordered boxes.
+ * Each box is the one field look (`.elvix-field`, `styles/fields.css`): a
+ * tint, no outline, every look a `--elvix-field*` variable. Until 0.22 the
+ * sign-in card drew them as bordered boxes with a focus ring.
  */
 
 import {
@@ -18,7 +18,6 @@ import {
   useRef,
 } from "react";
 import { useT } from "../locale/use-t";
-import { BRAND_FOCUS, FIELD_COMPACT, FIELD_OUTLINED } from "./brand-focus";
 
 const OTP_LENGTH = 6;
 /** The six fixed positions. A box IS its position (it never moves or
@@ -55,7 +54,6 @@ export function OtpInput({
   onChange,
   disabled,
   autoFocus,
-  compact = false,
   describedBy,
   className = "",
 }: {
@@ -63,8 +61,6 @@ export function OtpInput({
   onChange: (v: string) => void;
   disabled?: boolean;
   autoFocus?: boolean;
-  /** `<ElvixEmailCodeSignIn>`'s fields (`FIELD_COMPACT`) instead of the bordered boxes. */
-  compact?: boolean;
   /** The id of the line that says where the code went, read with the group. */
   describedBy?: string;
   /** More classes on each box (a host's `classNames.code`). */
@@ -147,7 +143,7 @@ export function OtpInput({
           onKeyDown={(e) => onKeyDown(i, e)}
           onPaste={onPaste}
           onFocus={(e) => e.target.select()}
-          className={`w-full aspect-square min-w-0 max-w-12 mx-auto text-center text-[20px] font-semibold tabular-nums ${compact ? FIELD_COMPACT : `rounded-[10px] ${FIELD_OUTLINED} text-fg-1 ${BRAND_FOCUS} transition disabled:opacity-50`} ${className}`}
+          className={`elvix-field w-full aspect-square min-w-0 max-w-12 mx-auto text-center text-[20px] font-semibold tabular-nums ${className}`}
         />
       ))}
     </fieldset>
