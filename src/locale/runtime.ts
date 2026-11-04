@@ -3,34 +3,29 @@
 /**
  * elvix SDK i18n runtime. Wraps `@021.is/spine-i18n` with:
  *
- *   - A bundled `en` catalog (so the SDK has zero-config baseline).
+ *   - Bundled English words, registered per namespace by the modules that
+ *     use them (`./english.ts`, 0.21), so the SDK works with zero config and
+ *     a host carries only the words of what it renders.
  *   - Lazy fetch of any other locale from the elvix translation
  *     CDN (`https://elvix.is/api/v1/i18n/elvix/<locale>.json` by
- *     default). Override via `<ElvixProvider i18nBase>`.
- *   - In-memory cache + a `loadCatalog(locale)` async helper used
- *     internally by `<ElvixProvider>` when its `locale` prop changes.
+ *     default). Override via `<ElvixProvider i18nBase>`. Cached for the
+ *     page lifetime.
  *
- * Bundle size cost: only `en.json` (~5KB gzipped) ships inside the
- * SDK. The other 14 locales arrive on-demand on first request and
- * are cached for the page lifetime.
+ * English is always the FALLBACK of a runtime, never copied into its primary
+ * catalog: a namespace registered after the runtime was built (a component
+ * mounted later) is then still found.
  */
 
-import type { Catalog, Locale } from "@021.is/spine-i18n";
+import type { Catalog } from "@021.is/spine-i18n";
 import { buildRuntime, makeLocale } from "@021.is/spine-i18n";
-import enCatalog from "./catalogs/en.json" with { type: "json" };
+import { englishCatalog } from "./english";
 
 const DEFAULT_I18N_BASE = "https://elvix.is/api/v1/i18n/elvix";
 const CACHE = new Map<string, Catalog>();
 
-/** Local copy of `en` so `useT()` works synchronously before any fetch lands. */
-export function bundledEnglishCatalog(): Catalog {
-  return jsonToCatalog(enCatalog as unknown as RawCatalog, "en");
-}
-
-/** Build a runtime against the bundled English catalog. Sync, no network. */
+/** Build a runtime against the bundled English words. Sync, no network. */
 export function buildEnglishRuntime() {
-  const en = bundledEnglishCatalog();
-  return buildRuntime(en, null);
+  return buildRuntime(englishCatalog(), null);
 }
 
 /**
@@ -44,7 +39,6 @@ export async function fetchCatalog(
   i18nBase: string = DEFAULT_I18N_BASE,
 ): Promise<Catalog | null> {
   const tag = normaliseTag(locale);
-  if (tag === "en") return bundledEnglishCatalog();
   const cached = CACHE.get(tag);
   if (cached) return cached;
   try {
@@ -83,13 +77,6 @@ export function applyMessages(
   return { ...catalog, namespaces };
 }
 
-/** Best-effort lookup of a catalog. English fallback is synchronous. */
-export function lookupCatalogSync(locale: string): Catalog | null {
-  const tag = normaliseTag(locale);
-  if (tag === "en") return bundledEnglishCatalog();
-  return CACHE.get(tag) ?? null;
-}
-
 // ── helpers ───────────────────────────────────────────────────────────
 
 type RawCatalog = {
@@ -99,7 +86,7 @@ type RawCatalog = {
 
 function jsonToCatalog(raw: RawCatalog, tag: string): Catalog {
   return {
-    locale: makeLocale(tag) as Locale,
+    locale: makeLocale(tag),
     namespaces: raw.namespaces,
   };
 }

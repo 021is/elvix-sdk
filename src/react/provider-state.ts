@@ -7,9 +7,11 @@
  * them; nothing else should need to.
  */
 
+import { emptyCatalog, makeLocale } from "@021.is/spine-i18n";
 import { switchLocale } from "@021.is/spine-i18n/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { applyMessages, bundledEnglishCatalog, fetchCatalog } from "../locale/runtime";
+import { englishCatalog } from "../locale/english";
+import { applyMessages, fetchCatalog } from "../locale/runtime";
 import { cookieCanReach } from "./cookie-reach";
 import { elvixFetch } from "./elvix-fetch";
 import type { ElvixAppContext } from "./elvix-provider";
@@ -50,9 +52,12 @@ export function useCatalogLocale(
   const messagesKey = JSON.stringify(messages ?? {});
   useEffect(() => {
     const own = JSON.parse(messagesKey) as Record<string, string>;
-    const english = bundledEnglishCatalog();
+    // English is always the fallback, by reference (src/locale/english.ts):
+    // a copy would miss the namespaces of components mounted later.
+    const fallback = englishCatalog();
+    const hostOnly = () => applyMessages(emptyCatalog(makeLocale(DEFAULT_LOCALE)), own);
     if (locale === DEFAULT_LOCALE) {
-      switchLocale({ primary: applyMessages(english, own), fallback: null });
+      switchLocale({ primary: hostOnly(), fallback });
       return;
     }
     let cancelled = false;
@@ -60,11 +65,7 @@ export function useCatalogLocale(
       if (cancelled) return;
       // A locale the CDN lacks (a host's own language) still gets the host's
       // strings, over English for whatever it left out.
-      switchLocale(
-        primary
-          ? { primary: applyMessages(primary, own), fallback: english }
-          : { primary: applyMessages(english, own), fallback: null },
-      );
+      switchLocale({ primary: primary ? applyMessages(primary, own) : hostOnly(), fallback });
     });
     return () => {
       cancelled = true;

@@ -1,4 +1,5 @@
 import { defineConfig } from "tsup";
+import { englishPlugin } from "./scripts/english-plugin.mjs";
 
 /**
  * Two builds into one `dist/`.
@@ -46,5 +47,8 @@ export default defineConfig([
     outDir: "dist/react",
     splitting: true,
     external,
+    // Each module gets the English words of the keys it names, so a host
+    // carries only the words of what it renders (0.21).
+    esbuildPlugins: [englishPlugin()],
   },
 ]);
