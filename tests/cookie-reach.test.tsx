@@ -22,6 +22,9 @@ describe("cookieCanReach", () => {
     ["https://elvix.is", "elvix.is", true],
     ["https://elvix.is", "app.elvix.is", true],
     ["https://auth.danceclub.dev", "danceclub.dev", true],
+    // A Lax cookie reaches a sibling on the same site too (security review).
+    ["https://elvix.edvone.dev", "plmhub.edvone.dev", true],
+    ["https://Elvix.IS", "app.elvix.is", true],
     ["https://elvix.is", "danceclub.dev", false],
     ["https://elvix.is", "notelvix.is", false],
     ["not a url", "danceclub.dev", true],

@@ -6,10 +6,12 @@
  * `fetch`. So on a host like danceclub.dev with no bearer token, asking
  * `sdk-context` can only ever answer 401, one red line in every signed-out
  * visitor's console (0.21). The cookie can arrive only from the same origin
- * (`baseUrl=""`, elvix's own pages) or from the same site, which without a
- * public-suffix list is read as: one host is the other or a subdomain of it.
- * Anything unparsable answers `true`, so a doubt costs one request, never a
- * missed session.
+ * (`baseUrl=""`, elvix's own pages) or from the same site, siblings included
+ * (a.example.com to auth.example.com). Without a public-suffix list that is
+ * read as: the last two labels of the hosts match, which errs toward asking
+ * (foo.co.uk and bar.co.uk ask, at the cost of one request). Anything
+ * unparsable answers `true`, so a doubt costs one request, never a missed
+ * session.
  */
 export function cookieCanReach(baseUrl: string, pageHost: string): boolean {
   if (baseUrl === "") return true;
@@ -20,5 +22,9 @@ export function cookieCanReach(baseUrl: string, pageHost: string): boolean {
     return true;
   }
   if (!host || !pageHost) return true;
-  return host === pageHost || host.endsWith(`.${pageHost}`) || pageHost.endsWith(`.${host}`);
+  return lastTwoLabels(host) === lastTwoLabels(pageHost);
+}
+
+function lastTwoLabels(host: string): string {
+  return host.toLowerCase().split(".").slice(-2).join(".");
 }
