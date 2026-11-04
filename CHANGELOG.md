@@ -18,6 +18,31 @@ releases move there.
 
 ### Fixed
 
+## [0.21.0] — 2026-11-04
+
+A component brings only its own English words. A page with `<ElvixProvider>` and
+`<ElvixSecuredBadge>` costs 9 KB gzip of JavaScript under Next 16 / Turbopack, down from
+22 KB in 0.20 and 249 KB in 0.19.
+
+### Changed
+
+- **English words ship per module.** The whole English catalog (19 namespaces, ~16 KB gzip)
+  was bundled with the provider. The build now gives each module the namespaces of the keys
+  it names (`scripts/english-plugin.mjs`), so the provider brings none and the badge only
+  `signin`. Words are still there before the first render: no raw key, and the server HTML
+  has them. Every component, bundled alone, renders the same HTML as in 0.20.
+  `tests/english-split.test.ts` checks every export of the build.
+
+### Fixed
+
+- **A signed-out visitor on another site is not asked about at elvix.** With no token the
+  provider still asked `sdk-context`, a 401 in the console of every page on a host like
+  danceclub.dev. elvix's session cookies are `SameSite=Lax`, which no browser sends on a
+  cross-site request, so that answer could only be 401. Same origin and same site still ask.
+- **The plain `.elvix-input` field has no border and no focus ring.** 0.19 tinted every field
+  but this class, used by `<ElvixDeviceApproval>` and elvix's own `/device` page; it takes
+  the field look now.
+
 ## [0.20.0] — 2026-11-04
 
 A host downloads only the components it renders. A page with `<ElvixProvider>` and
