@@ -28,9 +28,16 @@ describe("presenceDecision", () => {
     expect(presenceDecision([quiet], now)).toBe("idle");
   });
 
-  it("skips the beat when every tab is hidden or gone", () => {
+  // 0.21: a hidden tab used to skip the beat, so a person with the app in a
+  // back tab showed offline after a minute. It is Away now.
+  it("says idle while every live tab is hidden", () => {
     const stale = { visible: true, inputAt: now, at: now - HEARTBEAT_MS * 2 };
-    expect(presenceDecision([{ visible: false, inputAt: now, at: now }, stale], now)).toBeNull();
+    expect(presenceDecision([{ visible: false, inputAt: now, at: now }, stale], now)).toBe("idle");
+  });
+
+  it("skips the beat when every tab is gone", () => {
+    const stale = { visible: true, inputAt: now, at: now - HEARTBEAT_MS * 2 };
+    expect(presenceDecision([stale], now)).toBeNull();
   });
 });
 

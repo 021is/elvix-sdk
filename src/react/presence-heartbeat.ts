@@ -9,8 +9,9 @@
  *   - one tab holds a Web Lock named for the (origin, app) pair and is the
  *     only one that beats; when it closes, the lock passes to another tab;
  *   - every tab reports its visibility and last input to the others over a
- *     BroadcastChannel, so the leader beats while ANY tab is visible and
- *     says "idle" only when no tab has seen input for a minute.
+ *     BroadcastChannel, so the leader says "online" while any tab is visible
+ *     and used in the last minute, and "idle" (Away) otherwise, hidden tabs
+ *     included (0.21).
  *
  * A browser without the Web Locks API (Safari before 15.4) lets every tab
  * beat, as before. Losing a beat is harmless: the server's TTL is twice the
@@ -30,16 +31,26 @@ export const PresenceStatus = {
 } as const;
 export type PresenceStatus = (typeof PresenceStatus)[keyof typeof PresenceStatus];
 
-/** What the leader should send now, or `null` to skip this beat. */
+/**
+ * What the leader should send now, or `null` to skip this beat. A hidden tab
+ * still beats, as "idle" (Away), so a person with the app open in a back tab
+ * is not shown offline (0.21; until then only a visible tab beat). Offline is
+ * left to the server: no beat at all (every tab closed, signed out, asleep).
+ * A hidden tab's timers are throttled to about a minute, so elvix keeps an
+ * idle beat alive longer than an online one.
+ */
 export function presenceDecision(reports: Iterable<TabReport>, now: number): PresenceStatus | null {
+  let live = false;
   let visible = false;
   let inputAt = 0;
   for (const r of reports) {
     if (now - r.at > TAB_TTL_MS) continue;
+    live = true;
     visible ||= r.visible;
     inputAt = Math.max(inputAt, r.inputAt);
   }
-  if (!visible) return null;
+  if (!live) return null;
+  if (!visible) return PresenceStatus.IDLE;
   return now - inputAt > IDLE_AFTER_MS ? PresenceStatus.IDLE : PresenceStatus.ONLINE;
 }
 

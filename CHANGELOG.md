@@ -32,6 +32,11 @@ A component brings only its own English words. A page with `<ElvixProvider>` and
   `signin`. Words are still there before the first render: no raw key, and the server HTML
   has them. Every component, bundled alone, renders the same HTML as in 0.20.
   `tests/english-split.test.ts` checks every export of the build.
+- **A hidden tab counts as Away, not Offline.** The heartbeat skipped every beat while no
+  tab of the app was visible, so a person with it open in a back tab showed offline after a
+  minute. It now sends `idle` for a hidden tab; Offline means no beat at all (every tab
+  closed, signed out, asleep). A hidden tab's timers are throttled to about a minute, so
+  elvix keeps an idle beat alive longer than an online one (elvix, same day).
 
 ### Fixed
 
