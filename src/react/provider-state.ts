@@ -10,11 +10,12 @@
 import { switchLocale } from "@021.is/spine-i18n/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { applyMessages, bundledEnglishCatalog, fetchCatalog } from "../locale/runtime";
+import { cookieCanReach } from "./cookie-reach";
 import { elvixFetch } from "./elvix-fetch";
 import type { ElvixAppContext } from "./elvix-provider";
 import { startHeartbeat } from "./presence-heartbeat";
 import { jsonInit, send } from "./profile-request";
-import { authInit, isOnboardingPending, onElvixSessionChange } from "./session";
+import { authInit, getElvixToken, isOnboardingPending, onElvixSessionChange } from "./session";
 import type { ElvixBootstrapEnvelope } from "./types";
 
 export const DEFAULT_LOCALE = "en";
@@ -156,6 +157,16 @@ export function useBootstrap(
   return { app, appError };
 }
 
+/** Whether asking `sdk-context` could find a session at all. */
+function mayHoldSession(baseUrl: string): boolean {
+  // A redirect return with an onboarding step still to show: the host sees
+  // a signed-out user until the form finishes it (see `isOnboardingPending`).
+  if (isOnboardingPending()) return false;
+  // No token, and elvix's cookie cannot reach elvix from here: the answer
+  // could only be 401, so it is not asked (0.21).
+  return Boolean(getElvixToken()) || cookieCanReach(baseUrl, window.location.hostname);
+}
+
 /**
  * The signed-in user's per-app envelope (`sdk-context`): cookie same-origin,
  * bearer cross-origin. A non-OK response is the no-session case. `refresh()`
@@ -186,10 +197,7 @@ export function useUserEnvelope(
         setAppContext(ctx);
         setSessionStatus(ctx ? ElvixSessionStatus.AUTHENTICATED : ElvixSessionStatus.ANONYMOUS);
       };
-      if (!clientId) return settle(null);
-      // A redirect return with an onboarding step still to show: the host sees
-      // a signed-out user until the form finishes it (see `isOnboardingPending`).
-      if (isOnboardingPending()) return settle(null);
+      if (!clientId || !mayHoldSession(baseUrl)) return settle(null);
       try {
         const r = await elvixFetch(
           `${baseUrl}/api/account/apps/${encodeURIComponent(clientId)}/sdk-context`,
