@@ -5,8 +5,11 @@
  * only text saying what goes in it. It was #a1a1aa on the field's tint, about
  * 2.3:1 (measured on danceclub.dev, 2026-11-04); WCAG 1.4.3 asks 4.5:1 and
  * Edvard's rule for public text is 7:1. Checked at rest, on hover and on
- * focus (the field's tints, styles/fields.css) with elvix's default brand,
- * for both copies of the palette: sdk.css and the sign-in card's own.
+ * focus (the field's tints, styles/fields.css), for both copies of the
+ * palette: sdk.css and the sign-in card's own. Focus tints with the APP's
+ * brand, so it is checked with the worst one: black in light, white in dark.
+ * The first version used elvix's default brand and passed, while
+ * DanceClub's near-black brand gave 6.73:1 (danceclub.dev, same day).
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -14,8 +17,8 @@ import { describe, expect, it } from "vitest";
 import { Theme, themeVars } from "../src/react/sign-in-theme";
 
 const CSS = readFileSync(join(__dirname, "../src/styles/sdk.css"), "utf8");
-/** elvix's default brand pair (elvix-provider.tsx). */
-const BRAND = { light: "#5d4dff", dark: "#8e7dff" };
+/** The brand that makes the focus tint closest to the placeholder: any app's worst case. */
+const BRAND = { light: "#000000", dark: "#ffffff" };
 /** The field's tints: fg at rest and on hover, the brand on focus. */
 const TINT = { rest: 0.06, hover: 0.09, focus: 0.12 };
 

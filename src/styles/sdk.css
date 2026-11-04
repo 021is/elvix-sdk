@@ -45,7 +45,7 @@
   --elvix-fg-1: #18181b;
   --elvix-fg-2: #52525b;
   --elvix-fg-3: #71717a;
-  --elvix-placeholder: #4a4a52; /* 7:1 on the field's tint (tests/placeholder-contrast) */
+  --elvix-placeholder: #44444c; /* 7:1 on the field's tint (tests/placeholder-contrast) */
   --elvix-brand: #6d5cff;
   --elvix-brand-fg: #ffffff;
 
@@ -64,7 +64,7 @@
   --elvix-fg-1: #fafafa;
   --elvix-fg-2: #a1a1aa;
   --elvix-fg-3: #71717a;
-  --elvix-placeholder: #acacb4; /* 7:1 on the field's tint (tests/placeholder-contrast) */
+  --elvix-placeholder: #b8b8bf; /* 7:1 on the field's tint (tests/placeholder-contrast) */
   --elvix-brand: #a89cff;
   --elvix-brand-fg: #0a0a0b;
 
