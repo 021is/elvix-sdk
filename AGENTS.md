@@ -84,6 +84,16 @@ bun run build       # tsup → dist/
 bun run test        # vitest (NOT `bun test`, Bun's own runner)
 ```
 
+**The React build is split** (0.20, `tsup.config.ts`): every `src/react/*` file is an entry
+in `dist/react/`, each output carries `"use client"` (`scripts/postbuild.mjs`), and
+`package.json` names only `*.css` as a side effect, so a host keeps only what it renders.
+**The entry `dist/react/index.js` carries no directive** and re-exports SDK files only: a
+`"use client"` entry is one client reference Turbopack ships whole (provider + badge under
+Next 16: 249 KB gzip with it, 22 KB without). A third-party re-export goes through an SDK
+client file (`i18n-hooks.ts`). A new module at a top level must be side-effect free: with
+`sideEffects`, an import nothing uses is dropped. `tests/bundle-split.test.ts` pins it all,
+with a size budget for provider + badge.
+
 **What CI enforces** (`ci.yml`, job `test` — the required check on `main`, admins included):
 biome with **zero warnings and zero errors** (`--error-on-warnings`), typecheck, build, vitest.
 `publish.yml` calls the same workflow before `npm publish`, so a tag cannot ship what a PR would

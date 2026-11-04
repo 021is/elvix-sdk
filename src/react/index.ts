@@ -31,14 +31,6 @@
  *        useElvixRefresh(), useElvixUserMedia(userId?)
  */
 
-export { switchLocale, useFmt, useLocale } from "@021.is/spine-i18n/react";
-/**
- * i18n hooks. Drop-in from `@021.is/spine-i18n/react` so callers can write:
- *   const t = useT();   t("signin.googleButton")
- * `<ElvixProvider locale="de">` already mounts the LocaleProvider; consumers
- * only see these hooks and the canonical English string keys.
- */
-export { useT } from "../locale/use-t";
 export type { ElvixActionResult, ElvixUser, ElvixVerifyResult } from "../types/index";
 export type { ElvixCopy } from "./copy";
 // Editable sign-in copy. Primary source is the elvix Console (served live in
@@ -153,6 +145,7 @@ export {
   useUserRoles,
   useUserScopes,
 } from "./hooks";
+export { switchLocale, useFmt, useLocale, useT } from "./i18n-hooks";
 // How tall the legal-entity components are: "fixed" or "flexible" (0.18).
 export { Sizing as ElvixLegalEntitySizing } from "./legal-entity-frame";
 // What a legal entity holds, the picker's `onPick` payload (0.18).

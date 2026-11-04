@@ -1,6 +1,6 @@
 {
   "name": "@elvix.is/sdk",
-  "version": "0.19.0",
+  "version": "0.20.0",
   "description": "Official elvix SDK. Drop-in React components, server helpers, and an MCP server so AI coding agents integrate elvix on the first try.",
   "license": "MIT",
   "homepage": "https://elvix.is",
@@ -18,6 +18,9 @@
   },
   "bugs": "https://github.com/021is/elvix-sdk/issues",
   "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
@@ -31,7 +34,7 @@
     },
     "./react": {
       "types": "./dist/react.d.ts",
-      "import": "./dist/react.js"
+      "import": "./dist/react/index.js"
     },
     "./server": {
       "types": "./dist/server.d.ts",
@@ -56,7 +59,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "node scripts/gen-version.mjs && tsup src/index.ts src/react.ts src/server.ts src/types.ts src/mcp/index.ts src/mcp/bin.ts src/cli/index.ts src/cli/doctor.ts src/cli/login.ts --format esm --dts --clean --external react --external react/jsx-runtime --external react-dom --external next && bun run build:css && node scripts/postbuild.mjs",
+    "build": "node scripts/gen-version.mjs && rm -rf dist && tsup && bun run build:css && node scripts/postbuild.mjs",
     "build:css": "tailwindcss --input src/styles/sdk.css --output dist/styles.css --minify",
     "lint": "biome check src tests scripts",
     "lint:ci": "biome ci --error-on-warnings src tests scripts",
@@ -84,7 +87,7 @@
     "qs": ">=6.15.4",
     "nanoid": ">=3.3.16",
     "postcss": ">=8.5.23",
-    "esbuild": ">=0.28.1",
+    "esbuild": "^0.28.1",
     "source-map-js": ">=1.2.2"
   },
   "dependencies": {
@@ -99,12 +102,13 @@
     "@aws-sdk/client-s3": "^3.1149.0",
     "@biomejs/biome": "^2.2.0",
     "@tailwindcss/cli": "^4",
-    "fake-indexeddb": "6.2.5",
     "@testing-library/dom": "^10",
     "@testing-library/react": "^16",
     "@types/node": "^22.7.5",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.0",
+    "esbuild": "^0.28.1",
+    "fake-indexeddb": "6.2.5",
     "jsdom": "^26",
     "tailwindcss": "^4",
     "tsup": "^8.3.0",

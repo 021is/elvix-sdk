@@ -18,6 +18,27 @@ releases move there.
 
 ### Fixed
 
+## [0.20.0] — 2026-11-04
+
+A host downloads only the components it renders. A page with `<ElvixProvider>` and
+`<ElvixSecuredBadge>` costs 22 KB gzip of JavaScript under Next 16 / Turbopack, down
+from 249 KB.
+
+### Changed
+
+- **The React build is split, one module per file** (`dist/react/`), and `package.json`
+  declares `"sideEffects": ["*.css"]`. `dist/react.js` was one 1.3 MB `"use client"`
+  file holding all 169 modules, which no bundler could split: every DanceClub page, the
+  public ones too, loaded the sign-in form, passkeys and the account UI. Each module now
+  carries its own `"use client"`, and the entry carries none, because a client entry is one
+  client reference that Turbopack ships whole. Imports are unchanged
+  (`@elvix.is/sdk/react`). `tests/bundle-split.test.ts` pins the layout and a size budget.
+
+### Fixed
+
+- **`@elvix.is/sdk/types` resolves.** The build listed `src/types.ts`, which never
+  existed, and tsup skipped it silently, so the documented subpath shipped no file. It is
+  built from `src/types/index.ts`.
 - **`elvix-mcp` offers only what elvix marks as an agent tool.** It read every `api` route
   of `openapi.roles.json` as a tool, so it offered device login, the OIDC flows, the public
   sign-in routes and step-up approvals, which take no API key, and `/api/v1/session` and
