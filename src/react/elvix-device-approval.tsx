@@ -27,6 +27,7 @@ import { Check, Loader2, MonitorSmartphone, ShieldAlert } from "lucide-react";
 import { type ReactNode, useEffect, useState } from "react";
 import { useT } from "../locale/use-t";
 import { approveDevice } from "./device-approve";
+import { ElvixInput } from "./elvix-input";
 import { ElvixProvider, useElvixApp } from "./elvix-provider";
 import { ElvixSignInForm } from "./elvix-sign-in-form";
 import type { ElvixTheme } from "./types";
@@ -122,11 +123,11 @@ function DeviceApprovalInner({
             if (c) setUserCode(c);
           }}
         >
-          <input
+          <ElvixInput
             value={codeInput}
             onChange={(e) => setCodeInput(e.target.value)}
             placeholder="WDJB-MJHT"
-            className="elvix-input"
+            aria-label={t("device.enterCode")}
             autoFocus
             autoCapitalize="characters"
             autoComplete="off"

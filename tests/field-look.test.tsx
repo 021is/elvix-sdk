@@ -41,6 +41,14 @@ describe("the field look", () => {
     expect(input.getAttribute("aria-invalid")).toBe("true");
   });
 
+  // 0.20: <ElvixDeviceApproval>'s code field kept the old outlined `.elvix-input` (a 1px border
+  // and a 3px focus ring), found on danceclub.team/device 2026-11-04. No component may use it.
+  it("no component uses the outlined .elvix-input class; the device code field is a field", () => {
+    const offenders = readdirSync(DIR).filter((f) => /className="elvix-input"/.test(read(f)));
+    expect(offenders).toEqual([]);
+    expect(read("elvix-device-approval.tsx")).toContain("<ElvixInput");
+  });
+
   it.each(["elvix-input.tsx", "elvix-date-input.tsx"])("%s hard-codes no fill or outline", (f) => {
     const source = read(f);
     expect(source).not.toMatch(/bg-white|#101013|primary-55|box-shadow/);

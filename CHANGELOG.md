@@ -18,6 +18,10 @@ releases move there.
 
 ### Fixed
 
+- **`<ElvixDeviceApproval>`'s code field is tinted, never outlined**, like every other SDK
+  field since 0.19: it was the last user of the old `.elvix-input` class (a 1px border and a
+  3px focus ring), which is gone. Found on danceclub.team/device.
+
 ## [0.20.0] — 2026-11-04
 
 A host downloads only the components it renders. A page with `<ElvixProvider>` and
