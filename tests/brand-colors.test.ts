@@ -36,12 +36,4 @@ describe("brand colours", () => {
       .filter((line) => !allowed?.test(line));
     expect(offenders).toEqual([]);
   });
-
-  it("every bordered control focuses with the shared brand ring", () => {
-    for (const file of ["otp-input.tsx", "sign-in-steps.tsx"]) {
-      const source = readFileSync(new URL(file, DIR), "utf8");
-      expect(source, file).toContain("BRAND_FOCUS");
-      expect(source, file).not.toMatch(/focus:(border|ring)-\[#/);
-    }
-  });
 });

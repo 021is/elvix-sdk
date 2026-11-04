@@ -10,7 +10,6 @@
 import { Loader2 } from "lucide-react";
 import { type FormEvent, type ReactNode, useId } from "react";
 import { useT } from "../locale/use-t";
-import { FIELD_COMPACT } from "./brand-focus";
 import { OtpInput } from "./otp-input";
 import { STACK_2, STACK_3 } from "./pane-layout";
 import { type Cta, CtaButton, ErrorLine } from "./sign-in-controls";
@@ -110,7 +109,6 @@ export function CompactCodePane(p: CodePaneProps) {
         onChange={setCode}
         disabled={isPreview || verifying}
         autoFocus={!isPreview && p.look.autoFocus}
-        compact
         describedBy={lineId}
         className={cn.code}
       />
@@ -168,7 +166,7 @@ export function CompactEmailPane(p: EmailPaneProps) {
         value={otp.identifier}
         disabled={isPreview || otp.sending}
         onChange={(e) => otp.setIdentifier(e.target.value)}
-        className={`w-full h-10 px-3 text-[14px] ${FIELD_COMPACT} ${cn.field ?? ""}`}
+        className={`elvix-field w-full h-10 px-3 text-[14px] ${cn.field ?? ""}`}
       />
       <ErrorLine error={flow.error} className={cn.error} />
       <CtaButton

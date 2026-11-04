@@ -5,7 +5,7 @@ All notable changes to `@elvix.is/sdk` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Older releases, each file under the 300-line limit: [0.14.3 to 0.14.7](docs/changelog/0.14.3-0.14.7.md),
+Older releases, each file under the 300-line limit: [0.15 to 0.16](docs/changelog/0.15-0.16.md), [0.14.3 to 0.14.7](docs/changelog/0.14.3-0.14.7.md),
 [0.12 to 0.14.2](docs/changelog/0.12-0.14.md), [0.7 to 0.11](docs/changelog/0.7-0.11.md),
 [0.1 to 0.6](docs/changelog/0.1-0.6.md). When this file passes 300 lines, its oldest
 releases move there.
@@ -17,6 +17,24 @@ releases move there.
 ### Changed
 
 ### Fixed
+
+## [0.22.0] — 2026-11-04
+
+Every SDK text field has the one field look: a tint, a deeper brand tint on focus, never a
+border or a ring.
+
+### Fixed
+
+- **The sign-in card's own fields, the code boxes, the country search and the address note had
+  an outline.** 0.19 tinted `<ElvixInput>` and its siblings, but these kept a 1px border and a
+  brand focus ring (seen in the sign-in card on danceclub.dev). All are `.elvix-field` now; the
+  bordered look (`BRAND_FOCUS`) is gone, and `tests/field-look.test.tsx` fails on any input or
+  textarea without the field look. Buttons keep their focus ring.
+- **A placeholder reads at 7:1.** The sign-in card's field has no visible label, so its
+  placeholder is the only text saying what goes in it, and it was about 2.3:1 on the field
+  (WCAG 1.4.3 asks 4.5:1). `--elvix-placeholder` is `#44444c` in light and `#b8b8bf` in dark,
+  7:1 or more at rest, on hover and on focus with any brand (checked with black in light and
+  white in dark); `tests/placeholder-contrast.test.ts` holds both copies of the palette to it.
 
 ## [0.21.0] — 2026-11-04
 
@@ -235,65 +253,4 @@ A sign-in that starts at the email code, for a host that already knows the addre
 - Three refusals of a code read "Something went wrong": too many wrong codes, a code already
   used, a code that no longer exists. Each now says what happened and to send a new one.
 
-## [0.16.0] — 2026-10-22
-
-DPoP phase 2: the binding reaches your own backend, and a session binds the moment it exists.
-Needs elvix with DPoP phase 2 (live 2026-10-22); against an older elvix every addition is
-ignored, never an error.
-
-### Added
-
-- **`elvixProof(url, { method, token })`** (`@elvix.is/sdk/react`): a DPoP proof for one request
-  to YOUR backend's route. Send it next to the token; your backend passes it on. It fetches a
-  fresh nonce from elvix first when the tab holds none (`/api/v1/dpop/nonce`), since the backend
-  that forwards it cannot ask for a second one. Null where the browser holds no key.
-- **`verifyElvixToken({ token, proof, htm, htu })`** (`@elvix.is/sdk/server`): forwards the
-  browser's proof to elvix. An app with DPoP on answers a bound session only with one, so a token
-  copied out of the browser is useless at your backend too. The result carries `boundTo` (the
-  key's thumbprint) for a bound session, and a refusal is `error: "dpop_refused"` with elvix's
-  reason in `message`.
-- **`exchangeElvixToken()`** (`@elvix.is/sdk/react`): the session exchanged for a JWT your
-  backend verifies locally. A bound session gets a DPoP-bound one (`tokenType: "DPoP"`,
-  `cnf.jkt`): send it as `Authorization: DPoP <jwt>` with `elvixProof(url, { method, token: jwt })`.
-
-### Changed
-
-- **Sessions bind at sign-in.** The call that finishes an in-frame sign-in (email code, username,
-  passkey, One Tap) carries a proof with no token in it, and a redirect start (Google, GitHub,
-  the hosted passkey page) carries the key's thumbprint as `dpop_jkt` (RFC 9449 §10). elvix binds
-  the new session to the key at once, so a token taken before its first call cannot be bound to
-  someone else's. The finisher list lives in `elvixFetch` (`SIGN_IN_FINISHERS`), not at the call
-  sites, so no method can forget it.
-
-## [0.15.1] — 2026-10-22
-
-### Fixed
-
-- **DPoP: two tabs opened at the same moment now share one key.** On a first visit both tabs
-  found no key, both made one, and the last to store it won while each kept signing with its own.
-  The session bound to one of them, so the other tab was refused on every call, and after a reload
-  so was the first, with no way out but signing in again. The key is now stored with `add`: the
-  tab that loses the race takes the stored key. Sessions already bound to a key that was then
-  overwritten stay refused until they sign in again (DPoP is on for one app, since 2026-10-22).
-
-## [0.15.0] — 2026-10-21
-
-### Added
-
-- **DPoP: sessions bound to the browser (RFC 9449).** The SDK keeps one P-256 key per browser in
-  IndexedDB, created with `extractable: false` so no script can read its private half, and every
-  call to elvix that carries the session token also carries a proof signed with it (method, URL,
-  the token's hash, elvix's nonce). An app that switches DPoP on in the Console (Sessions) binds
-  each session to that key at its first call, and from then on refuses the token alone: a token
-  copied out of `localStorage` is useless elsewhere. Browsers without IndexedDB or WebCrypto send
-  no proof and stay unbound, never an error. With DPoP off nothing changes. Needs elvix with the
-  DPoP proxy (live 2026-10-21): older elvix rejects the `DPoP` header in its CORS preflight.
-- **`elvixFetch`**, exported: `fetch` for your own calls to elvix with the session token, adding
-  the same proof, so they keep working when your app turns DPoP on.
-
-### Changed
-
-- Every SDK request goes through `elvixFetch` (one place for auth headers, the proof, and elvix's
-  nonce, with one retry when elvix answers 401 with a fresher nonce).
-
-[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.19.0...HEAD
+[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.22.0...HEAD

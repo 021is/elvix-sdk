@@ -11,7 +11,6 @@
 import { ArrowLeft, Check, Fingerprint, Loader2, X } from "lucide-react";
 import { type ReactNode, type RefObject, useEffect, useRef, useState } from "react";
 import { useT } from "../locale/use-t";
-import { BRAND_FOCUS } from "./brand-focus";
 import { ElvixRecoverGate } from "./elvix-recover-gate";
 import type { AuthFormProps } from "./elvix-sign-in-form";
 import { GoogleOneTap } from "./google-one-tap";
@@ -448,7 +447,7 @@ export function UsernameStep({
             onChange={(e) => setValue(e.target.value)}
             placeholder={t("username.exampleHandle")}
             disabled={busy !== null}
-            className={`w-full h-11 pl-7 pr-10 rounded-[10px] bg-surface border border-border-strong text-[14px] text-fg-1 placeholder:text-placeholder ${BRAND_FOCUS} transition disabled:opacity-60 disabled:cursor-not-allowed`}
+            className="elvix-field w-full h-11 pl-7 pr-10 text-[14px] disabled:cursor-not-allowed"
           />
           <UsernameStatus check={check} />
         </div>
@@ -910,7 +909,7 @@ export function IdentifierStep({
             aria-label={placeholder}
             autoComplete={p.methodUsername ? "username" : "email"}
             inputMode={p.methodUsername ? "text" : "email"}
-            className={`w-full h-10 px-3 rounded-[10px] bg-surface border border-border-strong text-[13px] text-fg-1 placeholder:text-placeholder ${BRAND_FOCUS} transition disabled:cursor-not-allowed`}
+            className="elvix-field w-full h-10 px-3 text-[13px] disabled:cursor-not-allowed"
           />
           <CtaButton
             cta={cta}
