@@ -231,36 +231,23 @@
   color: var(--elvix-fg-1, #18181b);
 }
 
+/* The size of a plain `.elvix-input`. Its look (fill, no outline at rest, a
+   brand tint on focus, never a ring) is the field look, `fields.css` (0.21:
+   until then this class drew its own border and a 3px focus ring). Nothing
+   here may set a colour, border or shadow: this rule comes after fields.css
+   and would win. */
 .elvix-input {
   display: block;
   width: 100%;
   min-height: 44px;
   padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--elvix-border, rgba(0, 0, 0, 0.08));
-  background: var(--elvix-surface, #ffffff);
-  color: var(--elvix-fg-1, #18181b);
   font-size: 14px;
   line-height: 1.4;
   box-sizing: border-box;
   font-family: inherit;
-  transition:
-    border-color 120ms ease,
-    box-shadow 120ms ease;
-}
-
-.elvix-input::placeholder {
-  color: var(--elvix-placeholder, #a1a1aa);
-}
-
-.elvix-input:focus {
-  outline: none;
-  border-color: var(--elvix-primary, var(--elvix-brand, #5d4dff));
-  box-shadow: 0 0 0 3px var(--elvix-primary-12, rgba(93, 77, 255, 0.12));
 }
 
 .elvix-input:disabled {
-  opacity: 0.55;
   cursor: not-allowed;
 }
 

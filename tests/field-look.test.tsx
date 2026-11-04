@@ -47,6 +47,42 @@ describe("the field look", () => {
   });
 });
 
+/**
+ * The plain `.elvix-input` class (the device code; elvix's own /device page)
+ * kept a border at rest and a 3px focus ring after 0.19 tinted every other
+ * field, found on danceclub.team/device (0.21). It takes the field look now.
+ */
+describe("the plain .elvix-input", () => {
+  const styles = join(__dirname, "../src/styles");
+  const css = (file: string) => readFileSync(join(styles, file), "utf8");
+  const rules = (source: string) =>
+    [...source.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{([^}]*)\}/g)].map((m) => ({
+      selectors: m[1].split(",").map((s) => s.trim()),
+      body: m[2],
+    }));
+
+  it("paints nothing of its own in sdk.css, which loads after fields.css", () => {
+    const own = rules(css("sdk.css")).filter((r) =>
+      r.selectors.some((s) => s.startsWith(".elvix-input")),
+    );
+    // Property names only: `box-sizing: border-box` is size, not an outline.
+    const paints = /(^|[;\s])(border[\w-]*|background[\w-]*|box-shadow|outline[\w-]*|color)\s*:/;
+    expect(own.length).toBeGreaterThan(0);
+    expect(own.filter((r) => paints.test(r.body))).toEqual([]);
+  });
+
+  it("is in every field rule", () => {
+    const field = rules(css("fields.css")).filter((r) =>
+      r.selectors.some((s) => s.startsWith(".elvix-field")),
+    );
+    const missing = field.filter(
+      (r) => !r.selectors.some((s) => s === r.selectors[0].replace(".elvix-field", ".elvix-input")),
+    );
+    expect(field.length).toBeGreaterThan(0);
+    expect(missing.map((r) => r.selectors[0])).toEqual([]);
+  });
+});
+
 describe("rows", () => {
   const files = readdirSync(DIR).filter((f) => /^(legal-entity-|elvix-legal-entit)/.test(f));
 
