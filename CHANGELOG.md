@@ -30,6 +30,11 @@ border or a ring.
   brand focus ring (seen in the sign-in card on danceclub.dev). All are `.elvix-field` now; the
   bordered look (`BRAND_FOCUS`) is gone, and `tests/field-look.test.tsx` fails on any input or
   textarea without the field look. Buttons keep their focus ring.
+- **A placeholder reads at 7:1.** The sign-in card's field has no visible label, so its
+  placeholder is the only text saying what goes in it, and it was about 2.3:1 on the field
+  (WCAG 1.4.3 asks 4.5:1). `--elvix-placeholder` is `#4a4a52` in light and `#acacb4` in dark,
+  7:1 or more at rest, on hover and on focus; `tests/placeholder-contrast.test.ts` holds both
+  copies of the palette to it.
 
 ## [0.21.0] — 2026-11-04
 

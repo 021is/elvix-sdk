@@ -30,7 +30,7 @@ const ELVIX_LIGHT_VARS: CSSProperties = {
   ["--elvix-fg-1" as string]: "#18181b",
   ["--elvix-fg-2" as string]: "#52525b",
   ["--elvix-fg-3" as string]: "#71717a",
-  ["--elvix-placeholder" as string]: "#a1a1aa",
+  ["--elvix-placeholder" as string]: "#4a4a52",
 };
 const ELVIX_DARK_VARS: CSSProperties = {
   ["--elvix-canvas" as string]: "#0a0a0b",
@@ -43,7 +43,7 @@ const ELVIX_DARK_VARS: CSSProperties = {
   ["--elvix-fg-1" as string]: "#fafafa",
   ["--elvix-fg-2" as string]: "#a1a1aa",
   ["--elvix-fg-3" as string]: "#71717a",
-  ["--elvix-placeholder" as string]: "#52525b",
+  ["--elvix-placeholder" as string]: "#acacb4",
 };
 
 /** The pinned palette of `theme`; `undefined` for "auto", which inherits the page. */
