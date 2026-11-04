@@ -22,8 +22,15 @@ export const HEARTBEAT_MS = 30_000;
 export const IDLE_AFTER_MS = 60_000;
 /** A tab not heard from in this long is gone (closed, frozen). */
 const TAB_TTL_MS = HEARTBEAT_MS * 1.5;
+/**
+ * Hidden this long, every tab of the app, and the beats stop (0.21, Edvard):
+ * each beat renews the elvix session, so a forgotten back tab would keep the
+ * person signed in and Away forever. A working day, then Offline.
+ */
+export const HIDDEN_BEATS_FOR_MS = 8 * 60 * 60_000;
 
-export type TabReport = { visible: boolean; inputAt: number; at: number };
+/** `visibleAt`: when the tab was last visible (absent from SDKs before 0.21). */
+export type TabReport = { visible: boolean; inputAt: number; at: number; visibleAt?: number };
 
 export const PresenceStatus = {
   ONLINE: "online",
@@ -37,20 +44,24 @@ export type PresenceStatus = (typeof PresenceStatus)[keyof typeof PresenceStatus
  * is not shown offline (0.21; until then only a visible tab beat). Offline is
  * left to the server: no beat at all (every tab closed, signed out, asleep).
  * A hidden tab's timers are throttled to about a minute, so elvix keeps an
- * idle beat alive longer than an online one.
+ * idle beat alive longer than an online one. After `HIDDEN_BEATS_FOR_MS` with
+ * no tab visible the beats stop, until a tab is shown again.
  */
 export function presenceDecision(reports: Iterable<TabReport>, now: number): PresenceStatus | null {
   let live = false;
   let visible = false;
   let inputAt = 0;
+  let visibleAt = Number.NEGATIVE_INFINITY;
   for (const r of reports) {
     if (now - r.at > TAB_TTL_MS) continue;
     live = true;
     visible ||= r.visible;
     inputAt = Math.max(inputAt, r.inputAt);
+    // A tab from an SDK before 0.21 does not say; read it as visible now.
+    visibleAt = Math.max(visibleAt, r.visibleAt ?? r.at);
   }
   if (!live) return null;
-  if (!visible) return PresenceStatus.IDLE;
+  if (!visible) return now - visibleAt > HIDDEN_BEATS_FOR_MS ? null : PresenceStatus.IDLE;
   return now - inputAt > IDLE_AFTER_MS ? PresenceStatus.IDLE : PresenceStatus.ONLINE;
 }
 
@@ -68,11 +79,13 @@ export function startHeartbeat(lockName: string, beat: Beat): () => void {
   let stopped = false;
   const channel = typeof BroadcastChannel === "undefined" ? null : new BroadcastChannel(lockName);
 
-  const self = (): TabReport => ({
-    visible: document.visibilityState !== "hidden",
-    inputAt,
-    at: Date.now(),
-  });
+  let visibleAt = Date.now();
+  const self = (): TabReport => {
+    const at = Date.now();
+    const visible = document.visibilityState !== "hidden";
+    if (visible) visibleAt = at;
+    return { visible, inputAt, at, visibleAt };
+  };
   const report = () => {
     const mine = self();
     reports.set(tabId, mine);

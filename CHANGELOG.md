@@ -36,7 +36,8 @@ A component brings only its own English words. A page with `<ElvixProvider>` and
   tab of the app was visible, so a person with it open in a back tab showed offline after a
   minute. It now sends `idle` for a hidden tab; Offline means no beat at all (every tab
   closed, signed out, asleep). A hidden tab's timers are throttled to about a minute, so
-  elvix keeps an idle beat alive longer than an online one (elvix, same day).
+  elvix keeps an idle beat alive longer than an online one (elvix, same day). After 8 hours
+  with no tab visible the beats stop, so a forgotten back tab does not renew the session.
 
 ### Fixed
 

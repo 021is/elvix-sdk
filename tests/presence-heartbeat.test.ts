@@ -3,6 +3,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   HEARTBEAT_MS,
+  HIDDEN_BEATS_FOR_MS,
   IDLE_AFTER_MS,
   presenceDecision,
   startHeartbeat,
@@ -33,6 +34,27 @@ describe("presenceDecision", () => {
   it("says idle while every live tab is hidden", () => {
     const stale = { visible: true, inputAt: now, at: now - HEARTBEAT_MS * 2 };
     expect(presenceDecision([{ visible: false, inputAt: now, at: now }, stale], now)).toBe("idle");
+  });
+
+  // Each beat renews the session: a forgotten back tab would keep the person
+  // signed in and Away forever. Edvard chose a working day.
+  it("stops beating once every tab has been hidden for 8 hours", () => {
+    const hidden = (sinceMs: number) => ({
+      visible: false,
+      inputAt: now - sinceMs,
+      at: now,
+      visibleAt: now - sinceMs,
+    });
+    expect(presenceDecision([hidden(HIDDEN_BEATS_FOR_MS - 1_000)], now)).toBe("idle");
+    expect(presenceDecision([hidden(HIDDEN_BEATS_FOR_MS + 1_000)], now)).toBeNull();
+  });
+
+  it("beats again once a tab is shown, and reads an older tab as visible now", () => {
+    const old = { visible: false, inputAt: 0, at: now, visibleAt: now - HIDDEN_BEATS_FOR_MS * 2 };
+    expect(
+      presenceDecision([old, { visible: true, inputAt: now, at: now, visibleAt: now }], now),
+    ).toBe("online");
+    expect(presenceDecision([{ visible: false, inputAt: 0, at: now }], now)).toBe("idle");
   });
 
   it("skips the beat when every tab is gone", () => {
