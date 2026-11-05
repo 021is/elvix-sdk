@@ -101,7 +101,10 @@ export function StepAction({
   children?: ReactNode;
 }) {
   const host = useContext(StepHostContext);
-  const run = useStableCallback(onConfirm);
+  // The step's own guard, not only the host's snapshot of it (0.23 review).
+  const run = useStableCallback(() => {
+    if (!disabled) onConfirm();
+  });
   useEffect(() => {
     if (!host) return;
     host.setAction({ label, canContinue: !disabled }, run);

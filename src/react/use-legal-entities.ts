@@ -8,7 +8,7 @@
  * `use-legal-entity-nav.ts`.
  */
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useElvixContext } from "./elvix-provider";
 import { FlowKind, View } from "./legal-entity-flow";
 import { draftToEntityInput, prefillFrom } from "./legal-entity-payload";
@@ -119,35 +119,39 @@ export function useLegalEntities({ onChange, onResult, types, onCreated, kind }:
     setEditing(false);
   };
 
-  const patch = async (id: string, partial: Partial<LegalEntityInput>) => {
-    setView(View.SAVING);
-    const out = await api.update(id, partial);
-    report(out, "patch_failed", count);
-    await refresh();
-    resetWizard();
-    setView(View.DETAIL);
-  };
+  const exclusive = useOneAtATime();
+
+  const patch = (id: string, partial: Partial<LegalEntityInput>) =>
+    exclusive(async () => {
+      setView(View.SAVING);
+      const out = await api.update(id, partial);
+      report(out, "patch_failed", count);
+      await refresh();
+      resetWizard();
+      setView(View.DETAIL);
+    });
 
   /** Saves the draft; a refusal goes back to `from`, the step that saved, and shows there. */
-  const commit = async (from: View) => {
-    const input = draftToEntityInput(draft);
-    if (!input) return;
-    setError(null);
-    setView(View.SAVING);
-    const known = new Set(entities.map((e) => e.id));
-    const out = await api.create(input);
-    if (!out.ok) {
-      report(out, "save_failed", count);
-      setView(from);
-      return;
-    }
-    const list = await refresh();
-    report(out, "save_failed", count + 1);
-    resetWizard();
-    // The one id the list did not hold before is the entity just saved.
-    const created = list?.find((e) => !known.has(e.id));
-    if (created) emitCreated(created);
-  };
+  const commit = (from: View) =>
+    exclusive(async () => {
+      const input = draftToEntityInput(draft);
+      if (!input) return;
+      setError(null);
+      setView(View.SAVING);
+      const known = new Set(entities.map((e) => e.id));
+      const out = await api.create(input);
+      if (!out.ok) {
+        report(out, "save_failed", count);
+        setView(from);
+        return;
+      }
+      const list = await refresh();
+      report(out, "save_failed", count + 1);
+      resetWizard();
+      // The one id the list did not hold before is the entity just saved.
+      const created = list?.find((e) => !known.has(e.id));
+      if (created) emitCreated(created);
+    });
 
   const nav = useLegalEntityNav({
     draftApi,
@@ -242,4 +246,21 @@ export function useLegalEntities({ onChange, onResult, types, onCreated, kind }:
       if (!out.ok) await refresh();
     },
   };
+}
+
+/**
+ * One save at a time: a second press, or a host's `controls.next()`, while
+ * one runs would create the entity twice (0.23 review).
+ */
+function useOneAtATime(): (job: () => Promise<void>) => Promise<void> {
+  const inFlight = useRef(false);
+  return useCallback(async (job: () => Promise<void>) => {
+    if (inFlight.current) return;
+    inFlight.current = true;
+    try {
+      await job();
+    } finally {
+      inFlight.current = false;
+    }
+  }, []);
 }

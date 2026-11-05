@@ -127,6 +127,39 @@ describe("the picker driven by the host's controls", () => {
     expect(onLeave).not.toHaveBeenCalled();
   });
 
+  // 0.23 review: two pickers on one controls object overwrote each other's
+  // handlers; and the controls kept `adding` after their picker was gone.
+  it("one controls object drives one picker, and forgets it when it unmounts", async () => {
+    installFakeElvix({ entities: [] });
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    function Two({ show }: { show: boolean }) {
+      const controls = useElvixLegalEntityPickerControls();
+      return (
+        <>
+          {show && (
+            <ElvixLegalEntityPicker types={["company"]} controls={controls} onPick={() => {}} />
+          )}
+          <ElvixLegalEntityPicker types={["company"]} controls={controls} onPick={() => {}} />
+          <output data-testid="adding">{String(controls.adding)}</output>
+        </>
+      );
+    }
+    const tree = (show: boolean) => (
+      <ElvixProvider clientId={CLIENT_ID} baseUrl={BASE} presence={false} bootstrapRefreshMs={0}>
+        <Two show={show} />
+      </ElvixProvider>
+    );
+    const view = render(tree(true));
+    await waitFor(() =>
+      expect(error).toHaveBeenCalledWith(expect.stringMatching(/^elvix_picker_controls_shared/)),
+    );
+    fireEvent.click((await screen.findAllByText("Add a company"))[0]);
+    await waitFor(() => expect(screen.getByTestId("adding").textContent).toBe("true"));
+    view.rerender(tree(false));
+    await waitFor(() => expect(screen.getByTestId("adding").textContent).toBe("false"));
+    error.mockRestore();
+  });
+
   it("the host's Continue does nothing while the step cannot continue", async () => {
     installFakeElvix({ entities: [] });
     const { state } = mount();

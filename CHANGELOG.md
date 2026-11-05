@@ -39,7 +39,15 @@ Continue on screen, both the host's.
 
 - Every legal-entity step draws its header, question and action through one place
   (`legal-entity-step-chrome.tsx`), which a host can take over. The address review's
-  "Looks right" row now uses the same row spacing as every other step.
+  "Looks right" row now sits at the foot of the pane like every other step's action.
+
+### Fixed
+
+- **A legal entity is created once.** A second press of Save while the first was still
+  saving created it twice; a host's `next()` could do the same. One save runs at a time.
+- One controls object drives one picker: a second picker given the same controls logs
+  `elvix_picker_controls_shared` and keeps its own buttons. During the save, `back()` stays
+  `true` (a no-op), so a host never leaves its pane mid-save.
 
 ## [0.22.0] — 2026-11-04
 
