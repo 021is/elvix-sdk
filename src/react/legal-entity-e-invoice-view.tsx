@@ -10,12 +10,12 @@
  */
 
 import { useT } from "../locale/use-t";
-import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { E_INVOICE_FIELDS_BY_COUNTRY, type EInvoiceField } from "./legal-entity-flow";
 import { FormField } from "./legal-entity-form-field";
 import { eInvoiceReady } from "./legal-entity-payload";
-import { Heading, Subtitle, WizardHeader } from "./legal-entity-primitives";
+import { Subtitle } from "./legal-entity-primitives";
 import { CODICE_DESTINATARIO, LEITWEG_ID, PEPPOL_ID } from "./legal-entity-schema";
+import { Heading, StepAction, WizardHeader } from "./legal-entity-step-chrome";
 import { STACK_3 } from "./pane-layout";
 import { ErrorLine } from "./sign-in-controls";
 import type { LegalEntityDraft } from "./use-legal-entity-draft";
@@ -76,17 +76,12 @@ export function EInvoiceView(props: {
         <EInvoiceFields draft={d} shown={shown} setField={props.setField} />
       </div>
       <ErrorLine error={props.error ?? null} className="mt-3" />
-      <ElvixSaveRow>
-        <ElvixSaveButton
-          state="idle"
-          disabled={!ready}
-          onClick={confirm}
-          label={label}
-          savedLabel={label}
-          hint={t("common.enterHint")}
-          className="!w-auto !px-5"
-        />
-      </ElvixSaveRow>
+      <StepAction
+        label={label}
+        disabled={!ready}
+        onConfirm={confirm}
+        hint={t("common.enterHint")}
+      />
     </form>
   );
 }

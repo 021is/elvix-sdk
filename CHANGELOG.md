@@ -18,6 +18,29 @@ releases move there.
 
 ### Fixed
 
+## [0.23.0] — 2026-11-05
+
+The host's own bar can drive `<ElvixLegalEntityPicker>`'s add flow: one Back and one
+Continue on screen, both the host's.
+
+### Added
+
+- **`useElvixLegalEntityPickerControls()`**, passed as `<ElvixLegalEntityPicker
+  controls={controls}>`. Given controls, the picker draws no Back, Continue or Save of its own
+  at any add step; the host's bar reads `adding`, `step` (`{ id, title }`, the step's
+  question), `canContinue`, `busy` (a VAT or register check, or the save), and `label` (what the
+  step's own button said: Continue, Skip, Save company), and calls `next()` (the step's action;
+  the last step saves and picks, then `onPick` as always) and `back()` (`false` on the list,
+  so the host leaves its pane). Choices that are the step's content stay in the pane: a type,
+  Yes or No, Not right. Without `controls` nothing changes. Asked by DanceClub's Bookings
+  session: inside "Add a company", elvix's Back and Continue showed beside DanceClub's.
+
+### Changed
+
+- Every legal-entity step draws its header, question and action through one place
+  (`legal-entity-step-chrome.tsx`), which a host can take over. The address review's
+  "Looks right" row now uses the same row spacing as every other step.
+
 ## [0.22.0] — 2026-11-04
 
 Every SDK text field has the one field look: a tint, a deeper brand tint on focus, never a
@@ -253,4 +276,4 @@ A sign-in that starts at the email code, for a host that already knows the addre
 - Three refusals of a code read "Something went wrong": too many wrong codes, a code already
   used, a code that no longer exists. Each now says what happened and to send a new one.
 
-[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.22.0...HEAD
+[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.23.0...HEAD

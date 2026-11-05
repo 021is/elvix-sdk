@@ -17,9 +17,9 @@
 import { useEffect } from "react";
 import { useT } from "../locale/use-t";
 import { findCountry } from "./countries";
-import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import type { TaxIdValidationState } from "./elvix-tax-id-input";
-import { Heading, Phase, Subtitle, VerifyingBadge, WizardHeader } from "./legal-entity-primitives";
+import { Phase, Subtitle, VerifyingBadge } from "./legal-entity-primitives";
+import { Heading, StepAction, WizardHeader } from "./legal-entity-step-chrome";
 import { useStableCallback } from "./use-stable-callback";
 import { useTaxCheck } from "./use-tax-check";
 
@@ -114,40 +114,14 @@ export function VerifyingTaxIdView({
 function VerdictActions(p: { pane: Pane; onBack: () => void; onPass: () => void }) {
   const t = useT();
   if (p.pane === Pane.INVALID) {
-    return (
-      <ElvixSaveRow>
-        <ElvixSaveButton
-          state="idle"
-          onClick={p.onBack}
-          label={t("legalEntities.fixVatCta")}
-          savedLabel={t("legalEntities.fixVatCta")}
-          hint={null}
-          className="!w-auto !px-5"
-        />
-      </ElvixSaveRow>
-    );
+    return <StepAction label={t("legalEntities.fixVatCta")} onConfirm={p.onBack} />;
   }
   if (p.pane !== Pane.FORMAT) return null;
   return (
-    <ElvixSaveRow
-      leading={
-        <button
-          type="button"
-          onClick={p.onBack}
-          className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
-        >
-          {t("common.back")}
-        </button>
-      }
-    >
-      <ElvixSaveButton
-        state="idle"
-        onClick={p.onPass}
-        label={t("legalEntities.continueAnywayCta")}
-        savedLabel={t("common.continue")}
-        hint={null}
-        className="!w-auto !px-5"
-      />
-    </ElvixSaveRow>
+    <StepAction
+      label={t("legalEntities.continueAnywayCta")}
+      onConfirm={p.onPass}
+      onBack={p.onBack}
+    />
   );
 }

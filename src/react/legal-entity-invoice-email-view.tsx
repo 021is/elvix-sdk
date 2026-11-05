@@ -8,10 +8,10 @@
  */
 
 import { useT } from "../locale/use-t";
-import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { FormField } from "./legal-entity-form-field";
 import { invoiceEmailReady } from "./legal-entity-payload";
-import { Heading, Subtitle, WizardHeader } from "./legal-entity-primitives";
+import { Subtitle } from "./legal-entity-primitives";
+import { Heading, StepAction, WizardHeader } from "./legal-entity-step-chrome";
 import { ErrorLine } from "./sign-in-controls";
 
 export function InvoiceEmailView(props: {
@@ -54,17 +54,12 @@ export function InvoiceEmailView(props: {
         />
       </div>
       <ErrorLine error={props.error ?? null} className="mt-3" />
-      <ElvixSaveRow>
-        <ElvixSaveButton
-          state="idle"
-          disabled={!ready}
-          onClick={confirm}
-          label={label}
-          savedLabel={label}
-          hint={t("common.enterHint")}
-          className="!w-auto !px-5"
-        />
-      </ElvixSaveRow>
+      <StepAction
+        label={label}
+        disabled={!ready}
+        onConfirm={confirm}
+        hint={t("common.enterHint")}
+      />
     </form>
   );
 }

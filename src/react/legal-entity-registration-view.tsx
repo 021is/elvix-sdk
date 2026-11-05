@@ -10,9 +10,9 @@
 
 import { useT } from "../locale/use-t";
 import { ElvixInput } from "./elvix-input";
-import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { regNumberFormatHint, regNumberPlaceholder } from "./legal-entity-copy";
-import { Heading, Subtitle, WizardHeader } from "./legal-entity-primitives";
+import { Subtitle } from "./legal-entity-primitives";
+import { Heading, StepAction, WizardHeader } from "./legal-entity-step-chrome";
 import { STACK_3 } from "./pane-layout";
 import { registrationNumberMatches } from "./tax-validation";
 
@@ -71,17 +71,11 @@ export function RegistrationView(props: Props) {
         </label>
         <SinceField since={props.since} setSince={props.setSince} ok={state.sinceOk} />
       </div>
-      <ElvixSaveRow>
-        <ElvixSaveButton
-          state="idle"
-          disabled={!state.valid}
-          onClick={confirm}
-          label={t(state.empty ? "common.skip" : "common.continue")}
-          savedLabel={t("common.continue")}
-          hint={null}
-          className="!w-auto !px-5"
-        />
-      </ElvixSaveRow>
+      <StepAction
+        label={t(state.empty ? "common.skip" : "common.continue")}
+        disabled={!state.valid}
+        onConfirm={confirm}
+      />
     </form>
   );
 }

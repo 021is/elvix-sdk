@@ -11,8 +11,8 @@
 import { useT } from "../locale/use-t";
 import { findCountry } from "./countries";
 import { ElvixInput } from "./elvix-input";
-import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
-import { Heading, Subtitle, WizardHeader } from "./legal-entity-primitives";
+import { Subtitle } from "./legal-entity-primitives";
+import { Heading, StepAction, WizardHeader } from "./legal-entity-step-chrome";
 import { STACK_3 } from "./pane-layout";
 import { vatIdFormatMatches } from "./tax-validation";
 import { countryFromVatId } from "./vat-prefix";
@@ -93,18 +93,14 @@ export function VatIdView({
           vatId.trim() !== "" && <BareNumberCountry country={country} onPick={setCountry} />
         )}
       </div>
-      <ElvixSaveRow leading={onNoVatId && <NoVatIdLink onClick={onNoVatId} />}>
+      <StepAction
+        label={t("common.continue")}
+        disabled={!canContinue}
+        onConfirm={onConfirm}
+        leading={onNoVatId && <NoVatIdLink onClick={onNoVatId} />}
+      >
         {blockReason && <span className="text-[12px] text-fg-3">{blockReason}</span>}
-        <ElvixSaveButton
-          state="idle"
-          disabled={!canContinue}
-          onClick={() => canContinue && onConfirm()}
-          label={t("common.continue")}
-          savedLabel={t("common.continue")}
-          hint={null}
-          className="!w-auto !px-5"
-        />
-      </ElvixSaveRow>
+      </StepAction>
     </form>
   );
 }
