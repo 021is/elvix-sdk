@@ -18,6 +18,19 @@ releases move there.
 
 ### Fixed
 
+## [0.23.1] — 2026-11-05
+
+### Fixed
+
+- **A browser without `color-mix()` no longer paints fields, rows and tints in their full
+  colour.** For a tint of a CSS variable, Tailwind's compiled fallback is the bare colour, so
+  Safari before 16.2 and Chrome before 111 showed near-black fields and rows, and full-brand
+  fills under dark text (33 rules: the field and row tints, the picked row, hovers, the
+  `bg-fg-3/…` and `border-fg-3/…` utilities, the brand tints). The build now makes those
+  fallbacks transparent, keeping a host's own variable in front (`scripts/styles-fallback.mjs`);
+  focus rings and underlines keep their colour. Modern browsers see no change.
+  `tests/styles-fallback.test.ts` checks the built stylesheet.
+
 ## [0.23.0] — 2026-11-05
 
 The host's own bar can drive `<ElvixLegalEntityPicker>`'s add flow: one Back and one
@@ -284,4 +297,4 @@ A sign-in that starts at the email code, for a host that already knows the addre
 - Three refusals of a code read "Something went wrong": too many wrong codes, a code already
   used, a code that no longer exists. Each now says what happened and to send a new one.
 
-[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.23.0...HEAD
+[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.23.1...HEAD
