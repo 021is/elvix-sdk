@@ -18,9 +18,14 @@
  *     the stylesheet import but every Next + strict TS user got a TS2307
  *     until they wrote their own ambient module. Wired via the
  *     `exports["./styles.css"].types` field in package.json.
+ *
+ *  3. A browser without color-mix() gets `transparent` where Tailwind's
+ *     fallback painted a tint's full colour (scripts/styles-fallback.mjs,
+ *     0.23.1; tests/styles-fallback.test.ts).
  */
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { transparentFallbacks } from "./styles-fallback.mjs";
 
 const reactDir = "dist/react";
 const entry = "index.js";
@@ -44,3 +49,8 @@ declare module "@elvix.is/sdk/styles.css";
 `;
 writeFileSync("dist/styles.css.d.ts", stylesDts);
 console.log("postbuild: wrote dist/styles.css.d.ts");
+
+const styles = "dist/styles.css";
+const { css, changed } = transparentFallbacks(readFileSync(styles, "utf8"));
+writeFileSync(styles, css);
+console.log(`postbuild: ${changed} color-mix fallbacks made transparent in ${styles}`);
