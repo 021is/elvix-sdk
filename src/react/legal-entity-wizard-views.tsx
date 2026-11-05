@@ -28,19 +28,13 @@ import { ElvixCountrySelect } from "./elvix-country-select";
 import { elvixFetch } from "./elvix-fetch";
 import { ElvixInput } from "./elvix-input";
 import { useElvixContext } from "./elvix-provider";
-import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { ElvixTaxIdInput, type TaxIdValidationState } from "./elvix-tax-id-input";
 import { AddressGapFields, addressGaps } from "./legal-entity-address-gaps";
 import { taxIdFormatHint, taxIdPlaceholder, vatPlaceholder } from "./legal-entity-copy";
 import { localTaxIdRequired } from "./legal-entity-payload";
-import {
-  ChoiceCard,
-  CountryChip,
-  Heading,
-  Subtitle,
-  WizardHeader,
-} from "./legal-entity-primitives";
+import { ChoiceCard, CountryChip, Subtitle } from "./legal-entity-primitives";
 import type { LegalEntityType } from "./legal-entity-schema";
+import { Heading, StepAction, WizardHeader } from "./legal-entity-step-chrome";
 import { newSessionToken, type PlaceDetails, type PlaceSuggestion } from "./legal-entity-types";
 import { MAPS_MISSING_CLIENT_ID, mapsUrl } from "./maps-url";
 import { STACK_3 } from "./pane-layout";
@@ -190,17 +184,12 @@ export function SingleTextView({
           </span>
         )}
       </label>
-      <ElvixSaveRow>
-        <ElvixSaveButton
-          state="idle"
-          disabled={!valid}
-          onClick={() => valid && onConfirm()}
-          label={t(skip ? "common.skip" : "common.continue")}
-          savedLabel={t("common.continue")}
-          hint={t("common.enterHint")}
-          className="!w-auto !px-5"
-        />
-      </ElvixSaveRow>
+      <StepAction
+        label={t(skip ? "common.skip" : "common.continue")}
+        disabled={!valid}
+        onConfirm={onConfirm}
+        hint={t("common.enterHint")}
+      />
     </div>
   );
 }
@@ -273,17 +262,12 @@ export function DateView({
           </span>
         )}
       </label>
-      <ElvixSaveRow>
-        <ElvixSaveButton
-          state="idle"
-          disabled={!valid}
-          onClick={() => valid && onConfirm()}
-          label={t(skip ? "common.skip" : "common.continue")}
-          savedLabel={t("common.continue")}
-          hint={t("common.enterHint")}
-          className="!w-auto !px-5"
-        />
-      </ElvixSaveRow>
+      <StepAction
+        label={t(skip ? "common.skip" : "common.continue")}
+        disabled={!valid}
+        onConfirm={onConfirm}
+        hint={t("common.enterHint")}
+      />
     </form>
   );
 }
@@ -336,17 +320,7 @@ export function CountryView({
           listMaxHeightClass={selected ? "max-h-44" : "max-h-52"}
         />
       </div>
-      <ElvixSaveRow>
-        <ElvixSaveButton
-          state="idle"
-          disabled={!valid}
-          onClick={() => valid && onConfirm()}
-          label={t("common.continue")}
-          savedLabel={t("common.continue")}
-          hint={null}
-          className="!w-auto !px-5"
-        />
-      </ElvixSaveRow>
+      <StepAction label={t("common.continue")} disabled={!valid} onConfirm={onConfirm} />
     </div>
   );
 }
@@ -424,17 +398,11 @@ export function NationalityView({
         </div>
       )}
 
-      <ElvixSaveRow>
-        <ElvixSaveButton
-          state="idle"
-          disabled={!valid}
-          onClick={() => valid && onConfirm()}
-          label={t(skip ? "common.skip" : "common.continue")}
-          savedLabel={t("common.continue")}
-          hint={null}
-          className="!w-auto !px-5"
-        />
-      </ElvixSaveRow>
+      <StepAction
+        label={t(skip ? "common.skip" : "common.continue")}
+        disabled={!valid}
+        onConfirm={onConfirm}
+      />
     </div>
   );
 }
@@ -531,18 +499,9 @@ export function TaxIdsView({
           </label>
         )}
       </div>
-      <ElvixSaveRow>
+      <StepAction label={t("common.continue")} disabled={!canContinue} onConfirm={onConfirm}>
         {blockReason && <span className="text-[12px] text-fg-3">{blockReason}</span>}
-        <ElvixSaveButton
-          state="idle"
-          disabled={!canContinue}
-          onClick={() => canContinue && onConfirm()}
-          label={t("common.continue")}
-          savedLabel={t("common.continue")}
-          hint={null}
-          className="!w-auto !px-5"
-        />
-      </ElvixSaveRow>
+      </StepAction>
     </form>
   );
 }
@@ -755,16 +714,7 @@ export function PlaceOfBirthView({
         </div>
       )}
 
-      <ElvixSaveRow>
-        <ElvixSaveButton
-          state="idle"
-          onClick={onConfirm}
-          label={t(hasPick ? "common.continue" : "common.skip")}
-          savedLabel={t("common.continue")}
-          hint={null}
-          className="!w-auto !px-5"
-        />
-      </ElvixSaveRow>
+      <StepAction label={t(hasPick ? "common.continue" : "common.skip")} onConfirm={onConfirm} />
     </div>
   );
 }
@@ -1001,26 +951,20 @@ export function AddressReviewView({
           </div>
         )}
       </div>
-      <div className="mt-3 flex items-center gap-2 pt-3">
-        <button
-          type="button"
-          onClick={onChange}
-          className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
-        >
-          {t("legalEntities.addressNotRightCta")}
-        </button>
-        <div className="ml-auto">
-          <ElvixSaveButton
-            state="idle"
-            disabled={!canContinue}
-            onClick={onConfirm}
-            label={t("legalEntities.addressLooksRightCta")}
-            savedLabel={t("legalEntities.addressLooksRightCta")}
-            hint={null}
-            className="!w-auto !px-5"
-          />
-        </div>
-      </div>
+      <StepAction
+        label={t("legalEntities.addressLooksRightCta")}
+        disabled={!canContinue}
+        onConfirm={onConfirm}
+        leading={
+          <button
+            type="button"
+            onClick={onChange}
+            className="rounded-md px-3 py-1.5 text-[13px] font-medium text-fg-2 transition hover:bg-fg-3/5 hover:text-fg-1 cursor-pointer"
+          >
+            {t("legalEntities.addressNotRightCta")}
+          </button>
+        }
+      />
     </div>
   );
 }
@@ -1151,17 +1095,7 @@ export function ContactInputView({
           )}
         </label>
       </div>
-      <ElvixSaveRow>
-        <ElvixSaveButton
-          state="idle"
-          disabled={!allOk}
-          onClick={() => allOk && onConfirm()}
-          label={effectiveSaveLabel}
-          savedLabel={t("common.saved")}
-          hint={null}
-          className="!w-auto !px-5"
-        />
-      </ElvixSaveRow>
+      <StepAction label={effectiveSaveLabel} disabled={!allOk} onConfirm={onConfirm} />
     </form>
   );
 }

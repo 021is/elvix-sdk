@@ -16,8 +16,9 @@ import { useT } from "../locale/use-t";
 import { findCountry } from "./countries";
 import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { humanType } from "./legal-entity-copy";
-import { Heading, Subtitle, typeIcon, WizardHeader } from "./legal-entity-primitives";
+import { Subtitle, typeIcon } from "./legal-entity-primitives";
 import type { LegalEntityRecord, LegalEntityType } from "./legal-entity-schema";
+import { Heading, WizardHeader } from "./legal-entity-step-chrome";
 
 export function ListView({
   entities,

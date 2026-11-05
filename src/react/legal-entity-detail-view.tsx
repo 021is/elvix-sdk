@@ -20,8 +20,9 @@ import {
   TaxSection,
 } from "./legal-entity-detail-sections";
 import { needsBusinessSteps, type View } from "./legal-entity-flow";
-import { typeIcon, WizardHeader } from "./legal-entity-primitives";
+import { typeIcon } from "./legal-entity-primitives";
 import type { LegalEntityRecord, LegalEntityType } from "./legal-entity-schema";
+import { WizardHeader } from "./legal-entity-step-chrome";
 import { FADE_MASK } from "./wizard-panes";
 
 export function DetailView(props: {

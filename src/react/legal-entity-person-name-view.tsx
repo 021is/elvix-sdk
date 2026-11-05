@@ -8,9 +8,9 @@
  */
 
 import { useT } from "../locale/use-t";
-import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { FormField } from "./legal-entity-form-field";
-import { Heading, Subtitle, WizardHeader } from "./legal-entity-primitives";
+import { Subtitle } from "./legal-entity-primitives";
+import { Heading, StepAction, WizardHeader } from "./legal-entity-step-chrome";
 import { STACK_3 } from "./pane-layout";
 
 const LETTER = /\p{L}/u;
@@ -57,17 +57,12 @@ export function PersonNameView(props: {
           error={fieldError(props.family)}
         />
       </div>
-      <ElvixSaveRow>
-        <ElvixSaveButton
-          state="idle"
-          disabled={!ready}
-          onClick={() => ready && props.onConfirm()}
-          label={t("common.continue")}
-          savedLabel={t("common.continue")}
-          hint={t("common.enterHint")}
-          className="!w-auto !px-5"
-        />
-      </ElvixSaveRow>
+      <StepAction
+        label={t("common.continue")}
+        disabled={!ready}
+        onConfirm={props.onConfirm}
+        hint={t("common.enterHint")}
+      />
     </form>
   );
 }

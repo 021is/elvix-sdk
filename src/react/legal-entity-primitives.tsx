@@ -3,9 +3,9 @@
 /**
  * Presentational primitives shared by every legal-entity pane.
  *
- * These are the small pieces the wizard repeats: the header with its back
- * arrow, a heading, a subtitle, a choice card, and
- * the rows a detail view is built from. None of them own state or talk to the
+ * These are the small pieces the wizard repeats: a subtitle, a choice card,
+ * and the rows a detail view is built from. The step's header, question and
+ * action are `legal-entity-step-chrome.tsx` (0.23), which a host can drive. None of them own state or talk to the
  * API, which is what makes them safe to reuse and boring to read.
  *
  * They lived in the middle of a 3,292-line component file, interleaved with
@@ -16,7 +16,6 @@
 import { motion } from "framer-motion";
 import {
   AlertTriangle,
-  ArrowLeft,
   Briefcase,
   Building2,
   CheckCircle2,
@@ -183,37 +182,6 @@ export function SavingView({ label }: { label?: string }) {
       </div>
     </div>
   );
-}
-
-export function WizardHeader({
-  onBack,
-  backLabel,
-  stepLabel,
-  rightLabel,
-}: {
-  onBack: () => void;
-  backLabel?: string;
-  stepLabel?: string;
-  rightLabel?: string;
-}) {
-  const t = useT();
-  return (
-    <div className="mb-3 flex items-center gap-2">
-      <button
-        type="button"
-        onClick={onBack}
-        className="inline-flex items-center gap-1 text-[12.5px] text-fg-2 hover:text-fg-1 cursor-pointer"
-      >
-        <ArrowLeft className="size-3.5" />
-        {backLabel ?? t("common.back")}
-      </button>
-      <div className="ml-auto text-[12px] text-fg-3">{rightLabel ?? stepLabel ?? ""}</div>
-    </div>
-  );
-}
-
-export function Heading({ children }: { children: React.ReactNode }) {
-  return <h2 className="text-[18px] font-semibold tracking-tight text-fg-1">{children}</h2>;
 }
 
 export function Subtitle({ children }: { children: React.ReactNode }) {

@@ -148,6 +148,12 @@ export {
 export { switchLocale, useFmt, useLocale, useT } from "./i18n-hooks";
 // How tall the legal-entity components are: "fixed" or "flexible" (0.18).
 export { Sizing as ElvixLegalEntitySizing } from "./legal-entity-frame";
+// The host's own bar drives the picker's add flow: one Back, one Continue (0.23).
+export {
+  type ElvixLegalEntityPickerConnection,
+  type ElvixLegalEntityPickerControls,
+  useElvixLegalEntityPickerControls,
+} from "./legal-entity-picker-controls";
 // What a legal entity holds, the picker's `onPick` payload (0.18).
 export {
   LegalEntityPurpose,

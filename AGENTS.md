@@ -148,6 +148,9 @@ Shared plumbing, never re-implemented per component:
 - `use-stable-callback.ts` — for every host callback (`onChange`, `onResult`). A host
   callback in an effect's dependencies is how `ElvixLanguages` and `ElvixRegion` looped
   forever on an inline `onChange`; `tests/host-callbacks.test.tsx` pins both.
+- `legal-entity-step-chrome.tsx` — a legal-entity step's `WizardHeader`, `Heading` and
+  `StepAction` (0.23). A step never draws its own Back, Continue or Save row: a host's
+  `controls` take them over through this file (`tests/legal-entity-picker-controls.test.tsx`).
 
 Rules the refactors above were driven by:
 
