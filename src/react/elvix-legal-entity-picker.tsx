@@ -35,7 +35,6 @@ import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
 import { FlowKind, needsBusinessSteps, View } from "./legal-entity-flow";
 import { type FrameSize, frameStyle, PaneFrame, Sizing } from "./legal-entity-frame";
-import { type ElvixLegalEntityPickerControls, usePickerHost } from "./legal-entity-picker-controls";
 import { PickerList, PickerLoadFailed, PurposeNote } from "./legal-entity-picker-views";
 import { SavingView } from "./legal-entity-primitives";
 import {
@@ -43,7 +42,6 @@ import {
   type LegalEntityRecord,
   type LegalEntityType,
 } from "./legal-entity-schema";
-import { StepHostProvider } from "./legal-entity-step-chrome";
 import { isWizardStep, type WizardFlow, WizardStep } from "./legal-entity-steps";
 import { useLegalEntities } from "./use-legal-entities";
 import {
@@ -74,12 +72,6 @@ export type ElvixLegalEntityPickerProps = {
   /** Render inside an <ElvixCard>. Default true; false to sit in the host's own pane. */
   card?: boolean;
   /**
-   * The host's bar drives the add flow (0.23): from
-   * `useElvixLegalEntityPickerControls()`. The picker then draws no Back,
-   * Continue or Save of its own at any step.
-   */
-  controls?: ElvixLegalEntityPickerControls;
-  /**
    * `"fixed"`: the list and every add step share one height (`height`,
    * default `min(520px, 70dvh)`, capped by `maxHeight`), scrolling inside.
    * `"flexible"`: as tall as each pane, capped by `maxHeight` if given.
@@ -98,7 +90,6 @@ export function ElvixLegalEntityPicker({
   onPick,
   onResult,
   card,
-  controls,
   sizing = card === false ? Sizing.FLEXIBLE : Sizing.FIXED,
   height,
   minHeight,
@@ -131,7 +122,6 @@ export function ElvixLegalEntityPicker({
   const businessOnly = Boolean(types?.length) && (types ?? []).every(needsBusinessSteps);
   const wizard = isWizardOpen(flow);
   const style = frameStyle(sizing, { height, minHeight, maxHeight }, PICKER_FRAME);
-  const host = usePickerHost(controls, wizard, flow.view);
 
   return (
     <MaybeCard card={card}>
@@ -145,9 +135,7 @@ export function ElvixLegalEntityPicker({
             {t("common.loading")}
           </div>
         ) : wizard ? (
-          <StepHostProvider value={host}>
-            <WizardPane flow={flow} types={types} />
-          </StepHostProvider>
+          <WizardPane flow={flow} types={types} />
         ) : (
           <div className="flex flex-col gap-2">
             <PurposeNote purpose={purpose} />
