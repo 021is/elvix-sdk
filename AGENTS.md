@@ -149,8 +149,9 @@ Shared plumbing, never re-implemented per component:
   callback in an effect's dependencies is how `ElvixLanguages` and `ElvixRegion` looped
   forever on an inline `onChange`; `tests/host-callbacks.test.tsx` pins both.
 - `legal-entity-step-chrome.tsx` — a legal-entity step's `WizardHeader`, `Heading` and
-  `StepAction` (0.23). A step never draws its own Back, Continue or Save row: a host's
-  `controls` take them over through this file (`tests/legal-entity-picker-controls.test.tsx`).
+  `StepAction` (0.23). A step never draws its own Back, Continue or Save row. No host
+  drives them: hosts mount the picker in elvix's card with elvix's buttons (Edvard,
+  2026-11-02; the 0.23 `controls` hook was removed in 0.24).
 
 Rules the refactors above were driven by:
 

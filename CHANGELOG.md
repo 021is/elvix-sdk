@@ -5,7 +5,7 @@ All notable changes to `@elvix.is/sdk` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Older releases, each file under the 300-line limit: [0.15 to 0.16](docs/changelog/0.15-0.16.md), [0.14.3 to 0.14.7](docs/changelog/0.14.3-0.14.7.md),
+Older releases, each file under the 300-line limit: [0.17](docs/changelog/0.17.md), [0.15 to 0.16](docs/changelog/0.15-0.16.md), [0.14.3 to 0.14.7](docs/changelog/0.14.3-0.14.7.md),
 [0.12 to 0.14.2](docs/changelog/0.12-0.14.md), [0.7 to 0.11](docs/changelog/0.7-0.11.md),
 [0.1 to 0.6](docs/changelog/0.1-0.6.md). When this file passes 300 lines, its oldest
 releases move there.
@@ -17,6 +17,17 @@ releases move there.
 ### Changed
 
 ### Fixed
+
+## [0.24.0] — 2026-11-05
+
+### Removed
+
+- **`useElvixLegalEntityPickerControls()` and the picker's `controls` prop** (added in
+  0.23.0), with the `ElvixLegalEntityPickerControls` and `ElvixLegalEntityPickerConnection`
+  types. The picker always draws elvix's own Back, Continue and Save, in elvix's card: one
+  design in every app, and the visible elvix chrome is elvix's own. A host passing
+  `controls` gets a type error; without it nothing changes. The 0.23.0 fix that saves a
+  legal entity once stays.
 
 ## [0.23.1] — 2026-11-05
 
@@ -257,44 +268,4 @@ as your own. Needs elvix.is with the legal-entity grants (deployed before this r
 - A list of legal entities that could not be read showed as an empty list; the picker now
   says so, with a retry.
 
-## [0.17.0] — 2026-10-28
-
-A sign-in that starts at the email code, for a host that already knows the address.
-
-### Added
-
-- **`<ElvixEmailCodeSignIn email>`**: sends a code to `email` once when it mounts and draws
-  only where it went, the six boxes, "Send again" and "Use another email" (an email field,
-  then the code, in the same frame). No card, logo, method list or footer: it sits inside
-  the host's own card. A remount, React StrictMode or a reload within the code's life never
-  sends a second code; "Send again" is the only way to one. The onboarding steps after the
-  code are the form's own panes; `deferOnboarding` signs in at once instead and names the
-  step put off in the result's new `deferred` (`"username" | "passkey"`; restoring a
-  membership is never put off). Same results contract as `<ElvixSignInForm>`, DPoP
-  included. `mode="preview"` draws it with demo state and asks elvix nothing;
-  `previewStep` picks the pane. It never navigates.
-- **Made to be fitted into the host's page.** `onSignedIn(session)` fires once the person is
-  signed in (the provider already refreshed), and `signedIn` is what the block shows then.
-  `title` and `description` (any text or element) head the block, or leave nothing behind
-  when omitted: it is one column with one gap. `autoFocus`, `className`, and `classNames`
-  for each part (`header`, `title`, `description`, `line`, `code`, `field`, `button`,
-  `links`, `link`, `error`). The fields' look is plain CSS (`.elvix-field`) driven by
-  `--elvix-field`, `-hover`, `-border`, `-focus`, `-focus-ring`, `-radius` and `-text` on
-  any ancestor, so no host stylesheet or load order can override it; by default a tint, no
-  outline, a thin brand border on focus. Its words come from the provider's `messages`.
-
-### Changed
-
-- The code group is described by the line that says where the code went, and every sign-in
-  error line is announced (`role="alert"`).
-- This changelog keeps the recent releases; the older ones are in `docs/changelog/`.
-
-### Fixed
-
-- **The focus colour of the sign-in inputs and code boxes.** `BRAND_FOCUS` gave Tailwind a
-  bare `var()`, which it cannot tell from a width, so a focused field drew a dark border and
-  ring instead of the brand. Both now carry the `color:` hint.
-- Three refusals of a code read "Something went wrong": too many wrong codes, a code already
-  used, a code that no longer exists. Each now says what happened and to send a new one.
-
-[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.23.1...HEAD
+[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.24.0...HEAD
