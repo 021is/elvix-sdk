@@ -12,8 +12,14 @@ import { useT } from "../locale/use-t";
 import type { AuthFormProps } from "./elvix-sign-in-form";
 import { runPasskeySignIn } from "./passkey";
 import { isSameOrigin } from "./session";
-import { hostedCeremonyUrl, humanError, OAuthProvider, oauthStartHref } from "./sign-in-copy";
-import type { SignInFlow } from "./use-sign-in-flow";
+import {
+  hostedCeremonyUrl,
+  humanError,
+  OAuthProvider,
+  oauthStartHref,
+  type Translator,
+} from "./sign-in-copy";
+import type { Landing, SignInFlow } from "./use-sign-in-flow";
 
 function GoogleGlyph() {
   return (
@@ -74,8 +80,7 @@ function usePasskeySignIn(
     const result = await runPasskeySignIn(baseUrl, p.clientId, p.intent ?? "app");
     setBusy(false);
     if (result.ok) {
-      flow.methodRef.current = "passkey";
-      flow.applyLanding(result.landing);
+      passkeySignedIn(flow, result.landing);
       return;
     }
     if (result.error === "passkey_cancelled") {
@@ -89,12 +94,28 @@ function usePasskeySignIn(
       window.location.assign(hostedCeremonyUrl(baseUrl, "passkey", p.clientId));
       return;
     }
-    flow.reportError(
-      result.error,
-      result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyVerify"),
-    );
+    reportPasskeyError(flow, t, result);
   };
   return { busy, run };
+}
+
+/** A passkey sign-in that worked, from the button or the field's autofill: the server's
+ *  landing decides what comes next. */
+export function passkeySignedIn(flow: SignInFlow, landing: Landing) {
+  flow.methodRef.current = "passkey";
+  flow.applyLanding(landing);
+}
+
+/** A passkey sign-in that failed, in the server's words or the code's. */
+export function reportPasskeyError(
+  flow: SignInFlow,
+  t: Translator,
+  result: { error: string; message?: string },
+) {
+  flow.reportError(
+    result.error,
+    result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyVerify"),
+  );
 }
 
 export type SocialButtonsProps = {

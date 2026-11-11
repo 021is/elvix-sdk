@@ -95,7 +95,6 @@ export {
   useElvixAnimated,
   useElvixApp,
   useElvixAppContext,
-  useElvixCardStyle,
   useElvixContext,
   useElvixRefresh,
   useElvixSession,

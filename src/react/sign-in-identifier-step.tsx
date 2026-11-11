@@ -13,8 +13,7 @@ import type { AuthFormProps } from "./elvix-sign-in-form";
 import { GoogleOneTap } from "./google-one-tap";
 import { runPasskeySignIn } from "./passkey";
 import { type Cta, CtaButton } from "./sign-in-controls";
-import { humanError } from "./sign-in-copy";
-import { SocialButtons } from "./sign-in-social";
+import { passkeySignedIn, reportPasskeyError, SocialButtons } from "./sign-in-social";
 import type { OtpStart } from "./use-otp";
 import type { SignInFlow } from "./use-sign-in-flow";
 
@@ -96,15 +95,8 @@ function useConditionalPasskey(flow: SignInFlow, p: AuthFormProps, baseUrl: stri
           picked = true;
         },
       });
-      if (result.ok) {
-        flow.methodRef.current = "passkey";
-        flow.applyLanding(result.landing);
-      } else if (picked) {
-        flow.reportError(
-          result.error,
-          result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyVerify"),
-        );
-      }
+      if (result.ok) passkeySignedIn(flow, result.landing);
+      else if (picked) reportPasskeyError(flow, t, result);
       // Not picked: the offer ended (aborted, dismissed) or never showed (a start refused, a
       // browser that cannot do it across origins). The person asked for nothing, so there is
       // nothing to tell them or the host; the passkey button stays, and reports its own.

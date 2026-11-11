@@ -63,7 +63,8 @@ export const CARD_STYLE_TOKENS: readonly CardStyleToken[] =
 export type ElvixCardStyle = {
   /** The card's text font: a family your page already loads (`"Inter"`,
    *  `"var(--font-inter)"`). Left out, the card takes your page's font. The SDK never
-   *  downloads a font. */
+   *  downloads a font; a value with a URL, a `;`, a brace or any function but `var()` is
+   *  ignored, and your page's font stays. */
   fontText?: string;
   /** The heading's font (title or `headline`); left out, `fontText`. */
   fontDisplay?: string;
