@@ -5,6 +5,7 @@
  */
 import { describe, expect, it } from "vitest";
 import {
+  BORDERED_DEFAULTS,
   cardLookVars,
   consoleFontFamily,
   hostFontFamily,
@@ -47,10 +48,11 @@ describe("the card style tokens", () => {
   });
 
   it("an app that sets nothing keeps the card it had before 0.26", () => {
-    const vars = cardLookVars({}, false);
+    const vars = cardLookVars({});
     for (const token of CARD_STYLE_TOKENS) expect(vars[VAR_OF(token)]).toBe(BEFORE_026[token]);
     // elvix's bordered card kept 28 px under the legal line, above its footer bar (py-7).
-    expect(cardLookVars({}, true)["--elvix-gap-footer"]).toBe("28px");
+    expect(cardLookVars({}, BORDERED_DEFAULTS)["--elvix-gap-footer"]).toBe("28px");
+    expect(cardLookVars({ gapFooter: 16 }, BORDERED_DEFAULTS)["--elvix-gap-footer"]).toBe("16px");
     expect(vars["--elvix-font-text"]).toBe("initial");
     expect(vars["--elvix-font-display"]).toBe("initial");
   });
@@ -73,12 +75,12 @@ describe("the card style tokens", () => {
 
     it("reaches the card as its own variable, clamped", () => {
       const unit = token === "headingWeight" ? "" : "px";
-      expect(
-        cardLookVars(mergeCardStyle({ card: { [token]: max + 50 } }), false)[VAR_OF(token)],
-      ).toBe(`${max}${unit}`);
-      expect(
-        cardLookVars(mergeCardStyle({ card: { [token]: min - 50 } }), false)[VAR_OF(token)],
-      ).toBe(`${min}${unit}`);
+      expect(cardLookVars(mergeCardStyle({ card: { [token]: max + 50 } }))[VAR_OF(token)]).toBe(
+        `${max}${unit}`,
+      );
+      expect(cardLookVars(mergeCardStyle({ card: { [token]: min - 50 } }))[VAR_OF(token)]).toBe(
+        `${min}${unit}`,
+      );
     });
 
     it("the API takes only a value already in range", () => {
@@ -153,12 +155,11 @@ describe("fonts", () => {
   });
 
   it("the heading takes the text font unless it has its own", () => {
-    const vars = cardLookVars(mergeCardStyle({ card: { fontText: "Inter" } }), false);
+    const vars = cardLookVars(mergeCardStyle({ card: { fontText: "Inter" } }));
     expect(vars["--elvix-font-text"]).toBe("Inter, sans-serif");
     expect(vars["--elvix-font-display"]).toBe("Inter, sans-serif");
     const both = cardLookVars(
       mergeCardStyle({ card: { fontText: "Inter", fontDisplay: "Urbanist" } }),
-      false,
     );
     expect(both["--elvix-font-display"]).toBe("Urbanist, sans-serif");
   });

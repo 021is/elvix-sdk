@@ -2,7 +2,7 @@
 
 import { type CSSProperties, useRef } from "react";
 import { useT } from "../locale/use-t";
-import { cardLookVars, mergeCardStyle } from "./card-look";
+import { BORDERED_DEFAULTS, type CardLook, cardLookVars, mergeCardStyle } from "./card-look";
 import { ElvixLogo } from "./elvix-logo";
 import { brandCssVars, useElvixApp, useElvixCardStyle } from "./elvix-provider";
 import type { AuthFormProps } from "./elvix-sign-in-form";
@@ -178,17 +178,17 @@ function cardClass(transparentBg: boolean, surface: CardSurface): string {
 
 /** The card's type and spacing variables: the card's `cardStyle`, the provider's, the
  *  Console's, key by key (0.26), every one set so no ancestor's value reaches the card. */
-function useCardLookVars(own: AuthFormProps["cardStyle"], bordered: boolean) {
+function useCardLookVars(own: AuthFormProps["cardStyle"], defaults: CardLook) {
   const provider = useElvixCardStyle();
   const app = useElvixApp();
-  return cardLookVars(mergeCardStyle({ card: own, provider, console: app?.cardStyle }), bordered);
+  return cardLookVars(mergeCardStyle({ card: own, provider, console: app?.cardStyle }), defaults);
 }
 
 /** The card every presentation shows, on its `surface`. */
 export function AuthCard(props: AuthFormProps & { surface: CardSurface }) {
   const { transparentBg = false, surface } = props;
   const versionInside = surface !== CardSurface.INLINE;
-  const lookVars = useCardLookVars(props.cardStyle, !transparentBg);
+  const lookVars = useCardLookVars(props.cardStyle, transparentBg ? {} : BORDERED_DEFAULTS);
   const body = useRef<HTMLDivElement | null>(null);
   useKeepFieldsInView(body);
   // The brand and look variables ride on the card itself: the modal and drawer portal out of

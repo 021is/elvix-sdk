@@ -110,16 +110,15 @@ const TOKEN_VARS: Record<CardStyleToken, string> = {
  *  inherited from the card's parent, and no ancestor's own value leaks in. */
 const INHERIT = "initial";
 
-/**
- * Every card variable for `look`, defaults filled in. `bordered`: elvix's own card with its
- * footer bar, whose space under the legal line was 28 px before 0.26 (24 on a transparent one).
- */
-export function cardLookVars(look: CardLook, bordered: boolean): Record<string, string> {
+/** The defaults of elvix's bordered card: 28 px under the legal line, above its footer bar,
+ *  where a transparent card had 24 (before 0.26). */
+export const BORDERED_DEFAULTS: CardLook = { gapFooter: BORDERED_GAP_FOOTER };
+
+/** Every card variable for `look`, each missing one from `defaults`, else the token's own. */
+export function cardLookVars(look: CardLook, defaults: CardLook = {}): Record<string, string> {
   const vars: Record<string, string> = {};
   for (const token of CARD_STYLE_TOKENS) {
-    const fallback =
-      token === "gapFooter" && bordered ? BORDERED_GAP_FOOTER : CARD_STYLE_RANGES[token].default;
-    const value = look[token] ?? fallback;
+    const value = look[token] ?? defaults[token] ?? CARD_STYLE_RANGES[token].default;
     vars[TOKEN_VARS[token]] = token === "headingWeight" ? String(value) : `${value}px`;
   }
   vars["--elvix-font-text"] = look.fontText ?? INHERIT;

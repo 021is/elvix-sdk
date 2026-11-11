@@ -52,7 +52,7 @@ describe("an app that sets nothing", () => {
   it("keeps the card it had before 0.26", async () => {
     const { cssVar, part } = await mountCard();
     for (const token of CARD_STYLE_TOKENS) {
-      expect(cssVar(WHERE[token].cssVar)).toBe(cardLookVars({}, false)[WHERE[token].cssVar]);
+      expect(cssVar(WHERE[token].cssVar)).toBe(cardLookVars({})[WHERE[token].cssVar]);
     }
     expect(cssVar("--elvix-gap-methods")).toBe("8px");
     expect(cssVar("--elvix-card-px")).toBe("28px");
