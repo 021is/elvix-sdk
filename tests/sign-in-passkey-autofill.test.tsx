@@ -146,3 +146,83 @@ describe("what comes of it", () => {
     expect(await screen.findByText(/went wrong/, { selector: "p" }, PANE)).toBeTruthy();
   });
 });
+
+/** A route whose answer waits until the test lets it through. */
+function held(path: string, answer: () => Response) {
+  const releases: (() => void)[] = [];
+  const route: Route = [
+    "POST",
+    (u) => u.includes(path),
+    () => new Promise<Response>((resolve) => releases.push(() => resolve(answer()))),
+  ];
+  return { route, releases };
+}
+
+describe("one passkey sign-in at a time (the security review, 2026-11-11)", () => {
+  it("a field focused while the button's ceremony runs asks for nothing", async () => {
+    const start = held("/sign-in/start", () =>
+      json({ success: true, data: { options: { challenge: "Y2g" } } }),
+    );
+    let open = 0;
+    let most = 0;
+    const get = stubPasskeys((options) => {
+      open += 1;
+      most = Math.max(most, open);
+      if (options.mediation === "conditional") {
+        return pendingUntilAborted(options).finally(() => {
+          open -= 1;
+        });
+      }
+      return new Promise((resolve) =>
+        setTimeout(() => {
+          open -= 1;
+          resolve(ASSERTION);
+        }, 20),
+      );
+    });
+    const fake = mount(<ElvixSignInCard navigate={false} methodEmailOtp methodPasskey />, "fine", [
+      start.route,
+    ]);
+    const field = await readyField();
+    await act(async () =>
+      fireEvent.click(screen.getByRole("button", { name: "Continue with passkey" })),
+    );
+    await act(async () => fireEvent.focus(field));
+    await waitFor(() => expect(start.releases).toHaveLength(1));
+    await act(async () => {
+      for (const release of start.releases) release();
+    });
+    await waitFor(() => expect(get).toHaveBeenCalledTimes(1));
+    await new Promise((r) => setTimeout(r, 60));
+    expect(get.mock.calls.map(([o]) => o?.mediation ?? "dialog")).toEqual(["dialog"]);
+    expect(most).toBe(1);
+    expect(fake.calls("/sign-in/start")).toBe(1);
+  });
+
+  it("the button after a passkey picked from the autofill opens no dialog and signs in once", async () => {
+    const finish = held("/sign-in/finish", () =>
+      json({ success: true, data: { ok: true, redirect: "/home", token: "tok_pk" } }),
+    );
+    const get = stubPasskeys(async () => ASSERTION);
+    const onResult = vi.fn();
+    const fake = mount(
+      <ElvixSignInCard navigate={false} methodEmailOtp methodPasskey onResult={onResult} />,
+      "fine",
+      [finish.route],
+    );
+    const field = await readyField();
+    await act(async () => fireEvent.focus(field));
+    await waitFor(() => expect(finish.releases).toHaveLength(1));
+    await act(async () =>
+      fireEvent.click(screen.getByRole("button", { name: "Continue with passkey" })),
+    );
+    await act(async () => {
+      for (const release of finish.releases) release();
+    });
+    await signedInWithPasskey(onResult);
+    await new Promise((r) => setTimeout(r, 60));
+    expect(get.mock.calls.map(([o]) => o?.mediation ?? "dialog")).toEqual(["conditional"]);
+    expect(fake.calls("/sign-in/finish")).toBe(1);
+    expect(onResult).toHaveBeenCalledTimes(1);
+  });
+});

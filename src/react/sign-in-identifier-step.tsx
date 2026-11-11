@@ -7,14 +7,14 @@
  * another and the distance a token names is the distance a person sees.
  */
 
-import { type RefObject, useEffect, useRef } from "react";
+import { type RefObject, useRef } from "react";
 import { useT } from "../locale/use-t";
 import type { AuthFormProps } from "./elvix-sign-in-form";
 import { GoogleOneTap } from "./google-one-tap";
-import { runPasskeySignIn } from "./passkey";
 import { type Cta, CtaButton } from "./sign-in-controls";
-import { passkeySignedIn, reportPasskeyError, SocialButtons } from "./sign-in-social";
+import { SocialButtons } from "./sign-in-social";
 import type { OtpStart } from "./use-otp";
+import { type PasskeySignIn, usePasskeySignIn } from "./use-passkey-sign-in";
 import type { SignInFlow } from "./use-sign-in-flow";
 
 /**
@@ -41,81 +41,6 @@ function identifierPlaceholderKey(p: AuthFormProps): string {
     ? "signin.identifierPlaceholderUsername"
     : "signin.identifierPlaceholderEmail";
 }
-
-/** Whether this browser can offer passkeys inside a field's autofill. */
-async function conditionalMediationAvailable(): Promise<boolean> {
-  if (typeof window === "undefined" || !window.PublicKeyCredential) return false;
-  const probe = window.PublicKeyCredential.isConditionalMediationAvailable;
-  if (typeof probe !== "function") return false;
-  return probe.call(window.PublicKeyCredential).catch(() => {
-    // A browser that cannot answer the probe cannot offer passkeys in a field either; the
-    // passkey button stays, so nothing is lost and nothing needs saying.
-    return false;
-  });
-}
-
-/**
- * The passkeys offered in the identifier field's autofill (`autocomplete="… webauthn"`,
- * 0.26): a phone shows them over the keyboard, no dialog. The request starts when the person
- * first focuses the field, never on open, and one at a time. Picking a passkey finishes the
- * sign-in as the passkey button does. `stop()` ends the offer before the button's dialog,
- * because a browser holds one passkey request at a time: a second prompt never opens.
- *
- * Only a failure after a passkey was picked is shown. Before that the offer is silent on
- * purpose: the person did not ask for it, the autofill is not shown when the browser cannot
- * do it (across origins without Related Origin Requests), and the button stays, with its
- * hosted fallback and its own errors.
- */
-function useConditionalPasskey(flow: SignInFlow, p: AuthFormProps, baseUrl: string) {
-  const t = useT();
-  const pending = useRef<{ controller: AbortController; done: Promise<void> } | null>(null);
-  const enabled = p.mode !== "preview" && Boolean(p.methodPasskey);
-
-  const stop = async () => {
-    const current = pending.current;
-    if (!current) return;
-    current.controller.abort();
-    await current.done;
-  };
-  useEffect(() => () => pending.current?.controller.abort(), []);
-
-  const arm = () => {
-    // An app sign-in names its clientId, which comes with the provider's envelope: before
-    // it lands there is nothing to ask for, and the next focus asks again.
-    const scoped = (p.intent ?? "app") !== "app" || Boolean(p.clientId);
-    if (!enabled || !scoped || pending.current) return;
-    const controller = new AbortController();
-    let picked = false;
-    const done = (async () => {
-      if (!(await conditionalMediationAvailable()) || controller.signal.aborted) return;
-      const result = await runPasskeySignIn(baseUrl, p.clientId, p.intent ?? "app", {
-        kind: "autofill",
-        signal: controller.signal,
-        onPicked: () => {
-          picked = true;
-        },
-      });
-      if (result.ok) passkeySignedIn(flow, result.landing);
-      else if (picked) reportPasskeyError(flow, t, result);
-      // Not picked: the offer ended (aborted, dismissed) or never showed (a start refused, a
-      // browser that cannot do it across origins). The person asked for nothing, so there is
-      // nothing to tell them or the host; the passkey button stays, and reports its own.
-    })()
-      // `runPasskeySignIn` never throws; anything else that does is shown, not left unhandled.
-      .catch((e: unknown) =>
-        reportPasskeyError(flow, t, {
-          error: "passkey_failed",
-          message: e instanceof Error ? e.message : undefined,
-        }),
-      )
-      .finally(() => {
-        if (pending.current?.controller === controller) pending.current = null;
-      });
-    pending.current = { controller, done };
-  };
-  return { enabled, arm, stop };
-}
-type ConditionalPasskey = ReturnType<typeof useConditionalPasskey>;
 
 type IdentifierStepProps = {
   flow: SignInFlow;
@@ -175,8 +100,8 @@ function IdentifierField({
   otp,
   p,
   cta,
-  passkeyFill,
-}: Omit<IdentifierStepProps, "baseUrl"> & { passkeyFill: ConditionalPasskey }) {
+  passkey,
+}: Omit<IdentifierStepProps, "baseUrl"> & { passkey: PasskeySignIn }) {
   const t = useT();
   const placeholder = t(identifierPlaceholderKey(p));
   const kind = p.methodUsername ? "username" : "email";
@@ -187,10 +112,10 @@ function IdentifierField({
         disabled={otp.sending}
         value={otp.identifier}
         onChange={(e) => otp.setIdentifier(e.target.value)}
-        onFocus={passkeyFill.arm}
+        onFocus={passkey.arm}
         placeholder={placeholder}
         aria-label={placeholder}
-        autoComplete={passkeyFill.enabled ? `${kind} webauthn` : kind}
+        autoComplete={passkey.autofill ? `${kind} webauthn` : kind}
         inputMode={p.methodUsername ? "text" : "email"}
         enterKeyHint="go"
         className="elvix-field w-full h-10 px-3 text-[13px] disabled:cursor-not-allowed"
@@ -217,7 +142,7 @@ export function IdentifierStep({ flow, otp, p, baseUrl, cta }: IdentifierStepPro
   const t = useT();
   const gisSlot = useRef<HTMLDivElement | null>(null);
   const gis = googleIdentityServices(p, baseUrl, p.mode === "preview");
-  const passkeyFill = useConditionalPasskey(flow, p, baseUrl);
+  const passkey = usePasskeySignIn(flow, p, baseUrl);
   const social = p.methodGoogle || p.methodPasskey || p.methodGithub;
   const typed = p.methodEmailOtp || p.methodUsername;
 
@@ -234,15 +159,14 @@ export function IdentifierStep({ flow, otp, p, baseUrl, cta }: IdentifierStepPro
       {gis.enabled && <GisPrompt p={p} baseUrl={baseUrl} gisSlot={gisSlot} button={gis.button} />}
       {social && (
         <SocialButtons
-          flow={flow}
           p={p}
           baseUrl={baseUrl}
           gisSlot={gis.button ? gisSlot : null}
-          beforePasskey={passkeyFill.stop}
+          passkey={passkey}
         />
       )}
       {typed && social && <OrLine />}
-      {typed && <IdentifierField flow={flow} otp={otp} p={p} cta={cta} passkeyFill={passkeyFill} />}
+      {typed && <IdentifierField flow={flow} otp={otp} p={p} cta={cta} passkey={passkey} />}
     </form>
   );
 }

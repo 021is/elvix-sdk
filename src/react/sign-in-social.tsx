@@ -9,16 +9,8 @@ import { Fingerprint, Loader2 } from "lucide-react";
 import { type RefObject, useState } from "react";
 import { useT } from "../locale/use-t";
 import type { AuthFormProps } from "./elvix-sign-in-form";
-import { runPasskeySignIn } from "./passkey";
-import { isSameOrigin } from "./session";
-import {
-  hostedCeremonyUrl,
-  humanError,
-  OAuthProvider,
-  oauthStartHref,
-  type Translator,
-} from "./sign-in-copy";
-import type { Landing, SignInFlow } from "./use-sign-in-flow";
+import { OAuthProvider, oauthStartHref } from "./sign-in-copy";
+import type { PasskeySignIn } from "./use-passkey-sign-in";
 
 function GoogleGlyph() {
   return (
@@ -54,77 +46,13 @@ function GithubGlyph() {
 const SOCIAL_CLASS =
   "cursor-pointer w-full inline-flex items-center justify-center gap-2 h-10 rounded-[10px] font-medium text-[13px] border border-border-base bg-surface text-fg-1 hover:bg-surface-hover transition";
 
-/** An error from the inline ceremony that the hosted page on elvix.is
- *  (where the rpId matches) gets past: a browser without Related Origin
- *  Requests support. */
-const RP_ID_MISMATCH = /rp\.?id|RelyingParty|cannot be used with the current origin|SecurityError/i;
-
-/** The passkey sign-in button's handler: the inline ceremony, falling back
- *  to the hosted one cross-origin, whose return arrives as `#elvix_token`.
- *  `beforePrompt` ends the field's autofill offer first: a browser holds one
- *  passkey request at a time, so the dialog would otherwise never open. */
-function usePasskeySignIn(
-  flow: SignInFlow,
-  p: AuthFormProps,
-  baseUrl: string,
-  beforePrompt: () => Promise<void>,
-) {
-  const t = useT();
-  const [busy, setBusy] = useState(false);
-  const run = async () => {
-    if (p.mode === "preview" || busy) return;
-    flow.setError(null);
-    setBusy(true);
-    await beforePrompt();
-    const result = await runPasskeySignIn(baseUrl, p.clientId, p.intent ?? "app");
-    setBusy(false);
-    if (result.ok) {
-      passkeySignedIn(flow, result.landing);
-      return;
-    }
-    if (result.error === "passkey_cancelled") {
-      // The user dismissed the prompt: nothing to show, but the host hears it.
-      p.onResult?.({ ok: false, error: result.error });
-      return;
-    }
-    const hostedHelps =
-      RP_ID_MISMATCH.test(result.message ?? "") || result.error === "passkey_failed";
-    if (!isSameOrigin(baseUrl) && p.clientId && hostedHelps) {
-      window.location.assign(hostedCeremonyUrl(baseUrl, "passkey", p.clientId));
-      return;
-    }
-    reportPasskeyError(flow, t, result);
-  };
-  return { busy, run };
-}
-
-/** A passkey sign-in that worked, from the button or the field's autofill: the server's
- *  landing decides what comes next. */
-export function passkeySignedIn(flow: SignInFlow, landing: Landing) {
-  flow.methodRef.current = "passkey";
-  flow.applyLanding(landing);
-}
-
-/** A passkey sign-in that failed, in the server's words or the code's. */
-export function reportPasskeyError(
-  flow: SignInFlow,
-  t: Translator,
-  result: { error: string; message?: string },
-) {
-  flow.reportError(
-    result.error,
-    result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyVerify"),
-  );
-}
-
 type SocialButtonsProps = {
-  flow: SignInFlow;
   p: AuthFormProps;
   baseUrl: string;
   /** Where Google Identity Services renders its own button, when it does. */
   gisSlot: RefObject<HTMLDivElement | null> | null;
-  /** Ends the identifier field's passkey autofill offer before the passkey dialog opens. */
-  beforePasskey: () => Promise<void>;
+  /** The passkey sign-in the button shares with the identifier field's autofill. */
+  passkey: PasskeySignIn;
 };
 
 /** A method's place in the grid: its short or long label, and whether it spans the row. */
@@ -199,14 +127,11 @@ function GithubMethod({ p, baseUrl, tile }: MethodProps) {
 }
 
 function PasskeyMethod({
-  flow,
   p,
-  baseUrl,
   tile,
-  beforePasskey,
-}: MethodProps & Pick<SocialButtonsProps, "flow" | "beforePasskey">) {
+  passkey,
+}: Omit<MethodProps, "baseUrl"> & { passkey: PasskeySignIn }) {
   const t = useT();
-  const passkey = usePasskeySignIn(flow, p, baseUrl, beforePasskey);
   return (
     <button
       type="button"
@@ -225,7 +150,7 @@ function PasskeyMethod({
 }
 
 /** Google, GitHub and passkey in importance order, `gapMethods` apart. */
-export function SocialButtons({ flow, p, baseUrl, gisSlot, beforePasskey }: SocialButtonsProps) {
+export function SocialButtons({ p, baseUrl, gisSlot, passkey }: SocialButtonsProps) {
   const tile = tiles(p);
   const grid = tile.google.short || tile.github.short || tile.passkey.short;
   return (
@@ -241,15 +166,7 @@ export function SocialButtons({ flow, p, baseUrl, gisSlot, beforePasskey }: Soci
         <GoogleMethod p={p} baseUrl={baseUrl} tile={tile.google} gisSlot={gisSlot} />
       )}
       {p.methodGithub && <GithubMethod p={p} baseUrl={baseUrl} tile={tile.github} />}
-      {p.methodPasskey && (
-        <PasskeyMethod
-          flow={flow}
-          p={p}
-          baseUrl={baseUrl}
-          tile={tile.passkey}
-          beforePasskey={beforePasskey}
-        />
-      )}
+      {p.methodPasskey && <PasskeyMethod p={p} tile={tile.passkey} passkey={passkey} />}
     </div>
   );
 }
