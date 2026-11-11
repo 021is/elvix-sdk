@@ -86,6 +86,10 @@ describe("the card style tokens", () => {
       expect(isCardTokenInRange(token, max + 1)).toBe(false);
       expect(isCardTokenInRange(token, min - 1)).toBe(false);
       expect(isCardTokenInRange(token, String(fallback))).toBe(false);
+      // Not a number at all is never in range (a missing value is the API's "leave it").
+      for (const junk of [undefined, null, Number.NaN, {}]) {
+        expect(isCardTokenInRange(token, junk)).toBe(false);
+      }
     });
   });
 

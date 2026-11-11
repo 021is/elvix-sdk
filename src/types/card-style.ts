@@ -49,7 +49,8 @@ function isCardStyleToken(key: string): key is CardStyleToken {
   return Object.hasOwn(CARD_STYLE_RANGES, key);
 }
 
-/** Every numeric token, in the card's order from top to bottom. */
+/** Every numeric token, in the card's order from top to bottom. (The filter narrows the keys'
+ *  `string[]` to the token type without a cast; it drops nothing.) */
 export const CARD_STYLE_TOKENS: readonly CardStyleToken[] =
   Object.keys(CARD_STYLE_RANGES).filter(isCardStyleToken);
 
@@ -58,7 +59,9 @@ export const CARD_STYLE_TOKENS: readonly CardStyleToken[] =
  * keeps the card's default. The same shape is `cardStyle` on `<ElvixProvider>` (every
  * surface), on `<ElvixSignInCard>` / `<ElvixSignInForm>` (that card), and on the app in the
  * Console (`PATCH /api/applications/{id}`). The card prop wins over the provider's, and the
- * provider's over the Console's, key by key.
+ * provider's over the Console's, key by key. A number out of its range is held at its edge;
+ * a value that is not a number, or a font that is not a family, is ignored without a word
+ * (its default stays): the sign-in never breaks on a style.
  */
 export type ElvixCardStyle = {
   /** The card's text font: a family your page already loads (`"Inter"`,
@@ -82,7 +85,7 @@ export function clampCardToken(token: CardStyleToken, value: unknown): number | 
 
 /** Whether `value` is in range as given: what the API accepts (it refuses, never clamps). */
 export function isCardTokenInRange(token: CardStyleToken, value: unknown): boolean {
-  return clampCardToken(token, value) === value;
+  return typeof value === "number" && clampCardToken(token, value) === value;
 }
 
 /**
