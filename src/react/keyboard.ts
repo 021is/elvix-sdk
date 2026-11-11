@@ -6,20 +6,27 @@
  * by itself on a touch screen.
  */
 
-import { type RefObject, useEffect, useState } from "react";
+import { type RefObject, useEffect, useRef } from "react";
 
 /** Autofocus only with a fine pointer (a mouse, a trackpad). On a touch screen focusing a
  *  field on open throws the keyboard up over the sheet before the person chose to type. */
 export function canAutoFocus(): boolean {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return true;
+  if (typeof window === "undefined") return false;
+  if (typeof window.matchMedia !== "function") return true;
   return !window.matchMedia("(pointer: coarse)").matches;
 }
 
-/** `canAutoFocus()`, read once when the component mounts: a field's autofocus is decided
- *  then and only then. */
-export function useCanAutoFocus(): boolean {
-  const [can] = useState(canAutoFocus);
-  return can;
+/**
+ * A ref whose field is focused once it is mounted, when `wanted` and the pointer is fine.
+ * Never the `autoFocus` attribute: a server would write it into the page's HTML, where a
+ * phone acts on it at load, and React does not focus a field on hydration anyway.
+ */
+export function useAutoFocus<T extends HTMLElement>(wanted: boolean): RefObject<T | null> {
+  const ref = useRef<T | null>(null);
+  useEffect(() => {
+    if (wanted && canAutoFocus()) ref.current?.focus();
+  }, [wanted]);
+  return ref;
 }
 
 /** How long the keyboard's own animation may keep resizing the viewport after a focus. */

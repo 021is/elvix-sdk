@@ -10,6 +10,7 @@
 import { Loader2 } from "lucide-react";
 import { type FormEvent, type ReactNode, useId } from "react";
 import { useT } from "../locale/use-t";
+import { useAutoFocus } from "./keyboard";
 import { OtpInput } from "./otp-input";
 import { STACK_2, STACK_3 } from "./pane-layout";
 import { type Cta, CtaButton, ErrorLine } from "./sign-in-controls";
@@ -148,6 +149,7 @@ export function CompactEmailPane(p: EmailPaneProps) {
   const fieldId = useId();
   const { flow, otp, isPreview } = p;
   const cn = p.look.classNames;
+  const field = useAutoFocus<HTMLInputElement>(!isPreview && p.look.autoFocus);
   const submit = (e: FormEvent) => {
     e.preventDefault();
     p.onSend();
@@ -159,11 +161,11 @@ export function CompactEmailPane(p: EmailPaneProps) {
       </label>
       <input
         id={fieldId}
+        ref={field}
         type="email"
         autoComplete="email"
         inputMode="email"
         enterKeyHint="go"
-        autoFocus={!isPreview && p.look.autoFocus}
         value={otp.identifier}
         disabled={isPreview || otp.sending}
         onChange={(e) => otp.setIdentifier(e.target.value)}

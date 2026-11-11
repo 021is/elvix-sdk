@@ -111,23 +111,21 @@ export type PasskeySignInResult =
   | { ok: true; landing: Landing }
   | { ok: false; error: string; message?: string };
 
-/** How the browser asks: `"conditional"` offers the passkeys in the identifier field's
- *  autofill instead of a dialog (0.26), ended through `signal`; `onPicked` runs once the
- *  person chose one. Default: a dialog. */
-export type PasskeyCeremony = {
-  mediation?: CredentialMediationRequirement;
-  signal?: AbortSignal;
-  onPicked?: () => void;
-};
+/** How the browser asks: a dialog, or (0.26) the passkeys in the identifier field's autofill,
+ *  which only its `signal` can end; `onPicked` runs once the person chose one. */
+export type PasskeyCeremony =
+  | { kind: "dialog" }
+  | { kind: "autofill"; signal: AbortSignal; onPicked: () => void };
 
 async function promptAssertion(
   options: AuthnOptionsJSON,
-  { mediation, signal }: PasskeyCeremony,
+  ceremony: PasskeyCeremony,
 ): Promise<{ ok: true; assertion: AssertionJSON } | Failure> {
   try {
     const cred = (await navigator.credentials.get({
-      mediation,
-      signal,
+      ...(ceremony.kind === "autofill"
+        ? { mediation: "conditional", signal: ceremony.signal }
+        : {}),
       publicKey: {
         challenge: b64urlToBuf(options.challenge),
         timeout: options.timeout,
@@ -166,7 +164,7 @@ export async function runPasskeySignIn(
   baseUrl: string,
   clientId: string | undefined,
   intent: string = "app",
-  ceremony: PasskeyCeremony = {},
+  ceremony: PasskeyCeremony = { kind: "dialog" },
 ): Promise<PasskeySignInResult> {
   // Only an app sign-in needs a clientId: elvix's own account and Console sign the identity in.
   if (intent === "app" && !clientId) {
@@ -192,7 +190,7 @@ export async function runPasskeySignIn(
 
   const prompt = await promptAssertion(start.data.options, ceremony);
   if (!prompt.ok) return prompt;
-  ceremony.onPicked?.();
+  if (ceremony.kind === "autofill") ceremony.onPicked();
 
   const finish = await postEnvelope<Landing>(
     `${baseUrl}/api/auth/passkey/sign-in/finish`,

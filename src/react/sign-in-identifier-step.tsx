@@ -89,7 +89,7 @@ function useConditionalPasskey(flow: SignInFlow, p: AuthFormProps, baseUrl: stri
     const done = (async () => {
       if (!(await conditionalMediationAvailable()) || controller.signal.aborted) return;
       const result = await runPasskeySignIn(baseUrl, p.clientId, p.intent ?? "app", {
-        mediation: "conditional",
+        kind: "autofill",
         signal: controller.signal,
         onPicked: () => {
           picked = true;

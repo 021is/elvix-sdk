@@ -26,7 +26,7 @@ import {
   type ElvixEmailCodeClassNames,
   type PaneLook,
 } from "./email-code-panes";
-import { useCanAutoFocus, useKeepFieldsInView } from "./keyboard";
+import { useKeepFieldsInView } from "./keyboard";
 import type { Cta } from "./sign-in-controls";
 import { type Theme, themeVars, useSignInTheme } from "./sign-in-theme";
 import type { ElvixSignInResult, ElvixSignInResultOk } from "./types";
@@ -82,7 +82,6 @@ type Look = { cta: Cta; style: CSSProperties; look: PaneLook };
 
 export function ElvixEmailCodeSignIn(props: ElvixEmailCodeSignInProps) {
   const { theme, brandPair } = useSignInTheme(props.theme);
-  const canFocus = useCanAutoFocus();
   // A pinned theme carries its own brand pair; otherwise the provider's
   // `--elvix-primary` already reaches the block.
   const frame: Look = {
@@ -94,10 +93,7 @@ export function ElvixEmailCodeSignIn(props: ElvixEmailCodeSignInProps) {
       brand: brandPair?.primary ?? "var(--elvix-primary)",
       onBrand: brandPair?.on ?? "var(--elvix-on-primary)",
     },
-    look: {
-      classNames: props.classNames ?? {},
-      autoFocus: (props.autoFocus ?? true) && canFocus,
-    },
+    look: { classNames: props.classNames ?? {}, autoFocus: props.autoFocus ?? true },
   };
   // A new address is a new sign-in: fresh state, its own code.
   return <EmailCodeBody key={props.email} {...props} {...frame} />;

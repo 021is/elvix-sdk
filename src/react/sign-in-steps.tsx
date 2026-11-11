@@ -12,7 +12,7 @@ import { type ReactNode, useEffect, useState } from "react";
 import { useT } from "../locale/use-t";
 import { ElvixRecoverGate } from "./elvix-recover-gate";
 import type { AuthFormProps } from "./elvix-sign-in-form";
-import { useCanAutoFocus } from "./keyboard";
+import { useAutoFocus } from "./keyboard";
 import { OtpInput } from "./otp-input";
 import { STACK_2, STACK_3, STACK_4 } from "./pane-layout";
 import { runPasskeyRegister } from "./passkey";
@@ -233,15 +233,9 @@ export function CodeStep({
     isPreview,
     t,
   });
-  const autoFocus = useCanAutoFocus();
   return (
     <form onSubmit={(e) => void verify(e)} className={STACK_3}>
-      <OtpInput
-        value={code}
-        onChange={setCode}
-        disabled={isPreview || verifying}
-        autoFocus={autoFocus}
-      />
+      <OtpInput value={code} onChange={setCode} disabled={isPreview || verifying} autoFocus />
       <CtaButton cta={cta} submit busy={verifying} disabled={verifying || code.length !== 6} arrow>
         {t("signin.verifyButton")}
       </CtaButton>
@@ -372,7 +366,7 @@ export function UsernameStep({
   const [value, setValue] = useState(flow.suggestions[0] ?? "");
   const [busy, setBusy] = useState<Busy | null>(null);
   const check = useUsernameCheck(baseUrl, value);
-  const autoFocus = useCanAutoFocus();
+  const field = useAutoFocus<HTMLInputElement>(true);
 
   // `auto` is "skip, pick one for me": the server generates it.
   const submit = async (auto: boolean) => {
@@ -403,7 +397,7 @@ export function UsernameStep({
           <input
             id="onboarding-username"
             type="text"
-            autoFocus={autoFocus}
+            ref={field}
             autoComplete="username"
             enterKeyHint="go"
             value={value}

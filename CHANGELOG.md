@@ -45,7 +45,9 @@ Chromium: 62 elements, same boxes, weights and fonts).
   on the field's first focus, never on open, and ended before the passkey button's dialog,
   so there is never a second prompt); a focused field and its step's button are scrolled
   into view inside whatever scrolls around the card, again while the keyboard opens; and a
-  touch screen gets no autofocus, so the keyboard never jumps up as a sheet opens.
+  touch screen gets no autofocus, so the keyboard never jumps up as a sheet opens. That
+  holds for every set of code boxes (export and deactivate too), and a focus is given
+  after mount, never as an `autofocus` attribute a server would write into the page.
 
 ### Changed
 
