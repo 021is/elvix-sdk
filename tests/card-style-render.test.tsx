@@ -147,4 +147,20 @@ describe("an overlay card", () => {
     const root = document.body.querySelector<HTMLElement>("[data-elvix-card-body]")?.parentElement;
     expect(root?.style.getPropertyValue("--elvix-gap-legal")).toBe("30px");
   });
+
+  it("scrolls inside the viewport, so the widest spacing never pushes the legal line off it", async () => {
+    installFakeElvix({ context: null });
+    const max = Object.fromEntries(CARD_STYLE_TOKENS.map((t) => [t, CARD_STYLE_RANGES[t].max]));
+    render(
+      <Provider cardStyle={max}>
+        <ElvixSignInForm navigate={false} presentation="modal" open onOpenChange={() => {}} />
+      </Provider>,
+    );
+    await screen.findByText("Sign in to Acme", {}, PANE);
+    const panel =
+      document.body.querySelector<HTMLElement>("[data-elvix-card-body]")?.parentElement
+        ?.parentElement;
+    expect(panel?.className).toMatch(/\bmax-h-full\b/);
+    expect(panel?.className).toMatch(/\boverflow-y-auto\b/);
+  });
 });

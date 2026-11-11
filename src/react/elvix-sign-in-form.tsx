@@ -534,7 +534,7 @@ function ModalOverlay({
           />
           <motion.div
             ref={panelRef}
-            className="relative mx-auto w-full"
+            className="relative mx-auto w-full max-h-full overflow-y-auto"
             style={{ maxWidth: width }}
             initial={{ opacity: 0, scale: 0.96, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
