@@ -15,6 +15,7 @@ import {
   CARD_STYLE_RANGES,
   CARD_STYLE_TOKENS,
   type CardStyleToken,
+  CONSOLE_FONTS,
   clampCardToken,
   isCardTokenInRange,
   isConsoleFontName,
@@ -120,20 +121,34 @@ describe("fonts", () => {
     ["nothing", "  "],
     ["too long", "A".repeat(201)],
     ["not a string", 12],
+    ["an open double quote", '"Inter'],
+    ["an open single quote", "'Inter, sans"],
+    ["a newline", "Inter\nfoo"],
+    ["a tab", "Inter\tfoo"],
+    ["a NUL", "Inter\u0000"],
+    ["a DEL", "Inter\u007f"],
   ])("a host family with %s is refused", (_, value) => {
     expect(hostFontFamily(value)).toBeUndefined();
   });
 
-  it("a Console family is a plain name only, quoted by the card", () => {
+  it("a host family with its quotes closed passes", () => {
+    expect(hostFontFamily("'Inter', \"Urbanist\"")).toBe("'Inter', \"Urbanist\", sans-serif");
+  });
+
+  it("a Console family is one of the fonts elvix serves, quoted by the card", () => {
     expect(consoleFontFamily("Urbanist")).toBe('"Urbanist", sans-serif');
     expect(consoleFontFamily("Plus Jakarta Sans")).toBe('"Plus Jakarta Sans", sans-serif');
+    for (const font of CONSOLE_FONTS) expect(isConsoleFontName(font)).toBe(true);
     for (const bad of [
+      "Wingdings",
+      "Webdings",
+      "Adobe Blank",
+      "inter",
       "var(--x)",
       "Inter, Arial",
       '"Inter"',
       "url(x)",
       " Inter",
-      "9Inter",
       "A".repeat(65),
     ])
       expect(isConsoleFontName(bad)).toBe(false);

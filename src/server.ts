@@ -29,6 +29,8 @@ export {
   CARD_STYLE_RANGES,
   CARD_STYLE_TOKENS,
   type CardStyleToken,
+  CONSOLE_FONTS,
+  type ConsoleFont,
   type ElvixCardStyle,
   isCardTokenInRange,
   isConsoleFontName,

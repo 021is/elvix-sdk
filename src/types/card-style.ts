@@ -6,7 +6,8 @@
  * Every length is whole CSS pixels and every gap is the distance a person sees between two
  * parts of the card. Each default is the card's look before 0.26, so an app that sets nothing
  * looks exactly as it did. No token reaches the legal line's or the "Secured by elvix" chip's
- * size, colour or visibility, and the gaps above both have a floor: spacing cannot hide them.
+ * size, colour, visibility or font (the app's fonts stop above the legal line: both keep the
+ * page's), and the gaps above both have a floor: neither spacing nor a font can hide them.
  */
 
 /** A numeric token's range. `step` rounds before the clamp (weights move by 100). */
@@ -65,9 +66,11 @@ export const CARD_STYLE_TOKENS: readonly CardStyleToken[] =
  */
 export type ElvixCardStyle = {
   /** The card's text font: a family your page already loads (`"Inter"`,
-   *  `"var(--font-inter)"`). Left out, the card takes your page's font. The SDK never
-   *  downloads a font; a value with a URL, a `;`, a brace or any function but `var()` is
-   *  ignored, and your page's font stays. */
+   *  `"var(--font-inter)"`), for the head, the step and your `belowMethods` line; the legal
+   *  line and the chip keep your page's font. Left out, the card takes your page's font. The
+   *  SDK never downloads a font; a value with a URL, a `;`, a brace, an open quote, a control
+   *  character or any function but `var()` is ignored, and your page's font stays. In the
+   *  Console it is one of `CONSOLE_FONTS`. */
   fontText?: string;
   /** The heading's font (title or `headline`); left out, `fontText`. */
   fontDisplay?: string;
@@ -89,12 +92,28 @@ export function isCardTokenInRange(token: CardStyleToken, value: unknown): boole
 }
 
 /**
- * A font family as the Console stores it: a plain name, letters, digits, spaces and
- * hyphens, starting with a letter, 64 characters at most. No quotes, commas, brackets or
- * URLs can pass, so a Console value is only ever the name of a family, never CSS.
+ * The fonts an app can pick in the Console: the ones elvix serves from its own origin on its
+ * own pages (the hosted sign-in, the passkey pages), each under a licence that allows it
+ * (SIL OFL 1.1, checked in elvix where the files ship). A closed list, never a free name: a
+ * symbol font (Wingdings) or a blank one cannot be picked, and a new font is added here and
+ * in elvix's files in one release.
  */
-const CONSOLE_FONT_NAME = /^[A-Za-z][A-Za-z0-9 -]{0,63}$/;
+export const CONSOLE_FONTS = [
+  "Inter",
+  "Urbanist",
+  "Geist",
+  "DM Sans",
+  "Manrope",
+  "Plus Jakarta Sans",
+  "Nunito",
+  "Montserrat",
+  "Poppins",
+  "Lato",
+  "Lora",
+] as const;
+export type ConsoleFont = (typeof CONSOLE_FONTS)[number];
 
-export function isConsoleFontName(value: unknown): value is string {
-  return typeof value === "string" && CONSOLE_FONT_NAME.test(value) && value.trim() === value;
+/** Whether `value` is one of `CONSOLE_FONTS`, exactly as written there. */
+export function isConsoleFontName(value: unknown): value is ConsoleFont {
+  return CONSOLE_FONTS.some((font) => font === value);
 }

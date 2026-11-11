@@ -202,11 +202,12 @@ export function AuthCard(props: AuthFormProps & { surface: CardSurface }) {
     <>
       <div className={cardClass(transparentBg, surface)} style={cardStyle}>
         {/* One inset in every mode, so the `banner` header's bleed lands on the card edge.
-            The app's text font is the body's; the chip below keeps the page's, it is elvix's. */}
+            The app's text font is set inside, above the legal line; the legal line and the
+            chip below keep the page's. */}
         <div
           ref={body}
           data-elvix-card-body=""
-          className="px-(--elvix-card-px) pt-(--elvix-card-pt) pb-(--elvix-gap-footer) [font-family:var(--elvix-font-text)]"
+          className="px-(--elvix-card-px) pt-(--elvix-card-pt) pb-(--elvix-gap-footer)"
         >
           <SignInCardBody p={props} />
         </div>

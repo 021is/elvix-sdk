@@ -103,18 +103,23 @@ export function SignInCardBody({ p }: { p: AuthFormProps }) {
 
   return (
     <>
-      {(p.showHeader ?? true) && (
-        <SignInHeader p={p} flow={flow} identifier={otp.identifier} gate={appCtx?.signinGate} />
-      )}
-      <StepPane p={p} flow={flow} otp={otp} baseUrl={baseUrl} />
-      {/* The host's line under the methods (a tagline, "Request access"), on the entry step
-          only, where it does not compete with an active flow; `gapButtonSlot` above it (20 px
-          by default), or it sat glued to Continue (Edvard, 2026-11-11). */}
-      {flow.step === Step.IDENTIFIER && p.belowMethods && (
-        <div data-elvix-below-methods="" className="mt-(--elvix-gap-button-slot)">
-          {p.belowMethods}
-        </div>
-      )}
+      {/* The app's text font reaches the head, the step and the host's line, and stops here:
+          the legal line keeps the page's font, so no font (a symbol one, a blank one) can
+          turn it unreadable. */}
+      <div data-elvix-app-type="" className="[font-family:var(--elvix-font-text)]">
+        {(p.showHeader ?? true) && (
+          <SignInHeader p={p} flow={flow} identifier={otp.identifier} gate={appCtx?.signinGate} />
+        )}
+        <StepPane p={p} flow={flow} otp={otp} baseUrl={baseUrl} />
+        {/* The host's line under the methods (a tagline, "Request access"), on the entry step
+            only, where it does not compete with an active flow; `gapButtonSlot` above it (20
+            px by default), or it sat glued to Continue (Edvard, 2026-11-11). */}
+        {flow.step === Step.IDENTIFIER && p.belowMethods && (
+          <div data-elvix-below-methods="" className="mt-(--elvix-gap-button-slot)">
+            {p.belowMethods}
+          </div>
+        )}
+      </div>
       <LegalFooter p={p} />
     </>
   );

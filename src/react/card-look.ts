@@ -37,15 +37,28 @@ const NOT_A_FAMILY = /[;{}\\@<>!]|\/\*/;
 /** `var(--name)`, the one function a family may name (`var(--font-inter)` from next/font). */
 const VAR_REF = /var\(--[A-Za-z0-9_-]+\)/g;
 
+/** A control character (a newline, a NUL): never in a family, and one ends a declaration. */
+const hasControl = (s: string) =>
+  [...s].some((c) => {
+    const code = c.charCodeAt(0);
+    return code < 0x20 || code === 0x7f;
+  });
+
+/** An odd number of either quote leaves a string open, which swallows what follows it in a
+ *  server-written `style` attribute (the next declaration, the brand colours). */
+const quotesOpen = (s: string) => ['"', "'"].some((q) => s.split(q).length % 2 === 0);
+
 /**
  * A host's font family, from its own code (`cardStyle.fontText` on a prop): family names,
- * quoted or not, commas between them, and `var(--name)` references. Anything else, a URL
- * included, is refused (`undefined`, the page's font stays).
+ * quoted or not, commas between them, and `var(--name)` references. Anything else, a URL,
+ * an open quote or a control character included, is refused (`undefined`, the page's font
+ * stays).
  */
 export function hostFontFamily(value: unknown): string | undefined {
   if (typeof value !== "string") return undefined;
   const family = value.trim();
   if (!family || family.length > 200 || NOT_A_FAMILY.test(family)) return undefined;
+  if (hasControl(family) || quotesOpen(family)) return undefined;
   // After the var() references, no bracket may remain: `url(`, `image(`, `attr(` are out.
   if (/[()]/.test(family.replace(VAR_REF, ""))) return undefined;
   return `${family}, ${GENERIC}`;

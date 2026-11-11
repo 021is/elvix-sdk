@@ -6,9 +6,11 @@
  * page already serves.
  */
 import { cleanup, screen } from "@testing-library/react";
+import { renderToString } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { ElvixSignInCard } from "../src/react/index";
 import { CARD_STYLE_RANGES, CARD_STYLE_TOKENS, type ElvixCardStyle } from "../src/types/card-style";
-import { mountCard, unitOf, WHERE } from "./helpers/card-style-mount";
+import { mountCard, Provider, unitOf, WHERE } from "./helpers/card-style-mount";
 
 afterEach(() => {
   cleanup();
@@ -56,16 +58,44 @@ describe("the legal line and Secured by elvix", () => {
 });
 
 describe("fonts", () => {
-  it("the text font is the card body's, the heading's its own, the chip keeps the page's", async () => {
-    const { part, cssVar } = await mountCard({
+  it("the app's fonts reach the head, the step and the host's line, never the legal line or the chip", async () => {
+    const { part, root, cssVar } = await mountCard({
       cardStyle: { fontText: "Inter", fontDisplay: "Urbanist" },
     });
     expect(cssVar("--elvix-font-text")).toBe("Inter, sans-serif");
     expect(cssVar("--elvix-font-display")).toBe("Urbanist, sans-serif");
-    expect(part("card-body").className).toContain("[font-family:var(--elvix-font-text)]");
+    const appType = part("app-type");
+    expect(appType.className).toContain("[font-family:var(--elvix-font-text)]");
+    for (const name of ["head", "methods", "below-methods"]) {
+      expect(appType.contains(part(name))).toBe(true);
+    }
     expect(part("heading").className).toContain("[font-family:var(--elvix-font-display)]");
+    // The legal line and the chip: no element between them and the card's root reads a font
+    // variable, so a symbol or a blank font set as the app's can never reach them.
     const chip = screen.getByRole("link", { name: /Secured by/ });
-    expect(part("card-body").contains(chip)).toBe(false);
+    for (const el of [part("legal"), chip]) {
+      for (let node: HTMLElement | null = el; node && node !== root; node = node.parentElement) {
+        expect(node.className).not.toMatch(/font-family|--elvix-font/);
+        expect(node.style.fontFamily).toBe("");
+      }
+    }
+  });
+
+  it("a Console font is one of the fonts elvix serves, never a free name", async () => {
+    const { cssVar } = await mountCard({}, { console: { fontText: "Wingdings" } });
+    expect(cssVar("--elvix-font-text")).toBe("initial");
+  });
+
+  it("a host font with an open quote never breaks the server-written style", () => {
+    const html = renderToString(
+      <Provider>
+        <ElvixSignInCard navigate={false} cardStyle={{ fontText: '"Inter', gapLegal: 30 }} />
+      </Provider>,
+    );
+    const style = html.match(/style="([^"]*--elvix-font-text[^"]*)"/)?.[1] ?? "";
+    expect(style).toContain("--elvix-font-text:initial");
+    expect(style).toContain("--elvix-gap-legal:30px");
+    expect(style).toContain("--elvix-primary:");
   });
 
   it("a host font with a URL in it is refused", async () => {
