@@ -38,42 +38,15 @@
  */
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Drawer as Vaul } from "vaul";
 import { useT } from "../locale/use-t";
-import { ElvixLogo } from "./elvix-logo";
-import {
-  brandCssVars,
-  ElvixSessionStatus,
-  useElvixApp,
-  useElvixContext,
-  useElvixSession,
-} from "./elvix-provider";
 import { ElvixSignInButton, type ElvixSignInButtonProps } from "./elvix-sign-in-button";
+import { AuthCard, CardSurface, useResolvedSignIn } from "./elvix-sign-in-card";
 import { isOnboardingPending, onOnboardingChange } from "./session";
-import {
-  AuthenticatingPane,
-  CodeStep,
-  IdentifierStep,
-  LegalFooter,
-  PasskeyStep,
-  RecoverStep,
-  SignInHeader,
-  UsernameStep,
-} from "./sign-in-steps";
-import { type Theme, themeVars, useSignInTheme } from "./sign-in-theme";
+import { type Theme, themeVars } from "./sign-in-theme";
 import type { ElvixSignInResult } from "./types";
-import { useOtpStart } from "./use-otp";
-import { Step, useSignInFlow } from "./use-sign-in-flow";
-import { useSignInReturns } from "./use-sign-in-returns";
-import { ELVIX_SDK_VERSION } from "./version";
-
-/** elvix marketing origin the "Secured by elvix" chip links to. In the
- *  monorepo this is `SITE_URL` (NEXT_PUBLIC_SITE_URL); here it's the
- *  canonical public origin. */
-const ELVIX_SITE_URL = "https://elvix.is";
 
 /**
  * Public ResponseDto shape surfaced to `onResult`. Single source of truth is
@@ -239,17 +212,21 @@ export type AuthFormProps = {
   width?: number | string;
   /** Theme override for the form's surface tokens. */
   theme?: Theme;
-  /** Hide the built-in header (logo + "Sign in to X" title + subtitle). */
+  /** Hide the built-in header (the logo and its one line). */
   showHeader?: boolean;
+  /**
+   * The one line under the logo on the entry step, in place of the title "Sign in to X":
+   * why the person signs in here ("Save events you love"). Later steps keep their own title.
+   */
+  headline?: React.ReactNode;
   /** Which verb the customer wants on the CTA + heading. Some brands
    *  prefer "Log in" (banks, B2B legacy); SaaS defaults to "Sign in". */
   signInVerb?: SignInVerb;
   /** Strip card bg + border + shadow so the form blends into its host. */
   transparentBg?: boolean;
-  /** Optional node rendered directly below the "Pick how you want to
-   *  continue" subtitle. Used for gate-state badges ("Private beta",
-   *  "Closed signups") so they sit inline with the form instead of
-   *  competing as a separate surface above the card. */
+  /** Optional node under the entry step's head, in place of the gate badge
+   *  ("Private beta", "Closed signups"; `null` hides it). Your reason for the
+   *  sign-in belongs in `headline`: the head is the logo plus one line. */
   belowHeading?: React.ReactNode;
   /** Optional pre-rendered node injected just under the methods, on
    *  the way to the "Secured by elvix" chip. Used for the
@@ -338,66 +315,14 @@ export type AuthFormProps = {
   redirectIfAuthenticated?: boolean;
 };
 
-type AppEnvelope = ReturnType<typeof useElvixApp>;
-
-// Every explicit prop wins (the Console live preview passes unsaved state);
-// the Console envelope from <ElvixProvider clientId> fills in the rest.
-
-function resolveIdentity(props: AuthFormProps, app: AppEnvelope) {
-  return {
-    mode: props.mode ?? "interactive",
-    appName: props.appName ?? app?.appName ?? "your app",
-    logoUrl: props.logoUrl ?? app?.logoUrl ?? null,
-    logoUrlDark: props.logoUrlDark ?? app?.logoUrlDark ?? null,
-    privacyPolicyUrl: props.privacyPolicyUrl ?? app?.privacyPolicyUrl ?? null,
-    termsOfServiceUrl: props.termsOfServiceUrl ?? app?.termsOfServiceUrl ?? null,
-    websiteUrl: props.websiteUrl ?? app?.websiteUrl ?? null,
-    intent: props.intent ?? "app",
-    clientId: props.clientId ?? app?.clientId ?? undefined,
-  } satisfies Partial<AuthFormProps>;
-}
-
-function resolveMethods(props: AuthFormProps, app: AppEnvelope) {
-  return {
-    methodGoogle: props.methodGoogle ?? app?.methodGoogle ?? false,
-    methodGithub: props.methodGithub ?? app?.methodGithub ?? false,
-    methodEmailOtp: props.methodEmailOtp ?? app?.methodEmailOtp ?? true,
-    methodPasskey: props.methodPasskey ?? app?.methodPasskey ?? false,
-    methodUsername: props.methodUsername ?? app?.methodUsername ?? false,
-    googleConfig:
-      props.googleConfig ?? (app?.googleConfig as AuthFormProps["googleConfig"]) ?? undefined,
-    googleClientId: props.googleClientId ?? app?.googleClientId ?? undefined,
-  } satisfies Partial<AuthFormProps>;
-}
-
-function resolveLook(props: AuthFormProps, app: AppEnvelope) {
-  return {
-    layout: props.layout ?? (app?.layout as AuthFormProps["layout"]) ?? "centered",
-    socialLayout:
-      props.socialLayout ?? (app?.socialLayout as AuthFormProps["socialLayout"]) ?? "stacked",
-    presentation:
-      props.presentation ?? (app?.presentation as AuthFormProps["presentation"]) ?? "card",
-    showHeader: props.showHeader ?? app?.showHeader ?? true,
-    transparentBg: props.transparentBg ?? app?.transparentBg ?? false,
-    signInVerb: props.signInVerb ?? (app?.signInVerb as AuthFormProps["signInVerb"]) ?? "signin",
-  } satisfies Partial<AuthFormProps>;
-}
-
+/**
+ * The card in a presentation of elvix's own: inline, a modal or a drawer. The card alone,
+ * for a host's own container, is `<ElvixSignInCard>` (0.25).
+ */
 export function ElvixSignInForm(props: AuthFormProps) {
-  // Pull the Console-configured envelope from <ElvixProvider clientId>.
-  // Every explicit prop wins (Console live-preview passes unsaved
-  // state); context fills in everything the customer omitted.
-  const app = useElvixApp();
-  const { theme, brandPair } = useSignInTheme(props.theme);
-  const resolved: AuthFormProps = {
-    ...props,
-    ...resolveIdentity(props, app),
-    ...resolveMethods(props, app),
-    ...resolveLook(props, app),
-    brandColor: props.brandColor ?? brandPair?.primary ?? "#5d4dff",
-    onBrandColor: props.onBrandColor ?? (props.brandColor ? undefined : brandPair?.on) ?? "#ffffff",
-    theme,
-  };
+  // Every explicit prop wins (Console live-preview passes unsaved state); the
+  // envelope from <ElvixProvider clientId> fills in everything the customer omitted.
+  const { resolved, theme } = useResolvedSignIn(props);
   // `framed` defaults to the dashed "This is a preview" wrapper ONLY when
   // the form is in preview mode. Customer-host renders (zp.edvone.dev,
   // any production sign-in) default to unframed so the banner never
@@ -412,7 +337,7 @@ export function ElvixSignInForm(props: AuthFormProps) {
     return <OverlayPresentation resolved={resolved} presentation={presentation} theme={theme} />;
   }
 
-  const card = <AuthCard {...resolved} />;
+  const card = <AuthCard {...resolved} surface={CardSurface.INLINE} />;
   let content: React.ReactNode = card;
   if (presentation === "drawer") {
     content = <DrawerPresentation>{card}</DrawerPresentation>;
@@ -639,7 +564,7 @@ function ModalOverlay({
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
             transition={{ type: "spring", stiffness: 380, damping: 34 }}
           >
-            <AuthCard {...resolved} overlay onResult={onResult} />
+            <AuthCard {...resolved} surface={CardSurface.OVERLAY} onResult={onResult} />
           </motion.div>
         </div>
       )}
@@ -705,7 +630,7 @@ function DrawerOverlay({
           <div className="min-h-0 overflow-y-auto pb-4">
             <AuthCard
               {...resolved}
-              overlay
+              surface={CardSurface.OVERLAY}
               transparentBg
               width={resolvedWidth}
               onResult={onResult}
@@ -733,164 +658,6 @@ function trapTab(e: KeyboardEvent, panel: HTMLElement | null): void {
     e.preventDefault();
     first?.focus();
   }
-}
-
-/** The SDK version, one component for every presentation. */
-function VersionLabel() {
-  return (
-    <span className="text-[9px] tracking-wide text-fg-3 opacity-60 tabular-nums">
-      v{ELVIX_SDK_VERSION}
-    </span>
-  );
-}
-
-/** `overlay`: the card floats on a dimmed backdrop (modal, drawer), where the
- *  version would be unreadable below it, so it sits on the card surface. */
-function AuthCard(props: AuthFormProps & { overlay?: boolean }) {
-  const t = useT();
-  const { transparentBg = false, overlay = false } = props;
-  // Fixed width regardless of layout/appearance — the card never reflows wider
-  // just because the header switched to "left" or "banner". One width everywhere
-  // (Console preview, hosted page, customer host).
-  const cardClass = transparentBg
-    ? "mx-auto w-full max-w-[420px] overflow-hidden"
-    : "mx-auto w-full max-w-[420px] rounded-[14px] bg-surface shadow-[0_2px_8px_rgba(0,0,0,0.04),0_20px_40px_-20px_rgba(0,0,0,0.12)] border border-border-base overflow-hidden";
-  // `width` (when set) overrides the default 420px cap — inline style wins over
-  // the max-w-[420px] class. Lets a host widen the card / modal / drawer.
-  // The brand variables ride on the card itself: the modal and drawer portal
-  // out of the provider's root, where `--elvix-primary` would not exist and
-  // every focus ring fell back to a default colour.
-  const cardStyle: React.CSSProperties = {
-    ...(props.brandColor ? brandCssVars(props.brandColor, props.onBrandColor ?? "#ffffff") : {}),
-    ...(props.width !== undefined ? { maxWidth: props.width } : {}),
-  };
-  return (
-    <>
-      <div className={cardClass} style={cardStyle}>
-        {/* Same px-7 in both modes so the `banner` header's `-mx-7 -mt-7`
-            bleed lands exactly on the card edge (drawer/transparent included)
-            instead of floating inset. transparentBg only trims the bottom. */}
-        <div className={transparentBg ? "px-7 pt-7 pb-3" : "px-7 py-7"}>
-          <AuthBody {...props} />
-        </div>
-        <div
-          className={
-            (transparentBg ? "mt-3 " : "border-t border-border-base bg-surface-hover px-7 py-3 ") +
-            "flex flex-col items-center justify-center gap-2"
-          }
-        >
-          <a
-            href={ELVIX_SITE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 pl-1.5 pr-2.5 py-1 rounded-full bg-surface ring-1 ring-border-base shadow-sm hover:bg-surface-hover hover:ring-border-strong transition"
-          >
-            <span className="relative inline-flex items-center">
-              <ElvixLogo size={12} className="text-fg-1" />
-              <span
-                aria-hidden
-                className="absolute -right-px -top-px size-1 rounded-full bg-emerald-500 ring-1 ring-surface"
-              />
-            </span>
-            <span className="text-[11px] tracking-tight leading-none">
-              <span className="text-fg-3">{t("signin.securedBy")}</span>
-              <span className="font-semibold text-fg-1">elvix</span>
-            </span>
-          </a>
-          {overlay && <VersionLabel />}
-        </div>
-      </div>
-      {/* Inline, the version sits BELOW the card; on an overlay it is inside. */}
-      {!overlay && (
-        <div className="mt-2.5 text-center leading-none">
-          <VersionLabel />
-        </div>
-      )}
-    </>
-  );
-}
-
-/**
- * The card's content: header, the current step, the host's `belowMethods`
- * slot, and the legal footer. Every step renders inside the same card, with
- * no URL hop: a host embeds `<ElvixSignInForm />` and the user finishes the
- * whole flow, onboarding included, without leaving it.
- */
-function AuthBody(p: AuthFormProps) {
-  const { baseUrl } = useElvixContext();
-  const sessionStatus = useElvixSession();
-  // The Console envelope, for what the form does not thread through as props
-  // (the signinGate behind the default badge).
-  const appCtx = useElvixApp();
-  const t = useT();
-  const isPreview = p.mode === "preview";
-  const intent = p.intent ?? "app";
-  const flow = useSignInFlow({
-    intent,
-    redirectAfterSignIn: p.redirectAfterSignIn,
-    onResult: p.onResult,
-    onAuthenticated: p.onAuthenticated,
-    navigate: p.navigate ?? true,
-    allowedOrigins: appCtx?.allowedOrigins,
-    previewStep: isPreview ? p.previewStep : undefined,
-  });
-  useSignInReturns({
-    flow,
-    baseUrl,
-    isPreview,
-    redirectIfAuthenticated: p.redirectIfAuthenticated ?? false,
-    sessionStatus,
-    t,
-    onResult: p.onResult,
-  });
-  const otp = useOtpStart({
-    flow,
-    baseUrl,
-    intent,
-    clientId: p.clientId,
-    isPreview,
-    methodEmailOtp: Boolean(p.methodEmailOtp),
-    methodUsername: Boolean(p.methodUsername),
-    t,
-  });
-
-  // SSO silent-resume: while the opted-in session probe runs, hold a loader
-  // so a signed-in user never sees the form flash before being sent on.
-  if (p.redirectIfAuthenticated && !isPreview && sessionStatus === ElvixSessionStatus.LOADING) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-3 py-10">
-        <Loader2 className="size-5 animate-spin text-fg-3" />
-        <p className="text-[13px] text-fg-3">{t("signin.signingYouIn")}</p>
-      </div>
-    );
-  }
-
-  const cta = { brand: p.brandColor, onBrand: p.onBrandColor ?? "#ffffff" };
-  const shared = { flow, baseUrl, isPreview, cta };
-  return (
-    <>
-      {(p.showHeader ?? true) && (
-        <SignInHeader p={p} flow={flow} identifier={otp.identifier} gate={appCtx?.signinGate} />
-      )}
-      {flow.step === Step.AUTHENTICATING ? (
-        <AuthenticatingPane brandColor={p.brandColor} appName={p.appName} />
-      ) : flow.step === Step.CODE ? (
-        <CodeStep {...shared} otp={otp} />
-      ) : flow.step === Step.USERNAME ? (
-        <UsernameStep {...shared} />
-      ) : flow.step === Step.PASSKEY ? (
-        <PasskeyStep {...shared} p={p} />
-      ) : flow.step === Step.RECOVER ? (
-        <RecoverStep flow={flow} baseUrl={baseUrl} />
-      ) : (
-        <IdentifierStep {...shared} otp={otp} p={p} />
-      )}
-      {/* The host's text links for gated surfaces ("Request access"), on the
-          entry step only, where they do not compete with an active flow. */}
-      {flow.step === Step.IDENTIFIER && p.belowMethods}
-      <LegalFooter p={p} />
-    </>
-  );
 }
 
 export function FramedPreview({ children }: { children: React.ReactNode }) {

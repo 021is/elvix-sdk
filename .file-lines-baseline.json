@@ -14,7 +14,7 @@
   "src/react/elvix-region.tsx": 939,
   "src/react/elvix-sessions.tsx": 665,
   "src/react/elvix-sign-in-button.tsx": 312,
-  "src/react/elvix-sign-in-form.tsx": 935,
+  "src/react/elvix-sign-in-form.tsx": 702,
   "src/react/elvix-sign-out-button.tsx": 486,
   "src/react/elvix-username.tsx": 681,
   "src/react/google-one-tap.tsx": 348,
@@ -22,7 +22,7 @@
   "src/react/passkey.ts": 345,
   "src/react/regions.ts": 324,
   "src/react/session.ts": 425,
-  "src/react/sign-in-steps.tsx": 932,
+  "src/react/sign-in-steps.tsx": 889,
   "src/react/tax-validation.ts": 408,
   "tests/helpers/fake-elvix.ts": 394
 }

@@ -59,7 +59,9 @@ allowed only to shrink; nothing new is ever recorded.
 **Add none, and leave every file you touch better than you found it**: a file over a limit
 that a change touches pays some of it in that change (split it, move a pure helper out); say
 what was left and why. On 2026-10-28 the sign-in files paid this way: `use-sign-in-flow.ts`
-(551 lines before its split), `elvix-sign-in-form.tsx` (989 → 935), `sign-in-steps.tsx`
+(551 lines before its split), `elvix-sign-in-form.tsx` (989 → 935; 702 in 0.25, the card
+and its content moved to `elvix-sign-in-card.tsx` and `sign-in-card-body.tsx`, its complexity
+exemption gone), `sign-in-steps.tsx`
 (1012 → 933), and `CHANGELOG.md` (844 → 225; its older releases are in `docs/changelog/`,
 and move there whenever it passes 300 again).
 

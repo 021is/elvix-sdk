@@ -28,6 +28,7 @@ import {
   type Translator,
   usernameReasonLabel,
 } from "./sign-in-copy";
+import { headerSubtitle, headerTitle } from "./sign-in-header-copy";
 import { unwrapEnvelope } from "./spine-fetch";
 import { type OtpStart, useOtpVerify } from "./use-otp";
 import { postJson, type SignInFlow, Step } from "./use-sign-in-flow";
@@ -115,49 +116,6 @@ function GateBadge({ gate, t }: { gate: string | undefined; t: Translator }) {
   );
 }
 
-/** A step's title, in the card's header and above a compact block's onboarding step. */
-export function headerTitle(
-  step: Step,
-  p: AuthFormProps,
-  recoverApp: string | undefined,
-  t: Translator,
-) {
-  const app = p.appName || t("signin.appNameFallback");
-  switch (step) {
-    case Step.CODE:
-      return t("export.doneTitle");
-    case Step.USERNAME:
-      return t("username.title");
-    case Step.PASSKEY:
-      return t(
-        p.signInVerb === "login"
-          ? "signin.passkeyOnboardingTitleLogin"
-          : "signin.passkeyOnboardingTitleSignin",
-      );
-    case Step.RECOVER:
-      return t("signin.recoverTitle", {
-        app: recoverApp ?? p.appName ?? t("signin.appNameFallback"),
-      });
-    default:
-      return t(p.signInVerb === "login" ? "signin.titleLogin" : "signin.title", { app });
-  }
-}
-
-export function headerSubtitle(step: Step, p: AuthFormProps, identifier: string, t: Translator) {
-  switch (step) {
-    case Step.CODE:
-      return t("signin.codeSentSubtitle", { email: identifier });
-    case Step.USERNAME:
-      return p.appName ? t("username.subtitle", { app: p.appName }) : t("username.subtitleNoApp");
-    case Step.PASSKEY:
-      return t("signin.passkeyOnboardingSubtitle");
-    case Step.RECOVER:
-      return t("signin.recoverSubtitle");
-    default:
-      return t("signin.identifierSubtitle");
-  }
-}
-
 const HEADER_LAYOUT: Record<string, string> = {
   left: "flex items-center text-left",
   banner:
@@ -178,6 +136,8 @@ export function SignInHeader({
 }) {
   const t = useT();
   const layout = p.layout ?? "centered";
+  const entry = flow.step === Step.IDENTIFIER;
+  const subtitle = headerSubtitle(flow.step, p, identifier, t);
   return (
     <div
       className={`gap-3 mb-6 ${HEADER_LAYOUT[layout] ?? HEADER_LAYOUT.centered}`}
@@ -190,15 +150,12 @@ export function SignInHeader({
       <BrandMark p={p} />
       <div>
         <div className="text-[18px] font-semibold tracking-tight text-fg-1">
-          {headerTitle(flow.step, p, flow.recover?.appName, t)}
+          {(entry && p.headline) || headerTitle(flow.step, p, flow.recover?.appName, t)}
         </div>
-        <div className="text-[12.5px] text-fg-3 mt-0.5">
-          {headerSubtitle(flow.step, p, identifier, t)}
-        </div>
+        {subtitle && <div className="text-[12.5px] text-fg-3 mt-0.5">{subtitle}</div>}
         {/* Only on the pick-a-method step; the host's belowHeading wins, and
             belowHeading={null} opts out of the default gate badge. */}
-        {flow.step === Step.IDENTIFIER &&
-          (p.belowHeading !== undefined ? p.belowHeading : <GateBadge gate={gate} t={t} />)}
+        {entry && (p.belowHeading !== undefined ? p.belowHeading : <GateBadge gate={gate} t={t} />)}
       </div>
     </div>
   );

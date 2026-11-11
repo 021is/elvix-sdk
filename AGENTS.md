@@ -32,7 +32,7 @@ Public elvix SDK. Lives at github.com/021is/elvix-sdk. npm-published under `@elv
 - **The host must see a sign-in when it happens** (0.14). `finishSignIn` awaits the provider's `refresh()` before `onResult`; `endLocalSession()` and another tab's `storage` event refresh it too (`announceSessionChange`). A sign-in does not announce mid-onboarding, or `redirectIfAuthenticated` would skip the gate. Only the latest `sdk-context` read may settle.
 - **Panes stack with `gap`, never `space-y`** (0.14, `pane-layout.ts`). `space-y` is a margin on the children and one `m-0` child (the OTP fieldset) cancelled it. `tests/pane-spacing.test.ts` fails on any `space-x/y` in a pane.
 - **Colours that show state come from `--elvix-primary`** (0.14); no literal purple outside elvix's own mark (`tests/brand-colors.test.ts`). **Every text field is `.elvix-field`** (0.22): a tint, a deeper brand tint on focus, never a border or ring; `BRAND_FOCUS` and its bordered boxes are gone, and `tests/field-look.test.tsx` fails on an input or textarea without the field look. Buttons keep their focus ring. The sign-in card re-installs the brand variables because the modal and drawer portal out of the provider. Tailwind classes are full literals, never built by interpolation, or the CSS is not generated.
-- **The translation CDN must hold every key a release reads** (0.14). `scripts/sync-catalogs.mjs` uploads the catalogs to R2 and `--check` reads them back from elvix.is; `publish.yml` runs both before `npm publish`. A new key goes into all 15 catalogs (`catalogs.test.ts`) and must exist for every `t()` literal (`catalog-keys.test.ts`). Run the sync yourself after adding keys if a host needs them before a release.
+- **The translation CDN must hold every key a release reads** (0.14). `scripts/sync-catalogs.mjs` uploads the catalogs to R2 and `--check` reads them back from elvix.is; `publish.yml` runs both before `npm publish`. A new key goes into all 15 catalogs (`catalogs.test.ts`) and must exist for every `t()` literal (`catalog-keys.test.ts`). Run the sync yourself after adding keys if a host needs them before a release. **The CDN is one copy for every release** (`elvix/main/<locale>.json`), so a key the source stops reading stays until no host in use reads it: `signin.identifierSubtitle` (unread since 0.25, still read by 0.24 and older) leaves all 15 catalogs once DanceClub web and team are on 0.25 or later.
 
 - **A redirect return that carries a step must be shown** (0.14.3). A redirect reloads the page, so the modal is closed on return and nothing is mounted to render the step; `consumeElvixReturnToken` records it (`isOnboardingPending`), the modal / drawer form opens itself on it (`resumeOnReturn`), `<ElvixOnboarding>` is the standalone surface, and `useElvixOnboarding()` lets a host build its own. While a step is pending the provider reports the session as ANONYMOUS; `finishSignIn` clears it. In-frame methods (email code, username, passkey) never reload, so they are not affected. `tests/redirect-return-onboarding.test.tsx` and `tests/onboarding-component.test.tsx` pin it.
 
@@ -51,6 +51,14 @@ not because the code was too hard to fix. Every other rule is `error`.
 
 `noLabelWithoutControl` is on, with `ElvixInput` / `ElvixDateInput` / `ElvixTaxIdInput` declared as
 input components: they render a native `<input>`, which biome cannot see through.
+
+- **One sign-in card for every container** (0.25). `<ElvixSignInForm>`'s inline card, modal
+  and drawer and `<ElvixSignInCard>` (a host's own sheet) all draw `AuthCard`
+  (`elvix-sign-in-card.tsx`, its content `sign-in-card-body.tsx`). A change to the card is
+  made there, once. The card file never imports the form at runtime (types only): a host
+  showing only the card ships no overlay and no `vaul` (`tests/bundle-split.test.ts`). The
+  entry step's head is the logo plus one line, the title or the host's `headline` (Edvard,
+  2026-11-11); `tests/sign-in-head.test.tsx` pins it.
 
 ## Component tests
 

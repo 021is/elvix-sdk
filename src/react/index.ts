@@ -103,6 +103,8 @@ export { ElvixSecuredBadge } from "./elvix-secured-badge";
 // Account lifecycle
 export { ElvixSessions } from "./elvix-sessions";
 export { ElvixSignInButton } from "./elvix-sign-in-button";
+// The card alone, for a host's own sheet, page or dialog (0.25): the host owns the container.
+export { ElvixSignInCard, type ElvixSignInCardProps } from "./elvix-sign-in-card";
 // `ElvixSignIn` is now an ALIAS of `ElvixSignInForm` — the bare low-level
 // variant was removed (it was never the recommended surface). Both names
 // resolve to the same branded form so existing imports keep working without
