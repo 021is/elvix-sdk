@@ -1,10 +1,12 @@
 "use client";
 
-import type React from "react";
+import { type CSSProperties, useRef } from "react";
 import { useT } from "../locale/use-t";
+import { cardLookVars, mergeCardStyle } from "./card-look";
 import { ElvixLogo } from "./elvix-logo";
-import { brandCssVars, useElvixApp } from "./elvix-provider";
+import { brandCssVars, useElvixApp, useElvixCardStyle } from "./elvix-provider";
 import type { AuthFormProps } from "./elvix-sign-in-form";
+import { useKeepFieldsInView } from "./keyboard";
 import { SignInCardBody } from "./sign-in-card-body";
 import { type Theme, themeVars, useSignInTheme } from "./sign-in-theme";
 import { ELVIX_SDK_VERSION } from "./version";
@@ -174,27 +176,44 @@ function cardClass(transparentBg: boolean, surface: CardSurface): string {
     : "mx-auto w-full max-w-[420px] rounded-[14px] bg-surface shadow-[0_2px_8px_rgba(0,0,0,0.04),0_20px_40px_-20px_rgba(0,0,0,0.12)] border border-border-base overflow-hidden";
 }
 
+/** The card's type and spacing variables: the card's `cardStyle`, the provider's, the
+ *  Console's, key by key (0.26), every one set so no ancestor's value reaches the card. */
+function useCardLookVars(own: AuthFormProps["cardStyle"], bordered: boolean) {
+  const provider = useElvixCardStyle();
+  const app = useElvixApp();
+  return cardLookVars(mergeCardStyle({ card: own, provider, console: app?.cardStyle }), bordered);
+}
+
 /** The card every presentation shows, on its `surface`. */
 export function AuthCard(props: AuthFormProps & { surface: CardSurface }) {
   const { transparentBg = false, surface } = props;
   const versionInside = surface !== CardSurface.INLINE;
-  // The brand variables ride on the card itself: the modal and drawer portal out of the
-  // provider's root, where `--elvix-primary` would not exist. `width` overrides the 420 px cap.
-  const cardStyle: React.CSSProperties = {
+  const lookVars = useCardLookVars(props.cardStyle, !transparentBg);
+  const body = useRef<HTMLDivElement | null>(null);
+  useKeepFieldsInView(body);
+  // The brand and look variables ride on the card itself: the modal and drawer portal out of
+  // the provider's root, where `--elvix-primary` would not exist. `width` overrides 420 px.
+  const cardStyle: CSSProperties = {
+    ...lookVars,
     ...(props.brandColor ? brandCssVars(props.brandColor, props.onBrandColor ?? "#ffffff") : {}),
     ...(props.width !== undefined && surface !== CardSurface.FILL ? { maxWidth: props.width } : {}),
   };
   return (
     <>
       <div className={cardClass(transparentBg, surface)} style={cardStyle}>
-        {/* Same px-7 in every mode so the `banner` header's `-mx-7 -mt-7` bleed lands on
-            the card edge; transparentBg only trims the bottom. */}
-        <div className={transparentBg ? "px-7 pt-7 pb-3" : "px-7 py-7"}>
+        {/* One inset in every mode, so the `banner` header's bleed lands on the card edge.
+            The app's text font is the body's; the chip below keeps the page's, it is elvix's. */}
+        <div
+          ref={body}
+          data-elvix-card-body=""
+          className="px-(--elvix-card-px) pt-(--elvix-card-pt) pb-(--elvix-gap-footer) [font-family:var(--elvix-font-text)]"
+        >
           <SignInCardBody p={props} />
         </div>
         <div
+          data-elvix-card-footer=""
           className={
-            (transparentBg ? "mt-3 " : "border-t border-border-base bg-surface-hover px-7 py-3 ") +
+            (transparentBg ? "" : "border-t border-border-base bg-surface-hover px-7 py-3 ") +
             "flex flex-col items-center justify-center gap-2"
           }
         >

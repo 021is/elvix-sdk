@@ -97,7 +97,6 @@
         "src/react/legal-entity-wizard-views.tsx",
         "src/react/lifecycle-watcher.tsx",
         "src/react/session.ts",
-        "src/react/sign-in-steps.tsx",
         "tests/catalogs.test.ts"
       ],
       "linter": {

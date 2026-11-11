@@ -10,10 +10,10 @@ import {
   useElvixSession,
 } from "./elvix-provider";
 import type { AuthFormProps } from "./elvix-sign-in-form";
+import { IdentifierStep } from "./sign-in-identifier-step";
 import {
   AuthenticatingPane,
   CodeStep,
-  IdentifierStep,
   LegalFooter,
   PasskeyStep,
   RecoverStep,
@@ -44,7 +44,7 @@ function StepPane({ p, flow, otp, baseUrl }: StepPaneProps): ReactElement {
     case Step.RECOVER:
       return <RecoverStep flow={flow} baseUrl={baseUrl} />;
     case Step.IDENTIFIER:
-      return <IdentifierStep {...shared} otp={otp} p={p} />;
+      return <IdentifierStep flow={flow} baseUrl={baseUrl} cta={cta} otp={otp} p={p} />;
   }
 }
 
@@ -108,10 +108,12 @@ export function SignInCardBody({ p }: { p: AuthFormProps }) {
       )}
       <StepPane p={p} flow={flow} otp={otp} baseUrl={baseUrl} />
       {/* The host's line under the methods (a tagline, "Request access"), on the entry step
-          only, where it does not compete with an active flow; the legal line's 20 px above
-          it, or it sat glued to Continue (Edvard, 2026-11-11). */}
+          only, where it does not compete with an active flow; `gapButtonSlot` above it (20 px
+          by default), or it sat glued to Continue (Edvard, 2026-11-11). */}
       {flow.step === Step.IDENTIFIER && p.belowMethods && (
-        <div className="mt-5">{p.belowMethods}</div>
+        <div data-elvix-below-methods="" className="mt-(--elvix-gap-button-slot)">
+          {p.belowMethods}
+        </div>
       )}
       <LegalFooter p={p} />
     </>

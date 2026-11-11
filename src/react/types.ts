@@ -4,7 +4,10 @@
  * private elvix internals.
  */
 
+import type { ElvixCardStyle } from "../types/card-style";
 import type { ElvixCopy } from "./copy";
+import type { Pronouns } from "./identity-schema";
+import type { LanguageLevel } from "./languages";
 
 export type ElvixBrand = {
   light: { primary: string; on: string };
@@ -80,6 +83,54 @@ export type ElvixBootstrapEnvelope = {
    * defaults. A `copy` prop on the component overrides these in turn.
    */
   strings?: Partial<ElvixCopy>;
+  /**
+   * The app's type and spacing on the sign-in card, set in the Console (elvix 0.26+;
+   * `undefined` or `null` from an older server or an app that set none). Wire data: the
+   * card checks every value again before it uses one.
+   */
+  cardStyle?: ElvixCardStyle | null;
+};
+
+/**
+ * Per-app user envelope returned by
+ * `GET /api/account/apps/<clientId>/sdk-context`. The provider fetches it on
+ * mount alongside the public bootstrap whenever a session is present (cookie
+ * same-origin, bearer cross-origin). Mirrors the monorepo `ElvixAppContext`
+ * shape exactly so the ported `<Elvix*>` identity / account components read
+ * `useElvixAppContext()` and skip the `appId` / `appName` / `current` /
+ * `membership` props a host would otherwise thread down. `null` while loading,
+ * with no `clientId`, or when there's no user session (the SDK falls back to
+ * its empty / "sign in to see this" state).
+ */
+export type ElvixAppContext = {
+  user: {
+    id: string;
+    /** Display name, derived by elvix from given + family name. */
+    name: string | null;
+    email: string | null;
+    avatarUrl: string | null;
+    /** Identity summary (elvix 2026-09-18+; `undefined` from an older
+     *  server). Birthdate and gender are deliberately not here;
+     *  `<ElvixIdentityForm>` reads them itself. */
+    givenName?: string | null;
+    familyName?: string | null;
+    pronouns?: Pronouns | null;
+    /** The user's languages, in the order `<ElvixLanguages>` lists them
+     *  (elvix 2026-09-18+). */
+    languages?: { code: string; level: LanguageLevel }[];
+  };
+  membership: {
+    username: string | null;
+    status: string;
+    inactiveAt: string | null;
+    inactivatedBy: string | null;
+    deletedAt: string | null;
+    deletedBy: string | null;
+    avatarSizes: number[];
+    avatarUpdatedAt: string;
+    bannerSizes: number[];
+    bannerUpdatedAt: string;
+  } | null;
 };
 
 export type ElvixSignInResultOk = {

@@ -32,6 +32,8 @@
  */
 
 export type { ElvixActionResult, ElvixUser, ElvixVerifyResult } from "../types/index";
+// The sign-in card's type and spacing (0.26): `cardStyle` on the provider or a card.
+export { CARD_STYLE_RANGES, type ElvixCardStyle } from "./card-look";
 export type { ElvixCopy } from "./copy";
 // Editable sign-in copy. Primary source is the elvix Console (served live in
 // the bootstrap `strings`); the `copy` prop on ElvixSignIn is a thin per-embed
@@ -93,6 +95,7 @@ export {
   useElvixAnimated,
   useElvixApp,
   useElvixAppContext,
+  useElvixCardStyle,
   useElvixContext,
   useElvixRefresh,
   useElvixSession,

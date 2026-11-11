@@ -208,15 +208,17 @@ describe("<ElvixSignInCard>'s flow", () => {
 
   it("gives the host's line under the methods room of its own", async () => {
     // Edvard, 2026-11-11, DanceClub's tagline glued to Continue: "I hope this is going to
-    // get fixed soon". It gets the legal line's 20 px.
+    // get fixed soon". It gets `gapButtonSlot`, 20 px unless the app sets it (0.26).
     installFakeElvix({ context: null });
-    render(
+    const { container } = render(
       <Provider>
         <ElvixSignInCard navigate={false} belowMethods={<p>Nobody dances alone.</p>} />
       </Provider>,
     );
     const line = await screen.findByText("Nobody dances alone.");
-    expect(line.parentElement?.className).toContain("mt-5");
+    expect(line.parentElement?.className).toContain("mt-(--elvix-gap-button-slot)");
+    const card = container.querySelector<HTMLElement>("[data-elvix-card-body]")?.parentElement;
+    expect(card?.style.getPropertyValue("--elvix-gap-button-slot")).toBe("20px");
   });
 
   it("wears the provider's pinned theme", async () => {

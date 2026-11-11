@@ -17,7 +17,7 @@
  */
 
 import { Loader2 } from "lucide-react";
-import type { CSSProperties, ReactNode } from "react";
+import { type CSSProperties, type ReactNode, useRef } from "react";
 import { brandCssVars } from "./elvix-provider";
 import { EmailCodeOnboarding } from "./email-code-onboarding";
 import {
@@ -26,6 +26,7 @@ import {
   type ElvixEmailCodeClassNames,
   type PaneLook,
 } from "./email-code-panes";
+import { canAutoFocus, useKeepFieldsInView } from "./keyboard";
 import type { Cta } from "./sign-in-controls";
 import { type Theme, themeVars, useSignInTheme } from "./sign-in-theme";
 import type { ElvixSignInResult, ElvixSignInResultOk } from "./types";
@@ -62,7 +63,8 @@ export type ElvixEmailCodeSignInProps = {
    * sign-in. Restoring a membership is never put off.
    */
   deferOnboarding?: boolean;
-  /** Focus the code boxes (or the email field) when they appear. Default true. */
+  /** Focus the code boxes (or the email field) when they appear. Default true; never on a
+   *  touch screen, where it would throw the keyboard up unasked (0.26). */
   autoFocus?: boolean;
   /** "preview" draws the block with `email` and demo state: no request, no email sent. */
   mode?: "interactive" | "preview";
@@ -91,7 +93,10 @@ export function ElvixEmailCodeSignIn(props: ElvixEmailCodeSignInProps) {
       brand: brandPair?.primary ?? "var(--elvix-primary)",
       onBrand: brandPair?.on ?? "var(--elvix-on-primary)",
     },
-    look: { classNames: props.classNames ?? {}, autoFocus: props.autoFocus ?? true },
+    look: {
+      classNames: props.classNames ?? {},
+      autoFocus: (props.autoFocus ?? true) && canAutoFocus(),
+    },
   };
   // A new address is a new sign-in: fresh state, its own code.
   return <EmailCodeBody key={props.email} {...props} {...frame} />;
@@ -127,9 +132,11 @@ function Header({ p }: { p: ElvixEmailCodeSignInProps }) {
 
 function EmailCodeBody(p: ElvixEmailCodeSignInProps & Look) {
   const state = useEmailCode(p);
+  const root = useRef<HTMLDivElement | null>(null);
+  useKeepFieldsInView(root);
   // One column, one gap: a hidden title or line leaves no margin behind.
   return (
-    <div className={`flex flex-col gap-4 ${p.className ?? ""}`} style={p.style}>
+    <div ref={root} className={`flex flex-col gap-4 ${p.className ?? ""}`} style={p.style}>
       {state.signedIn ? (
         p.signedIn
       ) : (

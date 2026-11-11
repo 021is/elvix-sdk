@@ -162,6 +162,7 @@ export function CompactEmailPane(p: EmailPaneProps) {
         type="email"
         autoComplete="email"
         inputMode="email"
+        enterKeyHint="go"
         autoFocus={!isPreview && p.look.autoFocus}
         value={otp.identifier}
         disabled={isPreview || otp.sending}

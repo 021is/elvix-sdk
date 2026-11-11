@@ -6,6 +6,8 @@
  *                          get a typed `ElvixWebhookEvent` back
  *   - `getElvixLegalEntity` the legal entity a user picked for your app,
  *                          read by id with your API key (0.18)
+ *   - `CARD_STYLE_RANGES`  the sign-in card's type and spacing tokens, for a
+ *                          server that validates them (elvix's own API, 0.26)
  */
 
 import type { ElvixVerifyResult } from "./types/index";
@@ -22,6 +24,20 @@ export type { GetLegalEntityArgs } from "./server/legal-entity";
 export { getElvixLegalEntity } from "./server/legal-entity";
 export type { VerifyWebhookArgs } from "./server/webhook";
 export { verifyElvixWebhook } from "./server/webhook";
+// The sign-in card's type and spacing tokens, for a server validating a Console value (0.26).
+export {
+  BORDERED_GAP_FOOTER,
+  CARD_STYLE_RANGES,
+  CARD_STYLE_TOKENS,
+  type CardStyleRange,
+  type CardStyleToken,
+  CONSOLE_FONT_NAME,
+  clampCardToken,
+  type ElvixCardStyle,
+  isCardStyleToken,
+  isCardTokenInRange,
+  isConsoleFontName,
+} from "./types/card-style";
 export type {
   ElvixLegalEntity,
   ElvixLegalEntityPurpose,

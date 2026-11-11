@@ -136,6 +136,8 @@ export function OtpInput({
           type="text"
           inputMode="numeric"
           autoComplete="one-time-code"
+          // The phone keyboard's action key: on to the next box, "go" on the last (0.26).
+          enterKeyHint={i < OTP_LENGTH - 1 ? "next" : "go"}
           maxLength={OTP_LENGTH}
           value={digits[i]}
           disabled={disabled}

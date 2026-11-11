@@ -55,11 +55,9 @@ const decodeDescriptors = (list: CredentialDescriptorJSON[] | undefined) =>
 
 const errorMessage = (e: unknown) => (e instanceof Error ? e.message : undefined);
 
-/**
- * POST JSON to an elvix route that answers with the Spine envelope. A non-2xx
- * or `success: false` becomes the envelope's `errorMessage`, else `fallback`;
- * a network or parse failure becomes `network`.
- */
+/** POST JSON to an elvix route answering with the Spine envelope. A non-2xx or `success:
+ *  false` is the envelope's `errorMessage`, else `fallback`; a network or parse failure,
+ *  `network`. */
 async function postEnvelope<T>(url: string, init: RequestInit, fallback: string): Promise<Step<T>> {
   try {
     const res = await elvixFetch(url, { method: "POST", ...init });
@@ -107,20 +105,29 @@ type AssertionJSON = {
   };
 };
 
-/**
- * A successful sign-in carries the finisher's whole landing: a passkey skips
- * the passkey gate, not the username or restore steps, so dropping
- * `next_step` here skipped them and navigated to "/" instead of `final`.
- */
+/** A successful sign-in carries the finisher's whole landing: a passkey skips the passkey
+ *  gate, not the username or restore steps; dropping `next_step` skipped them (to "/"). */
 export type PasskeySignInResult =
   | { ok: true; landing: Landing }
   | { ok: false; error: string; message?: string };
 
+/** How the browser asks: `"conditional"` offers the passkeys in the identifier field's
+ *  autofill instead of a dialog (0.26), ended through `signal`; `onPicked` runs once the
+ *  person chose one. Default: a dialog. */
+export type PasskeyCeremony = {
+  mediation?: CredentialMediationRequirement;
+  signal?: AbortSignal;
+  onPicked?: () => void;
+};
+
 async function promptAssertion(
   options: AuthnOptionsJSON,
+  { mediation, signal }: PasskeyCeremony,
 ): Promise<{ ok: true; assertion: AssertionJSON } | Failure> {
   try {
     const cred = (await navigator.credentials.get({
+      mediation,
+      signal,
       publicKey: {
         challenge: b64urlToBuf(options.challenge),
         timeout: options.timeout,
@@ -152,25 +159,16 @@ async function promptAssertion(
   }
 }
 
-/**
- * Run the full cross-origin passkey sign-in against `baseUrl` for `clientId`.
- *
- * 1. POST `/api/auth/passkey/sign-in/start` → authentication options.
- * 2. `navigator.credentials.get` → assertion.
- * 3. POST `/api/auth/passkey/sign-in/finish` → session token (cross-origin).
- *
- * On success the token is stored via `setElvixToken` and returned. User-cancel
- * / no-credential resolve to `{ ok:false, error:"passkey_cancelled" }`; nothing
- * throws past this boundary.
- */
+/** The full passkey sign-in against `baseUrl` for `clientId`: POST `sign-in/start`, the
+ *  browser's prompt as `ceremony` says, POST `sign-in/finish` (its token kept with
+ *  `setElvixToken`). A cancel, an abort or no credential is `passkey_cancelled`. Never throws. */
 export async function runPasskeySignIn(
   baseUrl: string,
   clientId: string | undefined,
   intent: string = "app",
+  ceremony: PasskeyCeremony = {},
 ): Promise<PasskeySignInResult> {
-  // First-party surfaces (elvix's own account / console sign-in on elvix.is)
-  // authenticate the identity itself, not an app membership — they have no
-  // external clientId. Only the external-app path requires one.
+  // Only an app sign-in needs a clientId: elvix's own account and Console sign the identity in.
   if (intent === "app" && !clientId) {
     return { ok: false, error: "missing_client_id", message: "ElvixProvider needs a clientId." };
   }
@@ -192,8 +190,9 @@ export async function runPasskeySignIn(
   if (!start.ok) return start;
   if (!start.data?.options) return { ok: false, error: "passkey_start_failed" };
 
-  const prompt = await promptAssertion(start.data.options);
+  const prompt = await promptAssertion(start.data.options, ceremony);
   if (!prompt.ok) return prompt;
+  ceremony.onPicked?.();
 
   const finish = await postEnvelope<Landing>(
     `${baseUrl}/api/auth/passkey/sign-in/finish`,
@@ -201,8 +200,7 @@ export async function runPasskeySignIn(
     "passkey_verify_failed",
   );
   if (!finish.ok) return finish;
-  // Cross-origin: store the session token returned in the body (no cookie is
-  // set on a third-party origin) so every later SDK call carries it.
+  // Cross-origin the token comes in the body (no third-party cookie): every later call sends it.
   if (finish.data?.token) setElvixToken(finish.data.token);
   return { ok: true, landing: finish.data ?? {} };
 }

@@ -1,30 +1,27 @@
 "use client";
 
 /**
- * The panes of `<ElvixSignInForm>`: header, identifier (social buttons and
- * email / username), code, the username and passkey onboarding steps, the
- * recovery gate, and the legal footer. State and requests come from
- * `use-sign-in-flow.ts`; a step keeps only what dies with it (the typed code,
- * the username being checked).
+ * The panes of `<ElvixSignInForm>`: header, code, the username and passkey onboarding steps,
+ * the recovery gate, and the legal footer; the entry step is `sign-in-identifier-step.tsx`
+ * (0.26). State and requests come from `use-sign-in-flow.ts`; a step keeps only what dies
+ * with it (the typed code, the username being checked).
  */
 
 import { ArrowLeft, Check, Fingerprint, Loader2, X } from "lucide-react";
-import { type ReactNode, type RefObject, useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { useT } from "../locale/use-t";
 import { ElvixRecoverGate } from "./elvix-recover-gate";
 import type { AuthFormProps } from "./elvix-sign-in-form";
-import { GoogleOneTap } from "./google-one-tap";
+import { canAutoFocus } from "./keyboard";
 import { OtpInput } from "./otp-input";
 import { STACK_2, STACK_3, STACK_4 } from "./pane-layout";
-import { runPasskeyRegister, runPasskeySignIn } from "./passkey";
+import { runPasskeyRegister } from "./passkey";
 import { send } from "./profile-request";
 import { authInit, getElvixToken, isSameOrigin } from "./session";
 import { type Cta, CtaButton, ErrorLine } from "./sign-in-controls";
 import {
   hostedCeremonyUrl,
   humanError,
-  OAuthProvider,
-  oauthStartHref,
   type Translator,
   usernameReasonLabel,
 } from "./sign-in-copy";
@@ -45,7 +42,11 @@ function BrandMark({ p }: { p: AuthFormProps }) {
   const t = useT();
   const { appName, brandColor, theme, logoUrl, logoUrlDark, logoNode, websiteUrl } = p;
   const img = (src: string) => (
-    <img src={src} alt={appName} className="h-12 w-auto max-w-[220px] object-contain" />
+    <img
+      src={src}
+      alt={appName}
+      className="h-(--elvix-logo-h) w-auto max-w-[220px] object-contain"
+    />
   );
   const letter = (
     <div
@@ -63,7 +64,7 @@ function BrandMark({ p }: { p: AuthFormProps }) {
   let mark: ReactNode = logoUrl ? img(logoUrl) : letter;
   if (logoNode) {
     mark = (
-      <div className="inline-flex items-center justify-center min-h-12 max-w-[220px]">
+      <div className="inline-flex items-center justify-center min-h-(--elvix-logo-h) max-w-[220px]">
         {logoNode}
       </div>
     );
@@ -116,10 +117,11 @@ function GateBadge({ gate, t }: { gate: string | undefined; t: Translator }) {
   );
 }
 
+/** The banner bleeds to the card's edge by the card's own inset (`--elvix-card-px/pt`). */
 const HEADER_LAYOUT: Record<string, string> = {
   left: "flex items-center text-left",
   banner:
-    "-mx-7 -mt-7 px-7 py-6 flex flex-col items-center text-center border-b border-border-base",
+    "-mx-(--elvix-card-px) -mt-(--elvix-card-pt) px-(--elvix-card-px) py-6 flex flex-col items-center text-center border-b border-border-base",
   centered: "flex flex-col items-center text-center",
 };
 
@@ -140,7 +142,8 @@ export function SignInHeader({
   const subtitle = headerSubtitle(flow.step, p, identifier, t);
   return (
     <div
-      className={`gap-3 mb-6 ${HEADER_LAYOUT[layout] ?? HEADER_LAYOUT.centered}`}
+      data-elvix-head=""
+      className={`gap-(--elvix-gap-logo-title) mb-(--elvix-gap-title-methods) ${HEADER_LAYOUT[layout] ?? HEADER_LAYOUT.centered}`}
       style={
         layout === "banner"
           ? { background: `linear-gradient(135deg, ${p.brandColor}24, ${p.brandColor}08)` }
@@ -149,7 +152,10 @@ export function SignInHeader({
     >
       <BrandMark p={p} />
       <div>
-        <div className="text-[18px] font-semibold tracking-tight text-fg-1">
+        <div
+          data-elvix-heading=""
+          className="text-[18px] [font-weight:var(--elvix-heading-weight)] [font-family:var(--elvix-font-display)] tracking-tight text-fg-1"
+        >
           {(entry && p.headline) || headerTitle(flow.step, p, flow.recover?.appName, t)}
         </div>
         {subtitle && <div className="text-[12.5px] text-fg-3 mt-0.5">{subtitle}</div>}
@@ -196,7 +202,7 @@ function LegalLink({ href, children }: { href?: string | null; children: ReactNo
 export function LegalFooter({ p }: { p: AuthFormProps }) {
   const t = useT();
   return (
-    <div className="text-center mt-5 leading-[1.45]">
+    <div data-elvix-legal="" className="text-center mt-(--elvix-gap-legal) leading-[1.45]">
       <div className="text-[11.5px] text-placeholder">
         {t("signin.legalIntro", { app: p.appName || t("signin.legalAppFallback") })}
       </div>
@@ -234,7 +240,12 @@ export function CodeStep({
   });
   return (
     <form onSubmit={(e) => void verify(e)} className={STACK_3}>
-      <OtpInput value={code} onChange={setCode} disabled={isPreview || verifying} autoFocus />
+      <OtpInput
+        value={code}
+        onChange={setCode}
+        disabled={isPreview || verifying}
+        autoFocus={canAutoFocus()}
+      />
       <CtaButton cta={cta} submit busy={verifying} disabled={verifying || code.length !== 6} arrow>
         {t("signin.verifyButton")}
       </CtaButton>
@@ -280,6 +291,16 @@ type UsernameCheck =
 
 const CHECK_DEBOUNCE_MS = 220;
 
+type CheckAnswer = { ok?: boolean; available?: boolean; reason?: string } | null;
+
+/** What elvix's answer makes of the check: no answer, free, or refused with its reason. */
+function checkOf(b: CheckAnswer): UsernameCheck {
+  if (!b) return { kind: UsernameCheck.IDLE };
+  if (b.ok !== false && b.available) return { kind: UsernameCheck.AVAILABLE };
+  const fallback = b.ok === false ? "invalid" : "taken";
+  return { kind: UsernameCheck.REJECTED, reason: b.reason ?? fallback };
+}
+
 /** Live availability of `value`, debounced; only the latest answer lands. */
 function useUsernameCheck(baseUrl: string, value: string): UsernameCheck {
   const [check, setCheck] = useState<UsernameCheck>({ kind: UsernameCheck.IDLE });
@@ -297,20 +318,9 @@ function useUsernameCheck(baseUrl: string, value: string): UsernameCheck {
         { signal: controller.signal, ...authInit() },
       );
       if (controller.signal.aborted) return;
-      const b = res
-        ? (unwrapEnvelope(await res.json().catch(() => null)) as {
-            ok?: boolean;
-            available?: boolean;
-            reason?: string;
-          } | null)
-        : null;
+      const b = res ? (unwrapEnvelope(await res.json().catch(() => null)) as CheckAnswer) : null;
       if (controller.signal.aborted) return;
-      if (!b) setCheck({ kind: UsernameCheck.IDLE });
-      else if (b.ok !== false && b.available) setCheck({ kind: UsernameCheck.AVAILABLE });
-      else {
-        const fallback = b.ok === false ? "invalid" : "taken";
-        setCheck({ kind: UsernameCheck.REJECTED, reason: b.reason ?? fallback });
-      }
+      setCheck(checkOf(b));
     }, CHECK_DEBOUNCE_MS);
     return () => {
       clearTimeout(timer);
@@ -396,8 +406,9 @@ export function UsernameStep({
           <input
             id="onboarding-username"
             type="text"
-            autoFocus
+            autoFocus={canAutoFocus()}
             autoComplete="username"
+            enterKeyHint="go"
             value={value}
             minLength={4}
             maxLength={30}
@@ -591,299 +602,5 @@ export function RecoverStep({ flow, baseUrl }: { flow: SignInFlow; baseUrl: stri
       onRestore={({ redirect }) => flow.finishOnboarding(redirect)}
       onCancel={({ redirect }) => flow.leaveTo(redirect)}
     />
-  );
-}
-
-// ─── Identifier: social buttons, then email / username ────────────────
-
-function GoogleGlyph() {
-  return (
-    <svg viewBox="0 0 18 18" className="size-4" aria-hidden>
-      <path
-        fill="#4285F4"
-        d="M16.51 8.18c0-.58-.05-1.13-.15-1.66H9v3.14h4.21a3.6 3.6 0 0 1-1.56 2.36v1.96h2.52c1.47-1.36 2.34-3.36 2.34-5.8z"
-      />
-      <path
-        fill="#34A853"
-        d="M9 17c2.1 0 3.87-.7 5.17-1.9l-2.52-1.96c-.7.47-1.6.74-2.65.74-2.04 0-3.77-1.38-4.38-3.23H2.02v2.03A8 8 0 0 0 9 17z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M4.62 10.65A4.8 4.8 0 0 1 4.36 9c0-.57.1-1.12.26-1.65V5.32H2.02A8 8 0 0 0 1 9c0 1.29.31 2.5.86 3.58l2.51-1.93z"
-      />
-      <path
-        fill="#EA4335"
-        d="M9 4.77c1.14 0 2.17.4 2.98 1.17l2.23-2.23A7.84 7.84 0 0 0 9 1 8 8 0 0 0 1.86 5.32l2.51 1.93C5.23 5.17 6.96 4.77 9 4.77z"
-      />
-    </svg>
-  );
-}
-
-function GithubGlyph() {
-  return (
-    <svg viewBox="0 0 16 16" className="size-4" fill="currentColor" aria-hidden>
-      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.65 7.65 0 0 1 8 3.96c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
-    </svg>
-  );
-}
-
-const SOCIAL_CLASS =
-  "cursor-pointer w-full inline-flex items-center justify-center gap-2 h-10 rounded-[10px] font-medium text-[13px] border border-border-base bg-surface text-fg-1 hover:bg-surface-hover transition";
-
-/** An error from the inline ceremony that the hosted page on elvix.is
- *  (where the rpId matches) gets past: a browser without Related Origin
- *  Requests support. */
-const RP_ID_MISMATCH = /rp\.?id|RelyingParty|cannot be used with the current origin|SecurityError/i;
-
-/** The passkey sign-in button's handler: the inline ceremony, falling back
- *  to the hosted one cross-origin, whose return arrives as `#elvix_token`. */
-function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: string, isPreview: boolean) {
-  const t = useT();
-  const [busy, setBusy] = useState(false);
-  const run = async () => {
-    if (isPreview || busy) return;
-    flow.setError(null);
-    setBusy(true);
-    const result = await runPasskeySignIn(baseUrl, p.clientId, p.intent ?? "app");
-    setBusy(false);
-    if (result.ok) {
-      flow.methodRef.current = "passkey";
-      flow.applyLanding(result.landing);
-      return;
-    }
-    if (result.error === "passkey_cancelled") {
-      // The user dismissed the prompt: nothing to show, but the host hears it.
-      p.onResult?.({ ok: false, error: result.error });
-      return;
-    }
-    const hostedHelps =
-      RP_ID_MISMATCH.test(result.message ?? "") || result.error === "passkey_failed";
-    if (!isSameOrigin(baseUrl) && p.clientId && hostedHelps) {
-      window.location.assign(hostedCeremonyUrl(baseUrl, "passkey", p.clientId));
-      return;
-    }
-    flow.reportError(
-      result.error,
-      result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyVerify"),
-    );
-  };
-  return { busy, run };
-}
-
-/**
- * Google, GitHub and passkey in importance order. In grid mode they tile
- * two-up with short labels; an odd one out, always the last, spans the row
- * and keeps its long label.
- */
-function SocialButtons({
-  flow,
-  p,
-  baseUrl,
-  isPreview,
-  gisSlot,
-}: {
-  flow: SignInFlow;
-  p: AuthFormProps;
-  baseUrl: string;
-  isPreview: boolean;
-  /** Where Google Identity Services renders its own button, when it does. */
-  gisSlot: RefObject<HTMLDivElement | null> | null;
-}) {
-  const t = useT();
-  const passkey = usePasskeySignIn(flow, p, baseUrl, isPreview);
-  const [redirecting, setRedirecting] = useState(false);
-  const shown = [p.methodGoogle, p.methodGithub, p.methodPasskey].filter(Boolean).length;
-  const grid = p.socialLayout === "grid" && shown >= 2;
-  const last = p.methodPasskey ? "passkey" : p.methodGithub ? "github" : "google";
-  /** Spans the row and keeps the long label when it is the odd one out. */
-  const wide = (which: string) => grid && shown % 2 === 1 && which === last;
-  const label = (which: string, short: string, long: string) =>
-    grid && !wide(which) ? short : long;
-  const span = (which: string) => (wide(which) ? " col-span-2" : "");
-  const intent = p.intent ?? "app";
-
-  return (
-    <div className={grid ? "grid grid-cols-2 gap-2" : STACK_2}>
-      {p.methodGoogle &&
-        (gisSlot ? (
-          // GIS renders its own button here, with its own accessible name;
-          // the slot only reserves the height while it hydrates.
-          <div ref={gisSlot} className={`w-full min-h-10${span("google")}`} />
-        ) : (
-          <a
-            href={
-              isPreview ? "#" : oauthStartHref(OAuthProvider.GOOGLE, baseUrl, intent, p.clientId)
-            }
-            onClick={isPreview ? (e) => e.preventDefault() : undefined}
-            className={`${SOCIAL_CLASS}${span("google")}`}
-          >
-            <GoogleGlyph />
-            {label("google", t("signin.googleButtonShort"), t("signin.googleButton"))}
-          </a>
-        ))}
-      {p.methodGithub && (
-        <button
-          type="button"
-          disabled={isPreview || redirecting}
-          onClick={
-            isPreview
-              ? undefined
-              : () => {
-                  // Paint "Signing in…" before the browser leaves for GitHub.
-                  setRedirecting(true);
-                  const href = oauthStartHref(OAuthProvider.GITHUB, baseUrl, intent, p.clientId);
-                  requestAnimationFrame(() => window.location.assign(href));
-                }
-          }
-          aria-label={t("signin.githubButton")}
-          className={`${SOCIAL_CLASS} disabled:cursor-not-allowed disabled:opacity-70${span("github")}`}
-        >
-          {redirecting ? <Loader2 className="size-4 animate-spin" /> : <GithubGlyph />}
-          {redirecting
-            ? t("signin.signingIn")
-            : label("github", "GitHub", t("signin.githubButton"))}
-        </button>
-      )}
-      {p.methodPasskey && (
-        <button
-          type="button"
-          disabled={passkey.busy}
-          onClick={isPreview ? undefined : () => void passkey.run()}
-          className={`${SOCIAL_CLASS} disabled:cursor-not-allowed disabled:opacity-60${span("passkey")}`}
-        >
-          {passkey.busy ? (
-            <Loader2 className="size-4 animate-spin" />
-          ) : (
-            <Fingerprint className="size-4" />
-          )}
-          {label("passkey", t("signin.passkeyButtonShort"), t("signin.passkeyButton"))}
-        </button>
-      )}
-    </div>
-  );
-}
-
-/**
- * Whether Google Identity Services runs (any One Tap / popup / auto-select /
- * FedCM flag), and whether it renders Google's own "Continue as <name>"
- * button. That button needs a Google client id (per app, on the bootstrap
- * envelope) AND the SDK running on the elvix origin: elsewhere GIS does not
- * run, its slot stays empty and the Google button would vanish. Short of
- * both, the static redirect link stays, which uses elvix's server-side
- * client id and always works.
- */
-function googleIdentityServices(p: AuthFormProps, baseUrl: string, isPreview: boolean) {
-  const cfg = p.googleConfig;
-  const flags = Boolean(cfg?.oneTap || cfg?.popup || cfg?.autoSelect || cfg?.fedcm);
-  const enabled = !isPreview && Boolean(p.methodGoogle) && flags;
-  const onElvix = typeof window !== "undefined" && window.location.origin === baseUrl;
-  return { enabled, button: enabled && Boolean(p.googleClientId) && onElvix };
-}
-
-/** What the identifier field accepts, as its placeholder says. */
-function identifierPlaceholderKey(p: AuthFormProps): string {
-  if (p.methodEmailOtp && p.methodUsername) return "signin.identifierPlaceholderEmailOrUsername";
-  return p.methodUsername
-    ? "signin.identifierPlaceholderUsername"
-    : "signin.identifierPlaceholderEmail";
-}
-
-export function IdentifierStep({
-  flow,
-  otp,
-  p,
-  baseUrl,
-  isPreview,
-  cta,
-}: {
-  flow: SignInFlow;
-  otp: OtpStart;
-  p: AuthFormProps;
-  baseUrl: string;
-  isPreview: boolean;
-  cta: Cta;
-}) {
-  const t = useT();
-  const gisSlot = useRef<HTMLDivElement | null>(null);
-  const cfg = p.googleConfig;
-  const gis = googleIdentityServices(p, baseUrl, isPreview);
-  const social = p.methodGoogle || p.methodPasskey || p.methodGithub;
-  const typed = p.methodEmailOtp || p.methodUsername;
-  const placeholder = t(identifierPlaceholderKey(p));
-
-  if (!social && !typed) {
-    return (
-      <div className="rounded-[10px] border border-dashed border-border-base bg-surface-hover py-8 px-4 text-center">
-        <p className="text-[12.5px] text-fg-3">{t("signin.previewEmptyMethods")}</p>
-      </div>
-    );
-  }
-  return (
-    <form onSubmit={(e) => void otp.start(e)} className={STACK_2}>
-      {gis.enabled && p.googleClientId && (
-        <GoogleOneTap
-          baseUrl={baseUrl}
-          clientId={p.googleClientId}
-          intent={p.intent ?? "app"}
-          appClientId={p.clientId}
-          renderButton={gis.button}
-          buttonContainerRef={gisSlot}
-          config={{
-            oneTap: cfg?.oneTap ?? false,
-            autoSelect: cfg?.autoSelect ?? false,
-            popup: cfg?.popup ?? false,
-            fedcm: cfg?.fedcm ?? false,
-            hostedDomain: cfg?.hostedDomain ?? "",
-          }}
-        />
-      )}
-      {social && (
-        <SocialButtons
-          flow={flow}
-          p={p}
-          baseUrl={baseUrl}
-          isPreview={isPreview}
-          gisSlot={gis.button ? gisSlot : null}
-        />
-      )}
-      {typed && (
-        <>
-          {social && (
-            <div className="flex items-center gap-3 my-3">
-              <span className="h-px flex-1 bg-border-base" />
-              <span className="text-[11px] uppercase tracking-[0.08em] text-fg-3">
-                {t("signin.or")}
-              </span>
-              <span className="h-px flex-1 bg-border-base" />
-            </div>
-          )}
-          <input
-            type="text"
-            disabled={otp.sending}
-            value={otp.identifier}
-            onChange={(e) => otp.setIdentifier(e.target.value)}
-            placeholder={placeholder}
-            aria-label={placeholder}
-            autoComplete={p.methodUsername ? "username" : "email"}
-            inputMode={p.methodUsername ? "text" : "email"}
-            className="elvix-field w-full h-10 px-3 text-[13px] disabled:cursor-not-allowed"
-          />
-          <CtaButton
-            cta={cta}
-            submit
-            faint
-            className="mt-3"
-            busy={otp.sending}
-            disabled={!otp.valid || otp.sending}
-            arrow
-          >
-            {t("signin.sendCodeButton")}
-          </CtaButton>
-          {flow.error && (
-            <p className="text-[11.5px] text-red-400 text-center mt-1">{flow.error}</p>
-          )}
-        </>
-      )}
-    </form>
   );
 }

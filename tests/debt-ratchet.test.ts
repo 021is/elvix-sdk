@@ -10,7 +10,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-const PINNED = { complexity: 18, functionLength: 23 };
+const PINNED = { complexity: 17, functionLength: 23 };
 
 type Override = {
   includes: string[];
