@@ -22,7 +22,7 @@
   "src/react/passkey.ts": 343,
   "src/react/regions.ts": 324,
   "src/react/session.ts": 425,
-  "src/react/sign-in-steps.tsx": 606,
+  "src/react/sign-in-steps.tsx": 603,
   "src/react/tax-validation.ts": 408,
   "tests/helpers/fake-elvix.ts": 394
 }

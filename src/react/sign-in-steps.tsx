@@ -12,7 +12,7 @@ import { type ReactNode, useEffect, useState } from "react";
 import { useT } from "../locale/use-t";
 import { ElvixRecoverGate } from "./elvix-recover-gate";
 import type { AuthFormProps } from "./elvix-sign-in-form";
-import { canAutoFocus } from "./keyboard";
+import { useCanAutoFocus } from "./keyboard";
 import { OtpInput } from "./otp-input";
 import { STACK_2, STACK_3, STACK_4 } from "./pane-layout";
 import { runPasskeyRegister } from "./passkey";
@@ -32,12 +32,9 @@ import { postJson, type SignInFlow, Step } from "./use-sign-in-flow";
 
 // ─── Header ──────────────────────────────────────────────────────────
 
-/**
- * The app's mark: a host-passed node as is; else the logo image for the
- * theme (a `<picture>` when "auto" has both); else the app's initial on a
- * brand-tinted square, the one case a backdrop helps. Linked to the app's
- * website when it has one.
- */
+/** The app's mark: a host-passed node as is; else the logo image for the theme (a `<picture>`
+ *  when "auto" has both); else the app's initial on a brand-tinted square, the one case a
+ *  backdrop helps. Linked to the app's website when it has one. */
 function BrandMark({ p }: { p: AuthFormProps }) {
   const t = useT();
   const { appName, brandColor, theme, logoUrl, logoUrlDark, logoNode, websiteUrl } = p;
@@ -92,10 +89,8 @@ function BrandMark({ p }: { p: AuthFormProps }) {
   );
 }
 
-/**
- * The default badge under the heading when the app's signinGate is
- * `private_beta` or `closed` and the host passed no `belowHeading`.
- */
+/** The default badge under the heading when the app's signinGate is `private_beta` or
+ *  `closed` and the host passed no `belowHeading`. */
 function GateBadge({ gate, t }: { gate: string | undefined; t: Translator }) {
   if (!gate || gate === "public") return null;
   const isBeta = gate === "private_beta";
@@ -238,13 +233,14 @@ export function CodeStep({
     isPreview,
     t,
   });
+  const autoFocus = useCanAutoFocus();
   return (
     <form onSubmit={(e) => void verify(e)} className={STACK_3}>
       <OtpInput
         value={code}
         onChange={setCode}
         disabled={isPreview || verifying}
-        autoFocus={canAutoFocus()}
+        autoFocus={autoFocus}
       />
       <CtaButton cta={cta} submit busy={verifying} disabled={verifying || code.length !== 6} arrow>
         {t("signin.verifyButton")}
@@ -376,6 +372,7 @@ export function UsernameStep({
   const [value, setValue] = useState(flow.suggestions[0] ?? "");
   const [busy, setBusy] = useState<Busy | null>(null);
   const check = useUsernameCheck(baseUrl, value);
+  const autoFocus = useCanAutoFocus();
 
   // `auto` is "skip, pick one for me": the server generates it.
   const submit = async (auto: boolean) => {
@@ -406,7 +403,7 @@ export function UsernameStep({
           <input
             id="onboarding-username"
             type="text"
-            autoFocus={canAutoFocus()}
+            autoFocus={autoFocus}
             autoComplete="username"
             enterKeyHint="go"
             value={value}

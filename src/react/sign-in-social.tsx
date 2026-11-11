@@ -1,9 +1,8 @@
 "use client";
 
 /**
- * The entry step's method buttons: Google, GitHub and passkey, in importance order. Out of
- * `sign-in-steps.tsx` in 0.26 (889 lines, recorded debt). The gap between them is the app's
- * `gapMethods` (`--elvix-gap-methods`, 8 px by default).
+ * The entry step's method buttons: Google, GitHub and passkey, in importance order. The gap
+ * between them is the app's `gapMethods` (`--elvix-gap-methods`, 8 px by default).
  */
 
 import { Fingerprint, Loader2 } from "lucide-react";
