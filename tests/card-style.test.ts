@@ -18,6 +18,7 @@ import {
   isCardTokenInRange,
   isConsoleFontName,
 } from "../src/types/card-style";
+import { WHERE } from "./helpers/card-style-mount";
 
 /** The card before 0.26, measured from its classes: what every default must keep. */
 const BEFORE_026: Record<CardStyleToken, string> = {
@@ -34,20 +35,10 @@ const BEFORE_026: Record<CardStyleToken, string> = {
   gapLegal: "20px", // mt-5
   gapFooter: "24px", // pb-3 + the chip row's mt-3 (transparent)
 };
-const VAR_OF: Record<CardStyleToken, string> = {
-  headingWeight: "--elvix-heading-weight",
-  logoHeight: "--elvix-logo-h",
-  paddingX: "--elvix-card-px",
-  paddingTop: "--elvix-card-pt",
-  gapLogoTitle: "--elvix-gap-logo-title",
-  gapTitleMethods: "--elvix-gap-title-methods",
-  gapMethods: "--elvix-gap-methods",
-  gapDivider: "--elvix-gap-divider",
-  gapFieldButton: "--elvix-gap-field-button",
-  gapButtonSlot: "--elvix-gap-button-slot",
-  gapLegal: "--elvix-gap-legal",
-  gapFooter: "--elvix-gap-footer",
-};
+/** The variable each token sets: one spec on the test side (`WHERE`), which the render tests
+ *  also hold against the markup's classes and `card-style-css.test.ts` against the sheet, so
+ *  a name changed in one place alone fails. */
+const VAR_OF = (token: CardStyleToken) => WHERE[token].cssVar;
 
 describe("the card style tokens", () => {
   it("lists every token once, top to bottom", () => {
@@ -57,7 +48,7 @@ describe("the card style tokens", () => {
 
   it("an app that sets nothing keeps the card it had before 0.26", () => {
     const vars = cardLookVars({}, false);
-    for (const token of CARD_STYLE_TOKENS) expect(vars[VAR_OF[token]]).toBe(BEFORE_026[token]);
+    for (const token of CARD_STYLE_TOKENS) expect(vars[VAR_OF(token)]).toBe(BEFORE_026[token]);
     // elvix's bordered card kept 28 px under the legal line, above its footer bar (py-7).
     expect(cardLookVars({}, true)["--elvix-gap-footer"]).toBe("28px");
     expect(vars["--elvix-font-text"]).toBe("initial");
@@ -83,10 +74,10 @@ describe("the card style tokens", () => {
     it("reaches the card as its own variable, clamped", () => {
       const unit = token === "headingWeight" ? "" : "px";
       expect(
-        cardLookVars(mergeCardStyle({ card: { [token]: max + 50 } }), false)[VAR_OF[token]],
+        cardLookVars(mergeCardStyle({ card: { [token]: max + 50 } }), false)[VAR_OF(token)],
       ).toBe(`${max}${unit}`);
       expect(
-        cardLookVars(mergeCardStyle({ card: { [token]: min - 50 } }), false)[VAR_OF[token]],
+        cardLookVars(mergeCardStyle({ card: { [token]: min - 50 } }), false)[VAR_OF(token)],
       ).toBe(`${min}${unit}`);
     });
 

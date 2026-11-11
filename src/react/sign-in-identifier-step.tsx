@@ -81,7 +81,10 @@ function useConditionalPasskey(flow: SignInFlow, p: AuthFormProps, baseUrl: stri
   useEffect(() => () => pending.current?.controller.abort(), []);
 
   const arm = () => {
-    if (!enabled || pending.current) return;
+    // An app sign-in names its clientId, which comes with the provider's envelope: before
+    // it lands there is nothing to ask for, and the next focus asks again.
+    const scoped = (p.intent ?? "app") !== "app" || Boolean(p.clientId);
+    if (!enabled || !scoped || pending.current) return;
     const controller = new AbortController();
     let picked = false;
     const done = (async () => {
@@ -102,6 +105,9 @@ function useConditionalPasskey(flow: SignInFlow, p: AuthFormProps, baseUrl: stri
           result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyVerify"),
         );
       }
+      // Not picked: the offer ended (aborted, dismissed) or never showed (a start refused, a
+      // browser that cannot do it across origins). The person asked for nothing, so there is
+      // nothing to tell them or the host; the passkey button stays, and reports its own.
     })().finally(() => {
       if (pending.current?.controller === controller) pending.current = null;
     });

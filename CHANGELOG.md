@@ -34,8 +34,10 @@ Chromium: 62 elements, same boxes, weights and fonts).
   a declaration or any function but `var()` is refused; a Console family is a plain name.
 - **The legal line and "Secured by elvix" cannot be spaced away**: no token reaches their
   size, colour or visibility, and the gaps above them never go under 12 px.
-- `@elvix.is/sdk/server` exports `CARD_STYLE_RANGES`, `clampCardToken`,
-  `isCardTokenInRange` and `isConsoleFontName`, for a server that validates a Console value.
+- `@elvix.is/sdk/server` exports `CARD_STYLE_RANGES`, `CARD_STYLE_TOKENS`,
+  `isCardTokenInRange`, `isConsoleFontName` and the `ElvixCardStyle` / `CardStyleToken`
+  types: what elvix's API refuses a Console value with (out of range, a font that is not a
+  plain name). `@elvix.is/sdk/react` exports `CARD_STYLE_RANGES` and `ElvixCardStyle`.
 - **The phone's keyboard** (Edvard: "the elvix sdk for sign in must be aware of the
   keyboard on mobile"): every field's action key says what Enter does (`go` on a step's
   last field, `next` between the code boxes); the identifier field offers the person's

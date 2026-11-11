@@ -10,7 +10,7 @@
  */
 
 /** A numeric token's range. `step` rounds before the clamp (weights move by 100). */
-export type CardStyleRange = { min: number; max: number; default: number; step?: number };
+type CardStyleRange = { min: number; max: number; default: number; step?: number };
 
 export const CARD_STYLE_RANGES = {
   /** The heading's weight (the title, or the host's `headline`), on every step. */
@@ -45,7 +45,7 @@ export const BORDERED_GAP_FOOTER = 28;
 
 export type CardStyleToken = keyof typeof CARD_STYLE_RANGES;
 
-export function isCardStyleToken(key: string): key is CardStyleToken {
+function isCardStyleToken(key: string): key is CardStyleToken {
   return Object.hasOwn(CARD_STYLE_RANGES, key);
 }
 
@@ -89,7 +89,7 @@ export function isCardTokenInRange(token: CardStyleToken, value: unknown): boole
  * hyphens, starting with a letter, 64 characters at most. No quotes, commas, brackets or
  * URLs can pass, so a Console value is only ever the name of a family, never CSS.
  */
-export const CONSOLE_FONT_NAME = /^[A-Za-z][A-Za-z0-9 -]{0,63}$/;
+const CONSOLE_FONT_NAME = /^[A-Za-z][A-Za-z0-9 -]{0,63}$/;
 
 export function isConsoleFontName(value: unknown): value is string {
   return typeof value === "string" && CONSOLE_FONT_NAME.test(value) && value.trim() === value;

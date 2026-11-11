@@ -33,6 +33,8 @@ describe("the legal line and Secured by elvix", () => {
         );
         expect(el.style.display).not.toBe("none");
       }
+      // The chip in the card's own footer, under the body no token reaches into.
+      expect(part("card-footer").contains(chip)).toBe(true);
       // Legal line, then the chip, both after the host's slot.
       const slot = part("below-methods");
       expect(slot.compareDocumentPosition(legal) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();

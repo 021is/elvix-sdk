@@ -32,7 +32,7 @@ function reveal(el: Element | null | undefined) {
  * do not fit. Again while the keyboard opens (`visualViewport` resizes), never with a guessed
  * keyboard height. A field outside a form brings only itself.
  */
-export function keepFieldInView(event: FocusEvent) {
+function keepFieldInView(event: FocusEvent) {
   const field = event.target;
   if (!isTypingField(field)) return;
   const button = field.form?.querySelector('button[type="submit"]');
