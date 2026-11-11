@@ -12,10 +12,9 @@ import { ELVIX_SDK_VERSION } from "./version";
 /** elvix's public origin, where the "Secured by elvix" chip links. */
 const ELVIX_SITE_URL = "https://elvix.is";
 
-/** What only a container decides: the form's presentations, its overlay and its trigger. */
+/** What only a container decides: the form's presentations, its overlay and its trigger.
+ *  `mode="preview"` and `previewStep` stay: docs and design tools show the card inert. */
 type ContainerProps =
-  | "mode"
-  | "previewStep"
   | "framed"
   | "presentation"
   | "transparentBg"

@@ -150,6 +150,20 @@ describe("<ElvixSignInCard> in its container", () => {
     await new Promise((r) => setTimeout(r, 50));
     expect(fake.fetchMock.mock.calls.length).toBe(before);
   });
+
+  it("renders inert with mode='preview', for docs and design tools", async () => {
+    const fake = installFakeElvix({ context: null });
+    render(
+      <Provider>
+        <ElvixSignInCard mode="preview" navigate={false} />
+      </Provider>,
+    );
+    fireEvent.change(await screen.findByPlaceholderText("Enter your email"), {
+      target: { value: "ada@example.test" },
+    });
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: /Continue/ })));
+    expect(fake.calls("/api/auth/otp/start")).toBe(0);
+  });
 });
 
 describe("<ElvixSignInCard>'s flow", () => {
