@@ -67,18 +67,25 @@ input components: they render a native `<input>`, which biome cannot see through
   distance a person sees: the entry form has no `gap`, so nothing adds to a token. A new
   part of the card gets its token (default = its look before) or no gap of its own; an error
   line is not a part and keeps its fixed distance (8 px, 12 px under Continue). No token
-  may reach the legal line's or the chip's size, colour or visibility, and the gaps above
-  them keep a floor of 12 px (`tests/card-style-guards.test.tsx`). Fonts are names the page
-  loads: the SDK never requests a font, and a Console family is a plain name, never CSS.
+  may reach the legal line's or the chip's size, colour, visibility or font: the app's text
+  font sits on `[data-elvix-app-type]` (head, step, the host's line) and stops above the
+  legal line, so a symbol or blank font can never make it unreadable. The gaps above them
+  keep a floor of 12 px; the modal panel scrolls (`max-h-full overflow-y-auto`), so the
+  widest spacing never pushes them off a short screen (`tests/card-style-guards.test.tsx`).
+  Fonts are names the page loads: the SDK never requests a font; a host family is refused
+  with a URL, an open quote or a control character; a Console family is one of
+  `CONSOLE_FONTS`, the closed list elvix serves.
 - **The keyboard on a phone** (0.26, `keyboard.ts`): no autofocus on a coarse pointer, and
   focus given after mount (`useAutoFocus`), never the `autoFocus` attribute a server would
   write into the HTML; every field has its `enterKeyHint`; a card keeps the focused field
   and its form's submit button in view (`useKeepFieldsInView`, `scrollIntoView` nearest,
   again on `visualViewport` resize, never a guessed keyboard height)
   (`tests/sign-in-keyboard.test.tsx`). The identifier field's passkey autofill
-  (`autocomplete="… webauthn"`) starts its conditional request on the field's first focus,
-  never on open, and the passkey button ends it before its own dialog: a browser holds one
-  request, so a second prompt would never open. It has **no hosted fallback, on purpose**:
+  (`autocomplete="… webauthn"`) and the passkey button are one state
+  (`use-passkey-sign-in.ts`): the offer starts on the field's first focus, never on open and
+  never while the button runs; the button ends it before its own dialog (a browser holds
+  one request) and opens none when the offer already has a passkey picked or the step is
+  gone: one sign-in, one session. The offer has **no hosted fallback, on purpose**:
   it is an offer the person did not ask for, so it never sends them away; before a pick it
   is silent, and the button keeps the hosted fallback and its errors
   (`tests/sign-in-passkey-autofill.test.tsx`).
