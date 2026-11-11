@@ -108,8 +108,10 @@ export function useResolvedSignIn(props: AuthFormProps): { resolved: AuthFormPro
  * scrolls itself, draws no background of its own, and stays a card whatever the Console's
  * presentation says. After a redirect sign-in (Google, GitHub, the hosted passkey page),
  * open your container while `useElvixOnboarding().pending` and call its `dismiss()` when
- * the person closes it. Inside `<ElvixProvider>`; mounted after the provider has loaded,
- * it sends nothing until the person acts.
+ * the person closes it; that surface alone, not also `<ElvixOnboarding>` or a sign-in left
+ * mounted on the page, or two surfaces show the step. Inside `<ElvixProvider>`; mounted
+ * after the provider has loaded, it sends nothing until the person acts (a Google return on
+ * `?onboarding=1` asks elvix for its pending step once).
  */
 export function ElvixSignInCard(props: ElvixSignInCardProps) {
   const { resolved, theme } = useResolvedSignIn(props);

@@ -32,7 +32,9 @@ export type ElvixOnboardingState = {
  *   const { pending, dismiss } = useElvixOnboarding();
  *   return <YourSheet open={pending} onClose={dismiss}><ElvixSignInCard /></YourSheet>;
  *
- * The card finishes the step in place and calls `onResult` at the true end.
+ * The card finishes the step in place and calls `onResult` at the true end. One surface
+ * per return: every sign-in mounted when the person comes back takes the step, so open
+ * yours instead of `<ElvixOnboarding>`, never beside it.
  */
 export function useElvixOnboarding(): ElvixOnboardingState {
   const step = useSyncExternalStore(onOnboardingChange, pendingOnboardingStep, () => null);
