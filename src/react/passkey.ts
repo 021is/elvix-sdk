@@ -113,7 +113,7 @@ export type PasskeySignInResult =
 
 /** How the browser asks: a dialog, or (0.26) the passkeys in the identifier field's autofill,
  *  which only its `signal` can end; `onPicked` runs once the person chose one. */
-export type PasskeyCeremony =
+type PasskeyCeremony =
   | { kind: "dialog" }
   | { kind: "autofill"; signal: AbortSignal; onPicked: () => void };
 

@@ -70,14 +70,18 @@ input components: they render a native `<input>`, which biome cannot see through
   may reach the legal line's or the chip's size, colour or visibility, and the gaps above
   them keep a floor of 12 px (`tests/card-style-guards.test.tsx`). Fonts are names the page
   loads: the SDK never requests a font, and a Console family is a plain name, never CSS.
-- **The keyboard on a phone** (0.26, `keyboard.ts`): no autofocus on a coarse pointer
-  (`canAutoFocus()`), every field has its `enterKeyHint`, and a card keeps the focused field
+- **The keyboard on a phone** (0.26, `keyboard.ts`): no autofocus on a coarse pointer, and
+  focus given after mount (`useAutoFocus`), never the `autoFocus` attribute a server would
+  write into the HTML; every field has its `enterKeyHint`; a card keeps the focused field
   and its form's submit button in view (`useKeepFieldsInView`, `scrollIntoView` nearest,
-  again on `visualViewport` resize, never a guessed keyboard height). The identifier field's
-  passkey autofill (`autocomplete="… webauthn"`) starts its conditional request on the
-  field's first focus, never on open, and the passkey button ends it before its own dialog:
-  a browser holds one request, so a second prompt would never open
-  (`tests/sign-in-keyboard.test.tsx`).
+  again on `visualViewport` resize, never a guessed keyboard height)
+  (`tests/sign-in-keyboard.test.tsx`). The identifier field's passkey autofill
+  (`autocomplete="… webauthn"`) starts its conditional request on the field's first focus,
+  never on open, and the passkey button ends it before its own dialog: a browser holds one
+  request, so a second prompt would never open. It has **no hosted fallback, on purpose**:
+  it is an offer the person did not ask for, so it never sends them away; before a pick it
+  is silent, and the button keeps the hosted fallback and its errors
+  (`tests/sign-in-passkey-autofill.test.tsx`).
 
 ## Component tests
 

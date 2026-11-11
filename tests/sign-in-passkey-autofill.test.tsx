@@ -69,6 +69,26 @@ describe("the field and its request", () => {
     expect(fake.calls("/api/auth/passkey/")).toBe(0);
     expect(screen.queryByRole("alert")).toBeNull();
   });
+
+  it("stays silent when elvix refuses to start it, and the next focus asks again", async () => {
+    const get = stubPasskeys(pendingUntilAborted);
+    const refused: Route = [
+      "POST",
+      (u) => u.includes("/api/auth/passkey/sign-in/start"),
+      () => json({ success: false, errorMessage: "passkey_start_failed" }, 500),
+    ];
+    const fake = mount(<ElvixSignInCard navigate={false} methodEmailOtp methodPasskey />, "fine", [
+      refused,
+    ]);
+    const field = await readyField();
+    await act(async () => fireEvent.focus(field));
+    await waitFor(() => expect(fake.calls("/api/auth/passkey/sign-in/start")).toBe(1));
+    await act(async () => {});
+    expect(get).not.toHaveBeenCalled();
+    expect(screen.queryByText(/went wrong/)).toBeNull();
+    await act(async () => fireEvent.focus(field));
+    await waitFor(() => expect(fake.calls("/api/auth/passkey/sign-in/start")).toBe(2));
+  });
 });
 
 describe("what comes of it", () => {
