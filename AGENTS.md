@@ -52,6 +52,14 @@ not because the code was too hard to fix. Every other rule is `error`.
 `noLabelWithoutControl` is on, with `ElvixInput` / `ElvixDateInput` / `ElvixTaxIdInput` declared as
 input components: they render a native `<input>`, which biome cannot see through.
 
+- **One sign-in card for every container** (0.25). `<ElvixSignInForm>`'s inline card, modal
+  and drawer and `<ElvixSignInCard>` (a host's own sheet) all draw `AuthCard`
+  (`elvix-sign-in-card.tsx`, its content `sign-in-card-body.tsx`). A change to the card is
+  made there, once. The card file never imports the form at runtime (types only): a host
+  showing only the card ships no overlay and no `vaul` (`tests/bundle-split.test.ts`). The
+  entry step's head is the logo plus one line, the title or the host's `headline` (Edvard,
+  2026-11-11); `tests/sign-in-head.test.tsx` pins it.
+
 ## Component tests
 
 `bun run test` is vitest. Component tests are `tests/*.test.tsx`, opt into a DOM with

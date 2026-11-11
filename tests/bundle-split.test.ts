@@ -71,34 +71,52 @@ describe("the React build is split", () => {
   });
 
   it("ships the provider and the badge without the UI they do not render", async () => {
-    const result = await build({
-      stdin: {
-        contents: `export { ElvixProvider, ElvixSecuredBadge } from ${JSON.stringify(ENTRY)};`,
-        resolveDir: ROOT,
-        loader: "js",
-      },
-      bundle: true,
-      minify: true,
-      format: "esm",
-      platform: "browser",
-      write: false,
-      metafile: true,
-      logLevel: "silent",
-      external: ["react", "react/jsx-runtime", "react-dom", "next"],
-      define: { "process.env.NODE_ENV": '"production"' },
-    });
-    // Visited is not shipped: only a module with bytes in the output counts.
-    const [output] = Object.values(result.metafile.outputs);
-    const shipped = Object.entries(output.inputs)
-      .filter(([p, { bytesInOutput }]) => p.includes("dist/react/") && bytesInOutput > 0)
-      .map(([p]) => p);
-    const pulled = shipped.flatMap((p) => {
+    const { pulled, gzipped } = await bundleOf("ElvixProvider, ElvixSecuredBadge");
+    expect(pulled).toContain("elvix-secured-badge.tsx");
+    expect(pulled.filter((file) => UI_THEY_DO_NOT_RENDER.test(file))).toEqual([]);
+    expect(gzipped).toBeLessThan(BUDGET_BYTES);
+  });
+
+  it("ships the sign-in card without the form's overlays and their drawer (0.25)", async () => {
+    const { pulled, packages } = await bundleOf("ElvixProvider, ElvixSignInCard");
+    expect(pulled).toContain("elvix-sign-in-card.tsx");
+    expect(pulled).not.toContain("elvix-sign-in-form.tsx");
+    expect(packages).not.toContain("vaul");
+    // The control: the form, with its drawer, does ship vaul, so the check above can fail.
+    expect((await bundleOf("ElvixSignInForm")).packages).toContain("vaul");
+  });
+});
+
+/** A host page importing `names` from the entry, bundled as a browser build would. */
+async function bundleOf(names: string) {
+  const result = await build({
+    stdin: {
+      contents: `export { ${names} } from ${JSON.stringify(ENTRY)};`,
+      resolveDir: ROOT,
+      loader: "js",
+    },
+    bundle: true,
+    minify: true,
+    format: "esm",
+    platform: "browser",
+    write: false,
+    metafile: true,
+    logLevel: "silent",
+    external: ["react", "react/jsx-runtime", "react-dom", "next"],
+    define: { "process.env.NODE_ENV": '"production"' },
+  });
+  // Visited is not shipped: only a module with bytes in the output counts.
+  const [output] = Object.values(result.metafile.outputs);
+  const inputs = Object.entries(output.inputs).filter(([, { bytesInOutput }]) => bytesInOutput > 0);
+  const pulled = inputs
+    .filter(([p]) => p.includes("dist/react/"))
+    .flatMap(([p]) => {
       const code = readFileSync(resolve(ROOT, p), "utf8");
       return [...code.matchAll(/^\/\/ src\/react\/(\S+)$/gm)].map((m) => m[1]);
     });
-    expect(pulled).toContain("elvix-secured-badge.tsx");
-    expect(pulled.filter((file) => UI_THEY_DO_NOT_RENDER.test(file))).toEqual([]);
-    const gzipped = gzipSync(result.outputFiles[0].contents, { level: 9 }).length;
-    expect(gzipped).toBeLessThan(BUDGET_BYTES);
-  });
-});
+  const packages = inputs.flatMap(
+    ([p]) => p.match(/node_modules\/((?:@[^/]+\/)?[^/]+)/)?.[1] ?? [],
+  );
+  const gzipped = gzipSync(result.outputFiles[0].contents, { level: 9 }).length;
+  return { pulled, packages, gzipped };
+}

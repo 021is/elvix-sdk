@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useElvixRefresh } from "./elvix-provider";
 import { type AuthFormProps, ElvixSignInForm } from "./elvix-sign-in-form";
-import { clearOnboardingPending } from "./session";
 import { useElvixOnboarding } from "./use-onboarding";
 
 export type ElvixOnboardingStep = "username" | "passkey" | "recover";
@@ -60,16 +58,13 @@ export function ElvixOnboarding({
   navigate = false,
   ...rest
 }: ElvixOnboardingProps) {
-  const { pending, step } = useElvixOnboarding();
-  const refresh = useElvixRefresh();
+  const { pending, step, dismiss } = useElvixOnboarding();
   const offered = step !== null && steps.includes(step);
 
   // A step the host did not ask for is not shown: complete the sign-in quietly.
   useEffect(() => {
-    if (!pending || offered) return;
-    clearOnboardingPending();
-    void refresh();
-  }, [pending, offered, refresh]);
+    if (pending && !offered) dismiss();
+  }, [pending, offered, dismiss]);
 
   return (
     <ElvixSignInForm
@@ -78,10 +73,8 @@ export function ElvixOnboarding({
       navigate={navigate}
       open={pending && offered}
       onOpenChange={(open) => {
-        if (open) return;
         // Dismissed (or finished): "not now". The session is reported to the host.
-        clearOnboardingPending();
-        void refresh();
+        if (!open) dismiss();
       }}
       trigger={() => null}
       resumeOnReturn={false}

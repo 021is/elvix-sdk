@@ -89,7 +89,6 @@
         "src/react/elvix-leave.tsx",
         "src/react/elvix-recover-gate.tsx",
         "src/react/elvix-sign-in-button.tsx",
-        "src/react/elvix-sign-in-form.tsx",
         "src/react/elvix-sign-out-button.tsx",
         "src/react/elvix-user-avatar.tsx",
         "src/react/elvix-username.tsx",

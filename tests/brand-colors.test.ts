@@ -20,7 +20,7 @@ const ALLOWED: Record<string, RegExp> = {
   // The documented fallback when neither a prop nor the Console brand exists.
   "elvix-sign-in-button.tsx": /#8e7dff|#6c5ce7/,
   "elvix-sign-out-button.tsx": /var\(--elvix-primary,#6c5ce7\)|lavender/,
-  "elvix-sign-in-form.tsx": /#5d4dff/,
+  "elvix-sign-in-card.tsx": /#5d4dff/,
   "elvix-card.tsx": /#5d4dff/,
   "elvix-app-passkeys.tsx": /#5d4dff/,
   "elvix-device-approval.tsx": /#7c6cff|124,108,255/,

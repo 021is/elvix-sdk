@@ -12,11 +12,37 @@ releases move there.
 
 ## [Unreleased]
 
+## [0.25.0] — 2026-11-11
+
 ### Added
+
+- **`<ElvixSignInCard>`: the sign-in card with no container**, for your own sheet, page or
+  dialog. elvix ships the card and its brand (your logo and title, every method enabled in
+  the Console, every step incl. username and passkey, the legal links, "Secured by elvix");
+  you own the container, so a change to your sheet never waits for an elvix release. It
+  fills its parent's width, never scrolls itself, draws no background, stays a card whatever
+  the Console's presentation says, and sends nothing on mount once the provider has loaded.
+  It ships without the form's overlays (no `vaul`): `tests/bundle-split.test.ts`.
+- **`useElvixOnboarding().dismiss()`**: "not now" for a host's own surface after a redirect
+  sign-in; the sign-in completes without the step. `<ElvixOnboarding>` uses it too.
+- **`headline`** on the form and the card: the one line under the logo on the entry step, in
+  place of the title, where the host knows why the person signs in ("Save events you love").
 
 ### Changed
 
+- **The entry step's head is the logo plus one line, in every app**: "Pick how you want to
+  continue." is gone (Edvard, on a phone: "too much going on here"). Later steps keep their
+  title and the one fact they need ("We sent a code to …"). `belowHeading` is for the gate
+  badge's place; a host's reason for the sign-in belongs in `headline`.
+
+- `<ElvixSignInForm>` draws its inline card, modal and drawer from the same card
+  (`elvix-sign-in-card.tsx`, its content in `sign-in-card-body.tsx`, the steps as one
+  `switch`); the form file went from 935 to under 700 lines.
+
 ### Fixed
+
+- **The host's `belowMethods` line no longer sits glued to Continue**: it gets the legal
+  line's 20 px above it (DanceClub's tagline, on a phone).
 
 ## [0.24.0] — 2026-11-05
 
