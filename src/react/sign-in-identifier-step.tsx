@@ -118,7 +118,8 @@ type IdentifierStepProps = {
 };
 
 /** Google Identity Services, when a GIS flag is on: it draws only its error line here, and
- *  `empty:hidden` keeps its slot out of the layout otherwise. */
+ *  `empty:hidden` keeps its slot out of the layout otherwise. An error line is not a part of
+ *  the card's layout, so it has no token: it keeps the 8 px it had above the methods. */
 function GisPrompt({ p, baseUrl, gisSlot, button }: GisPromptProps) {
   const cfg = p.googleConfig;
   if (!p.googleClientId) return null;
@@ -197,6 +198,8 @@ function IdentifierField({
       >
         {t("signin.sendCodeButton")}
       </CtaButton>
+      {/* 12 px under Continue, as before 0.26 (the form's old 8 px gap plus `mt-1`): an
+          error line has no token. */}
       {flow.error && <p className="text-[11.5px] text-red-400 text-center mt-3">{flow.error}</p>}
     </>
   );

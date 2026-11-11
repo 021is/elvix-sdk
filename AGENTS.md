@@ -65,7 +65,8 @@ input components: they render a native `<input>`, which biome cannot see through
   checks each value where it enters, and `AuthCard` sets every `--elvix-card-*` / `--elvix-gap-*`
   variable on its own root, so no ancestor's value reaches it. A gap is one token, the
   distance a person sees: the entry form has no `gap`, so nothing adds to a token. A new
-  part of the card gets its token (default = its look before) or no gap of its own. No token
+  part of the card gets its token (default = its look before) or no gap of its own; an error
+  line is not a part and keeps its fixed distance (8 px, 12 px under Continue). No token
   may reach the legal line's or the chip's size, colour or visibility, and the gaps above
   them keep a floor of 12 px (`tests/card-style-guards.test.tsx`). Fonts are names the page
   loads: the SDK never requests a font, and a Console family is a plain name, never CSS.

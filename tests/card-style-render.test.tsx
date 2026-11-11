@@ -113,6 +113,32 @@ describe("light and dark", () => {
   });
 });
 
+describe("the form's own prop", () => {
+  // The drawer draws the same AuthCard; vaul does not open in jsdom, so card and modal stand.
+  it.each(["card", "modal"] as const)(
+    "<ElvixSignInForm cardStyle> reaches its %s card, over the provider's",
+    async (presentation) => {
+      installFakeElvix({ context: null });
+      render(
+        <Provider cardStyle={{ gapMethods: 10, gapLegal: 30 }}>
+          <ElvixSignInForm
+            navigate={false}
+            presentation={presentation}
+            open
+            onOpenChange={() => {}}
+            cardStyle={{ gapMethods: 14 }}
+          />
+        </Provider>,
+      );
+      await screen.findByText("Sign in to Acme", {}, PANE);
+      const root =
+        document.body.querySelector<HTMLElement>("[data-elvix-card-body]")?.parentElement;
+      expect(root?.style.getPropertyValue("--elvix-gap-methods")).toBe("14px");
+      expect(root?.style.getPropertyValue("--elvix-gap-legal")).toBe("30px");
+    },
+  );
+});
+
 describe("an overlay card", () => {
   it("carries the variables itself, out of the provider's root", async () => {
     installFakeElvix({ context: null });

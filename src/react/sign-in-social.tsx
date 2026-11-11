@@ -118,7 +118,7 @@ export function reportPasskeyError(
   );
 }
 
-export type SocialButtonsProps = {
+type SocialButtonsProps = {
   flow: SignInFlow;
   p: AuthFormProps;
   baseUrl: string;
