@@ -8,10 +8,9 @@
  */
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cardLookVars } from "../src/react/card-look";
 import { ElvixSignInCard, ElvixSignInForm } from "../src/react/index";
 import { CARD_STYLE_RANGES, CARD_STYLE_TOKENS } from "../src/types/card-style";
-import { mountCard, PANE, Provider, unitOf, WHERE } from "./helpers/card-style-mount";
+import { BEFORE_026, mountCard, PANE, Provider, unitOf, WHERE } from "./helpers/card-style-mount";
 import { installFakeElvix } from "./helpers/fake-elvix";
 
 afterEach(() => {
@@ -52,11 +51,8 @@ describe("an app that sets nothing", () => {
   it("keeps the card it had before 0.26", async () => {
     const { cssVar, part } = await mountCard();
     for (const token of CARD_STYLE_TOKENS) {
-      expect(cssVar(WHERE[token].cssVar)).toBe(cardLookVars({})[WHERE[token].cssVar]);
+      expect(cssVar(WHERE[token].cssVar)).toBe(BEFORE_026[token]);
     }
-    expect(cssVar("--elvix-gap-methods")).toBe("8px");
-    expect(cssVar("--elvix-card-px")).toBe("28px");
-    expect(cssVar("--elvix-heading-weight")).toBe("600");
     expect(cssVar("--elvix-font-text")).toBe("initial");
     // None of the fixed spacing 0.25 drew is left, so no token adds to an old value.
     expect(part("head").className).not.toMatch(/\b(gap-3|mb-6)\b/);

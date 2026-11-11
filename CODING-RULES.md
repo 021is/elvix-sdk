@@ -24,8 +24,10 @@ rest) · **CI** (`ci.yml`, the required check on `main`; `publish.yml` runs the 
    what looks the same; never a flag that switches a shared component between two jobs. Look
    before you write: the sign-in pieces are `use-sign-in-flow.ts` (the funnel), `use-otp.ts`
    (the code legs), `sign-in-controls.tsx` (the button, the error line), `sign-in-theme.ts`,
-   the panes in `sign-in-steps.tsx`. `<ElvixEmailCodeSignIn>` is built from them, not beside
-   them. *By hand.*
+   `card-look.ts` (the card's type and spacing), `keyboard.ts`, the entry step in
+   `sign-in-identifier-step.tsx` with its buttons in `sign-in-social.tsx`, the other panes in
+   `sign-in-steps.tsx`. `<ElvixEmailCodeSignIn>` is built from them, not beside them.
+   *By hand.*
 3. **Make wrong states impossible to write.** A value is a union of its real cases, never
    booleans that can contradict; a `switch` over a union handles every case; string literals
    that mean something are a `const` object (`Step`, `NextStep`). *tsc; Biome.*

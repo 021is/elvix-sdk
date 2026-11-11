@@ -117,3 +117,20 @@ export const WHERE: Record<CardStyleToken, { part: string; cls: string; cssVar: 
 };
 
 export const unitOf = (token: CardStyleToken) => (token === "headingWeight" ? "" : "px");
+
+/** The card before 0.26, read from its classes: what every default must keep (and did, in
+ *  Chromium: 62 elements, the same boxes). */
+export const BEFORE_026: Record<CardStyleToken, string> = {
+  headingWeight: "600", // font-semibold
+  logoHeight: "48px", // h-12 / min-h-12
+  paddingX: "28px", // px-7
+  paddingTop: "28px", // pt-7
+  gapLogoTitle: "12px", // gap-3
+  gapTitleMethods: "24px", // mb-6
+  gapMethods: "8px", // gap-2
+  gapDivider: "20px", // the form's gap-2 + the divider's my-3
+  gapFieldButton: "20px", // gap-2 + Continue's mt-3
+  gapButtonSlot: "20px", // mt-5
+  gapLegal: "20px", // mt-5
+  gapFooter: "24px", // pb-3 + the chip row's mt-3 (transparent)
+};

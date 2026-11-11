@@ -100,9 +100,17 @@ function useConditionalPasskey(flow: SignInFlow, p: AuthFormProps, baseUrl: stri
       // Not picked: the offer ended (aborted, dismissed) or never showed (a start refused, a
       // browser that cannot do it across origins). The person asked for nothing, so there is
       // nothing to tell them or the host; the passkey button stays, and reports its own.
-    })().finally(() => {
-      if (pending.current?.controller === controller) pending.current = null;
-    });
+    })()
+      // `runPasskeySignIn` never throws; anything else that does is shown, not left unhandled.
+      .catch((e: unknown) =>
+        reportPasskeyError(flow, t, {
+          error: "passkey_failed",
+          message: e instanceof Error ? e.message : undefined,
+        }),
+      )
+      .finally(() => {
+        if (pending.current?.controller === controller) pending.current = null;
+      });
     pending.current = { controller, done };
   };
   return { enabled, arm, stop };
