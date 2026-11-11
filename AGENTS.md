@@ -59,6 +59,24 @@ input components: they render a native `<input>`, which biome cannot see through
   showing only the card ships no overlay and no `vaul` (`tests/bundle-split.test.ts`). The
   entry step's head is the logo plus one line, the title or the host's `headline` (Edvard,
   2026-11-11); `tests/sign-in-head.test.tsx` pins it.
+- **The card's type and spacing are tokens, never fixed classes** (0.26, `cardStyle`). The
+  ranges and defaults live once, in `src/types/card-style.ts` (elvix's API imports them from
+  `@elvix.is/sdk/server`); `card-look.ts` merges card prop > provider > Console per key,
+  checks each value where it enters, and `AuthCard` sets every `--elvix-card-*` / `--elvix-gap-*`
+  variable on its own root, so no ancestor's value reaches it. A gap is one token, the
+  distance a person sees: the entry form has no `gap`, so nothing adds to a token. A new
+  part of the card gets its token (default = its look before) or no gap of its own. No token
+  may reach the legal line's or the chip's size, colour or visibility, and the gaps above
+  them keep a floor of 12 px (`tests/card-style-guards.test.tsx`). Fonts are names the page
+  loads: the SDK never requests a font, and a Console family is a plain name, never CSS.
+- **The keyboard on a phone** (0.26, `keyboard.ts`): no autofocus on a coarse pointer
+  (`canAutoFocus()`), every field has its `enterKeyHint`, and a card keeps the focused field
+  and its form's submit button in view (`useKeepFieldsInView`, `scrollIntoView` nearest,
+  again on `visualViewport` resize, never a guessed keyboard height). The identifier field's
+  passkey autofill (`autocomplete="… webauthn"`) starts its conditional request on the
+  field's first focus, never on open, and the passkey button ends it before its own dialog:
+  a browser holds one request, so a second prompt would never open
+  (`tests/sign-in-keyboard.test.tsx`).
 
 ## Component tests
 
