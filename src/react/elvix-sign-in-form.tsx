@@ -43,7 +43,7 @@ import { createPortal } from "react-dom";
 import { Drawer as Vaul } from "vaul";
 import { useT } from "../locale/use-t";
 import { ElvixSignInButton, type ElvixSignInButtonProps } from "./elvix-sign-in-button";
-import { AuthCard, useResolvedSignIn } from "./elvix-sign-in-card";
+import { AuthCard, CardSurface, useResolvedSignIn } from "./elvix-sign-in-card";
 import { isOnboardingPending, onOnboardingChange } from "./session";
 import { type Theme, themeVars } from "./sign-in-theme";
 import type { ElvixSignInResult } from "./types";
@@ -212,7 +212,7 @@ export type AuthFormProps = {
   width?: number | string;
   /** Theme override for the form's surface tokens. */
   theme?: Theme;
-  /** Hide the built-in header (logo + "Sign in to X" title + subtitle). */
+  /** Hide the built-in header (the logo and its one line). */
   showHeader?: boolean;
   /**
    * The one line under the logo on the entry step, in place of the title "Sign in to X":
@@ -337,7 +337,7 @@ export function ElvixSignInForm(props: AuthFormProps) {
     return <OverlayPresentation resolved={resolved} presentation={presentation} theme={theme} />;
   }
 
-  const card = <AuthCard {...resolved} />;
+  const card = <AuthCard {...resolved} surface={CardSurface.INLINE} />;
   let content: React.ReactNode = card;
   if (presentation === "drawer") {
     content = <DrawerPresentation>{card}</DrawerPresentation>;
@@ -564,7 +564,7 @@ function ModalOverlay({
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
             transition={{ type: "spring", stiffness: 380, damping: 34 }}
           >
-            <AuthCard {...resolved} overlay onResult={onResult} />
+            <AuthCard {...resolved} surface={CardSurface.OVERLAY} onResult={onResult} />
           </motion.div>
         </div>
       )}
@@ -630,7 +630,7 @@ function DrawerOverlay({
           <div className="min-h-0 overflow-y-auto pb-4">
             <AuthCard
               {...resolved}
-              overlay
+              surface={CardSurface.OVERLAY}
               transparentBg
               width={resolvedWidth}
               onResult={onResult}

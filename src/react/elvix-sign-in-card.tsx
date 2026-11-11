@@ -116,7 +116,7 @@ export function ElvixSignInCard(props: ElvixSignInCardProps) {
   const { resolved, theme } = useResolvedSignIn(props);
   return (
     <div data-elvix-sign-in-card="" className="w-full" style={themeVars(theme)}>
-      <AuthCard {...resolved} presentation="card" transparentBg fill />
+      <AuthCard {...resolved} presentation="card" transparentBg surface={CardSurface.FILL} />
     </div>
   );
 }
@@ -154,31 +154,39 @@ function SecuredChip() {
   );
 }
 
-/** The card's own box: elvix's 420 px card, or the host's full width (`fill`). */
-function cardClass(transparentBg: boolean, fill: boolean): string {
-  if (fill) return "w-full overflow-hidden";
+/**
+ * Where the card sits. `INLINE`: on the host's page, the version below it. `OVERLAY`: on a
+ * dimmed backdrop (elvix's modal, drawer), where the version would be unreadable below it, so
+ * it sits on the card. `FILL`: inside a host's own container, as wide as it, version inside.
+ */
+export const CardSurface = {
+  INLINE: "inline",
+  OVERLAY: "overlay",
+  FILL: "fill",
+} as const;
+export type CardSurface = (typeof CardSurface)[keyof typeof CardSurface];
+
+/** The card's own box: elvix's 420 px card, or the host's full width. */
+function cardClass(transparentBg: boolean, surface: CardSurface): string {
+  if (surface === CardSurface.FILL) return "w-full overflow-hidden";
   return transparentBg
     ? "mx-auto w-full max-w-[420px] overflow-hidden"
     : "mx-auto w-full max-w-[420px] rounded-[14px] bg-surface shadow-[0_2px_8px_rgba(0,0,0,0.04),0_20px_40px_-20px_rgba(0,0,0,0.12)] border border-border-base overflow-hidden";
 }
 
-/**
- * The card every presentation shows. `overlay`: it floats on a dimmed backdrop (modal,
- * drawer), where the version would be unreadable below it, so it sits on the card; `fill`:
- * a host's container, the card as wide as it, the version inside too.
- */
-export function AuthCard(props: AuthFormProps & { overlay?: boolean; fill?: boolean }) {
-  const { transparentBg = false, overlay = false, fill = false } = props;
-  const versionInside = overlay || fill;
+/** The card every presentation shows, on its `surface`. */
+export function AuthCard(props: AuthFormProps & { surface: CardSurface }) {
+  const { transparentBg = false, surface } = props;
+  const versionInside = surface !== CardSurface.INLINE;
   // The brand variables ride on the card itself: the modal and drawer portal out of the
   // provider's root, where `--elvix-primary` would not exist. `width` overrides the 420 px cap.
   const cardStyle: React.CSSProperties = {
     ...(props.brandColor ? brandCssVars(props.brandColor, props.onBrandColor ?? "#ffffff") : {}),
-    ...(props.width !== undefined && !fill ? { maxWidth: props.width } : {}),
+    ...(props.width !== undefined && surface !== CardSurface.FILL ? { maxWidth: props.width } : {}),
   };
   return (
     <>
-      <div className={cardClass(transparentBg, fill)} style={cardStyle}>
+      <div className={cardClass(transparentBg, surface)} style={cardStyle}>
         {/* Same px-7 in every mode so the `banner` header's `-mx-7 -mt-7` bleed lands on
             the card edge; transparentBg only trims the bottom. */}
         <div className={transparentBg ? "px-7 pt-7 pb-3" : "px-7 py-7"}>

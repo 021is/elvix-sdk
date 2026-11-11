@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
+import type { ReactElement } from "react";
 import { useT } from "../locale/use-t";
 import {
   ElvixSessionStatus,
@@ -25,8 +26,9 @@ import { useSignInReturns } from "./use-sign-in-returns";
 
 type StepPaneProps = { p: AuthFormProps; flow: SignInFlow; otp: OtpStart; baseUrl: string };
 
-/** The pane of the step the flow is on, one at a time, in place. */
-function StepPane({ p, flow, otp, baseUrl }: StepPaneProps) {
+/** The pane of the step the flow is on, one at a time, in place. Every `Step` is named, so a
+ *  new step fails the type check until it has a pane. */
+function StepPane({ p, flow, otp, baseUrl }: StepPaneProps): ReactElement {
   const isPreview = p.mode === "preview";
   const cta = { brand: p.brandColor, onBrand: p.onBrandColor ?? "#ffffff" };
   const shared = { flow, baseUrl, isPreview, cta };
@@ -41,7 +43,7 @@ function StepPane({ p, flow, otp, baseUrl }: StepPaneProps) {
       return <PasskeyStep {...shared} p={p} />;
     case Step.RECOVER:
       return <RecoverStep flow={flow} baseUrl={baseUrl} />;
-    default:
+    case Step.IDENTIFIER:
       return <IdentifierStep {...shared} otp={otp} p={p} />;
   }
 }

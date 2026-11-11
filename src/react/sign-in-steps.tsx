@@ -28,6 +28,7 @@ import {
   type Translator,
   usernameReasonLabel,
 } from "./sign-in-copy";
+import { headerSubtitle, headerTitle } from "./sign-in-header-copy";
 import { unwrapEnvelope } from "./spine-fetch";
 import { type OtpStart, useOtpVerify } from "./use-otp";
 import { postJson, type SignInFlow, Step } from "./use-sign-in-flow";
@@ -113,50 +114,6 @@ function GateBadge({ gate, t }: { gate: string | undefined; t: Translator }) {
       {label}
     </span>
   );
-}
-
-/** A step's title, in the card's header and above a compact block's onboarding step. */
-export function headerTitle(
-  step: Step,
-  p: AuthFormProps,
-  recoverApp: string | undefined,
-  t: Translator,
-) {
-  const app = p.appName || t("signin.appNameFallback");
-  switch (step) {
-    case Step.CODE:
-      return t("export.doneTitle");
-    case Step.USERNAME:
-      return t("username.title");
-    case Step.PASSKEY:
-      return t(
-        p.signInVerb === "login"
-          ? "signin.passkeyOnboardingTitleLogin"
-          : "signin.passkeyOnboardingTitleSignin",
-      );
-    case Step.RECOVER:
-      return t("signin.recoverTitle", {
-        app: recoverApp ?? p.appName ?? t("signin.appNameFallback"),
-      });
-    default:
-      return t(p.signInVerb === "login" ? "signin.titleLogin" : "signin.title", { app });
-  }
-}
-
-/** A step's one fact under its title; none on the entry step: the logo plus one line (0.25). */
-export function headerSubtitle(step: Step, p: AuthFormProps, identifier: string, t: Translator) {
-  switch (step) {
-    case Step.CODE:
-      return t("signin.codeSentSubtitle", { email: identifier });
-    case Step.USERNAME:
-      return p.appName ? t("username.subtitle", { app: p.appName }) : t("username.subtitleNoApp");
-    case Step.PASSKEY:
-      return t("signin.passkeyOnboardingSubtitle");
-    case Step.RECOVER:
-      return t("signin.recoverSubtitle");
-    default:
-      return null;
-  }
 }
 
 const HEADER_LAYOUT: Record<string, string> = {

@@ -4,13 +4,8 @@ import { useT } from "../locale/use-t";
 import type { AuthFormProps } from "./elvix-sign-in-form";
 import { STACK_3 } from "./pane-layout";
 import type { Cta } from "./sign-in-controls";
-import {
-  headerSubtitle,
-  headerTitle,
-  PasskeyStep,
-  RecoverStep,
-  UsernameStep,
-} from "./sign-in-steps";
+import { headerSubtitle, headerTitle } from "./sign-in-header-copy";
+import { PasskeyStep, RecoverStep, UsernameStep } from "./sign-in-steps";
 import { type SignInFlow, Step } from "./use-sign-in-flow";
 
 /**
