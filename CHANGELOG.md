@@ -49,9 +49,9 @@ Chromium: 62 elements, same boxes, weights and fonts).
   passkeys in its autofill (`autocomplete="… webauthn"`, a conditional request started
   on a focus of the field while no passkey request is open in any card on the page, never
   on open or while a passkey button runs, and ended before a button's dialog, its start
-  request included, within 3 s at most; a button opens none once a passkey is picked
-  from an autofill: one prompt, one session; a dialog open in any card shows on every
-  card's passkey button); a
+  request included; a passkey picked from it is a sign-in no button interrupts or repeats:
+  one prompt, one session; a sign-in running in any card shows on every card's passkey
+  button; every passkey request gives up after 20 s with "Network hiccup. Try again."); a
   focused field and its step's button are scrolled into view inside whatever scrolls
   around the card, again while the keyboard opens; and a touch screen gets no autofocus,
   so the keyboard never jumps up as a sheet or the modal opens (the modal focuses its own
