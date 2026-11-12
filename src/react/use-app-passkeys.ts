@@ -25,7 +25,7 @@ export type ElvixAppPasskey = {
 export type ElvixAppPasskeysResult =
   | { ok: true; kind: "added" }
   | { ok: true; kind: "removed"; passkeyId: string }
-  | { ok: false; error: string; message?: string };
+  | { ok: false; error: string };
 
 type Options = {
   appId: string | null;
