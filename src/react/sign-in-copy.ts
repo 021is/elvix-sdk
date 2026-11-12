@@ -69,7 +69,9 @@ export function humanError(t: Translator, code?: string, retryAfterSeconds?: num
       ? t("signin.errorTooManyWithRetry", { retry: formatRetry(t, retryAfterSeconds) })
       : t("signin.errorTooMany");
   }
-  return t((code && ERROR_KEYS[code]) || "signin.errorGeneric");
+  // Own keys only: a server's code of "constructor" must not reach Object.prototype.
+  const key = code && Object.hasOwn(ERROR_KEYS, code) ? ERROR_KEYS[code] : undefined;
+  return t(key ?? "signin.errorGeneric");
 }
 
 // Reason codes mirror /api/onboarding/username/check.

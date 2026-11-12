@@ -37,6 +37,17 @@ describe("passkey sign-in refusals read as something the person can act on", () 
     expect(text).not.toMatch(/^MISSING/);
   });
 
+  it.each(["constructor", "toString", "__proto__", "hasOwnProperty"])(
+    "a server code of %s gets the generic line, never something off the prototype",
+    (code) => {
+      expect(humanError(t, code)).toBe(generic);
+    },
+  );
+
+  it("a request that failed or timed out says to try again (0.26)", () => {
+    expect(humanError(t, "network")).toBe("Network hiccup. Try again.");
+  });
+
   it("a passkey for another app says so and names the way out", () => {
     expect(humanError(t, "credential_not_for_app")).toMatch(/different app/i);
     expect(humanError(t, "credential_not_for_app")).toMatch(/sign in another way/i);
