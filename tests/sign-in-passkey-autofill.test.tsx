@@ -10,7 +10,7 @@
 import { act, cleanup, fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ElvixSignInCard } from "../src/react/index";
-import { json, type Route } from "./helpers/fake-elvix";
+import { CLIENT_ID, json, type Route } from "./helpers/fake-elvix";
 import {
   ASSERTION,
   mount,
@@ -88,6 +88,28 @@ describe("the field and its request", () => {
     expect(screen.queryByText(/went wrong/)).toBeNull();
     await act(async () => fireEvent.focus(field));
     await waitFor(() => expect(fake.calls("/api/auth/passkey/sign-in/start")).toBe(2));
+  });
+
+  it("asks nothing before the envelope names the app's clientId, then on the next focus", async () => {
+    const get = stubPasskeys(pendingUntilAborted);
+    let land: () => void = () => {};
+    const held = new Promise<void>((resolve) => (land = resolve));
+    const late: Route = [
+      "GET",
+      (u) => u.includes("/api/v1/bootstrap/"),
+      async () => {
+        await held;
+        return json({ success: true, data: { clientId: CLIENT_ID, appName: "Acme" } });
+      },
+    ];
+    mount(<ElvixSignInCard navigate={false} methodEmailOtp methodPasskey />, "fine", [late]);
+    const field = await screen.findByPlaceholderText("Enter your email", {}, PANE);
+    await act(async () => fireEvent.focus(field));
+    await act(async () => {});
+    expect(get).not.toHaveBeenCalled();
+    await act(async () => land());
+    await act(async () => fireEvent.focus(await readyField()));
+    await waitFor(() => expect(get).toHaveBeenCalledTimes(1));
   });
 });
 

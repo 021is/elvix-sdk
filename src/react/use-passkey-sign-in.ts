@@ -98,36 +98,30 @@ export function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: st
     };
   }, []);
 
-  const onOffer = (o: PasskeyOffer, result: PasskeySignInResult) => {
+  const onOffer = (picked: boolean, result: PasskeySignInResult) => {
     if (result.ok) passkeySignedIn(flow, result.landing);
-    else if (o.picked) reportPasskeyError(flow, t, result);
+    else if (picked) reportPasskeyError(flow, t, result);
     // Not picked: the offer ended (aborted, dismissed) or never showed (a start refused, a
     // browser that cannot do it across origins). The person asked for nothing, so there is
     // nothing to tell them or the host; the passkey button stays, and reports its own.
   };
 
   const arm = () => {
-    // An app sign-in names its clientId, which comes with the provider's envelope: before
-    // it lands there is nothing to ask for, and the next focus asks again.
-    const scoped = (p.intent ?? "app") !== "app" || Boolean(p.clientId);
-    if (!autofill || !scoped) return;
-    const o: PasskeyOffer = {
-      controller: new AbortController(),
-      picked: false,
-      done: Promise.resolve(),
-    };
-    if (!holdOffer(o)) return;
-    offer.current = o;
-    o.done = (async () => {
-      if (!(await conditionalMediationAvailable()) || o.controller.signal.aborted) return;
+    // Before the envelope names the app's clientId, `runPasskeySignIn` asks for nothing
+    // (`missing_client_id`, silent here), and the next focus asks again.
+    if (!autofill || passkeyLockState() !== PasskeyLock.FREE) return;
+    const controller = new AbortController();
+    let picked = false;
+    const done = (async () => {
+      if (!(await conditionalMediationAvailable()) || controller.signal.aborted) return;
       const result = await runPasskeySignIn(baseUrl, p.clientId, p.intent ?? "app", {
         kind: "autofill",
-        signal: o.controller.signal,
+        signal: controller.signal,
         onPicked: () => {
-          o.picked = true;
+          picked = true;
         },
       });
-      onOffer(o, result);
+      onOffer(picked, result);
     })()
       // `runPasskeySignIn` never throws; anything else that does is shown, not left unhandled.
       .catch((e: unknown) =>
@@ -140,6 +134,16 @@ export function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: st
         releaseOffer(o);
         if (offer.current === o) offer.current = null;
       });
+    // The offer whole, with its real `done`; the lock was free a line above, so it holds.
+    const o: PasskeyOffer = {
+      controller,
+      get picked() {
+        return picked;
+      },
+      done,
+    };
+    if (!holdOffer(o)) controller.abort();
+    offer.current = o;
   };
 
   const run = async () => {
