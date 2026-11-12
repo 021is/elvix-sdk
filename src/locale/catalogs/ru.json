@@ -218,12 +218,6 @@
       "errorPasskeyBusy": {
         "other": "Запрос passkey уже открыт."
       },
-      "errorPasskeyVerify": {
-        "other": "Проверка passkey не удалась."
-      },
-      "errorPasskeyAdd": {
-        "other": "Не удалось добавить passkey. Попробуйте снова или пропустите пока."
-      },
       "visitAppWebsite": {
         "other": "Перейти на сайт {app}"
       },

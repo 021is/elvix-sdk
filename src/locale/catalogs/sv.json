@@ -216,12 +216,6 @@
       "errorPasskeyBusy": {
         "other": "En passkey-förfrågan är redan öppen."
       },
-      "errorPasskeyVerify": {
-        "other": "Verifiering av passkey misslyckades."
-      },
-      "errorPasskeyAdd": {
-        "other": "Passkey kunde inte läggas till. Försök igen eller hoppa över för stunden."
-      },
       "visitAppWebsite": {
         "other": "Besök {app} webbplats"
       },

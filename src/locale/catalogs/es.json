@@ -216,12 +216,6 @@
       "errorPasskeyBusy": {
         "other": "Ya hay una solicitud de clave de acceso abierta."
       },
-      "errorPasskeyVerify": {
-        "other": "La verificación de la clave de acceso ha fallado."
-      },
-      "errorPasskeyAdd": {
-        "other": "No se ha podido añadir la clave de acceso. Inténtalo de nuevo u omítelo por ahora."
-      },
       "visitAppWebsite": {
         "other": "Visitar el sitio web de {app}"
       },

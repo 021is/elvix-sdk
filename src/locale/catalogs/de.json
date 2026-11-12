@@ -216,12 +216,6 @@
       "errorPasskeyBusy": {
         "other": "Eine Passkey-Abfrage ist bereits geöffnet."
       },
-      "errorPasskeyVerify": {
-        "other": "Passkey-Verifizierung fehlgeschlagen."
-      },
-      "errorPasskeyAdd": {
-        "other": "Passkey konnte nicht hinzugefügt werden. Versuchen Sie es erneut oder überspringen Sie es vorerst."
-      },
       "visitAppWebsite": {
         "other": "Website von {app} besuchen"
       },

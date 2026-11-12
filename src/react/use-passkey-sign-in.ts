@@ -43,7 +43,7 @@ function passkeySignedIn(flow: SignInFlow, landing: Landing) {
 /** A passkey sign-in that failed, in elvix's words for its code: a browser's, an
  *  extension's or a server's own text never reaches the page or `onResult`. */
 function reportPasskeyError(flow: SignInFlow, t: Translator, result: { error: string }) {
-  flow.reportError(result.error, humanError(t, result.error) ?? t("signin.errorPasskeyVerify"));
+  flow.reportError(result.error, humanError(t, result.error));
 }
 
 /** Whether this browser can offer passkeys inside a field's autofill; `false` at once when

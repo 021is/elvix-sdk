@@ -216,12 +216,6 @@
       "errorPasskeyBusy": {
         "other": "Ένα αίτημα passkey είναι ήδη ανοιχτό."
       },
-      "errorPasskeyVerify": {
-        "other": "Η επαλήθευση του passkey απέτυχε."
-      },
-      "errorPasskeyAdd": {
-        "other": "Δεν ήταν δυνατή η προσθήκη του passkey. Δοκιμάστε ξανά ή παραλείψτε για τώρα."
-      },
       "visitAppWebsite": {
         "other": "Επισκεφθείτε τον ιστότοπο του {app}"
       },

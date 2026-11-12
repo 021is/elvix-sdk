@@ -219,12 +219,6 @@
       "errorPasskeyBusy": {
         "other": "A passkey prompt is already open."
       },
-      "errorPasskeyVerify": {
-        "other": "Passkey verification failed."
-      },
-      "errorPasskeyAdd": {
-        "other": "Passkey couldn't be added. Try again or skip for now."
-      },
       "visitAppWebsite": {
         "other": "Visit {app} website"
       },

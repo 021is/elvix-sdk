@@ -217,12 +217,6 @@
       "errorPasskeyBusy": {
         "other": "Výzva passkey je už otevřená."
       },
-      "errorPasskeyVerify": {
-        "other": "Ověření passkey selhalo."
-      },
-      "errorPasskeyAdd": {
-        "other": "Passkey se nepodařilo přidat. Zkuste znovu nebo přeskočte."
-      },
       "visitAppWebsite": {
         "other": "Navštívit web {app}"
       },

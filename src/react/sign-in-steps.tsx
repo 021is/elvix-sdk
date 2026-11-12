@@ -425,7 +425,7 @@ export function PasskeyStep({
       window.location.assign(hostedRegisterUrl(baseUrl, p.clientId));
       return;
     }
-    flow.reportError(result.error, humanError(t, result.error) ?? t("signin.errorPasskeyAdd"));
+    flow.reportError(result.error, humanError(t, result.error));
   };
 
   const skip = () => {

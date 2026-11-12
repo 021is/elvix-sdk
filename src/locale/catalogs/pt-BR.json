@@ -216,12 +216,6 @@
       "errorPasskeyBusy": {
         "other": "Já há uma solicitação de passkey aberta."
       },
-      "errorPasskeyVerify": {
-        "other": "Falha na verificação do passkey."
-      },
-      "errorPasskeyAdd": {
-        "other": "Não foi possível adicionar o passkey. Tente novamente ou pule por ora."
-      },
       "visitAppWebsite": {
         "other": "Visitar site de {app}"
       },

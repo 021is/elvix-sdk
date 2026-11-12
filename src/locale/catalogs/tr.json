@@ -215,12 +215,6 @@
       "errorPasskeyBusy": {
         "other": "Bir geçiş anahtarı isteği zaten açık."
       },
-      "errorPasskeyVerify": {
-        "other": "Geçiş anahtarı doğrulaması başarısız oldu."
-      },
-      "errorPasskeyAdd": {
-        "other": "Geçiş anahtarı eklenemedi. Tekrar deneyin veya şimdilik atlayın."
-      },
       "visitAppWebsite": {
         "other": "{app} web sitesini ziyaret et"
       },

@@ -218,12 +218,6 @@
       "errorPasskeyBusy": {
         "other": "Okno klucza dostępu jest już otwarte."
       },
-      "errorPasskeyVerify": {
-        "other": "Weryfikacja klucza dostępu nie powiodła się."
-      },
-      "errorPasskeyAdd": {
-        "other": "Nie udało się dodać klucza dostępu. Spróbuj ponownie lub pomiń na razie."
-      },
       "visitAppWebsite": {
         "other": "Odwiedź stronę {app}"
       },
