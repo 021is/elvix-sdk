@@ -2,10 +2,14 @@
  * The words for `<ElvixAppPasskeys>`' error codes (out of the component in 0.26, security
  * review 5, 2026-11-12). Only a code elvix's own table names gets its line, read by own
  * keys; any other code, a server's free text included, is the generic line: no browser,
- * extension or server words ever reach the page.
+ * extension or server words ever reach the page. The codes every surface shares come from
+ * `SHARED_ERROR_KEYS`.
  */
 
+import { SHARED_ERROR_KEYS } from "./sign-in-copy";
+
 const PASSKEY_ERRORS: Record<string, string> = {
+  ...SHARED_ERROR_KEYS,
   load_failed: "passkeys.errorLoad",
   not_a_member: "passkeys.errorNotMember",
   method_disabled: "passkeys.errorMethodDisabled",
@@ -15,8 +19,6 @@ const PASSKEY_ERRORS: Record<string, string> = {
   invalid_input: "passkeys.errorInvalidInput",
   unauthenticated: "passkeys.errorUnauthenticated",
   remove_failed: "passkeys.errorRemoveFailed",
-  network: "signin.errorNetwork",
-  passkey_busy: "signin.errorPasskeyBusy",
 };
 
 /** The catalog key for `code`. */

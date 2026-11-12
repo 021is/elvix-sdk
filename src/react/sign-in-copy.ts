@@ -30,7 +30,16 @@ export function formatRetry(t: Translator, seconds: number): string {
  * keychain still offers but elvix has no record of (a stale credential), so
  * its copy gives the way out.
  */
+/** The codes every elvix surface words alike (0.26), one table: the sign-in's below and
+ *  `<ElvixAppPasskeys>`' (`app-passkey-errors.ts`) each extend it with their own. */
+export const SHARED_ERROR_KEYS: Record<string, string> = {
+  // A request that failed or timed out on the way (every passkey request is bounded).
+  network: "signin.errorNetwork",
+  passkey_busy: "signin.errorPasskeyBusy",
+};
+
 const ERROR_KEYS: Record<string, string> = {
+  ...SHARED_ERROR_KEYS,
   invalid_code: "signin.errorInvalidCode",
   expired: "signin.errorExpired",
   // The code legs' own refusals (0.17): each says what to do, never "Something went wrong".
@@ -54,9 +63,6 @@ const ERROR_KEYS: Record<string, string> = {
   verify_failed: "signin.errorPasskeyVerifyFailed",
   not_verified: "signin.errorPasskeyVerifyFailed",
   challenge_invalid: "signin.errorPasskeyExpired",
-  // A request that failed or timed out on the way (0.26: every passkey request is bounded).
-  network: "signin.errorNetwork",
-  passkey_busy: "signin.errorPasskeyBusy",
 };
 
 export function humanError(t: Translator, code?: string, retryAfterSeconds?: number): string {
