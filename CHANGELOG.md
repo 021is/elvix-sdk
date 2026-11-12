@@ -63,7 +63,7 @@ Chromium: 62 elements, same boxes, weights and fonts).
 
 - The entry step is `sign-in-identifier-step.tsx` and its method buttons
   `sign-in-social.tsx`, the username field `sign-in-username-field.tsx`;
-  `sign-in-steps.tsx` went from 889 to 490 lines and left the complexity debt list. Adding
+  `sign-in-steps.tsx` went from 889 to 488 lines and left the complexity debt list. Adding
   a passkey is `passkey-register.ts`, out of `passkey.ts` (which left the file-length debt).
 
 ### Fixed
