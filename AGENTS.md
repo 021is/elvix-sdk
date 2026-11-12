@@ -88,8 +88,12 @@ input components: they render a native `<input>`, which biome cannot see through
   on a focus of the field while no request is open in any card, never on open and never
   while a button runs; a button ends any open offer before its own dialog (a browser holds
   one request) and opens none when that offer already has a passkey picked or the step is
-  gone: one sign-in, one session (`tests/passkey-lock.test.tsx`, two cards). The offer has
-  **no hosted fallback, on purpose**:
+  gone: one sign-in, one session (`tests/passkey-lock.test.tsx`, two cards). **The lock
+  never sticks:** the offer's abort reaches its `sign-in/start` (never its finish), a
+  button waits on an ending offer at most `OFFER_END_WAIT_MS`, an offer's own failure
+  (a host `onResult` that throws) is reported, never awaited as the lock's, `pagehide`
+  ends an open offer, and every card's button shows a ceremony from any card
+  (`tests/passkey-lock-stuck.test.tsx`). The offer has **no hosted fallback, on purpose**:
   it is an offer the person did not ask for, so it never sends them away; before a pick it
   is silent, and the button keeps the hosted fallback and its errors
   (`tests/sign-in-passkey-autofill.test.tsx`).

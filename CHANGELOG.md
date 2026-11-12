@@ -48,8 +48,10 @@ Chromium: 62 elements, same boxes, weights and fonts).
   last field, `next` between the code boxes); the identifier field offers the person's
   passkeys in its autofill (`autocomplete="… webauthn"`, a conditional request started
   on a focus of the field while no passkey request is open in any card on the page, never
-  on open or while a passkey button runs, and ended before a button's dialog; a button
-  opens none once a passkey is picked from an autofill: one prompt, one session); a
+  on open or while a passkey button runs, and ended before a button's dialog, its start
+  request included, within 3 s at most; a button opens none once a passkey is picked
+  from an autofill: one prompt, one session; a dialog open in any card shows on every
+  card's passkey button); a
   focused field and its step's button are scrolled into view inside whatever scrolls
   around the card, again while the keyboard opens; and a touch screen gets no autofocus,
   so the keyboard never jumps up as a sheet or the modal opens (the modal focuses its own
