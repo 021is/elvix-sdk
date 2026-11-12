@@ -96,12 +96,11 @@ function OrLine() {
 
 /** The email / username field, Continue `gapFieldButton` under it, and the error line. */
 function IdentifierField({
-  flow,
   otp,
   p,
   cta,
   passkey,
-}: Omit<IdentifierStepProps, "baseUrl"> & { passkey: PasskeySignIn }) {
+}: Omit<IdentifierStepProps, "baseUrl" | "flow"> & { passkey: PasskeySignIn }) {
   const t = useT();
   const placeholder = t(identifierPlaceholderKey(p));
   const kind = p.methodUsername ? "username" : "email";
@@ -131,9 +130,6 @@ function IdentifierField({
       >
         {t("signin.sendCodeButton")}
       </CtaButton>
-      {/* 12 px under Continue, as before 0.26 (the form's old 8 px gap plus `mt-1`): an
-          error line has no token. */}
-      <ErrorLine error={flow.error} center className="mt-3" />
     </>
   );
 }
@@ -166,7 +162,10 @@ export function IdentifierStep({ flow, otp, p, baseUrl, cta }: IdentifierStepPro
         />
       )}
       {typed && social && <OrLine />}
-      {typed && <IdentifierField flow={flow} otp={otp} p={p} cta={cta} passkey={passkey} />}
+      {typed && <IdentifierField otp={otp} p={p} cta={cta} passkey={passkey} />}
+      {/* Every method's failure, a passkey-only card's too. 12 px under the step's last
+          part, as before 0.26 under Continue: an error line has no token. */}
+      <ErrorLine error={flow.error} center className="mt-3" />
     </form>
   );
 }

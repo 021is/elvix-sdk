@@ -170,6 +170,24 @@ describe("what comes of it", () => {
     expect(line.textContent).toMatch(/went wrong/);
     expect(line.className).toMatch(/\bmt-3\b/);
   });
+
+  it("a passkey-only card (no field) says so too", async () => {
+    stubPasskeys(async () => ASSERTION);
+    const refused: Route = [
+      "POST",
+      (u) => u.includes("/api/auth/passkey/sign-in/finish"),
+      () => json({ success: false, errorMessage: "passkey_verify_failed" }, 400),
+    ];
+    mount(<ElvixSignInCard navigate={false} methodEmailOtp={false} methodPasskey />, "fine", [
+      refused,
+    ]);
+    await screen.findByText("Sign in to Acme", {}, PANE);
+    expect(screen.queryByPlaceholderText("Enter your email")).toBeNull();
+    await act(async () =>
+      fireEvent.click(screen.getByRole("button", { name: "Continue with passkey" })),
+    );
+    expect((await screen.findByRole("alert", {}, PANE)).textContent).toMatch(/went wrong/);
+  });
 });
 
 /** A route whose answer waits until the test lets it through. */
