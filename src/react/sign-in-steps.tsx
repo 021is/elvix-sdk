@@ -3,12 +3,12 @@
 /**
  * The panes of `<ElvixSignInForm>`: header, code, the username and passkey onboarding steps,
  * the recovery gate, and the legal footer; the entry step is `sign-in-identifier-step.tsx`
- * (0.26). State and requests come from `use-sign-in-flow.ts`; a step keeps only what dies
+ * and the username field `sign-in-username-field.tsx` (0.26). State and requests come from `use-sign-in-flow.ts`; a step keeps only what dies
  * with it (the typed code, the username being checked).
  */
 
-import { ArrowLeft, Check, Fingerprint, Loader2, X } from "lucide-react";
-import { type ReactNode, useEffect, useState } from "react";
+import { ArrowLeft, Fingerprint, Loader2 } from "lucide-react";
+import { type ReactNode, useState } from "react";
 import { useT } from "../locale/use-t";
 import { ElvixRecoverGate } from "./elvix-recover-gate";
 import type { AuthFormProps } from "./elvix-sign-in-form";
@@ -16,17 +16,11 @@ import { useAutoFocus } from "./keyboard";
 import { OtpInput } from "./otp-input";
 import { STACK_2, STACK_3, STACK_4 } from "./pane-layout";
 import { runPasskeyRegister } from "./passkey";
-import { send } from "./profile-request";
-import { authInit, getElvixToken, isSameOrigin } from "./session";
+import { getElvixToken, isSameOrigin } from "./session";
 import { type Cta, CtaButton, ErrorLine } from "./sign-in-controls";
-import {
-  hostedCeremonyUrl,
-  humanError,
-  type Translator,
-  usernameReasonLabel,
-} from "./sign-in-copy";
+import { hostedCeremonyUrl, humanError, type Translator } from "./sign-in-copy";
 import { headerSubtitle, headerTitle } from "./sign-in-header-copy";
-import { unwrapEnvelope } from "./spine-fetch";
+import { UsernameCheck, UsernameField, useUsernameCheck } from "./sign-in-username-field";
 import { type OtpStart, useOtpVerify } from "./use-otp";
 import { postJson, type SignInFlow, Step } from "./use-sign-in-flow";
 
@@ -268,86 +262,6 @@ export function CodeStep({
 
 // ─── Username onboarding ─────────────────────────────────────────────
 
-const UsernameCheck = {
-  IDLE: "idle",
-  CHECKING: "checking",
-  AVAILABLE: "available",
-  REJECTED: "rejected",
-} as const;
-type CheckKind = (typeof UsernameCheck)[keyof typeof UsernameCheck];
-type UsernameCheck =
-  | { kind: Exclude<CheckKind, typeof UsernameCheck.REJECTED> }
-  | { kind: typeof UsernameCheck.REJECTED; reason: string };
-
-const CHECK_DEBOUNCE_MS = 220;
-
-/** What elvix's answer makes of the check, each field checked where it enters: no answer
- *  (or not one), free, or refused with its reason (a string, else the code's own). */
-function checkOf(answer: unknown): UsernameCheck {
-  if (typeof answer !== "object" || answer === null) return { kind: UsernameCheck.IDLE };
-  const [ok, available, reason] = ["ok", "available", "reason"].map((k) => Reflect.get(answer, k));
-  if (ok !== false && available === true) return { kind: UsernameCheck.AVAILABLE };
-  const fallback = ok === false ? "invalid" : "taken";
-  return { kind: UsernameCheck.REJECTED, reason: typeof reason === "string" ? reason : fallback };
-}
-
-/** Live availability of `value`, debounced; only the latest answer lands. */
-function useUsernameCheck(baseUrl: string, value: string): UsernameCheck {
-  const [check, setCheck] = useState<UsernameCheck>({ kind: UsernameCheck.IDLE });
-  useEffect(() => {
-    const candidate = value.trim().toLowerCase();
-    if (!candidate) {
-      setCheck({ kind: UsernameCheck.IDLE });
-      return;
-    }
-    setCheck({ kind: UsernameCheck.CHECKING });
-    const controller = new AbortController();
-    const timer = setTimeout(async () => {
-      const res = await send(
-        `${baseUrl}/api/onboarding/username/check?u=${encodeURIComponent(candidate)}`,
-        { signal: controller.signal, ...authInit() },
-      );
-      if (controller.signal.aborted) return;
-      const answer = res ? unwrapEnvelope<unknown>(await res.json().catch(() => null)) : null;
-      if (controller.signal.aborted) return;
-      setCheck(checkOf(answer));
-    }, CHECK_DEBOUNCE_MS);
-    return () => {
-      clearTimeout(timer);
-      controller.abort();
-    };
-  }, [baseUrl, value]);
-  return check;
-}
-
-function UsernameStatus({ check }: { check: UsernameCheck }) {
-  const icon = "size-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none";
-  switch (check.kind) {
-    case UsernameCheck.CHECKING:
-      return <Loader2 className={`${icon} text-fg-3 animate-spin`} />;
-    case UsernameCheck.AVAILABLE:
-      return <Check className={`${icon} text-emerald-500`} />;
-    case UsernameCheck.REJECTED:
-      return <X className={`${icon} text-red-500`} />;
-    default:
-      return null;
-  }
-}
-
-function UsernameHint({ check }: { check: UsernameCheck }) {
-  const t = useT();
-  switch (check.kind) {
-    case UsernameCheck.CHECKING:
-      return <span className="text-fg-3">{t("username.checking")}</span>;
-    case UsernameCheck.AVAILABLE:
-      return <span className="text-emerald-500">{t("username.availableHint")}</span>;
-    case UsernameCheck.REJECTED:
-      return <span className="text-red-500">{usernameReasonLabel(t, check.reason)}</span>;
-    default:
-      return <span className="text-fg-3">{t("username.rulesHint")}</span>;
-  }
-}
-
 const Busy = { CLAIM: "claim", SKIP: "skip", ADD: "add" } as const;
 type Busy = (typeof Busy)[keyof typeof Busy];
 
@@ -386,34 +300,13 @@ export function UsernameStep({
 
   return (
     <div className={STACK_4}>
-      <div>
-        <label htmlFor="onboarding-username" className="block text-[12px] text-fg-3 mb-1.5">
-          {t("username.label")}
-        </label>
-        <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[14px] text-fg-3 pointer-events-none">
-            @
-          </span>
-          <input
-            id="onboarding-username"
-            type="text"
-            ref={field}
-            autoComplete="username"
-            enterKeyHint="go"
-            value={value}
-            minLength={4}
-            maxLength={30}
-            onChange={(e) => setValue(e.target.value)}
-            placeholder={t("username.exampleHandle")}
-            disabled={busy !== null}
-            className="elvix-field w-full h-11 pl-7 pr-10 text-[14px] disabled:cursor-not-allowed"
-          />
-          <UsernameStatus check={check} />
-        </div>
-        <p className="text-[11px] mt-1.5 leading-relaxed min-h-[14px]">
-          <UsernameHint check={check} />
-        </p>
-      </div>
+      <UsernameField
+        field={field}
+        value={value}
+        onChange={setValue}
+        check={check}
+        disabled={busy !== null}
+      />
       {flow.suggestions.length > 0 && (
         <UsernameSuggestions
           suggestions={flow.suggestions}
