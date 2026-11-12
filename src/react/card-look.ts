@@ -1,7 +1,8 @@
 /**
  * The sign-in card's type and spacing, resolved (0.26): the host's `cardStyle` prop, the
  * provider's, then the Console's, key by key, each value checked where it enters, and turned
- * into the CSS variables `AuthCard` sets on itself. Pure: no React, no DOM.
+ * into the CSS variables `AuthCard` sets on itself. No React, no DOM; its one side effect is
+ * a development-only warning for a host value it refuses (`card-style-warn.ts`).
  *
  * The variables are set on the card's own root, every one of them every time, so nothing a
  * page sets on an ancestor reaches the card: the typed `cardStyle` is the only way in, and
@@ -17,6 +18,8 @@ import {
   type ElvixCardStyle,
   isConsoleFontName,
 } from "../types/card-style";
+
+import { warnChangedToken, warnRefusedFont } from "./card-style-warn";
 
 export { CARD_STYLE_RANGES, type ElvixCardStyle } from "../types/card-style";
 
@@ -45,9 +48,9 @@ export class CardLook {
    *  props come from the host's code (fonts may be a family list or a `var()`). */
   static merge(layers: Layers): CardLook {
     return new CardLook({
-      ...checkLayer(layers.console, consoleFontFamily),
-      ...checkLayer(layers.provider, hostFontFamily),
-      ...checkLayer(layers.card, hostFontFamily),
+      ...checkLayer(layers.console, consoleFontFamily, false),
+      ...checkLayer(layers.provider, hostFontFamily, true),
+      ...checkLayer(layers.card, hostFontFamily, true),
     });
   }
 
@@ -94,21 +97,30 @@ export function consoleFontFamily(value: unknown): string | undefined {
   return isConsoleFontName(value) ? `"${value}", ${GENERIC}` : undefined;
 }
 
-/** One layer's values, checked: numbers clamped, fonts through `font`. A value refused here
- *  is dropped without a word, on purpose: the layer under it (or the default) stays, and a
- *  style must never break or block a sign-in. The rules are in `ElvixCardStyle`'s docs. */
-function checkLayer(layer: unknown, font: (value: unknown) => string | undefined): LookValues {
+/** One layer's values, checked: numbers clamped, fonts through `font`. A value refused or
+ *  clamped never breaks or blocks a sign-in: the layer under it (or the default) stays. A
+ *  `host` layer's (the props') is said to the developer, in development only
+ *  (`card-style-warn.ts`); the Console's was checked by elvix's API already. */
+function checkLayer(
+  layer: unknown,
+  font: (value: unknown) => string | undefined,
+  host: boolean,
+): LookValues {
   const look: LookValues = {};
   if (typeof layer !== "object" || layer === null) return look;
   const field = (key: string): unknown =>
     Object.hasOwn(layer, key) ? Reflect.get(layer, key) : undefined;
-  const fontText = font(field("fontText"));
-  const fontDisplay = font(field("fontDisplay"));
-  if (fontText) look.fontText = fontText;
-  if (fontDisplay) look.fontDisplay = fontDisplay;
+  for (const key of ["fontText", "fontDisplay"] as const) {
+    const raw = field(key);
+    const family = font(raw);
+    if (family) look[key] = family;
+    else if (host) warnRefusedFont(key, raw);
+  }
   for (const token of CARD_STYLE_TOKENS) {
-    const value = clampCardToken(token, field(token));
+    const raw = field(token);
+    const value = clampCardToken(token, raw);
     if (value !== undefined) look[token] = value;
+    if (host) warnChangedToken(token, raw, value);
   }
   return look;
 }

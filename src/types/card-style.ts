@@ -61,8 +61,9 @@ export const CARD_STYLE_TOKENS: readonly CardStyleToken[] =
  * surface), on `<ElvixSignInCard>` / `<ElvixSignInForm>` (that card), and on the app in the
  * Console (`PATCH /api/applications/{id}`). The card prop wins over the provider's, and the
  * provider's over the Console's, key by key. A number out of its range is held at its edge;
- * a value that is not a number, or a font that is not a family, is ignored without a word
- * (its default stays): the sign-in never breaks on a style.
+ * a value that is not a number, or a font that is not a family, is ignored (its default
+ * stays): the sign-in never breaks on a style. In development the console says so, once
+ * per key, with what is allowed; in production nothing does.
  */
 export type ElvixCardStyle = {
   /** The card's text font: a family your page already loads (`"Inter"`,
