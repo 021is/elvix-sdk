@@ -73,7 +73,7 @@ describe("a picked offer whose finish is slow", () => {
     expect(passkeyLockState()).toBe(PasskeyLock.BUSY);
     expect(passkeyButton().hasAttribute("disabled")).toBe(true);
     await act(async () => fireEvent.click(passkeyButton()));
-    // Longer than round 3's takeover wait (3 s), which let a second ceremony in here.
+    // A finish slower than any wait: the lock is the sign-in's until it is done.
     await act(async () => tick(3300));
     await act(async () => fireEvent.click(passkeyButton()));
     await tick(200);
