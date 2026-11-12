@@ -67,6 +67,35 @@ async function conditionalMediationAvailable(): Promise<boolean> {
   });
 }
 
+/** An error past every handler of ours (a host callback that throws): reported as the
+ *  uncaught error it is, to the page's `error` listeners and the console. */
+function reportUncaught(error: unknown) {
+  if (typeof globalThis.reportError === "function") globalThis.reportError(error);
+  else console.error(error);
+}
+
+/** An offer, whole before anything runs: `pick` marks it picked, `end` settles its `done`. */
+function newOffer() {
+  let picked = false;
+  let end: () => void = () => {};
+  const offer: PasskeyOffer = {
+    controller: new AbortController(),
+    get picked() {
+      return picked;
+    },
+    done: new Promise<void>((resolve) => {
+      end = resolve;
+    }),
+  };
+  return {
+    offer,
+    pick: () => {
+      picked = true;
+    },
+    end: () => end(),
+  };
+}
+
 /** A server renders no request open. */
 const serverLockState = () => PasskeyLock.FREE;
 
@@ -109,19 +138,18 @@ export function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: st
   const arm = () => {
     // Before the envelope names the app's clientId, `runPasskeySignIn` asks for nothing
     // (`missing_client_id`, silent here), and the next focus asks again.
-    if (!autofill || passkeyLockState() !== PasskeyLock.FREE) return;
-    const controller = new AbortController();
-    let picked = false;
-    const done = (async () => {
-      if (!(await conditionalMediationAvailable()) || controller.signal.aborted) return;
+    if (!autofill) return;
+    const { offer: o, pick, end } = newOffer();
+    if (!holdOffer(o)) return;
+    offer.current = o;
+    void (async () => {
+      if (!(await conditionalMediationAvailable()) || o.controller.signal.aborted) return;
       const result = await runPasskeySignIn(baseUrl, p.clientId, p.intent ?? "app", {
         kind: "autofill",
-        signal: controller.signal,
-        onPicked: () => {
-          picked = true;
-        },
+        signal: o.controller.signal,
+        onPicked: pick,
       });
-      onOffer(picked, result);
+      onOffer(o.picked, result);
     })()
       // `runPasskeySignIn` never throws; anything else that does is shown, not left unhandled.
       .catch((e: unknown) =>
@@ -130,20 +158,14 @@ export function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: st
           message: e instanceof Error ? e.message : undefined,
         }),
       )
+      // A host `onResult` that throws in either report: still reported, never in the way of
+      // the next sign-in (the lock waits on `done`, which always settles).
+      .catch(reportUncaught)
       .finally(() => {
         releaseOffer(o);
         if (offer.current === o) offer.current = null;
+        end();
       });
-    // The offer whole, with its real `done`; the lock was free a line above, so it holds.
-    const o: PasskeyOffer = {
-      controller,
-      get picked() {
-        return picked;
-      },
-      done,
-    };
-    if (!holdOffer(o)) controller.abort();
-    offer.current = o;
   };
 
   const run = async () => {

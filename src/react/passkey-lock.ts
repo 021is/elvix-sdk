@@ -14,8 +14,8 @@
  * `subscribePasskeyLock` / `passkeyLockState`, so every card's button shows a ceremony.
  */
 
-/** An autofill offer: aborted to end it; `done` settles once it has, `picked` once the
- *  person chose a passkey from it (its sign-in is then under way). */
+/** An autofill offer: aborted to end it; `done` resolves once it has (never rejects),
+ *  `picked` once the person chose a passkey from it (its sign-in is then under way). */
 export type PasskeyOffer = { controller: AbortController; picked: boolean; done: Promise<void> };
 
 type Held = { kind: "offer"; offer: PasskeyOffer } | { kind: "ceremony" };
@@ -68,12 +68,9 @@ export function releaseOffer(offer: PasskeyOffer) {
   if (held?.kind === "offer" && held.offer === offer) set(null);
 }
 
-/** An offer that failed past its own handling (a host `onResult` that throws): still
- *  reported, as the uncaught error it is, but never in the way of the next sign-in. */
-function reportUncaught(error: unknown) {
-  if (typeof globalThis.reportError === "function") globalThis.reportError(error);
-  else console.error(error);
-}
+/** An offer's `done` that rejects anyway is its card's to report (the hook reports every
+ *  failure before `done` settles); for the lock it only means the offer is over. */
+const over = () => undefined;
 
 /** `offer` ended, or `OFFER_END_WAIT_MS` passed: a stalled request never holds a button. */
 async function endOf(offer: PasskeyOffer): Promise<void> {
@@ -81,7 +78,7 @@ async function endOf(offer: PasskeyOffer): Promise<void> {
   const waited = new Promise<void>((resolve) => {
     timer = setTimeout(resolve, OFFER_END_WAIT_MS);
   });
-  await Promise.race([offer.done.catch(reportUncaught), waited]);
+  await Promise.race([offer.done.catch(over), waited]);
   clearTimeout(timer);
 }
 
