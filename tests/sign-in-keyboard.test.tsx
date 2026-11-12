@@ -6,17 +6,24 @@
  * keyboard thrown up by an autofocus. The identifier field's passkey autofill is
  * `sign-in-passkey-autofill.test.tsx`.
  */
-import { act, cleanup, fireEvent, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, screen, waitFor } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ElvixEmailCodeSignIn, ElvixProvider, ElvixSignInCard } from "../src/react/index";
+import {
+  ElvixEmailCodeSignIn,
+  ElvixProvider,
+  ElvixSignInCard,
+  ElvixSignInForm,
+} from "../src/react/index";
 import { canAutoFocus } from "../src/react/keyboard";
 import { BASE, CLIENT_ID } from "./helpers/fake-elvix";
 import {
   mount,
   PANE,
+  pendingUntilAborted,
   readyField,
   resetBrowserStubs,
+  stubPasskeys,
   stubPointer,
 } from "./helpers/sign-in-keyboard";
 
@@ -129,6 +136,31 @@ describe("autofocus", () => {
     mount(<ElvixSignInCard navigate={false} methodEmailOtp />, pointer);
     await toCodeStep();
     expect(document.activeElement === screen.getByLabelText(/Digit 1/)).toBe(focused);
+  });
+
+  it.each([
+    ["a mouse", "fine", true],
+    ["a touch screen", "coarse", false],
+  ] as const)("the modal on open with %s", async (_, pointer, control) => {
+    stubPasskeys(pendingUntilAborted);
+    const fake = mount(
+      <ElvixSignInForm
+        navigate={false}
+        presentation="modal"
+        open
+        onOpenChange={() => {}}
+        methodEmailOtp
+        methodPasskey
+      />,
+      pointer,
+    );
+    await readyField();
+    const dialog = screen.getByRole("dialog");
+    await waitFor(() => expect(dialog.contains(document.activeElement)).toBe(true));
+    // A touch screen: the panel itself, so no keyboard jumps up and no passkey offer starts.
+    expect(document.activeElement?.matches("input, button")).toBe(control);
+    await new Promise((r) => setTimeout(r, 60));
+    if (!control) expect(fake.calls("/api/auth/passkey/")).toBe(0);
   });
 
   it("never reaches a server's HTML, where a phone would act on it at load", () => {

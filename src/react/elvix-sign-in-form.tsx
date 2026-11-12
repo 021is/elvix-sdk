@@ -18,6 +18,7 @@ import { useT } from "../locale/use-t";
 import type { ElvixCardStyle } from "../types/card-style";
 import { ElvixSignInButton, type ElvixSignInButtonProps } from "./elvix-sign-in-button";
 import { AuthCard, CardSurface, useResolvedSignIn } from "./elvix-sign-in-card";
+import { focusOnOpen } from "./keyboard";
 import { isOnboardingPending, onOnboardingChange } from "./session";
 import { type Theme, themeVars } from "./sign-in-theme";
 import type { ElvixSignInResult } from "./types";
@@ -492,10 +493,10 @@ function ModalOverlay({
   useEffect(() => setMounted(true), []);
 
   const panelRef = useRef<HTMLDivElement>(null);
-  const restoreFocusRef = useRef<HTMLElement | null>(null);
+  const restoreFocusRef = useRef<Element | null>(null);
   useEffect(() => {
     if (!open || typeof document === "undefined") return;
-    restoreFocusRef.current = (document.activeElement as HTMLElement) ?? null;
+    restoreFocusRef.current = document.activeElement;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
@@ -503,14 +504,12 @@ function ModalOverlay({
       else if (e.key === "Tab") trapTab(e, panelRef.current);
     };
     document.addEventListener("keydown", onKey);
-    const raf = requestAnimationFrame(() => {
-      panelRef.current?.querySelector<HTMLElement>("input, button")?.focus();
-    });
+    const raf = requestAnimationFrame(() => focusOnOpen(panelRef.current));
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prevOverflow;
       cancelAnimationFrame(raf);
-      restoreFocusRef.current?.focus?.();
+      if (restoreFocusRef.current instanceof HTMLElement) restoreFocusRef.current.focus();
     };
   }, [open, dismissable, onClose]);
 
@@ -534,7 +533,8 @@ function ModalOverlay({
           />
           <motion.div
             ref={panelRef}
-            className="relative mx-auto w-full max-h-full overflow-y-auto"
+            tabIndex={-1}
+            className="relative mx-auto w-full max-h-full overflow-y-auto outline-none"
             style={{ maxWidth: width }}
             initial={{ opacity: 0, scale: 0.96, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}

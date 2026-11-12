@@ -16,6 +16,14 @@ export function canAutoFocus(): boolean {
   return !window.matchMedia("(pointer: coarse)").matches;
 }
 
+/** An overlay just opened: its first control takes focus with a fine pointer; on a touch
+ *  screen the panel itself does (it must be focusable, `tabIndex={-1}`), so a screen reader
+ *  is inside the dialog, no keyboard jumps up, and no field's focus starts a passkey offer. */
+export function focusOnOpen(panel: HTMLElement | null) {
+  const first = canAutoFocus() ? panel?.querySelector<HTMLElement>("input, button") : null;
+  (first ?? panel)?.focus();
+}
+
 /**
  * A ref whose field is focused once it is mounted, when `wanted` and the pointer is fine.
  * Never the `autoFocus` attribute: a server would write it into the page's HTML, where a
