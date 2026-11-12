@@ -142,8 +142,11 @@ describe("what comes of it", () => {
     const field = await readyField();
     await act(async () => fireEvent.focus(field));
     // The entry step's error line (its words for this code are the generic ones, as for the
-    // button: `humanError` names `verify_failed`, not `passkey_verify_failed`).
-    expect(await screen.findByText(/went wrong/, { selector: "p" }, PANE)).toBeTruthy();
+    // button: `humanError` names `verify_failed`, not `passkey_verify_failed`), announced to
+    // a screen reader and 12 px under Continue.
+    const line = await screen.findByRole("alert", {}, PANE);
+    expect(line.textContent).toMatch(/went wrong/);
+    expect(line.className).toMatch(/\bmt-3\b/);
   });
 });
 

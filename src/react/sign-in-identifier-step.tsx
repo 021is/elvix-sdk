@@ -11,7 +11,7 @@ import { type RefObject, useRef } from "react";
 import { useT } from "../locale/use-t";
 import type { AuthFormProps } from "./elvix-sign-in-form";
 import { GoogleOneTap } from "./google-one-tap";
-import { type Cta, CtaButton } from "./sign-in-controls";
+import { type Cta, CtaButton, ErrorLine } from "./sign-in-controls";
 import { SocialButtons } from "./sign-in-social";
 import type { OtpStart } from "./use-otp";
 import { type PasskeySignIn, usePasskeySignIn } from "./use-passkey-sign-in";
@@ -133,7 +133,7 @@ function IdentifierField({
       </CtaButton>
       {/* 12 px under Continue, as before 0.26 (the form's old 8 px gap plus `mt-1`): an
           error line has no token. */}
-      {flow.error && <p className="text-[11.5px] text-red-400 text-center mt-3">{flow.error}</p>}
+      <ErrorLine error={flow.error} center className="mt-3" />
     </>
   );
 }
