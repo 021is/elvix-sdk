@@ -144,4 +144,30 @@ describe("a browser's or an extension's own words", () => {
     expect(document.body.textContent).not.toContain("PWNED");
     expect(JSON.stringify(onResult.mock.calls)).not.toContain("PWNED");
   });
+
+  // Security review 6: a 500's free text passed as the error code into onResult.
+  it("a server's free text in a refusal never reaches onResult or the page", async () => {
+    const leak = "Invalid `prisma.user.findUnique()` invocation: ECONNREFUSED 10.0.3.7:5432";
+    stubPasskeys(async () => ASSERTION);
+    const onResult = vi.fn();
+    mount(
+      <ElvixSignInCard navigate={false} methodEmailOtp methodPasskey onResult={onResult} />,
+      "fine",
+      [
+        [
+          "POST",
+          (u) => u.includes("/api/auth/passkey/sign-in/finish"),
+          () => json({ success: false, errorMessage: leak }, 500),
+        ],
+      ],
+    );
+    await screen.findByText("Sign in to Acme", {}, PANE);
+    await act(async () => fireEvent.click(passkeyButton()));
+    await waitFor(() => expect(onResult).toHaveBeenCalled());
+    expect(onResult).toHaveBeenCalledWith(
+      expect.objectContaining({ ok: false, error: "passkey_verify_failed" }),
+    );
+    expect(JSON.stringify(onResult.mock.calls)).not.toMatch(/prisma|ECONNREFUSED/);
+    expect(document.body.textContent).not.toMatch(/prisma|ECONNREFUSED/);
+  });
 });

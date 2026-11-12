@@ -194,4 +194,17 @@ describe("runPasskeyRegister", () => {
       error: "passkey_register_failed",
     });
   });
+
+  it("takes a refusal's errorMessage only when it is a code, never a 500's free text", async () => {
+    const refuse = (errorMessage: string) => () =>
+      new Response(JSON.stringify({ success: false, errorMessage }), { status: 500 });
+    stubCredentials({ create: async () => null });
+    stubFetch({ "/register/start": refuse("Invalid `prisma.x()`: ECONNREFUSED 10.0.3.7:5432") });
+    expect(await runPasskeyRegister(BASE, "app")).toEqual({
+      ok: false,
+      error: "passkey_register_failed",
+    });
+    stubFetch({ "/register/start": refuse("not_a_member") });
+    expect(await runPasskeyRegister(BASE, "app")).toEqual({ ok: false, error: "not_a_member" });
+  });
 });

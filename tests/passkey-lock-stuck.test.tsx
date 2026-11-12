@@ -86,6 +86,26 @@ describe("a request that never answers", () => {
     await waitFor(() => expect(dialogsOf(get)).toBe(1));
     await signedIn(onResult);
   });
+
+  it("a body that never ends: the timeout frees the lock, with the retry line", async () => {
+    browser();
+    let starts = 0;
+    const endless = () => new Response(new ReadableStream({ start() {} }), { status: 200 });
+    mount(<ElvixSignInCard navigate={false} methodEmailOtp methodPasskey />, "fine", [
+      ["POST", (u) => u.includes("/api/auth/passkey/sign-in/start") && starts++ === 0, endless],
+    ]);
+    await screen.findByText("Sign in to Acme", {}, PANE);
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    await act(async () => fireEvent.click(passkeyButton()));
+    expect(passkeyLockState()).toBe(PasskeyLock.BUSY);
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(PASSKEY_REQUEST_TIMEOUT_MS);
+    });
+    expect((await screen.findByRole("alert", {}, PANE)).textContent).toBe(
+      "Network hiccup. Try again.",
+    );
+    expect(passkeyLockState()).toBe(PasskeyLock.FREE);
+  });
 });
 
 describe("a ceremony whose card is gone", () => {

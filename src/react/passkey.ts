@@ -61,8 +61,17 @@ export const decodeDescriptors = (list: CredentialDescriptorJSON[] | undefined) 
     transports: c.transports as AuthenticatorTransport[] | undefined,
   }));
 
-/** POST JSON to an elvix route with the Spine envelope, never past the passkey timeout. A
- *  refusal is its `errorMessage` (else `fallback`); a network, timeout or parse failure, `network`. */
+type Envelope<T> = { success?: boolean; data?: T; errorMessage?: unknown };
+
+/** A refusal's code, when it is one (`passkey_verify_failed`): a 500's free text (a stack, a
+ *  database address) is never a code, and never leaves this file (security review 6). */
+const ERROR_CODE = /^[a-z][a-z0-9_]{0,63}$/;
+const codeOf = (value: unknown, fallback: string) =>
+  typeof value === "string" && ERROR_CODE.test(value) ? value : fallback;
+
+/** POST JSON to an elvix route with the Spine envelope, never past the passkey timeout, the
+ *  body's read included. A refusal is its `errorMessage` when that is a code (else
+ *  `fallback`); a network, timeout or parse failure, `network`. */
 export async function postEnvelope<T>(
   url: string,
   init: RequestInit,
@@ -72,8 +81,9 @@ export async function postEnvelope<T>(
   try {
     const res = await orAbort(elvixFetch(url, { method: "POST", ...init, signal }), signal, null);
     if (!res) return { ok: false, error: "network" };
-    const body = (await res.json()) as { success?: boolean; data?: T; errorMessage?: string };
-    if (!res.ok || !body.success) return { ok: false, error: body.errorMessage ?? fallback };
+    const body: Envelope<T> | null = await orAbort(res.json(), signal, null);
+    if (!body) return { ok: false, error: "network" };
+    if (!res.ok || !body.success) return { ok: false, error: codeOf(body.errorMessage, fallback) };
     return { ok: true, data: body.data };
   } catch {
     // The browser's own words ("Failed to fetch", "signal is aborted") never reach the page.

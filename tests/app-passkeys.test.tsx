@@ -49,11 +49,15 @@ describe("ElvixAppPasskeys", () => {
     expect(onResult).toHaveBeenCalledWith({ ok: true, kind: "removed", passkeyId: "pk2" });
   });
 
-  // Security review 5 (2026-11-12): a server's free text, or a code off the prototype, is
-  // the generic line; 0.25 showed the raw text with its underscores turned to spaces.
-  it.each([["internal: db timeout at node-7"], ["constructor"]])(
+  // Security reviews 5 and 6 (2026-11-12): a server's free text is no code (the add's own
+  // fallback line), a code off the prototype the generic line; 0.25 showed the raw text
+  // with its underscores turned to spaces.
+  it.each([
+    ["internal: db timeout at node-7", "Couldn't register the passkey. Try again."],
+    ["constructor", "Something went wrong. Try again."],
+  ])(
     "words a refused add (%s) as elvix's own line, never the server's",
-    async (errorMessage) => {
+    async (errorMessage, line) => {
       installFakeElvix({ passkeys: [] }, [
         [
           "POST",
@@ -78,9 +82,7 @@ describe("ElvixAppPasskeys", () => {
       );
       const add = await screen.findByRole("button", { name: "Add a passkey for Acme" });
       await act(async () => fireEvent.click(add));
-      expect((await screen.findByRole("alert")).textContent).toBe(
-        "Something went wrong. Try again.",
-      );
+      expect((await screen.findByRole("alert")).textContent).toBe(line);
       expect(document.body.textContent).not.toContain("db timeout");
       Reflect.deleteProperty(window, "PublicKeyCredential");
       Reflect.deleteProperty(navigator, "credentials");
