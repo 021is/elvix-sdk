@@ -77,7 +77,8 @@ Chromium: 62 elements, same boxes, weights and fonts).
   field; it showed the rules hint with Continue off (a network error) or "That username
   isn't valid." (a 429 or a 500).
 - The entry step's error line is announced to a screen reader (`role="alert"`), as every
-  other step's is.
+  other step's is, and shows on a card with no email or username field too: a refused
+  passkey there said nothing.
 
 ## [0.25.0] — 2026-11-11
 
