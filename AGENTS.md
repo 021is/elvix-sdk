@@ -62,7 +62,8 @@ input components: they render a native `<input>`, which biome cannot see through
 - **The card's type and spacing are tokens, never fixed classes** (0.26, `cardStyle`). The
   ranges and defaults live once, in `src/types/card-style.ts` (elvix's API imports them from
   `@elvix.is/sdk/server`); `card-look.ts` merges card prop > provider > Console per key,
-  checks each value where it enters, and `AuthCard` sets every `--elvix-card-*` / `--elvix-gap-*`
+  checks each value where it enters (a host's refused value is a development-only
+  `console.warn`, once per key: `card-style-warn.ts`), and `AuthCard` sets every `--elvix-card-*` / `--elvix-gap-*`
   variable on its own root, so no ancestor's value reaches it. A gap is one token, the
   distance a person sees: the entry form has no `gap`, so nothing adds to a token. A new
   part of the card gets its token (default = its look before) or no gap of its own; an error

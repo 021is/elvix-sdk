@@ -12,7 +12,7 @@ releases move there.
 
 ## [Unreleased]
 
-## [0.26.0] — 2026-11-11
+## [0.26.0] — 2026-11-12
 
 The sign-in card takes an app's type and spacing, and knows the phone's keyboard. An app
 that sets nothing gets the card it had: every default is 0.25's value (measured in
@@ -58,9 +58,13 @@ Chromium: 62 elements, same boxes, weights and fonts).
   panel there). That holds for every set of code boxes (export and deactivate too), and a
   focus is given after mount, never as an `autofocus` attribute a server would write into
   the page.
+- **A refused `cardStyle` value says so, in development only:** the console names the
+  key, the value and what is allowed, once per key (a number out of range is still held
+  at its edge, a bad font still ignored). Nothing in production.
 
 ### Changed
 
+- **Breaking (types):** `ElvixAppPasskeysResult.message` is gone; read `error`.
 - The entry step is `sign-in-identifier-step.tsx` and its method buttons
   `sign-in-social.tsx`, the username field `sign-in-username-field.tsx`;
   `sign-in-steps.tsx` went from 889 to 488 lines and left the complexity debt list. Adding
