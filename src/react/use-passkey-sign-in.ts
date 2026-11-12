@@ -24,6 +24,7 @@ import {
   PasskeyLock,
   type PasskeyOffer,
   passkeyLockState,
+  pickOffer,
   releaseCeremony,
   releaseOffer,
   subscribePasskeyLock,
@@ -74,33 +75,21 @@ function reportUncaught(error: unknown) {
   else console.error(error);
 }
 
-/** An offer, whole before anything runs: `pick` marks it picked, `end` settles its `done`. */
+/** An offer, whole before anything runs; `end` resolves its `done`, which nothing rejects. */
 function newOffer() {
-  let picked = false;
   let end: () => void = () => {};
-  const offer: PasskeyOffer = {
-    controller: new AbortController(),
-    get picked() {
-      return picked;
-    },
-    done: new Promise<void>((resolve) => {
-      end = resolve;
-    }),
-  };
-  return {
-    offer,
-    pick: () => {
-      picked = true;
-    },
-    end: () => end(),
-  };
+  const done = new Promise<void>((resolve) => {
+    end = resolve;
+  });
+  const offer: PasskeyOffer = { controller: new AbortController(), picked: false, done };
+  return { offer, end: () => end() };
 }
 
 /** A server renders no request open. */
 const serverLockState = () => PasskeyLock.FREE;
 
 export type PasskeySignIn = {
-  /** A button's ceremony is running, in this card or another. */
+  /** A passkey sign-in is running, in this card or another. */
   busy: boolean;
   /** The button: end the offer, then the dialog (or the hosted page across origins). */
   run: () => Promise<void>;
@@ -112,9 +101,10 @@ export type PasskeySignIn = {
 
 export function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: string) {
   const t = useT();
-  // A ceremony from any card (one whose card is gone included) shows on every button.
+  // A sign-in running in any card (a ceremony, a picked offer, one whose card is gone)
+  // shows on every button.
   const lock = useSyncExternalStore(subscribePasskeyLock, passkeyLockState, serverLockState);
-  const busy = lock === PasskeyLock.CEREMONY;
+  const busy = lock === PasskeyLock.BUSY;
   /** This card's own offer, ended when the card goes. */
   const offer = useRef<PasskeyOffer | null>(null);
   const mounted = useRef(true);
@@ -139,7 +129,7 @@ export function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: st
     // Before the envelope names the app's clientId, `runPasskeySignIn` asks for nothing
     // (`missing_client_id`, silent here), and the next focus asks again.
     if (!autofill) return;
-    const { offer: o, pick, end } = newOffer();
+    const { offer: o, end } = newOffer();
     if (!holdOffer(o)) return;
     offer.current = o;
     void (async () => {
@@ -147,19 +137,13 @@ export function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: st
       const result = await runPasskeySignIn(baseUrl, p.clientId, p.intent ?? "app", {
         kind: "autofill",
         signal: o.controller.signal,
-        onPicked: pick,
+        onPicked: () => pickOffer(o),
       });
       onOffer(o.picked, result);
     })()
-      // `runPasskeySignIn` never throws; anything else that does is shown, not left unhandled.
-      .catch((e: unknown) =>
-        reportPasskeyError(flow, t, {
-          error: "passkey_failed",
-          message: e instanceof Error ? e.message : undefined,
-        }),
-      )
-      // A host `onResult` that throws in either report: still reported, never in the way of
-      // the next sign-in (the lock waits on `done`, which always settles).
+      // Neither the probe nor `runPasskeySignIn` throws: what does is the host's own callback
+      // (`onResult`) inside `onOffer`. It is reported as its own uncaught error, never as a
+      // sign-in failure with its words on the page, and `done` still resolves below.
       .catch(reportUncaught)
       .finally(() => {
         releaseOffer(o);

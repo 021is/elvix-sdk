@@ -91,6 +91,38 @@ export async function readyField() {
   return screen.getByPlaceholderText("Enter your email");
 }
 
+/** For the passkey-lock tests: several cards on one page, their buttons and fields. */
+export const passkeyButton = (card = 0) =>
+  nth(screen.getAllByRole("button", { name: "Continue with passkey" }), card);
+export const emailField = (card = 0) =>
+  nth(screen.getAllByPlaceholderText("Enter your email"), card);
+function nth<T>(list: T[], at: number): T {
+  const item = list[at];
+  if (item === undefined) throw new Error(`no card ${at}`);
+  return item;
+}
+
+/** The passkey dialogs the browser was asked for (the autofill's requests left out). */
+export const dialogsOf = (get: ReturnType<typeof stubPasskeys>) =>
+  get.mock.calls.filter(([o]) => o?.mediation !== "conditional").length;
+
+/** A route that answers only when `answer` is called, and fails on its request's abort, as
+ *  a browser's fetch does; `first` limits it to the route's first request. */
+export function heldRoute(method: string, path: string, first = true) {
+  let calls = 0;
+  let answer: (response: Response) => void = () => {};
+  const route: Route = [
+    method,
+    (u) => u.includes(path) && (!first || calls++ === 0),
+    (_, init) =>
+      new Promise<Response>((resolve, reject) => {
+        answer = resolve;
+        init?.signal?.addEventListener("abort", () => reject(init.signal?.reason));
+      }),
+  ];
+  return { route, answer: (response: Response) => answer(response) };
+}
+
 /** What the stubs above leave on `window` and `navigator`. */
 export function resetBrowserStubs() {
   Reflect.deleteProperty(window, "matchMedia");

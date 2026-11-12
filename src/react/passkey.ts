@@ -21,6 +21,7 @@
  */
 
 import { elvixFetch } from "./elvix-fetch";
+import { passkeyRequestSignal } from "./passkey-timeout";
 import { authInit, isSameOrigin, setElvixToken } from "./session";
 import type { Landing } from "./use-sign-in-flow";
 
@@ -53,19 +54,18 @@ const decodeDescriptors = (list: CredentialDescriptorJSON[] | undefined) =>
     transports: c.transports as AuthenticatorTransport[] | undefined,
   }));
 
-const errorMessage = (e: unknown) => (e instanceof Error ? e.message : undefined);
-
-/** POST JSON to an elvix route answering with the Spine envelope. A non-2xx or `success:
- *  false` is the envelope's `errorMessage`, else `fallback`; a network or parse failure,
- *  `network`. */
+/** POST JSON to an elvix route with the Spine envelope, never past the passkey timeout. A
+ *  refusal is its `errorMessage` (else `fallback`); a network, timeout or parse failure, `network`. */
 async function postEnvelope<T>(url: string, init: RequestInit, fallback: string): Promise<Step<T>> {
+  const signal = passkeyRequestSignal(init.signal);
   try {
-    const res = await elvixFetch(url, { method: "POST", ...init });
+    const res = await elvixFetch(url, { method: "POST", ...init, signal });
     const body = (await res.json()) as { success?: boolean; data?: T; errorMessage?: string };
     if (!res.ok || !body.success) return { ok: false, error: body.errorMessage ?? fallback };
     return { ok: true, data: body.data };
-  } catch (e) {
-    return { ok: false, error: "network", message: errorMessage(e) };
+  } catch {
+    // The browser's own words ("Failed to fetch", "signal is aborted") never reach the page.
+    return { ok: false, error: "network" };
   }
 }
 
@@ -76,7 +76,7 @@ function ceremonyFailure(e: unknown, code: string): Failure {
   if (name === "NotAllowedError" || name === "AbortError") {
     return { ok: false, error: "passkey_cancelled" };
   }
-  return { ok: false, error: code, message: errorMessage(e) };
+  return { ok: false, error: code, message: e instanceof Error ? e.message : undefined };
 }
 
 // ─── Sign-in ─────────────────────────────────────────────────────────────────
@@ -112,7 +112,7 @@ export type PasskeySignInResult =
   | { ok: false; error: string; message?: string };
 
 /** How the browser asks: a dialog, or (0.26) the passkeys in the identifier field's autofill,
- *  which only its `signal` can end; `onPicked` runs once the person chose one. */
+ *  which its `signal` ends (its start too, never its finish); `onPicked` runs on a choice. */
 type PasskeyCeremony =
   | { kind: "dialog"; signal?: undefined }
   | { kind: "autofill"; signal: AbortSignal; onPicked: () => void };
@@ -179,7 +179,6 @@ export async function runPasskeySignIn(
     credentials: isSameOrigin(baseUrl) ? "include" : "omit",
   };
   const scope = { intent, ...(clientId ? { clientId } : {}) };
-  // An offer's abort ends its start too, never its finish: after a pick it is a sign-in.
   const start = await postEnvelope<{ options: AuthnOptionsJSON }>(
     `${baseUrl}/api/auth/passkey/sign-in/start`,
     { ...init, body: JSON.stringify(scope), signal: ceremony.signal },

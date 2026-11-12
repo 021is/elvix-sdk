@@ -54,6 +54,8 @@ const ERROR_KEYS: Record<string, string> = {
   verify_failed: "signin.errorPasskeyVerifyFailed",
   not_verified: "signin.errorPasskeyVerifyFailed",
   challenge_invalid: "signin.errorPasskeyExpired",
+  // A request that failed or timed out on the way (0.26: every passkey request is bounded).
+  network: "signin.errorNetwork",
 };
 
 export function humanError(t: Translator, code?: string, retryAfterSeconds?: number): string {
