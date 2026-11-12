@@ -213,11 +213,8 @@
       "errorNetwork": {
         "other": "Tillfälligt nätverksfel. Försök igen."
       },
-      "errorPasskeyVerify": {
-        "other": "Verifiering av passkey misslyckades."
-      },
-      "errorPasskeyAdd": {
-        "other": "Passkey kunde inte läggas till. Försök igen eller hoppa över för stunden."
+      "errorPasskeyBusy": {
+        "other": "En passkey-förfrågan är redan öppen."
       },
       "visitAppWebsite": {
         "other": "Besök {app} webbplats"

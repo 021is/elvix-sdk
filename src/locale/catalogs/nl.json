@@ -212,11 +212,8 @@
       "errorNetwork": {
         "other": "Netwerkprobleem. Probeer het opnieuw."
       },
-      "errorPasskeyVerify": {
-        "other": "Verificatie van passkey is mislukt."
-      },
-      "errorPasskeyAdd": {
-        "other": "Passkey kon niet worden toegevoegd. Probeer het opnieuw of sla over."
+      "errorPasskeyBusy": {
+        "other": "Er is al een passkey-verzoek geopend."
       },
       "visitAppWebsite": {
         "other": "Website van {app} bezoeken"

@@ -215,11 +215,8 @@
       "errorNetwork": {
         "other": "Сбой сети. Попробуйте ещё раз."
       },
-      "errorPasskeyVerify": {
-        "other": "Проверка passkey не удалась."
-      },
-      "errorPasskeyAdd": {
-        "other": "Не удалось добавить passkey. Попробуйте снова или пропустите пока."
+      "errorPasskeyBusy": {
+        "other": "Запрос passkey уже открыт."
       },
       "visitAppWebsite": {
         "other": "Перейти на сайт {app}"

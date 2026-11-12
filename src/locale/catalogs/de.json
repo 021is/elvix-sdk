@@ -213,11 +213,8 @@
       "errorNetwork": {
         "other": "Netzwerkproblem. Versuchen Sie es erneut."
       },
-      "errorPasskeyVerify": {
-        "other": "Passkey-Verifizierung fehlgeschlagen."
-      },
-      "errorPasskeyAdd": {
-        "other": "Passkey konnte nicht hinzugefügt werden. Versuchen Sie es erneut oder überspringen Sie es vorerst."
+      "errorPasskeyBusy": {
+        "other": "Eine Passkey-Abfrage ist bereits geöffnet."
       },
       "visitAppWebsite": {
         "other": "Website von {app} besuchen"

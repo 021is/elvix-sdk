@@ -9,7 +9,15 @@ import { describe, expect, it } from "vitest";
  * Tailwind, so this pins the source rule; the geometry itself was measured in
  * Chromium (12px between the boxes and the button, every presentation).
  */
-const PANES = ["sign-in-steps.tsx", "elvix-recover-gate.tsx", "elvix-sign-in-form.tsx"];
+const PANES = [
+  "sign-in-steps.tsx",
+  "sign-in-identifier-step.tsx",
+  "sign-in-social.tsx",
+  "elvix-sign-in-card.tsx",
+  "sign-in-card-body.tsx",
+  "elvix-recover-gate.tsx",
+  "elvix-sign-in-form.tsx",
+];
 
 describe("sign-in panes", () => {
   it.each(PANES)("%s stacks with gap, not space-y", (file) => {

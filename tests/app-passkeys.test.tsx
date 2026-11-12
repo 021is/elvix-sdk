@@ -49,6 +49,46 @@ describe("ElvixAppPasskeys", () => {
     expect(onResult).toHaveBeenCalledWith({ ok: true, kind: "removed", passkeyId: "pk2" });
   });
 
+  // Security reviews 5 and 6 (2026-11-12): a server's free text is no code (the add's own
+  // fallback line), a code off the prototype the generic line; 0.25 showed the raw text
+  // with its underscores turned to spaces.
+  it.each([
+    ["internal: db timeout at node-7", "Couldn't register the passkey. Try again."],
+    ["constructor", "Something went wrong. Try again."],
+  ])(
+    "words a refused add (%s) as elvix's own line, never the server's",
+    async (errorMessage, line) => {
+      installFakeElvix({ passkeys: [] }, [
+        [
+          "POST",
+          (u) => u.includes("/api/auth/passkey/register/start"),
+          () => new Response(JSON.stringify({ success: false, errorMessage }), { status: 500 }),
+        ],
+      ]);
+      Object.defineProperty(window, "PublicKeyCredential", { configurable: true, value: {} });
+      Object.defineProperty(navigator, "credentials", {
+        configurable: true,
+        value: { create: vi.fn() },
+      });
+      render(
+        <ElvixProvider
+          clientId={CLIENT_ID}
+          baseUrl={window.location.origin}
+          presence={false}
+          bootstrapRefreshMs={0}
+        >
+          <ElvixAppPasskeys appId="app_1" appName="Acme" />
+        </ElvixProvider>,
+      );
+      const add = await screen.findByRole("button", { name: "Add a passkey for Acme" });
+      await act(async () => fireEvent.click(add));
+      expect((await screen.findByRole("alert")).textContent).toBe(line);
+      expect(document.body.textContent).not.toContain("db timeout");
+      Reflect.deleteProperty(window, "PublicKeyCredential");
+      Reflect.deleteProperty(navigator, "credentials");
+    },
+  );
+
   // #7 (0.13): on 0.12 a customer origin fetched with no elvix session and
   // told a signed-in user "Sign in first". It now links to the account page.
   it("links to the elvix account page on a customer origin", async () => {

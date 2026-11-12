@@ -4,7 +4,15 @@
  * throw, with stable error codes hosts branch on.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { runPasskeyRegister, runPasskeySignIn } from "../src/react/passkey";
+import { runPasskeySignIn } from "../src/react/passkey";
+import {
+  holdCeremony,
+  holdOffer,
+  PasskeyLock,
+  passkeyLockState,
+  releaseCeremony,
+} from "../src/react/passkey-lock";
+import { runPasskeyRegister } from "../src/react/passkey-register";
 import { getElvixToken, setElvixToken } from "../src/react/session";
 
 const BASE = "https://elvix.test";
@@ -140,5 +148,63 @@ describe("runPasskeyRegister", () => {
       ok: false,
       error: "passkey_register_failed",
     });
+  });
+
+  // Security review 5 (2026-11-12): a create() never opens beside another card's request.
+  it("holds the page's passkey lock: ends a waiting offer first, and waits out a ceremony", async () => {
+    const offer = { controller: new AbortController(), picked: false, done: Promise.resolve() };
+    const created = vi.fn(async () => {
+      expect(offer.controller.signal.aborted).toBe(true);
+      expect(passkeyLockState()).toBe(PasskeyLock.BUSY);
+      return {
+        ...assertion,
+        response: { clientDataJSON: buf("cd"), attestationObject: buf("ao") },
+      };
+    });
+    stubCredentials({ create: created });
+    const options = {
+      challenge: "Y2g",
+      rp: { name: "e" },
+      user: { id: "dQ", name: "a", displayName: "A" },
+      pubKeyCredParams: [],
+    };
+    stubFetch({
+      "/register/start": () => ok({ options }),
+      "/register/finish": () => ok(null),
+    });
+    expect(holdOffer(offer)).toBe(true);
+    expect(await runPasskeyRegister(BASE, "app")).toEqual({ ok: true });
+    expect(passkeyLockState()).toBe(PasskeyLock.FREE);
+
+    expect(await holdCeremony()).toBe(true);
+    expect(await runPasskeyRegister(BASE, "app")).toEqual({ ok: false, error: "passkey_busy" });
+    releaseCeremony();
+    expect(created).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns a code only, never the browser's or an extension's words", async () => {
+    stubCredentials({
+      create: async () => {
+        throw Object.assign(new Error("PWNED: call +1 555 0100"), { name: "UnknownError" });
+      },
+    });
+    stubFetch({ "/register/start": () => ok({ options: { challenge: "Y2g" } }) });
+    expect(await runPasskeyRegister(BASE, "app")).toEqual({
+      ok: false,
+      error: "passkey_register_failed",
+    });
+  });
+
+  it("takes a refusal's errorMessage only when it is a code, never a 500's free text", async () => {
+    const refuse = (errorMessage: string) => () =>
+      new Response(JSON.stringify({ success: false, errorMessage }), { status: 500 });
+    stubCredentials({ create: async () => null });
+    stubFetch({ "/register/start": refuse("Invalid `prisma.x()`: ECONNREFUSED 10.0.3.7:5432") });
+    expect(await runPasskeyRegister(BASE, "app")).toEqual({
+      ok: false,
+      error: "passkey_register_failed",
+    });
+    stubFetch({ "/register/start": refuse("not_a_member") });
+    expect(await runPasskeyRegister(BASE, "app")).toEqual({ ok: false, error: "not_a_member" });
   });
 });

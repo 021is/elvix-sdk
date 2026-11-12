@@ -214,11 +214,8 @@
       "errorNetwork": {
         "other": "Problém se sítí. Zkuste to znovu."
       },
-      "errorPasskeyVerify": {
-        "other": "Ověření passkey selhalo."
-      },
-      "errorPasskeyAdd": {
-        "other": "Passkey se nepodařilo přidat. Zkuste znovu nebo přeskočte."
+      "errorPasskeyBusy": {
+        "other": "Výzva passkey je už otevřená."
       },
       "visitAppWebsite": {
         "other": "Navštívit web {app}"

@@ -18,6 +18,7 @@ import {
   useRef,
 } from "react";
 import { useT } from "../locale/use-t";
+import { canAutoFocus } from "./keyboard";
 
 const OTP_LENGTH = 6;
 /** The six fixed positions. A box IS its position (it never moves or
@@ -70,8 +71,9 @@ export function OtpInput({
   const refs = useRef<(HTMLInputElement | null)[]>([]);
   const digits = Array.from({ length: OTP_LENGTH }, (_, i) => value[i] ?? "");
 
+  // Never on a touch screen: the keyboard would jump up before the person chose to type (0.26).
   useEffect(() => {
-    if (autoFocus) refs.current[0]?.focus();
+    if (autoFocus && canAutoFocus()) refs.current[0]?.focus();
   }, [autoFocus]);
 
   const focus = useCallback((i: number) => refs.current[i]?.focus(), []);
@@ -136,6 +138,8 @@ export function OtpInput({
           type="text"
           inputMode="numeric"
           autoComplete="one-time-code"
+          // The phone keyboard's action key: on to the next box, "go" on the last (0.26).
+          enterKeyHint={i < OTP_LENGTH - 1 ? "next" : "go"}
           maxLength={OTP_LENGTH}
           value={digits[i]}
           disabled={disabled}

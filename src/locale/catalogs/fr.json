@@ -213,11 +213,8 @@
       "errorNetwork": {
         "other": "Problème réseau. Réessayez."
       },
-      "errorPasskeyVerify": {
-        "other": "Échec de la vérification de la clé d'accès."
-      },
-      "errorPasskeyAdd": {
-        "other": "Impossible d'ajouter la clé d'accès. Réessayez ou passez pour le moment."
+      "errorPasskeyBusy": {
+        "other": "Une demande de clé d'accès est déjà ouverte."
       },
       "visitAppWebsite": {
         "other": "Visiter le site de {app}"

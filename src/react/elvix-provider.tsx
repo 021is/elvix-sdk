@@ -11,9 +11,8 @@ import {
   useMemo,
 } from "react";
 import { buildEnglishRuntime } from "../locale/runtime";
+import type { ElvixCardStyle } from "../types/card-style";
 import { dpopThumbprint } from "./dpop";
-import type { Pronouns } from "./identity-schema";
-import type { LanguageLevel } from "./languages";
 import {
   DEFAULT_LOCALE,
   ElvixSessionStatus,
@@ -24,51 +23,11 @@ import {
   useUserEnvelope,
 } from "./provider-state";
 import { consumeElvixReturnToken } from "./session";
-import type { ElvixBootstrapEnvelope, ElvixBrand, ElvixTheme } from "./types";
+import type { ElvixAppContext, ElvixBootstrapEnvelope, ElvixBrand, ElvixTheme } from "./types";
 
 export { ElvixSessionStatus } from "./provider-state";
-
-/**
- * Per-app user envelope returned by
- * `GET /api/account/apps/<clientId>/sdk-context`. The provider fetches it on
- * mount alongside the public bootstrap whenever a session is present (cookie
- * same-origin, bearer cross-origin). Mirrors the monorepo `ElvixAppContext`
- * shape exactly so the ported `<Elvix*>` identity / account components read
- * `useElvixAppContext()` and skip the `appId` / `appName` / `current` /
- * `membership` props a host would otherwise thread down. `null` while loading,
- * with no `clientId`, or when there's no user session (the SDK falls back to
- * its empty / "sign in to see this" state).
- */
-export type ElvixAppContext = {
-  user: {
-    id: string;
-    /** Display name, derived by elvix from given + family name. */
-    name: string | null;
-    email: string | null;
-    avatarUrl: string | null;
-    /** Identity summary (elvix 2026-09-18+; `undefined` from an older
-     *  server). Birthdate and gender are deliberately not here;
-     *  `<ElvixIdentityForm>` reads them itself. */
-    givenName?: string | null;
-    familyName?: string | null;
-    pronouns?: Pronouns | null;
-    /** The user's languages, in the order `<ElvixLanguages>` lists them
-     *  (elvix 2026-09-18+). */
-    languages?: { code: string; level: LanguageLevel }[];
-  };
-  membership: {
-    username: string | null;
-    status: string;
-    inactiveAt: string | null;
-    inactivatedBy: string | null;
-    deletedAt: string | null;
-    deletedBy: string | null;
-    avatarSizes: number[];
-    avatarUpdatedAt: string;
-    bannerSizes: number[];
-    bannerUpdatedAt: string;
-  } | null;
-};
+/** The signed-in user's per-app envelope; defined in `./types` since 0.26. */
+export type { ElvixAppContext } from "./types";
 
 /**
  * `<ElvixProvider>` — root context for every elvix React surface.
@@ -128,6 +87,8 @@ type ElvixContextValue = {
   animated: boolean;
   /** The BCP-47 locale the SDK renders in (the provider's `locale`, else "en"). */
   locale: string;
+  /** The provider's `cardStyle` prop: every sign-in card under it, over the Console's. */
+  cardStyle: ElvixCardStyle | undefined;
 };
 
 const ElvixContext = createContext<ElvixContextValue | null>(null);
@@ -135,6 +96,11 @@ const ElvixContext = createContext<ElvixContextValue | null>(null);
 export function useElvixApp(): ElvixBootstrapEnvelope | null {
   const ctx = useContext(ElvixContext);
   return ctx?.app ?? null;
+}
+
+/** `<ElvixProvider cardStyle>`, or `undefined` (no prop, or no provider). */
+export function useElvixCardStyle(): ElvixCardStyle | undefined {
+  return useContext(ElvixContext)?.cardStyle;
 }
 
 /** Per-app signed-in user envelope (session-bound). `null` while loading,
@@ -245,6 +211,7 @@ export function ElvixProvider({
   locale,
   i18nBase,
   messages,
+  cardStyle,
   animated = true,
   presence = true,
   bootstrapRefreshMs = 300_000,
@@ -304,6 +271,12 @@ export function ElvixProvider({
    * you leave out show English). A component's own `label` prop still wins.
    */
   messages?: Readonly<Record<string, string>>;
+  /**
+   * Your type and spacing on every elvix sign-in card under this provider (0.26): fonts
+   * your page loads, the heading's weight, the card's padding and its gaps. Each key wins
+   * over the Console's; a card's own `cardStyle` wins over this. Values are clamped.
+   */
+  cardStyle?: ElvixCardStyle;
   children: ReactNode;
   className?: string;
 }) {
@@ -357,6 +330,7 @@ export function ElvixProvider({
       brand: configuredBrand,
       animated,
       locale: activeLocale,
+      cardStyle,
     }),
     [
       clientId,
@@ -371,6 +345,7 @@ export function ElvixProvider({
       configuredBrand,
       animated,
       activeLocale,
+      cardStyle,
     ],
   );
 

@@ -30,7 +30,16 @@ export function formatRetry(t: Translator, seconds: number): string {
  * keychain still offers but elvix has no record of (a stale credential), so
  * its copy gives the way out.
  */
+/** The codes every elvix surface words alike (0.26), one table: the sign-in's below and
+ *  `<ElvixAppPasskeys>`' (`app-passkey-errors.ts`) each extend it with their own. */
+export const SHARED_ERROR_KEYS: Record<string, string> = {
+  // A request that failed or timed out on the way (every passkey request is bounded).
+  network: "signin.errorNetwork",
+  passkey_busy: "signin.errorPasskeyBusy",
+};
+
 const ERROR_KEYS: Record<string, string> = {
+  ...SHARED_ERROR_KEYS,
   invalid_code: "signin.errorInvalidCode",
   expired: "signin.errorExpired",
   // The code legs' own refusals (0.17): each says what to do, never "Something went wrong".
@@ -67,7 +76,9 @@ export function humanError(t: Translator, code?: string, retryAfterSeconds?: num
       ? t("signin.errorTooManyWithRetry", { retry: formatRetry(t, retryAfterSeconds) })
       : t("signin.errorTooMany");
   }
-  return t((code && ERROR_KEYS[code]) || "signin.errorGeneric");
+  // Own keys only: a server's code of "constructor" must not reach Object.prototype.
+  const key = code && Object.hasOwn(ERROR_KEYS, code) ? ERROR_KEYS[code] : undefined;
+  return t(key ?? "signin.errorGeneric");
 }
 
 // Reason codes mirror /api/onboarding/username/check.
@@ -84,7 +95,9 @@ const USERNAME_REASONS: Record<string, string> = {
 };
 
 export function usernameReasonLabel(t: Translator, reason: string): string {
-  return t(USERNAME_REASONS[reason] ?? "username.reasonInvalid");
+  // Own keys only: a server's `reason` of "constructor" must not reach Object.prototype.
+  const key = Object.hasOwn(USERNAME_REASONS, reason) ? USERNAME_REASONS[reason] : undefined;
+  return t(key ?? "username.reasonInvalid");
 }
 
 export const OAuthProvider = {

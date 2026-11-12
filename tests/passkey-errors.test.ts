@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { appPasskeyErrorKey } from "../src/react/app-passkey-errors";
 import { humanError } from "../src/react/sign-in-copy";
 
 /**
@@ -35,6 +36,22 @@ describe("passkey sign-in refusals read as something the person can act on", () 
     const text = humanError(t, code);
     expect(text).not.toBe(generic);
     expect(text).not.toMatch(/^MISSING/);
+  });
+
+  it.each(["constructor", "toString", "__proto__", "hasOwnProperty"])(
+    "a server code of %s gets the generic line, never something off the prototype",
+    (code) => {
+      expect(humanError(t, code)).toBe(generic);
+    },
+  );
+
+  it("a request that failed or timed out says to try again (0.26)", () => {
+    expect(humanError(t, "network")).toBe("Network hiccup. Try again.");
+  });
+
+  it("another passkey prompt still open says so, in both tables", () => {
+    expect(humanError(t, "passkey_busy")).toBe("A passkey prompt is already open.");
+    expect(t(appPasskeyErrorKey("passkey_busy"))).toBe("A passkey prompt is already open.");
   });
 
   it("a passkey for another app says so and names the way out", () => {

@@ -59,6 +59,59 @@ input components: they render a native `<input>`, which biome cannot see through
   showing only the card ships no overlay and no `vaul` (`tests/bundle-split.test.ts`). The
   entry step's head is the logo plus one line, the title or the host's `headline` (Edvard,
   2026-11-11); `tests/sign-in-head.test.tsx` pins it.
+- **The card's type and spacing are tokens, never fixed classes** (0.26, `cardStyle`). The
+  ranges and defaults live once, in `src/types/card-style.ts` (elvix's API imports them from
+  `@elvix.is/sdk/server`); `card-look.ts` merges card prop > provider > Console per key,
+  checks each value where it enters (a host's refused value is a development-only
+  `console.warn`, once per key: `card-style-warn.ts`), and `AuthCard` sets every `--elvix-card-*` / `--elvix-gap-*`
+  variable on its own root, so no ancestor's value reaches it. A gap is one token, the
+  distance a person sees: the entry form has no `gap`, so nothing adds to a token. A new
+  part of the card gets its token (default = its look before) or no gap of its own; an error
+  line is not a part and keeps its fixed distance (8 px, 12 px under Continue). No token
+  may reach the legal line's or the chip's size, colour, visibility or font: the app's text
+  font sits on `[data-elvix-app-type]` (head, step, the host's line) and stops above the
+  legal line, so a symbol or blank font can never make it unreadable. The gaps above them
+  keep a floor of 12 px; the modal panel scrolls (`max-h-full overflow-y-auto`), so the
+  widest spacing never pushes them off a short screen (`tests/card-style-guards.test.tsx`).
+  Fonts are names the page loads: the SDK never requests a font; a host family must parse
+  as a list of names, closed strings and `var(--x)` (`FAMILY_LIST`), else it is refused;
+  a Console family is one of
+  `CONSOLE_FONTS`, the closed list elvix serves.
+- **The keyboard on a phone** (0.26, `keyboard.ts`): no autofocus on a coarse pointer, and
+  focus given after mount (`useAutoFocus`), never the `autoFocus` attribute a server would
+  write into the HTML; the modal on open focuses its first control with a fine pointer and
+  its own panel on a touch screen (`focusOnOpen`); every field has its `enterKeyHint`; a
+  card keeps the focused field and its form's submit button in view
+  (`useKeepFieldsInView`, `scrollIntoView` nearest, again on `visualViewport` resize, never
+  a guessed keyboard height) (`tests/sign-in-keyboard.test.tsx`). The identifier field's
+  passkey autofill (`autocomplete="… webauthn"`) and the passkey button share **one lock
+  per page** (`passkey-lock.ts`, every card's `use-passkey-sign-in.ts`): an offer starts
+  on a focus of the field while no request is open in any card, never on open and never
+  while a button runs; a button ends any open offer before its own dialog (a browser holds
+  one request) and opens none when that offer already has a passkey picked or the step is
+  gone: one sign-in, one session (`tests/passkey-lock.test.tsx`, two cards). An offer with
+  a passkey picked **is a sign-in**: it keeps the lock until it is done, through any tap
+  and any `pagehide`, and every card's button shows it busy
+  (`tests/passkey-lock-picked.test.tsx`). **Nobody takes a sign-in over; the lock never
+  sticks because every wait in the passkey path is bounded or abortable**
+  (`passkey-timeout.ts`): each request to elvix gives up after `PASSKEY_REQUEST_TIMEOUT_MS`
+  (the retryable `network` error), a dialog or `create()` after `PASSKEY_PROMPT_TIMEOUT_MS`,
+  and an offer's probe, start and autofill request each race its abort (`orAbort`), for an
+  extension may never honour it. **An aborted offer is abandoned for good:** it never picks
+  and never finishes, however late its passkey comes; a tap waits for it at most
+  `OFFER_END_WAIT_MS`. Adding a passkey (`passkey-register.ts`) holds the lock too. A
+  failure is a code only: no browser, extension or server words reach the page or
+  `onResult`, and a host `onResult` that throws is its own uncaught error
+  (`tests/passkey-lock-stuck.test.tsx`, `tests/passkey-lock-bounded.test.tsx`). The offer
+  has **no hosted fallback, on purpose**:
+  it is an offer the person did not ask for, so it never sends them away; before a pick it
+  is silent, and the button keeps the hosted fallback and its errors
+  (`tests/sign-in-passkey-autofill.test.tsx`).
+- **A prefix drawn over a field's start (the username "@") is measured** (0.26,
+  `prefix-inset.ts`): the field's left padding is the prefix's right edge plus
+  `PREFIX_GAP_PX`, measured again on resize, never a fixed `pl-*`. 0.25's `pl-7` (rem)
+  beside a 14 px "@" put the "@" on the "e" of "edvard" on DanceClub's card
+  (`tests/username-prefix.test.tsx`).
 
 ## Component tests
 

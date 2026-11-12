@@ -1,40 +1,13 @@
 "use client";
 
 /**
- * `<ElvixSignInForm>` — moved VERBATIM (markup + Tailwind classes) from the
- * elvix monorepo (`components/sdk/elvix-sign-in-form.tsx`). This is the SAME
- * component elvix.is renders for its hosted sign-in surface, so a host that
- * imports `@elvix.is/sdk/styles.css` gets a pixel-identical form.
- *
- * Only host-coupled wiring was swapped (the visual markup is untouched):
- *   - `@/components/*` local imports → SDK-local copies (`./elvix-logo`,
- *     `./otp-input`, `./elvix-recover-gate`). The shield/badge live in the
- *     "Secured by elvix" chip via `./elvix-logo`.
- *   - `@/lib/sdk/theme` `useElvixApp` → `./elvix-provider` (`useElvixApp`,
- *     plus `useElvixContext` for the cross-origin `baseUrl`).
- *   - `@/lib/sdk/elvix-session` `setElvixToken` → `./session`.
- *   - `@/lib/sdk/username-rules` → `./username-rules` (verbatim copy).
- *   - `@/lib/spine-fetch` `unwrapEnvelope` → `./spine-fetch` (verbatim copy).
- *   - `@/lib/site` `SITE_URL` → the `ELVIX_SITE_URL` constant below.
- *   - same-origin `fetch("/api/...")` → cross-origin `${baseUrl}/api/...`
- *     using the published SDK pattern: pre-auth calls pick credentials from
- *     `isSameOrigin(baseUrl)`; post-auth calls use `authInit()` (bearer
- *     cross-origin, cookie same-origin). The session token comes back in the
- *     body cross-origin and is stored via `setElvixToken`.
- *   - passkey ceremonies use the SDK's hand-rolled cross-origin
- *     `runPasskeySignIn` / `runPasskeyRegister` (no `@simplewebauthn/browser`).
- *   - Google Identity Services is preserved verbatim (One Tap / Auto-select
- *     / Popup / FedCM via `./google-one-tap`), with the SAME conditional
- *     elvix uses: when any `googleConfig` GIS flag is on AND a Google client
- *     id is available, the form renders Google's GIS personalized button
- *     ("Continue as <name>") into a ref slot; otherwise it falls back to the
- *     static redirect anchor at `${baseUrl}/api/auth/google/start`. The only
- *     swap is the source of the public client id: elvix reads the build-time
- *     `NEXT_PUBLIC_GOOGLE_CLIENT_ID`, the SDK reads `googleClientId` off the
- *     bootstrap envelope (`useElvixApp()`); and the GIS credential POSTs
- *     cross-origin to `${baseUrl}/api/auth/google/credential`.
- *   - `next/navigation` is never imported; the host routes via `onResult` /
- *     `onAuthenticated`. The default `window.location.href` fallback is kept.
+ * `<ElvixSignInForm>`: the same component elvix.is renders for its hosted sign-in, so a
+ * host that imports `@elvix.is/sdk/styles.css` gets the same card. Its card and content are
+ * `AuthCard` (`elvix-sign-in-card.tsx`); this file adds the presentations (inline, modal,
+ * drawer) and the trigger. Calls go to `${baseUrl}/api/...` through `elvixFetch`; Google
+ * Identity Services runs only with a GIS flag and the envelope's `googleClientId`, else the
+ * static `${baseUrl}/api/auth/google/start` link. `next/navigation` is never imported: the
+ * host routes via `onResult` / `onAuthenticated`, `window.location` being the fallback.
  */
 
 import { AnimatePresence, motion } from "framer-motion";
@@ -42,8 +15,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Drawer as Vaul } from "vaul";
 import { useT } from "../locale/use-t";
+import type { ElvixCardStyle } from "../types/card-style";
 import { ElvixSignInButton, type ElvixSignInButtonProps } from "./elvix-sign-in-button";
 import { AuthCard, CardSurface, useResolvedSignIn } from "./elvix-sign-in-card";
+import { focusOnOpen } from "./keyboard";
 import { isOnboardingPending, onOnboardingChange } from "./session";
 import { type Theme, themeVars } from "./sign-in-theme";
 import type { ElvixSignInResult } from "./types";
@@ -212,6 +187,9 @@ export type AuthFormProps = {
   width?: number | string;
   /** Theme override for the form's surface tokens. */
   theme?: Theme;
+  /** This card's type and spacing (0.26), over the provider's `cardStyle` and the Console's,
+   *  key by key; every value clamped. See `ElvixCardStyle`. */
+  cardStyle?: ElvixCardStyle;
   /** Hide the built-in header (the logo and its one line). */
   showHeader?: boolean;
   /**
@@ -515,10 +493,10 @@ function ModalOverlay({
   useEffect(() => setMounted(true), []);
 
   const panelRef = useRef<HTMLDivElement>(null);
-  const restoreFocusRef = useRef<HTMLElement | null>(null);
+  const restoreFocusRef = useRef<Element | null>(null);
   useEffect(() => {
     if (!open || typeof document === "undefined") return;
-    restoreFocusRef.current = (document.activeElement as HTMLElement) ?? null;
+    restoreFocusRef.current = document.activeElement;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
@@ -526,14 +504,12 @@ function ModalOverlay({
       else if (e.key === "Tab") trapTab(e, panelRef.current);
     };
     document.addEventListener("keydown", onKey);
-    const raf = requestAnimationFrame(() => {
-      panelRef.current?.querySelector<HTMLElement>("input, button")?.focus();
-    });
+    const raf = requestAnimationFrame(() => focusOnOpen(panelRef.current));
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prevOverflow;
       cancelAnimationFrame(raf);
-      restoreFocusRef.current?.focus?.();
+      if (restoreFocusRef.current instanceof HTMLElement) restoreFocusRef.current.focus();
     };
   }, [open, dismissable, onClose]);
 
@@ -557,7 +533,8 @@ function ModalOverlay({
           />
           <motion.div
             ref={panelRef}
-            className="relative mx-auto w-full"
+            tabIndex={-1}
+            className="relative mx-auto w-full max-h-full overflow-y-auto outline-none"
             style={{ maxWidth: width }}
             initial={{ opacity: 0, scale: 0.96, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}

@@ -215,11 +215,8 @@
       "errorNetwork": {
         "other": "Збій мережі. Спробуйте ще раз."
       },
-      "errorPasskeyVerify": {
-        "other": "Не вдалося підтвердити ключ доступу."
-      },
-      "errorPasskeyAdd": {
-        "other": "Не вдалося додати ключ доступу. Спробуйте ще раз або пропустіть."
+      "errorPasskeyBusy": {
+        "other": "Запит ключа доступу вже відкрито."
       },
       "visitAppWebsite": {
         "other": "Відвідати сайт {app}"

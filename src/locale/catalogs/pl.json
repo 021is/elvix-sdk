@@ -215,11 +215,8 @@
       "errorNetwork": {
         "other": "Problem z siecią. Spróbuj ponownie."
       },
-      "errorPasskeyVerify": {
-        "other": "Weryfikacja klucza dostępu nie powiodła się."
-      },
-      "errorPasskeyAdd": {
-        "other": "Nie udało się dodać klucza dostępu. Spróbuj ponownie lub pomiń na razie."
+      "errorPasskeyBusy": {
+        "other": "Okno klucza dostępu jest już otwarte."
       },
       "visitAppWebsite": {
         "other": "Odwiedź stronę {app}"

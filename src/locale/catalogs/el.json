@@ -213,11 +213,8 @@
       "errorNetwork": {
         "other": "Πρόβλημα δικτύου. Δοκιμάστε ξανά."
       },
-      "errorPasskeyVerify": {
-        "other": "Η επαλήθευση του passkey απέτυχε."
-      },
-      "errorPasskeyAdd": {
-        "other": "Δεν ήταν δυνατή η προσθήκη του passkey. Δοκιμάστε ξανά ή παραλείψτε για τώρα."
+      "errorPasskeyBusy": {
+        "other": "Ένα αίτημα passkey είναι ήδη ανοιχτό."
       },
       "visitAppWebsite": {
         "other": "Επισκεφθείτε τον ιστότοπο του {app}"

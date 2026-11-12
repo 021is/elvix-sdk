@@ -216,11 +216,8 @@
       "errorNetwork": {
         "other": "Network hiccup. Try again."
       },
-      "errorPasskeyVerify": {
-        "other": "Passkey verification failed."
-      },
-      "errorPasskeyAdd": {
-        "other": "Passkey couldn't be added. Try again or skip for now."
+      "errorPasskeyBusy": {
+        "other": "A passkey prompt is already open."
       },
       "visitAppWebsite": {
         "other": "Visit {app} website"

@@ -5,12 +5,95 @@ All notable changes to `@elvix.is/sdk` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Older releases, each file under the 300-line limit: [0.17](docs/changelog/0.17.md), [0.15 to 0.16](docs/changelog/0.15-0.16.md), [0.14.3 to 0.14.7](docs/changelog/0.14.3-0.14.7.md),
+Older releases, each file under the 300-line limit: [0.18](docs/changelog/0.18.md), [0.17](docs/changelog/0.17.md), [0.15 to 0.16](docs/changelog/0.15-0.16.md), [0.14.3 to 0.14.7](docs/changelog/0.14.3-0.14.7.md),
 [0.12 to 0.14.2](docs/changelog/0.12-0.14.md), [0.7 to 0.11](docs/changelog/0.7-0.11.md),
 [0.1 to 0.6](docs/changelog/0.1-0.6.md). When this file passes 300 lines, its oldest
 releases move there.
 
 ## [Unreleased]
+
+## [0.26.0] — 2026-11-12
+
+The sign-in card takes an app's type and spacing, and knows the phone's keyboard. An app
+that sets nothing gets the card it had: every default is 0.25's value (measured in
+Chromium: 62 elements, same boxes, weights and fonts).
+
+### Added
+
+- **`cardStyle`**, an app's type and spacing on the sign-in card (Edvard: "it must be super
+  adaptive"): `fontText`, `fontDisplay`, `headingWeight` (400–800, default 600),
+  `logoHeight`, `paddingX`, `paddingTop`, and every gap between the card's parts:
+  `gapLogoTitle`, `gapTitleMethods`, `gapMethods`, `gapDivider`, `gapFieldButton`,
+  `gapButtonSlot`, `gapLegal`, `gapFooter`. Whole pixels, each the distance a person sees,
+  clamped to its range (`CARD_STYLE_RANGES`). On `<ElvixProvider cardStyle>` (every card
+  under it) and on `<ElvixSignInCard>` / `<ElvixSignInForm>` (that card); the Console's
+  value comes with the bootstrap envelope (`cardStyle`, elvix 0.26+). The card's prop wins
+  over the provider's, the provider's over the Console's, key by key.
+- **Fonts are names, never downloads.** A family your page already loads (`"Inter"`,
+  `"var(--font-inter)"`); the SDK requests no font and no stylesheet. A host family is a
+  comma-separated list of bare names, closed `"…"` / `'…'` strings and `var(--name)`, and
+  anything else (a URL, a declaration, a quote left open, a control character) is
+  refused; a Console family is one of `CONSOLE_FONTS` (Inter, Urbanist, Geist, DM Sans,
+  Manrope, Plus Jakarta Sans, Nunito, Montserrat, Poppins, Lato, Lora), the fonts elvix
+  serves.
+- **The legal line and "Secured by elvix" cannot be spaced or styled away**: no token
+  reaches their size, colour, visibility or font (the app's fonts stop above the legal
+  line), the gaps above them never go under 12 px, and the modal scrolls on a short screen.
+- `@elvix.is/sdk/server` exports `CARD_STYLE_RANGES`, `CARD_STYLE_TOKENS`,
+  `CONSOLE_FONTS`, `isCardTokenInRange`, `isConsoleFontName` and the `ElvixCardStyle` /
+  `CardStyleToken` / `ConsoleFont` types: what elvix's API refuses a Console value with.
+  `@elvix.is/sdk/react` exports `CARD_STYLE_RANGES` and `ElvixCardStyle`.
+- **The phone's keyboard** (Edvard: "the elvix sdk for sign in must be aware of the
+  keyboard on mobile"): every field's action key says what Enter does (`go` on a step's
+  last field, `next` between the code boxes); the identifier field offers the person's
+  passkeys in its autofill (`autocomplete="… webauthn"`, a conditional request started
+  on a focus of the field while no passkey request is open in any card on the page, never
+  on open or while a passkey button runs, and ended before a button's dialog, its start
+  request included; a passkey picked from it is a sign-in no button interrupts or repeats:
+  one prompt, one session; a sign-in running in any card shows on every card's passkey
+  button; every passkey request gives up after 20 s with "Network hiccup. Try again."); a
+  focused field and its step's button are scrolled into view inside whatever scrolls
+  around the card, again while the keyboard opens; and a touch screen gets no autofocus,
+  so the keyboard never jumps up as a sheet or the modal opens (the modal focuses its own
+  panel there). That holds for every set of code boxes (export and deactivate too), and a
+  focus is given after mount, never as an `autofocus` attribute a server would write into
+  the page.
+- **A refused `cardStyle` value says so, in development only:** the console names the
+  key, the value and what is allowed, once per key (a number out of range is still held
+  at its edge, a bad font still ignored). Nothing in production.
+
+### Changed
+
+- **Breaking (types):** `ElvixAppPasskeysResult.message` is gone; read `error`.
+- The entry step is `sign-in-identifier-step.tsx` and its method buttons
+  `sign-in-social.tsx`, the username field `sign-in-username-field.tsx`;
+  `sign-in-steps.tsx` went from 889 to 488 lines and left the complexity debt list. Adding
+  a passkey is `passkey-register.ts`, out of `passkey.ts` (which left the file-length debt).
+
+### Fixed
+
+- **The username step's "@" could sit on the first letter.** 0.25 put the text at a fixed
+  padding in `rem` beside a 14 px "@" it never measured, so a page with a smaller root
+  text size, or a wider font, overlapped them. The text now starts at the "@"'s measured
+  right edge plus 6 px, measured again when a font arrives or the text size changes.
+- The username check reads elvix's answer field by field: "available" only when it is
+  `true`, a reason only when it is a string and one of the step's own. A check that got no
+  answer (the network, a refused request) says "Network hiccup. Try again." under the
+  field; it showed the rules hint with Continue off (a network error) or "That username
+  isn't valid." (a 429 or a 500).
+- The entry step's error line is announced to a screen reader (`role="alert"`), as every
+  other step's is, and shows on a card with no email or username field too: a refused
+  passkey there said nothing.
+- **No browser, extension or server words reach the page or `onResult`.** A passkey
+  failure was shown in the browser's own message (an extension wrapping WebAuthn could
+  put any text there), and `<ElvixAppPasskeys>` showed a server's raw error. Every
+  failure is now a code, worded from elvix's own catalog (an unknown code, the generic
+  line); a server's `errorMessage` counts as a code only when it looks like one
+  (`not_a_member`), so a 500's stack or database address never reaches `onResult`;
+  `PasskeySignInResult` and `PasskeyRegisterResult` carry no `message`.
+- Adding a passkey holds the page's one passkey request, as signing in does: a
+  `create()` never opens beside another card's prompt (`passkey_busy` while one runs,
+  "A passkey prompt is already open.").
 
 ## [0.25.0] — 2026-11-11
 
@@ -192,106 +275,4 @@ says "Skip" while empty.
 - **The apartment line (and every optional text step) says "Skip" while empty**, "Continue"
   once typed, like the other optional steps; it always said "Continue".
 
-## [0.18.0] — 2026-11-01
-
-Pick a legal entity for an invoice, read it by id on your server, and style fields and rows
-as your own. Needs elvix.is with the legal-entity grants (deployed before this release).
-
-### Added
-
-- **`<ElvixLegalEntityPicker types selectedId purpose onPick>`**: the user's legal entities
-  as a list; a tap picks and tints the row, and your own Continue ends the flow (no confirm
-  button, no done pane). "Add a company" runs the add wizard in place and comes back with
-  the new entity picked. Rows show what an invoice says: the legal name, the VAT ID or tax
-  number and the city; "Verified" only when elvix's own check confirmed the VAT ID and the
-  register's name does not differ (else "Name differs from the register"). `types` filters
-  the list and the wizard; `onResult` reports each pick and a failed save.
-- **The picker asks only what an invoice needs.** With `purpose="invoicing"` (the default)
-  "Add" walks: the type (if more than one is offered) → the VAT ID, or "No VAT ID" → tax
-  country → tax number (an individual: name → tax country → tax number) → the check → the
-  legal name, prefilled (a company in one field, a person in given and family name) → the
-  address (search prefilled from the authority, review, any missing part, apartment or
-  floor optional) → an invoice email (optional) → an Italian or Belgian business's
-  e-invoice address (optional) → saved. No trading name, birth data, nationality, registration or phone.
-  `purpose="payouts"` and `<ElvixLegalEntities>` keep the full flow. The last step's
-  button saves and shows a refused save; "Step 1 of N" counts the flow shown.
-- **`sizing="fixed" | "flexible"`** on `<ElvixLegalEntityPicker>` and
-  `<ElvixLegalEntities>`, with `height`, `minHeight`, `maxHeight`. Fixed: the list and
-  every add step share one height (the picker's default `min(520px, 70dvh)`, the
-  manager's `min(540px, 66dvh)` within 340–700 px; `height` overrides, `maxHeight` caps)
-  and a longer pane scrolls inside. Flexible: as tall as each pane, nothing scrolls inside,
-  no fixed height; `maxHeight` caps it and then it scrolls. The picker defaults to fixed in
-  a card and flexible with `card={false}`; the manager to fixed. `ElvixLegalEntitySizing`
-  names the two.
-- **The Enter hint is off by default, on every device.** The "Enter" chip beside a save
-  button carries `.elvix-kbd-hint` (`hints.css`); a host turns it on with
-  `--elvix-key-hints: inline-flex` on any ancestor. The chip shows the key only, never
-  prose: an optional pane's button says "Skip" while empty instead.
-- **A tap is a grant; the pre-selection is not.** `onPick(entity, { granted })`: a tap or a
-  new entity grants your application that one entity for `purpose` (`invoicing`, default,
-  or `payouts`, which a note above the list discloses: your app's name and what it reads)
-  before `onPick` fires with `granted: true`. The default (else the only entity) is shown
-  picked with `granted: false` and nothing shared: grant it from your Continue with
-  **`useElvixLegalEntityGrant()(entityId, purpose?)`**. The user revokes in their account.
-- **`getElvixLegalEntity({ apiKey, applicationId, userId, entityId, purpose? })`** in
-  `@elvix.is/sdk/server`: the picked entity by id for the purpose granted
-  (`ElvixLegalEntity`): elvix's VAT verdict, `vatIdNameMatch`, EAS schemes, e-invoice
-  addresses; `payouts` adds what the person saved of their birth data and phone (a
-  payment provider's prefill; its own onboarding asks the rest). `not_found`, `invalid_id`,
-  `invalid_purpose`; never throws.
-- **Webhooks** `user.legal_entity_updated`, `user.legal_entity_deleted`,
-  `user.legal_entity_revoked` (`UserLegalEntityData`, with `purpose`), to applications
-  holding a grant.
-- **A person's name in two parts** (`givenName`, `familyName`, required for individuals
-  and sole proprietors), **where e-invoices go**: optional, asked only of an Italian (SDI
-  code or PEC) or Belgian (Peppol ID) business and counted in "Step 1 of N" only there; the
-  detail view edits all four fields, Leitweg-ID included, for any country.
-- **Row variables**: `--elvix-row`, `--elvix-row-hover`, `--elvix-picked`,
-  `--elvix-picked-text`, `--elvix-radius`, `--elvix-focus` (`rows.css`), next to the field
-  variables; `--elvix-danger` outlines a field whose value is wrong. **Icon bubbles** (the
-  tinted circle behind a type's icon, the empty state's, the detail header's) take
-  `--elvix-icon` (the icon, default the brand) and `--elvix-icon-bg` (the fill, default
-  the brand at 15%) through `.elvix-icon-bubble`.
-- `LegalEntityRecord`, `LegalEntityType` and `VatVerdict` are exported from
-  `@elvix.is/sdk/react`.
-
-### Changed
-
-- **One field look.** `<ElvixInput>` and `<ElvixDateInput>`, so every SDK form, take
-  0.17's `.elvix-field`: a tint of the text colour, no outline at rest, the brand on
-  focus. Their own white fill and 55% brand outline are gone. Legal-entity rows, choices,
-  suggestions and tiles lose their borders; a tint shows state. Set the variables to
-  bring an outline back.
-- **A business starts at its VAT ID.** The prefix names the tax country, so a VAT holder
-  is not asked for it (Norway, Australia and Brazil, whose numbers carry none, are offered
-  beside the field). The authority's answer prefills the legal name and types its address
-  into the address search. "No VAT ID" takes a sole proprietor through tax country and
-  tax number. A private individual's steps are unchanged.
-- **elvix checks the VAT ID itself.** The save sends the VAT ID only; `vatIdValidation`,
-  `vatIdValidatedAt` and `vatIdValidatedName` left the input and are set by elvix (the
-  record adds `vatIdValidatedAddress` and `vatIdRequestId`). Until now the browser sent
-  the level it said it reached, which anyone could set to "live".
-- **A business has its full address** (EU VAT Directive art. 226(5)): street, postal code,
-  city and country are required for a sole proprietorship or company, and the address
-  review asks in place for any part Google Places left empty. A sole proprietor without a
-  VAT ID gives its tax number.
-- **An entity needs what an invoice needs.** Date and place of birth, nationality and the
-  registration number and authority are optional for every type (a registration number
-  that is given must still match its country's format); their panes in the full flow say
-  "Skip" while empty. Still required: the legal name (given and family name for a
-  person), the tax country, a company's VAT ID, a sole proprietor's VAT ID or tax number,
-  an individual's tax number, and a business's street, postal code, city and country.
-- `<ElvixLegalEntities>`' `height`, `minHeight` and `maxHeight` take a CSS length as well
-  as a number.
-- **Inside an app, personal fields are write-only.** elvix answers an app's session with
-  birth data, nationality, phone (and an individual's tax number and address) withheld
-  (`withheld: true`); the detail view says they are shown only in the elvix account and
-  still lets the user set a new value.
-- The detail view takes one `onEdit(step)` instead of nine handlers, in its own file.
-
-### Fixed
-
-- A list of legal entities that could not be read showed as an empty list; the picker now
-  says so, with a retry.
-
-[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.24.0...HEAD
+[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.26.0...HEAD
