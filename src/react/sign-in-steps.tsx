@@ -15,7 +15,7 @@ import type { AuthFormProps } from "./elvix-sign-in-form";
 import { useAutoFocus } from "./keyboard";
 import { OtpInput } from "./otp-input";
 import { STACK_2, STACK_3, STACK_4 } from "./pane-layout";
-import { runPasskeyRegister } from "./passkey";
+import { runPasskeyRegister } from "./passkey-register";
 import { getElvixToken, isSameOrigin } from "./session";
 import { type Cta, CtaButton, ErrorLine } from "./sign-in-controls";
 import { hostedCeremonyUrl, humanError, type Translator } from "./sign-in-copy";
@@ -420,14 +420,12 @@ export function PasskeyStep({
       return;
     }
     if (result.error === "passkey_cancelled") return;
-    if (!isSameOrigin(baseUrl) && p.clientId) {
+    // Busy: another card's passkey request is open; the hosted page would not help.
+    if (result.error !== "passkey_busy" && !isSameOrigin(baseUrl) && p.clientId) {
       window.location.assign(hostedRegisterUrl(baseUrl, p.clientId));
       return;
     }
-    flow.reportError(
-      result.error,
-      result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyAdd"),
-    );
+    flow.reportError(result.error, humanError(t, result.error) ?? t("signin.errorPasskeyAdd"));
   };
 
   const skip = () => {

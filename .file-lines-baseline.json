@@ -19,10 +19,9 @@
   "src/react/elvix-username.tsx": 681,
   "src/react/google-one-tap.tsx": 348,
   "src/react/legal-entity-wizard-views.tsx": 1101,
-  "src/react/passkey.ts": 340,
   "src/react/regions.ts": 324,
   "src/react/session.ts": 425,
-  "src/react/sign-in-steps.tsx": 490,
+  "src/react/sign-in-steps.tsx": 488,
   "src/react/tax-validation.ts": 408,
   "tests/helpers/fake-elvix.ts": 394
 }

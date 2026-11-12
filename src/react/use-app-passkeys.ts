@@ -4,7 +4,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useElvixContext } from "./elvix-provider";
-import { runPasskeyRegister } from "./passkey";
+import { runPasskeyRegister } from "./passkey-register";
 import { send } from "./profile-request";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
@@ -53,7 +53,7 @@ export function useAppPasskeys({ appId, onResult, onAdded, onRemoved }: Options)
   const emitResult = useStableCallback(onResult);
   const [rows, setRows] = useState<ElvixAppPasskey[] | null>(null);
   const [busy, setBusy] = useState(false);
-  /** An error code (`friendlyError` words it) or a ceremony's own message. */
+  /** An error code, never anyone's own words: `appPasskeyErrorKey` words it. */
   const [error, setError] = useState<string | null>(null);
   const [removingId, setRemovingId] = useState<string | null>(null);
   const url = appId ? `${baseUrl}/api/account/apps/${encodeURIComponent(appId)}/passkeys` : null;
@@ -83,8 +83,9 @@ export function useAppPasskeys({ appId, onResult, onAdded, onRemoved }: Options)
     setBusy(false);
     if (!result.ok) {
       // Cancelling the browser prompt is not an error worth showing.
-      if (result.error !== "passkey_cancelled") setError(result.message ?? result.error);
-      emitResult({ ok: false, error: result.error, message: result.message });
+      // The code only: the component turns it into words (`app-passkey-errors.ts`).
+      if (result.error !== "passkey_cancelled") setError(result.error);
+      emitResult({ ok: false, error: result.error });
       return;
     }
     emitResult({ ok: true, kind: "added" });

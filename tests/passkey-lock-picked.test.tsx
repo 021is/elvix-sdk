@@ -9,6 +9,7 @@ import { act, cleanup, fireEvent, screen, waitFor } from "@testing-library/react
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ElvixSignInCard } from "../src/react/index";
 import { PasskeyLock, passkeyLockState } from "../src/react/passkey-lock";
+import { PASSKEY_REQUEST_TIMEOUT_MS } from "../src/react/passkey-timeout";
 import { json } from "./helpers/fake-elvix";
 import {
   ASSERTION,
@@ -30,6 +31,7 @@ const onUncaught = (e: ErrorEvent) => {
 };
 
 afterEach(() => {
+  vi.useRealTimers();
   cleanup();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
@@ -97,6 +99,28 @@ describe("a picked offer whose finish is slow", () => {
     expect(dialogsOf(get)).toBe(0);
     expect(fake.calls("/api/auth/passkey/sign-in/finish")).toBe(1);
     expect(onResult.mock.calls.filter(([r]) => r?.ok)).toHaveLength(1);
+  });
+});
+
+describe("a picked offer whose finish never answers", () => {
+  it("is BUSY until its timeout, then says so, frees the lock, and a retry works", async () => {
+    const onResult = vi.fn();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const { get, fake } = await pickedWithSlowFinish(onResult);
+    expect(passkeyLockState()).toBe(PasskeyLock.BUSY);
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(PASSKEY_REQUEST_TIMEOUT_MS);
+    });
+    expect((await screen.findByRole("alert", {}, PANE)).textContent).toBe(
+      "Network hiccup. Try again.",
+    );
+    expect(passkeyLockState()).toBe(PasskeyLock.FREE);
+    await act(async () => fireEvent.click(passkeyButton()));
+    await waitFor(() =>
+      expect(onResult).toHaveBeenCalledWith(expect.objectContaining({ ok: true })),
+    );
+    expect(dialogsOf(get)).toBe(1);
+    expect(fake.calls("/api/auth/passkey/sign-in/finish")).toBe(2);
   });
 });
 

@@ -29,14 +29,10 @@ import {
   releaseOffer,
   subscribePasskeyLock,
 } from "./passkey-lock";
+import { orAbort } from "./passkey-timeout";
 import { isSameOrigin } from "./session";
 import { hostedCeremonyUrl, humanError, type Translator } from "./sign-in-copy";
 import type { Landing, SignInFlow } from "./use-sign-in-flow";
-
-/** An error from the inline ceremony that the hosted page on elvix.is
- *  (where the rpId matches) gets past: a browser without Related Origin
- *  Requests support. */
-const RP_ID_MISMATCH = /rp\.?id|RelyingParty|cannot be used with the current origin|SecurityError/i;
 
 /** A passkey sign-in that worked: the server's landing decides what comes next. */
 function passkeySignedIn(flow: SignInFlow, landing: Landing) {
@@ -44,28 +40,24 @@ function passkeySignedIn(flow: SignInFlow, landing: Landing) {
   flow.applyLanding(landing);
 }
 
-/** A passkey sign-in that failed, in the server's words or the code's. */
-function reportPasskeyError(
-  flow: SignInFlow,
-  t: Translator,
-  result: { error: string; message?: string },
-) {
-  flow.reportError(
-    result.error,
-    result.message ?? humanError(t, result.error) ?? t("signin.errorPasskeyVerify"),
-  );
+/** A passkey sign-in that failed, in elvix's words for its code: a browser's, an
+ *  extension's or a server's own text never reaches the page or `onResult`. */
+function reportPasskeyError(flow: SignInFlow, t: Translator, result: { error: string }) {
+  flow.reportError(result.error, humanError(t, result.error) ?? t("signin.errorPasskeyVerify"));
 }
 
-/** Whether this browser can offer passkeys inside a field's autofill. */
-async function conditionalMediationAvailable(): Promise<boolean> {
+/** Whether this browser can offer passkeys inside a field's autofill; `false` at once when
+ *  `signal` aborts, for a probe that never answers must not hold the offer. */
+async function conditionalMediationAvailable(signal: AbortSignal): Promise<boolean> {
   if (typeof window === "undefined" || !window.PublicKeyCredential) return false;
   const probe = window.PublicKeyCredential.isConditionalMediationAvailable;
   if (typeof probe !== "function") return false;
-  return probe.call(window.PublicKeyCredential).catch(() => {
+  const answer = probe.call(window.PublicKeyCredential).catch(() => {
     // A browser that cannot answer the probe cannot offer passkeys in a field either; the
     // passkey button stays, so nothing is lost and nothing needs saying.
     return false;
   });
+  return orAbort(answer, signal, false);
 }
 
 /** An error past every handler of ours (a host callback that throws): reported as the
@@ -133,7 +125,8 @@ export function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: st
     if (!holdOffer(o)) return;
     offer.current = o;
     void (async () => {
-      if (!(await conditionalMediationAvailable()) || o.controller.signal.aborted) return;
+      const able = await conditionalMediationAvailable(o.controller.signal);
+      if (!able || o.controller.signal.aborted) return;
       const result = await runPasskeySignIn(baseUrl, p.clientId, p.intent ?? "app", {
         kind: "autofill",
         signal: o.controller.signal,
@@ -177,9 +170,9 @@ export function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: st
       p.onResult?.({ ok: false, error: result.error });
       return;
     }
-    const hostedHelps =
-      RP_ID_MISMATCH.test(result.message ?? "") || result.error === "passkey_failed";
-    if (!isSameOrigin(baseUrl) && p.clientId && hostedHelps) {
+    // Any non-cancel failure of the browser's prompt (a browser without Related Origin
+    // Requests, an rpId it refuses) is one the hosted page on elvix.is gets past.
+    if (!isSameOrigin(baseUrl) && p.clientId && result.error === "passkey_failed") {
       window.location.assign(hostedCeremonyUrl(baseUrl, "passkey", p.clientId));
       return;
     }

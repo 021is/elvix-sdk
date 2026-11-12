@@ -10,9 +10,10 @@
  * - an offer with a passkey picked is a sign-in: it keeps the lock until it is done, and no
  *   button opens a second ceremony meanwhile, ever.
  *
- * Nothing holds it forever because every request is bounded (`passkey-timeout.ts`), not
- * because anyone takes it over. Module state, no React: the hook holds and releases it and
- * reads `passkeyLockState` through `subscribePasskeyLock`.
+ * Nothing holds it forever because every wait in the passkey path is bounded or abortable
+ * (`passkey-timeout.ts`), never because anyone takes a sign-in over. A ceremony is a
+ * button's dialog or adding a passkey (`passkey-register.ts`). Module state, no React: the
+ * hook holds and releases it and reads `passkeyLockState` through `subscribePasskeyLock`.
  */
 
 /** An autofill offer: aborted to end it; `done` resolves once its work is over (it never
@@ -75,11 +76,15 @@ export function releaseOffer(offer: PasskeyOffer) {
   if (held?.kind === "offer" && held.offer === offer) set(null);
 }
 
+/** How long a tap waits for an aborted offer to end before it leaves it behind. */
+export const OFFER_END_WAIT_MS = 3000;
+
 /**
  * Takes the lock for a button's ceremony; false while a ceremony or a picked offer runs.
- * An offer still waiting for its pick is ended, with the lock taken at once so no offer
- * starts and no second button runs meanwhile. Picked in the instant before the abort
- * landed, its sign-in is over once `done` resolves, and there is no dialog.
+ * An offer still waiting for its pick is aborted, the lock taken at once so no offer starts
+ * and no second button runs meanwhile. An aborted offer is abandoned for good: it never
+ * picks and never finishes (`runPasskeySignIn` checks its signal), so the tap only waits
+ * for the browser to let its request go, at most `OFFER_END_WAIT_MS`.
  */
 export async function holdCeremony(): Promise<boolean> {
   const before = held;
@@ -87,10 +92,13 @@ export async function holdCeremony(): Promise<boolean> {
   set({ kind: "ceremony" });
   if (!before) return true;
   before.offer.controller.abort();
-  await before.offer.done;
-  if (!before.offer.picked) return true;
-  releaseCeremony();
-  return false;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const waited = new Promise<void>((resolve) => {
+    timer = setTimeout(resolve, OFFER_END_WAIT_MS);
+  });
+  await Promise.race([before.offer.done, waited]);
+  clearTimeout(timer);
+  return true;
 }
 
 /** Gives the lock back after a ceremony. */
