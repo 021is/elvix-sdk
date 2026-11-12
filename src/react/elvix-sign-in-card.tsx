@@ -2,7 +2,7 @@
 
 import { type CSSProperties, useRef } from "react";
 import { useT } from "../locale/use-t";
-import { BORDERED_DEFAULTS, type CardLook, cardLookVars, mergeCardStyle } from "./card-look";
+import { BORDERED_DEFAULTS, CardLook, cardLookVars } from "./card-look";
 import { ElvixLogo } from "./elvix-logo";
 import { brandCssVars, useElvixApp, useElvixCardStyle } from "./elvix-provider";
 import type { AuthFormProps } from "./elvix-sign-in-form";
@@ -181,7 +181,7 @@ function cardClass(transparentBg: boolean, surface: CardSurface): string {
 function useCardLookVars(own: AuthFormProps["cardStyle"], defaults: CardLook | undefined) {
   const provider = useElvixCardStyle();
   const app = useElvixApp();
-  return cardLookVars(mergeCardStyle({ card: own, provider, console: app?.cardStyle }), defaults);
+  return cardLookVars(CardLook.merge({ card: own, provider, console: app?.cardStyle }), defaults);
 }
 
 /** The card every presentation shows, on its `surface`. */

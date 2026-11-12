@@ -86,17 +86,20 @@ describe("fonts", () => {
     expect(cssVar("--elvix-font-text")).toBe("initial");
   });
 
-  it("a host font with an open quote never breaks the server-written style", () => {
-    const html = renderToString(
-      <Provider>
-        <ElvixSignInCard navigate={false} cardStyle={{ fontText: '"Inter', gapLegal: 30 }} />
-      </Provider>,
-    );
-    const style = html.match(/style="([^"]*--elvix-font-text[^"]*)"/)?.[1] ?? "";
-    expect(style).toContain("--elvix-font-text:initial");
-    expect(style).toContain("--elvix-gap-legal:30px");
-    expect(style).toContain("--elvix-primary:");
-  });
+  it.each([['"Inter'], [`"a'b" 'c`]])(
+    "a host font with an open quote (%s) never breaks the server-written style",
+    (fontText) => {
+      const html = renderToString(
+        <Provider>
+          <ElvixSignInCard navigate={false} cardStyle={{ fontText, gapLegal: 30 }} />
+        </Provider>,
+      );
+      const style = html.match(/style="([^"]*--elvix-font-text[^"]*)"/)?.[1] ?? "";
+      expect(style).toContain("--elvix-font-text:initial");
+      expect(style).toContain("--elvix-gap-legal:30px");
+      expect(style).toContain("--elvix-primary:");
+    },
+  );
 
   it("a host font with a URL in it is refused", async () => {
     const { cssVar } = await mountCard({ cardStyle: { fontText: "url(https://e.test/f.woff2)" } });

@@ -6,10 +6,10 @@
 import { describe, expect, it } from "vitest";
 import {
   BORDERED_DEFAULTS,
+  CardLook,
   cardLookVars,
   consoleFontFamily,
   hostFontFamily,
-  mergeCardStyle,
 } from "../src/react/card-look";
 import {
   CARD_STYLE_RANGES,
@@ -34,12 +34,12 @@ describe("the card style tokens", () => {
   });
 
   it("an app that sets nothing keeps the card it had before 0.26", () => {
-    const nothing = mergeCardStyle({});
+    const nothing = CardLook.merge({});
     const vars = cardLookVars(nothing);
     for (const token of CARD_STYLE_TOKENS) expect(vars[VAR_OF(token)]).toBe(BEFORE_026[token]);
     // elvix's bordered card kept 28 px under the legal line, above its footer bar (py-7).
     expect(cardLookVars(nothing, BORDERED_DEFAULTS)["--elvix-gap-footer"]).toBe("28px");
-    const own = mergeCardStyle({ card: { gapFooter: 16 } });
+    const own = CardLook.merge({ card: { gapFooter: 16 } });
     expect(cardLookVars(own, BORDERED_DEFAULTS)["--elvix-gap-footer"]).toBe("16px");
     expect(vars["--elvix-font-text"]).toBe("initial");
     expect(vars["--elvix-font-display"]).toBe("initial");
@@ -63,10 +63,10 @@ describe("the card style tokens", () => {
 
     it("reaches the card as its own variable, clamped", () => {
       const unit = token === "headingWeight" ? "" : "px";
-      expect(cardLookVars(mergeCardStyle({ card: { [token]: max + 50 } }))[VAR_OF(token)]).toBe(
+      expect(cardLookVars(CardLook.merge({ card: { [token]: max + 50 } }))[VAR_OF(token)]).toBe(
         `${max}${unit}`,
       );
-      expect(cardLookVars(mergeCardStyle({ card: { [token]: min - 50 } }))[VAR_OF(token)]).toBe(
+      expect(cardLookVars(CardLook.merge({ card: { [token]: min - 50 } }))[VAR_OF(token)]).toBe(
         `${min}${unit}`,
       );
     });
@@ -129,12 +129,26 @@ describe("fonts", () => {
     ["a tab", "Inter\tfoo"],
     ["a NUL", "Inter\u0000"],
     ["a DEL", "Inter\u007f"],
+    // Each quote kind even, yet a string left open (the security review, 2026-11-12).
+    ["a quote of each kind, one left open", `"a'b" 'c`],
+    ["a closed name, then an open one", `"Inter", 'Urbanist`],
+    ["a stray quote inside a bare name", `In'ter`],
+    ["two names with no comma", `"Inter" "Urbanist"`],
+    ["a name glued to a quote", `Inter"x"`],
+    ["a lone comma", ","],
+    ["a trailing comma", "Inter,"],
   ])("a host family with %s is refused", (_, value) => {
     expect(hostFontFamily(value)).toBeUndefined();
   });
 
-  it("a host family with its quotes closed passes", () => {
-    expect(hostFontFamily("'Inter', \"Urbanist\"")).toBe("'Inter', \"Urbanist\", sans-serif");
+  it.each([
+    [`'Inter', "Urbanist"`],
+    [`"a'b", 'c'`],
+    [`'Say "hi"', system-ui`],
+    ["var(--font-inter), Helvetica Neue,sans-serif"],
+    ["Noto Sans JP"],
+  ])("a host family list %s passes as it is", (value) => {
+    expect(hostFontFamily(value)).toBe(`${value}, sans-serif`);
   });
 
   it("a Console family is one of the fonts elvix serves, quoted by the card", () => {
@@ -157,19 +171,22 @@ describe("fonts", () => {
   });
 
   it("the heading takes the text font unless it has its own", () => {
-    const vars = cardLookVars(mergeCardStyle({ card: { fontText: "Inter" } }));
+    const vars = cardLookVars(CardLook.merge({ card: { fontText: "Inter" } }));
     expect(vars["--elvix-font-text"]).toBe("Inter, sans-serif");
     expect(vars["--elvix-font-display"]).toBe("Inter, sans-serif");
     const both = cardLookVars(
-      mergeCardStyle({ card: { fontText: "Inter", fontDisplay: "Urbanist" } }),
+      CardLook.merge({ card: { fontText: "Inter", fontDisplay: "Urbanist" } }),
     );
     expect(both["--elvix-font-display"]).toBe("Urbanist, sans-serif");
   });
 });
 
+/** The checked values a merge keeps. */
+const merged = (layers: Parameters<typeof CardLook.merge>[0]) => CardLook.merge(layers).values;
+
 describe("which layer wins", () => {
   it("the card's prop over the provider's over the Console's, key by key", () => {
-    const look = mergeCardStyle({
+    const look = merged({
       console: { gapMethods: 12, gapLegal: 30, paddingX: 16, fontText: "Urbanist" },
       provider: { gapMethods: 10, gapLegal: 24 },
       card: { gapMethods: 6 },
@@ -183,7 +200,7 @@ describe("which layer wins", () => {
   });
 
   it("a refused value leaves the layer under it in place", () => {
-    const look = mergeCardStyle({
+    const look = merged({
       console: { fontText: "Urbanist", gapMethods: 12 },
       card: { fontText: "url(x)", gapMethods: Number.NaN },
     });
@@ -191,9 +208,9 @@ describe("which layer wins", () => {
   });
 
   it("the Console's wire data is checked like any other input", () => {
-    expect(mergeCardStyle({ console: "gapMethods: 99" })).toEqual({});
-    expect(mergeCardStyle({ console: null })).toEqual({});
-    expect(mergeCardStyle({ console: { fontText: "var(--x)", gapMethods: "16" } })).toEqual({});
-    expect(mergeCardStyle({ console: { gapMethods: 99 } })).toEqual({ gapMethods: 16 });
+    expect(merged({ console: "gapMethods: 99" })).toEqual({});
+    expect(merged({ console: null })).toEqual({});
+    expect(merged({ console: { fontText: "var(--x)", gapMethods: "16" } })).toEqual({});
+    expect(merged({ console: { gapMethods: 99 } })).toEqual({ gapMethods: 16 });
   });
 });

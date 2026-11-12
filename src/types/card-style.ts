@@ -68,9 +68,10 @@ export type ElvixCardStyle = {
   /** The card's text font: a family your page already loads (`"Inter"`,
    *  `"var(--font-inter)"`), for the head, the step and your `belowMethods` line; the legal
    *  line and the chip keep your page's font. Left out, the card takes your page's font. The
-   *  SDK never downloads a font; a value with a URL, a `;`, a brace, an open quote, a control
-   *  character or any function but `var()` is ignored, and your page's font stays. In the
-   *  Console it is one of `CONSOLE_FONTS`. */
+   *  SDK never downloads a font. A value is a comma-separated list of bare names, closed
+   *  `"…"` / `'…'` strings and `var(--name)`; anything else (a URL, a `;`, a quote left open,
+   *  a control character) is ignored, and your page's font stays. In the Console it is one
+   *  of `CONSOLE_FONTS`. */
   fontText?: string;
   /** The heading's font (title or `headline`); left out, `fontText`. */
   fontDisplay?: string;
