@@ -84,9 +84,12 @@ Chromium: 62 elements, same boxes, weights and fonts).
   failure was shown in the browser's own message (an extension wrapping WebAuthn could
   put any text there), and `<ElvixAppPasskeys>` showed a server's raw error. Every
   failure is now a code, worded from elvix's own catalog (an unknown code, the generic
-  line); `PasskeySignInResult` and `PasskeyRegisterResult` carry no `message`.
+  line); a server's `errorMessage` counts as a code only when it looks like one
+  (`not_a_member`), so a 500's stack or database address never reaches `onResult`;
+  `PasskeySignInResult` and `PasskeyRegisterResult` carry no `message`.
 - Adding a passkey holds the page's one passkey request, as signing in does: a
-  `create()` never opens beside another card's prompt (`passkey_busy` while one runs).
+  `create()` never opens beside another card's prompt (`passkey_busy` while one runs,
+  "A passkey prompt is already open.").
 
 ## [0.25.0] — 2026-11-11
 
