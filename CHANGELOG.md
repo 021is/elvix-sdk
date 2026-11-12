@@ -30,8 +30,9 @@ Chromium: 62 elements, same boxes, weights and fonts).
   value comes with the bootstrap envelope (`cardStyle`, elvix 0.26+). The card's prop wins
   over the provider's, the provider's over the Console's, key by key.
 - **Fonts are names, never downloads.** A family your page already loads (`"Inter"`,
-  `"var(--font-inter)"`); the SDK requests no font and no stylesheet. A family with a URL,
-  a declaration, an open quote, a control character or any function but `var()` is
+  `"var(--font-inter)"`); the SDK requests no font and no stylesheet. A host family is a
+  comma-separated list of bare names, closed `"…"` / `'…'` strings and `var(--name)`, and
+  anything else (a URL, a declaration, a quote left open, a control character) is
   refused; a Console family is one of `CONSOLE_FONTS` (Inter, Urbanist, Geist, DM Sans,
   Manrope, Plus Jakarta Sans, Nunito, Montserrat, Poppins, Lato, Lora), the fonts elvix
   serves.
@@ -46,12 +47,13 @@ Chromium: 62 elements, same boxes, weights and fonts).
   keyboard on mobile"): every field's action key says what Enter does (`go` on a step's
   last field, `next` between the code boxes); the identifier field offers the person's
   passkeys in its autofill (`autocomplete="… webauthn"`, a conditional request started
-  on a focus of the field while none runs, never on open or while the passkey button
-  runs, and ended before the button's dialog; the button opens none once a passkey is
-  picked from the autofill: one prompt, one session); a focused field and its step's
-  button are scrolled into view inside whatever scrolls around the card, again while the
-  keyboard opens; and a touch screen gets no autofocus, so the keyboard never jumps up as
-  a sheet opens. That holds for every set of code boxes (export and deactivate too), and a
+  on a focus of the field while no passkey request is open in any card on the page, never
+  on open or while a passkey button runs, and ended before a button's dialog; a button
+  opens none once a passkey is picked from an autofill: one prompt, one session); a
+  focused field and its step's button are scrolled into view inside whatever scrolls
+  around the card, again while the keyboard opens; and a touch screen gets no autofocus,
+  so the keyboard never jumps up as a sheet or the modal opens (the modal focuses its own
+  panel there). That holds for every set of code boxes (export and deactivate too), and a
   focus is given after mount, never as an `autofocus` attribute a server would write into
   the page.
 

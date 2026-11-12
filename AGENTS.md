@@ -72,20 +72,24 @@ input components: they render a native `<input>`, which biome cannot see through
   legal line, so a symbol or blank font can never make it unreadable. The gaps above them
   keep a floor of 12 px; the modal panel scrolls (`max-h-full overflow-y-auto`), so the
   widest spacing never pushes them off a short screen (`tests/card-style-guards.test.tsx`).
-  Fonts are names the page loads: the SDK never requests a font; a host family is refused
-  with a URL, an open quote or a control character; a Console family is one of
+  Fonts are names the page loads: the SDK never requests a font; a host family must parse
+  as a list of names, closed strings and `var(--x)` (`FAMILY_LIST`), else it is refused;
+  a Console family is one of
   `CONSOLE_FONTS`, the closed list elvix serves.
 - **The keyboard on a phone** (0.26, `keyboard.ts`): no autofocus on a coarse pointer, and
   focus given after mount (`useAutoFocus`), never the `autoFocus` attribute a server would
-  write into the HTML; every field has its `enterKeyHint`; a card keeps the focused field
-  and its form's submit button in view (`useKeepFieldsInView`, `scrollIntoView` nearest,
-  again on `visualViewport` resize, never a guessed keyboard height)
-  (`tests/sign-in-keyboard.test.tsx`). The identifier field's passkey autofill
-  (`autocomplete="… webauthn"`) and the passkey button are one state
-  (`use-passkey-sign-in.ts`): the offer starts on a focus of the field while none runs, never on open and
-  never while the button runs; the button ends it before its own dialog (a browser holds
-  one request) and opens none when the offer already has a passkey picked or the step is
-  gone: one sign-in, one session. The offer has **no hosted fallback, on purpose**:
+  write into the HTML; the modal on open focuses its first control with a fine pointer and
+  its own panel on a touch screen (`focusOnOpen`); every field has its `enterKeyHint`; a
+  card keeps the focused field and its form's submit button in view
+  (`useKeepFieldsInView`, `scrollIntoView` nearest, again on `visualViewport` resize, never
+  a guessed keyboard height) (`tests/sign-in-keyboard.test.tsx`). The identifier field's
+  passkey autofill (`autocomplete="… webauthn"`) and the passkey button share **one lock
+  per page** (`passkey-lock.ts`, every card's `use-passkey-sign-in.ts`): an offer starts
+  on a focus of the field while no request is open in any card, never on open and never
+  while a button runs; a button ends any open offer before its own dialog (a browser holds
+  one request) and opens none when that offer already has a passkey picked or the step is
+  gone: one sign-in, one session (`tests/passkey-lock.test.tsx`, two cards). The offer has
+  **no hosted fallback, on purpose**:
   it is an offer the person did not ask for, so it never sends them away; before a pick it
   is silent, and the button keeps the hosted fallback and its errors
   (`tests/sign-in-passkey-autofill.test.tsx`).
