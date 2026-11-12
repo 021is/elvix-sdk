@@ -163,11 +163,10 @@ describe("what comes of it", () => {
     mount(<ElvixSignInCard navigate={false} methodEmailOtp methodPasskey />, "fine", [refused]);
     const field = await readyField();
     await act(async () => fireEvent.focus(field));
-    // The entry step's error line (its words for this code are the generic ones, as for the
-    // button: `humanError` names `verify_failed`, not `passkey_verify_failed`), announced to
-    // a screen reader and 12 px under Continue.
+    // The entry step's error line (the passkey's own words for a refused finish, as for the
+    // button), announced to a screen reader and 12 px under Continue.
     const line = await screen.findByRole("alert", {}, PANE);
-    expect(line.textContent).toMatch(/went wrong/);
+    expect(line.textContent).toMatch(/couldn't be verified/);
     expect(line.className).toMatch(/\bmt-3\b/);
   });
 
@@ -186,7 +185,9 @@ describe("what comes of it", () => {
     await act(async () =>
       fireEvent.click(screen.getByRole("button", { name: "Continue with passkey" })),
     );
-    expect((await screen.findByRole("alert", {}, PANE)).textContent).toMatch(/went wrong/);
+    expect((await screen.findByRole("alert", {}, PANE)).textContent).toMatch(
+      /couldn't be verified/,
+    );
   });
 });
 
