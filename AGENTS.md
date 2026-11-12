@@ -82,13 +82,18 @@ input components: they render a native `<input>`, which biome cannot see through
   again on `visualViewport` resize, never a guessed keyboard height)
   (`tests/sign-in-keyboard.test.tsx`). The identifier field's passkey autofill
   (`autocomplete="… webauthn"`) and the passkey button are one state
-  (`use-passkey-sign-in.ts`): the offer starts on the field's first focus, never on open and
+  (`use-passkey-sign-in.ts`): the offer starts on a focus of the field while none runs, never on open and
   never while the button runs; the button ends it before its own dialog (a browser holds
   one request) and opens none when the offer already has a passkey picked or the step is
   gone: one sign-in, one session. The offer has **no hosted fallback, on purpose**:
   it is an offer the person did not ask for, so it never sends them away; before a pick it
   is silent, and the button keeps the hosted fallback and its errors
   (`tests/sign-in-passkey-autofill.test.tsx`).
+- **A prefix drawn over a field's start (the username "@") is measured** (0.26,
+  `prefix-inset.ts`): the field's left padding is the prefix's right edge plus
+  `PREFIX_GAP_PX`, measured again on resize, never a fixed `pl-*`. 0.25's `pl-7` (rem)
+  beside a 14 px "@" put the "@" on the "e" of "edvard" on DanceClub's card
+  (`tests/username-prefix.test.tsx`).
 
 ## Component tests
 

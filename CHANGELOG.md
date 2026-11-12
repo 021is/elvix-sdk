@@ -46,19 +46,31 @@ Chromium: 62 elements, same boxes, weights and fonts).
   keyboard on mobile"): every field's action key says what Enter does (`go` on a step's
   last field, `next` between the code boxes); the identifier field offers the person's
   passkeys in its autofill (`autocomplete="… webauthn"`, a conditional request started
-  on the field's first focus, never on open or while the passkey button runs, and ended
-  before the button's dialog; the button opens none once a passkey is picked from the
-  autofill: one prompt, one session); a focused field and its step's button are scrolled
-  into view inside whatever scrolls around the card, again while the keyboard opens; and a
-  touch screen gets no autofocus, so the keyboard never jumps up as a sheet opens. That
-  holds for every set of code boxes (export and deactivate too), and a focus is given
-  after mount, never as an `autofocus` attribute a server would write into the page.
+  on a focus of the field while none runs, never on open or while the passkey button
+  runs, and ended before the button's dialog; the button opens none once a passkey is
+  picked from the autofill: one prompt, one session); a focused field and its step's
+  button are scrolled into view inside whatever scrolls around the card, again while the
+  keyboard opens; and a touch screen gets no autofocus, so the keyboard never jumps up as
+  a sheet opens. That holds for every set of code boxes (export and deactivate too), and a
+  focus is given after mount, never as an `autofocus` attribute a server would write into
+  the page.
 
 ### Changed
 
 - The entry step is `sign-in-identifier-step.tsx` and its method buttons
-  `sign-in-social.tsx`; `sign-in-steps.tsx` went from 889 to about 600 lines and left the
-  complexity debt list.
+  `sign-in-social.tsx`, the username field `sign-in-username-field.tsx`;
+  `sign-in-steps.tsx` went from 889 to 490 lines and left the complexity debt list.
+
+### Fixed
+
+- **The username step's "@" could sit on the first letter.** 0.25 put the text at a fixed
+  padding in `rem` beside a 14 px "@" it never measured, so a page with a smaller root
+  text size, or a wider font, overlapped them. The text now starts at the "@"'s measured
+  right edge plus 6 px, measured again when a font arrives or the text size changes.
+- The username check reads elvix's answer field by field: "available" only when it is
+  `true`, a reason only when it is a string and one of the step's own.
+- The entry step's error line is announced to a screen reader (`role="alert"`), as every
+  other step's is.
 
 ## [0.25.0] — 2026-11-11
 

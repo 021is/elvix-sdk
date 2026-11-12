@@ -5,8 +5,8 @@
  * identifier field's autofill offer (`autocomplete="… webauthn"`). A browser holds one
  * passkey request at a time, and a person signs in once, so the two share one state:
  *
- * - the autofill offer starts on the field's first focus, never on open, and never while the
- *   button's ceremony runs;
+ * - the autofill offer starts on a focus of the field while no offer runs, never on open, and
+ *   never while the button's ceremony runs;
  * - the button ends the offer before its dialog, and does nothing when the offer already has
  *   a passkey picked (its sign-in is finishing) or the step is gone;
  * - the offer has no hosted fallback, on purpose: the person did not ask for it, so it never
