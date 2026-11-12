@@ -84,7 +84,9 @@ const USERNAME_REASONS: Record<string, string> = {
 };
 
 export function usernameReasonLabel(t: Translator, reason: string): string {
-  return t(USERNAME_REASONS[reason] ?? "username.reasonInvalid");
+  // Own keys only: a server's `reason` of "constructor" must not reach Object.prototype.
+  const key = Object.hasOwn(USERNAME_REASONS, reason) ? USERNAME_REASONS[reason] : undefined;
+  return t(key ?? "username.reasonInvalid");
 }
 
 export const OAuthProvider = {

@@ -281,14 +281,14 @@ type UsernameCheck =
 
 const CHECK_DEBOUNCE_MS = 220;
 
-type CheckAnswer = { ok?: boolean; available?: boolean; reason?: string } | null;
-
-/** What elvix's answer makes of the check: no answer, free, or refused with its reason. */
-function checkOf(b: CheckAnswer): UsernameCheck {
-  if (!b) return { kind: UsernameCheck.IDLE };
-  if (b.ok !== false && b.available) return { kind: UsernameCheck.AVAILABLE };
-  const fallback = b.ok === false ? "invalid" : "taken";
-  return { kind: UsernameCheck.REJECTED, reason: b.reason ?? fallback };
+/** What elvix's answer makes of the check, each field checked where it enters: no answer
+ *  (or not one), free, or refused with its reason (a string, else the code's own). */
+function checkOf(answer: unknown): UsernameCheck {
+  if (typeof answer !== "object" || answer === null) return { kind: UsernameCheck.IDLE };
+  const [ok, available, reason] = ["ok", "available", "reason"].map((k) => Reflect.get(answer, k));
+  if (ok !== false && available === true) return { kind: UsernameCheck.AVAILABLE };
+  const fallback = ok === false ? "invalid" : "taken";
+  return { kind: UsernameCheck.REJECTED, reason: typeof reason === "string" ? reason : fallback };
 }
 
 /** Live availability of `value`, debounced; only the latest answer lands. */
@@ -308,9 +308,9 @@ function useUsernameCheck(baseUrl: string, value: string): UsernameCheck {
         { signal: controller.signal, ...authInit() },
       );
       if (controller.signal.aborted) return;
-      const b = res ? (unwrapEnvelope(await res.json().catch(() => null)) as CheckAnswer) : null;
+      const answer = res ? unwrapEnvelope<unknown>(await res.json().catch(() => null)) : null;
       if (controller.signal.aborted) return;
-      setCheck(checkOf(b));
+      setCheck(checkOf(answer));
     }, CHECK_DEBOUNCE_MS);
     return () => {
       clearTimeout(timer);
