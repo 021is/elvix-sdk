@@ -149,9 +149,10 @@ async function promptAssertion(
 ): Promise<{ ok: true; assertion: AssertionJSON } | Failure> {
   // The autofill's request lives as long as its offer; a dialog, at most the prompt timeout.
   // Raced against its signal too: an extension wrapping `get` may never honour it.
-  const own = ceremony.signal ? null : passkeyRequestSignal(null, PASSKEY_PROMPT_TIMEOUT_MS);
-  const signal = ceremony.signal ?? own?.signal;
-  if (!signal) return { ok: false, error: "passkey_failed" };
+  // `release` is a no-op for the autofill's signal: its owner ends it.
+  const { signal, release } = ceremony.signal
+    ? { signal: ceremony.signal, release: () => {} }
+    : passkeyRequestSignal(null, PASSKEY_PROMPT_TIMEOUT_MS);
   try {
     const asked = navigator.credentials.get({
       ...(ceremony.kind === "autofill" ? { mediation: "conditional" } : {}),
@@ -187,7 +188,7 @@ async function promptAssertion(
   } catch (e) {
     return ceremonyFailure(e, "passkey_failed");
   } finally {
-    own?.release();
+    release();
   }
 }
 
