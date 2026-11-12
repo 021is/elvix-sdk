@@ -57,7 +57,7 @@ const isAttestation = (r: AuthenticatorResponse): r is AuthenticatorAttestationR
 async function promptAttestation(
   options: RegOptionsJSON,
 ): Promise<{ ok: true; attestation: AttestationJSON } | Failure> {
-  const signal = passkeyRequestSignal(null, PASSKEY_PROMPT_TIMEOUT_MS);
+  const { signal, release } = passkeyRequestSignal(null, PASSKEY_PROMPT_TIMEOUT_MS);
   try {
     const asked = navigator.credentials.create({
       signal,
@@ -98,6 +98,8 @@ async function promptAttestation(
     };
   } catch (e) {
     return ceremonyFailure(e, "passkey_register_failed");
+  } finally {
+    release();
   }
 }
 

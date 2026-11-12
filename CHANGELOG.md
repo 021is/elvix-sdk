@@ -12,6 +12,24 @@ releases move there.
 
 ## [Unreleased]
 
+## [0.26.1] — 2026-11-12
+
+Three follow-ups from the 0.26.0 review. No API change; nothing to do in your app.
+
+### Fixed
+
+- **A passkey request left a timer running.** The passkey requests to elvix (start and
+  finish) and the browser prompt's own time limit each kept a 20 to 120 second timer alive
+  after they had finished, and an abort listener on the caller's signal with it. That
+  includes the requests that follow a passkey picked from the email field's autofill. The
+  timer and the listener now end when the request settles, whether it succeeded, was
+  refused, failed or was aborted.
+- **A refused passkey sign-in showed "Something went wrong".** When elvix refused a
+  passkey's finish (`passkey_verify_failed`) the card fell back to the generic line; it now
+  says what the other refusals say: that passkey couldn't be verified, and how to carry on.
+- **A doc comment sat on the wrong table** in `sign-in-copy.ts` (the keychain and
+  stale-credential note). Back above the error table it describes. Comment only.
+
 ## [0.26.0] — 2026-11-12
 
 The sign-in card takes an app's type and spacing, and knows the phone's keyboard. An app

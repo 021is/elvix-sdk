@@ -22,14 +22,6 @@ export function formatRetry(t: Translator, seconds: number): string {
   return m === 1 ? t("common.durationOneMinute") : t("common.durationMinutes", { minutes: m });
 }
 
-/**
- * Server error codes to catalog keys. Beyond the factor errors: the
- * signinGate refusals, the account-state guards
- * (lib/signin-account-state.ts) and the passkey outcomes, which otherwise
- * all read "Something went wrong". `unknown_credential` is a passkey the
- * keychain still offers but elvix has no record of (a stale credential), so
- * its copy gives the way out.
- */
 /** The codes every elvix surface words alike (0.26), one table: the sign-in's below and
  *  `<ElvixAppPasskeys>`' (`app-passkey-errors.ts`) each extend it with their own. */
 export const SHARED_ERROR_KEYS: Record<string, string> = {
@@ -38,6 +30,14 @@ export const SHARED_ERROR_KEYS: Record<string, string> = {
   passkey_busy: "signin.errorPasskeyBusy",
 };
 
+/**
+ * Server error codes to catalog keys. Beyond the factor errors: the
+ * signinGate refusals, the account-state guards
+ * (lib/signin-account-state.ts) and the passkey outcomes, which otherwise
+ * all read "Something went wrong". `unknown_credential` is a passkey the
+ * keychain still offers but elvix has no record of (a stale credential), so
+ * its copy gives the way out.
+ */
 const ERROR_KEYS: Record<string, string> = {
   ...SHARED_ERROR_KEYS,
   invalid_code: "signin.errorInvalidCode",
@@ -61,6 +61,8 @@ const ERROR_KEYS: Record<string, string> = {
   credential_not_for_app: "signin.errorPasskeyWrongApp",
   credential_not_for_surface: "signin.errorPasskeyWrongApp",
   verify_failed: "signin.errorPasskeyVerifyFailed",
+  // What `passkey.ts` returns when elvix refuses a passkey's finish.
+  passkey_verify_failed: "signin.errorPasskeyVerifyFailed",
   not_verified: "signin.errorPasskeyVerifyFailed",
   challenge_invalid: "signin.errorPasskeyExpired",
 };
