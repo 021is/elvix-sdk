@@ -2,9 +2,9 @@
 
 /**
  * The entry step: the method buttons, the "or" line, the email / username field and
- * Continue. Out of `sign-in-steps.tsx` in 0.26. Each gap between its parts is one of the
- * app's card tokens (`--elvix-gap-*`): the form itself has no gap, so no value adds to
- * another and the distance a token names is the distance a person sees.
+ * Continue. Each gap between its parts is one of the app's card tokens (`--elvix-gap-*`):
+ * the form itself has no gap, so no value adds to another and the distance a token names is
+ * the distance a person sees.
  */
 
 import { type RefObject, useRef } from "react";

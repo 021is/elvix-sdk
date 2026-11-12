@@ -6,10 +6,11 @@
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { vi } from "vitest";
-import { ElvixProvider } from "../../src/react/index";
-import { BASE, CLIENT_ID, installFakeElvix, json, type Route } from "./fake-elvix";
+import { PANE, Provider } from "./card-style-mount";
+import { installFakeElvix, json, type Route } from "./fake-elvix";
 
-export const PANE = { timeout: 3000 };
+export { PANE };
+
 const buf = (s: string) => new TextEncoder().encode(s).buffer;
 export const ASSERTION = {
   id: "cred1",
@@ -79,11 +80,7 @@ export const pendingUntilAborted: Get = (options) =>
 export function mount(node: ReactNode, pointer: "coarse" | "fine" = "fine", first: Route[] = []) {
   const fake = installFakeElvix({ context: null }, [...first, ...ROUTES]);
   stubPointer(pointer);
-  render(
-    <ElvixProvider clientId={CLIENT_ID} baseUrl={BASE} presence={false} bootstrapRefreshMs={0}>
-      {node}
-    </ElvixProvider>,
-  );
+  render(<Provider>{node}</Provider>);
   return fake;
 }
 

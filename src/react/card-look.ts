@@ -69,7 +69,9 @@ export function consoleFontFamily(value: unknown): string | undefined {
   return isConsoleFontName(value) ? `"${value}", ${GENERIC}` : undefined;
 }
 
-/** One layer's values, checked: numbers clamped, fonts through `font`. */
+/** One layer's values, checked: numbers clamped, fonts through `font`. A value refused here
+ *  is dropped without a word, on purpose: the layer under it (or the default) stays, and a
+ *  style must never break or block a sign-in. The rules are in `ElvixCardStyle`'s docs. */
 function checkLayer(layer: unknown, font: (value: unknown) => string | undefined): CardLook {
   if (typeof layer !== "object" || layer === null) return {};
   const field = (key: string): unknown =>
