@@ -20,12 +20,18 @@ import {
 
 export { CARD_STYLE_RANGES, type ElvixCardStyle } from "../types/card-style";
 
-/** A card style whose every value is safe to write into a CSS variable as it is: numbers in
- *  range, fonts as finished `font-family` values. Keys left out take the default. */
-export type CardLook = {
+type LookValues = {
   fontText?: string;
   fontDisplay?: string;
 } & { [K in CardStyleToken]?: number };
+
+/** Never present at runtime: only `checkLayer` makes a `CardLook`, so an object nobody
+ *  checked does not compile where `cardLookVars` takes one. */
+declare const CHECKED: unique symbol;
+
+/** A card style whose every value is safe to write into a CSS variable as it is: numbers in
+ *  range, fonts as finished `font-family` values. Keys left out take the default. */
+export type CardLook = Readonly<LookValues> & { readonly [CHECKED]: true };
 
 /** Appended to every family, so a family the page has not loaded falls back to a sans-serif,
  *  never to the browser's default serif. */
@@ -73,10 +79,10 @@ export function consoleFontFamily(value: unknown): string | undefined {
  *  is dropped without a word, on purpose: the layer under it (or the default) stays, and a
  *  style must never break or block a sign-in. The rules are in `ElvixCardStyle`'s docs. */
 function checkLayer(layer: unknown, font: (value: unknown) => string | undefined): CardLook {
-  if (typeof layer !== "object" || layer === null) return {};
+  const look: LookValues = {};
+  if (typeof layer !== "object" || layer === null) return look as CardLook;
   const field = (key: string): unknown =>
     Object.hasOwn(layer, key) ? Reflect.get(layer, key) : undefined;
-  const look: CardLook = {};
   const fontText = font(field("fontText"));
   const fontDisplay = font(field("fontDisplay"));
   if (fontText) look.fontText = fontText;
@@ -85,7 +91,7 @@ function checkLayer(layer: unknown, font: (value: unknown) => string | undefined
     const value = clampCardToken(token, field(token));
     if (value !== undefined) look[token] = value;
   }
-  return look;
+  return look as CardLook;
 }
 
 /**
@@ -127,13 +133,16 @@ const INHERIT = "initial";
 
 /** The defaults of elvix's bordered card: 28 px under the legal line, above its footer bar,
  *  where a transparent card had 24 (before 0.26). */
-export const BORDERED_DEFAULTS: CardLook = { gapFooter: BORDERED_GAP_FOOTER };
+export const BORDERED_DEFAULTS: CardLook = mergeCardStyle({
+  card: { gapFooter: BORDERED_GAP_FOOTER },
+});
 
-/** Every card variable for `look`, each missing one from `defaults`, else the token's own. */
-export function cardLookVars(look: CardLook, defaults: CardLook = {}): Record<string, string> {
+/** Every card variable for `look`, each missing one from `defaults`, else the token's own.
+ *  Both come from `mergeCardStyle`: nothing else makes a `CardLook`. */
+export function cardLookVars(look: CardLook, defaults?: CardLook): Record<string, string> {
   const vars: Record<string, string> = {};
   for (const token of CARD_STYLE_TOKENS) {
-    const value = look[token] ?? defaults[token] ?? CARD_STYLE_RANGES[token].default;
+    const value = look[token] ?? defaults?.[token] ?? CARD_STYLE_RANGES[token].default;
     vars[TOKEN_VARS[token]] = token === "headingWeight" ? String(value) : `${value}px`;
   }
   vars["--elvix-font-text"] = look.fontText ?? INHERIT;

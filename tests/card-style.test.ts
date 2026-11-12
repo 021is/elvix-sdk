@@ -34,11 +34,13 @@ describe("the card style tokens", () => {
   });
 
   it("an app that sets nothing keeps the card it had before 0.26", () => {
-    const vars = cardLookVars({});
+    const nothing = mergeCardStyle({});
+    const vars = cardLookVars(nothing);
     for (const token of CARD_STYLE_TOKENS) expect(vars[VAR_OF(token)]).toBe(BEFORE_026[token]);
     // elvix's bordered card kept 28 px under the legal line, above its footer bar (py-7).
-    expect(cardLookVars({}, BORDERED_DEFAULTS)["--elvix-gap-footer"]).toBe("28px");
-    expect(cardLookVars({ gapFooter: 16 }, BORDERED_DEFAULTS)["--elvix-gap-footer"]).toBe("16px");
+    expect(cardLookVars(nothing, BORDERED_DEFAULTS)["--elvix-gap-footer"]).toBe("28px");
+    const own = mergeCardStyle({ card: { gapFooter: 16 } });
+    expect(cardLookVars(own, BORDERED_DEFAULTS)["--elvix-gap-footer"]).toBe("16px");
     expect(vars["--elvix-font-text"]).toBe("initial");
     expect(vars["--elvix-font-display"]).toBe("initial");
   });

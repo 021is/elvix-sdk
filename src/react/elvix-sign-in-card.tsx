@@ -178,7 +178,7 @@ function cardClass(transparentBg: boolean, surface: CardSurface): string {
 
 /** The card's type and spacing variables: the card's `cardStyle`, the provider's, the
  *  Console's, key by key (0.26), every one set so no ancestor's value reaches the card. */
-function useCardLookVars(own: AuthFormProps["cardStyle"], defaults: CardLook) {
+function useCardLookVars(own: AuthFormProps["cardStyle"], defaults: CardLook | undefined) {
   const provider = useElvixCardStyle();
   const app = useElvixApp();
   return cardLookVars(mergeCardStyle({ card: own, provider, console: app?.cardStyle }), defaults);
@@ -188,7 +188,7 @@ function useCardLookVars(own: AuthFormProps["cardStyle"], defaults: CardLook) {
 export function AuthCard(props: AuthFormProps & { surface: CardSurface }) {
   const { transparentBg = false, surface } = props;
   const versionInside = surface !== CardSurface.INLINE;
-  const lookVars = useCardLookVars(props.cardStyle, transparentBg ? {} : BORDERED_DEFAULTS);
+  const lookVars = useCardLookVars(props.cardStyle, transparentBg ? undefined : BORDERED_DEFAULTS);
   const body = useRef<HTMLDivElement | null>(null);
   useKeepFieldsInView(body);
   // The brand and look variables ride on the card itself: the modal and drawer portal out of
