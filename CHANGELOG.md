@@ -18,10 +18,12 @@ Three follow-ups from the 0.26.0 review. No API change; nothing to do in your ap
 
 ### Fixed
 
-- **A passkey request left a timer running.** Every passkey request, and every focus of the
-  email field that offers passkeys in autofill, kept a 20 to 120 second timer (and an abort
-  listener on the caller's signal) alive after it had finished. Both now end when the
-  request settles, whether it succeeded, was refused, failed or was aborted.
+- **A passkey request left a timer running.** The passkey requests to elvix (start and
+  finish) and the browser prompt's own time limit each kept a 20 to 120 second timer alive
+  after they had finished, and an abort listener on the caller's signal with it. That
+  includes the requests that follow a passkey picked from the email field's autofill. The
+  timer and the listener now end when the request settles, whether it succeeded, was
+  refused, failed or was aborted.
 - **A refused passkey sign-in showed "Something went wrong".** When elvix refused a
   passkey's finish (`passkey_verify_failed`) the card fell back to the generic line; it now
   says what the other refusals say: that passkey couldn't be verified, and how to carry on.
