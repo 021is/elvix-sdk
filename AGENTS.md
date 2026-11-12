@@ -91,12 +91,18 @@ input components: they render a native `<input>`, which biome cannot see through
   gone: one sign-in, one session (`tests/passkey-lock.test.tsx`, two cards). An offer with
   a passkey picked **is a sign-in**: it keeps the lock until it is done, through any tap
   and any `pagehide`, and every card's button shows it busy
-  (`tests/passkey-lock-picked.test.tsx`). **Nobody takes the lock over; it never sticks
-  because every passkey request is bounded** (`passkey-timeout.ts`,
-  `PASSKEY_REQUEST_TIMEOUT_MS`, then the retryable `network` error): an offer's abort ends
-  its `sign-in/start` (never its finish), `pagehide` ends an offer still waiting for its
-  pick, and a host `onResult` that throws is its own uncaught error, never words on the page
-  (`tests/passkey-lock-stuck.test.tsx`). The offer has **no hosted fallback, on purpose**:
+  (`tests/passkey-lock-picked.test.tsx`). **Nobody takes a sign-in over; the lock never
+  sticks because every wait in the passkey path is bounded or abortable**
+  (`passkey-timeout.ts`): each request to elvix gives up after `PASSKEY_REQUEST_TIMEOUT_MS`
+  (the retryable `network` error), a dialog or `create()` after `PASSKEY_PROMPT_TIMEOUT_MS`,
+  and an offer's probe, start and autofill request each race its abort (`orAbort`), for an
+  extension may never honour it. **An aborted offer is abandoned for good:** it never picks
+  and never finishes, however late its passkey comes; a tap waits for it at most
+  `OFFER_END_WAIT_MS`. Adding a passkey (`passkey-register.ts`) holds the lock too. A
+  failure is a code only: no browser, extension or server words reach the page or
+  `onResult`, and a host `onResult` that throws is its own uncaught error
+  (`tests/passkey-lock-stuck.test.tsx`, `tests/passkey-lock-bounded.test.tsx`). The offer
+  has **no hosted fallback, on purpose**:
   it is an offer the person did not ask for, so it never sends them away; before a pick it
   is silent, and the button keeps the hosted fallback and its errors
   (`tests/sign-in-passkey-autofill.test.tsx`).

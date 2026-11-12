@@ -63,7 +63,8 @@ Chromium: 62 elements, same boxes, weights and fonts).
 
 - The entry step is `sign-in-identifier-step.tsx` and its method buttons
   `sign-in-social.tsx`, the username field `sign-in-username-field.tsx`;
-  `sign-in-steps.tsx` went from 889 to 490 lines and left the complexity debt list.
+  `sign-in-steps.tsx` went from 889 to 490 lines and left the complexity debt list. Adding
+  a passkey is `passkey-register.ts`, out of `passkey.ts` (which left the file-length debt).
 
 ### Fixed
 
@@ -79,6 +80,13 @@ Chromium: 62 elements, same boxes, weights and fonts).
 - The entry step's error line is announced to a screen reader (`role="alert"`), as every
   other step's is, and shows on a card with no email or username field too: a refused
   passkey there said nothing.
+- **No browser, extension or server words reach the page or `onResult`.** A passkey
+  failure was shown in the browser's own message (an extension wrapping WebAuthn could
+  put any text there), and `<ElvixAppPasskeys>` showed a server's raw error. Every
+  failure is now a code, worded from elvix's own catalog (an unknown code, the generic
+  line); `PasskeySignInResult` and `PasskeyRegisterResult` carry no `message`.
+- Adding a passkey holds the page's one passkey request, as signing in does: a
+  `create()` never opens beside another card's prompt (`passkey_busy` while one runs).
 
 ## [0.25.0] — 2026-11-11
 
