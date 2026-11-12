@@ -77,7 +77,7 @@ export async function postEnvelope<T>(
   init: RequestInit,
   fallback: string,
 ): Promise<Step<T>> {
-  const signal = passkeyRequestSignal(init.signal);
+  const { signal, release } = passkeyRequestSignal(init.signal);
   try {
     const res = await orAbort(elvixFetch(url, { method: "POST", ...init, signal }), signal, null);
     if (!res) return { ok: false, error: "network" };
@@ -88,6 +88,8 @@ export async function postEnvelope<T>(
   } catch {
     // The browser's own words ("Failed to fetch", "signal is aborted") never reach the page.
     return { ok: false, error: "network" };
+  } finally {
+    release();
   }
 }
 
@@ -147,7 +149,9 @@ async function promptAssertion(
 ): Promise<{ ok: true; assertion: AssertionJSON } | Failure> {
   // The autofill's request lives as long as its offer; a dialog, at most the prompt timeout.
   // Raced against its signal too: an extension wrapping `get` may never honour it.
-  const signal = ceremony.signal ?? passkeyRequestSignal(null, PASSKEY_PROMPT_TIMEOUT_MS);
+  const own = ceremony.signal ? null : passkeyRequestSignal(null, PASSKEY_PROMPT_TIMEOUT_MS);
+  const signal = ceremony.signal ?? own?.signal;
+  if (!signal) return { ok: false, error: "passkey_failed" };
   try {
     const asked = navigator.credentials.get({
       ...(ceremony.kind === "autofill" ? { mediation: "conditional" } : {}),
@@ -182,6 +186,8 @@ async function promptAssertion(
     };
   } catch (e) {
     return ceremonyFailure(e, "passkey_failed");
+  } finally {
+    own?.release();
   }
 }
 

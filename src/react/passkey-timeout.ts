@@ -15,17 +15,23 @@ export const PASSKEY_REQUEST_TIMEOUT_MS = 20_000;
 /** The browser's own passkey dialog: long enough for a person with a security key. */
 export const PASSKEY_PROMPT_TIMEOUT_MS = 120_000;
 
-/** A signal that aborts after `ms`, or when `own` does. */
+/** A signal that aborts after `ms`, or when `own` does. `release` ends the timer and the
+ *  listener on `own`: the caller runs it once the request has settled (0.26.1), or each
+ *  request would leave a live timer behind. Calling it twice is harmless. */
 export function passkeyRequestSignal(
   own?: AbortSignal | null,
   ms = PASSKEY_REQUEST_TIMEOUT_MS,
-): AbortSignal {
+): { signal: AbortSignal; release: () => void } {
   const bounded = new AbortController();
   const end = () => bounded.abort();
-  setTimeout(end, ms);
+  const timer = setTimeout(end, ms);
+  const release = () => {
+    clearTimeout(timer);
+    own?.removeEventListener("abort", end);
+  };
   if (own?.aborted) end();
   else own?.addEventListener("abort", end, { once: true });
-  return bounded.signal;
+  return { signal: bounded.signal, release };
 }
 
 /** `promise`, or `aborted` as soon as `signal` aborts, whether or not `promise` listens. */
