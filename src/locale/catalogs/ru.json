@@ -215,6 +215,9 @@
       "errorNetwork": {
         "other": "Сбой сети. Попробуйте ещё раз."
       },
+      "errorPasskeyBusy": {
+        "other": "Запрос passkey уже открыт."
+      },
       "errorPasskeyVerify": {
         "other": "Проверка passkey не удалась."
       },

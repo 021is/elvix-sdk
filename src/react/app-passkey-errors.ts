@@ -16,6 +16,7 @@ const PASSKEY_ERRORS: Record<string, string> = {
   unauthenticated: "passkeys.errorUnauthenticated",
   remove_failed: "passkeys.errorRemoveFailed",
   network: "signin.errorNetwork",
+  passkey_busy: "signin.errorPasskeyBusy",
 };
 
 /** The catalog key for `code`. */

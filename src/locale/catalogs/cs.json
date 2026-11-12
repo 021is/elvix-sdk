@@ -214,6 +214,9 @@
       "errorNetwork": {
         "other": "Problém se sítí. Zkuste to znovu."
       },
+      "errorPasskeyBusy": {
+        "other": "Výzva passkey je už otevřená."
+      },
       "errorPasskeyVerify": {
         "other": "Ověření passkey selhalo."
       },

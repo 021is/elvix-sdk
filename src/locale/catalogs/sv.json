@@ -213,6 +213,9 @@
       "errorNetwork": {
         "other": "Tillfälligt nätverksfel. Försök igen."
       },
+      "errorPasskeyBusy": {
+        "other": "En passkey-förfrågan är redan öppen."
+      },
       "errorPasskeyVerify": {
         "other": "Verifiering av passkey misslyckades."
       },

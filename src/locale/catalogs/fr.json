@@ -213,6 +213,9 @@
       "errorNetwork": {
         "other": "Problème réseau. Réessayez."
       },
+      "errorPasskeyBusy": {
+        "other": "Une demande de clé d'accès est déjà ouverte."
+      },
       "errorPasskeyVerify": {
         "other": "Échec de la vérification de la clé d'accès."
       },

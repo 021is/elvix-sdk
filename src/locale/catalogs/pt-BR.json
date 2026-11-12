@@ -213,6 +213,9 @@
       "errorNetwork": {
         "other": "Problema de rede. Tente novamente."
       },
+      "errorPasskeyBusy": {
+        "other": "Já há uma solicitação de passkey aberta."
+      },
       "errorPasskeyVerify": {
         "other": "Falha na verificação do passkey."
       },

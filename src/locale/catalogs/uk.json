@@ -215,6 +215,9 @@
       "errorNetwork": {
         "other": "Збій мережі. Спробуйте ще раз."
       },
+      "errorPasskeyBusy": {
+        "other": "Запит ключа доступу вже відкрито."
+      },
       "errorPasskeyVerify": {
         "other": "Не вдалося підтвердити ключ доступу."
       },

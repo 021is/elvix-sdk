@@ -213,6 +213,9 @@
       "errorNetwork": {
         "other": "Netzwerkproblem. Versuchen Sie es erneut."
       },
+      "errorPasskeyBusy": {
+        "other": "Eine Passkey-Abfrage ist bereits geöffnet."
+      },
       "errorPasskeyVerify": {
         "other": "Passkey-Verifizierung fehlgeschlagen."
       },

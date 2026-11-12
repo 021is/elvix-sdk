@@ -213,6 +213,9 @@
       "errorNetwork": {
         "other": "Πρόβλημα δικτύου. Δοκιμάστε ξανά."
       },
+      "errorPasskeyBusy": {
+        "other": "Ένα αίτημα passkey είναι ήδη ανοιχτό."
+      },
       "errorPasskeyVerify": {
         "other": "Η επαλήθευση του passkey απέτυχε."
       },

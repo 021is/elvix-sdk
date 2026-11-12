@@ -56,6 +56,7 @@ const ERROR_KEYS: Record<string, string> = {
   challenge_invalid: "signin.errorPasskeyExpired",
   // A request that failed or timed out on the way (0.26: every passkey request is bounded).
   network: "signin.errorNetwork",
+  passkey_busy: "signin.errorPasskeyBusy",
 };
 
 export function humanError(t: Translator, code?: string, retryAfterSeconds?: number): string {

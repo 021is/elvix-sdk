@@ -216,6 +216,9 @@
       "errorNetwork": {
         "other": "Network hiccup. Try again."
       },
+      "errorPasskeyBusy": {
+        "other": "A passkey prompt is already open."
+      },
       "errorPasskeyVerify": {
         "other": "Passkey verification failed."
       },
