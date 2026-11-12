@@ -114,7 +114,7 @@ export type PasskeySignInResult =
 /** How the browser asks: a dialog, or (0.26) the passkeys in the identifier field's autofill,
  *  which only its `signal` can end; `onPicked` runs once the person chose one. */
 type PasskeyCeremony =
-  | { kind: "dialog" }
+  | { kind: "dialog"; signal?: undefined }
   | { kind: "autofill"; signal: AbortSignal; onPicked: () => void };
 
 async function promptAssertion(
@@ -179,10 +179,10 @@ export async function runPasskeySignIn(
     credentials: isSameOrigin(baseUrl) ? "include" : "omit",
   };
   const scope = { intent, ...(clientId ? { clientId } : {}) };
-
+  // An offer's abort ends its start too, never its finish: after a pick it is a sign-in.
   const start = await postEnvelope<{ options: AuthnOptionsJSON }>(
     `${baseUrl}/api/auth/passkey/sign-in/start`,
-    { ...init, body: JSON.stringify(scope) },
+    { ...init, body: JSON.stringify(scope), signal: ceremony.signal },
     "passkey_start_failed",
   );
   if (!start.ok) return start;

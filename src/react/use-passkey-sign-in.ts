@@ -14,16 +14,19 @@
  *   sends them away. Before a pick it is silent; the button keeps the fallback and errors.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { useT } from "../locale/use-t";
 import type { AuthFormProps } from "./elvix-sign-in-form";
 import { type PasskeySignInResult, runPasskeySignIn } from "./passkey";
 import {
   holdCeremony,
   holdOffer,
+  PasskeyLock,
   type PasskeyOffer,
+  passkeyLockState,
   releaseCeremony,
   releaseOffer,
+  subscribePasskeyLock,
 } from "./passkey-lock";
 import { isSameOrigin } from "./session";
 import { hostedCeremonyUrl, humanError, type Translator } from "./sign-in-copy";
@@ -64,8 +67,11 @@ async function conditionalMediationAvailable(): Promise<boolean> {
   });
 }
 
+/** A server renders no request open. */
+const serverLockState = () => PasskeyLock.FREE;
+
 export type PasskeySignIn = {
-  /** The button's ceremony is running. */
+  /** A button's ceremony is running, in this card or another. */
   busy: boolean;
   /** The button: end the offer, then the dialog (or the hosted page across origins). */
   run: () => Promise<void>;
@@ -77,8 +83,9 @@ export type PasskeySignIn = {
 
 export function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: string) {
   const t = useT();
-  // `busy` only draws this card's button; whether a request is open is the lock's to say.
-  const [busy, setBusy] = useState(false);
+  // A ceremony from any card (one whose card is gone included) shows on every button.
+  const lock = useSyncExternalStore(subscribePasskeyLock, passkeyLockState, serverLockState);
+  const busy = lock === PasskeyLock.CEREMONY;
   /** This card's own offer, ended when the card goes. */
   const offer = useRef<PasskeyOffer | null>(null);
   const mounted = useRef(true);
@@ -140,14 +147,12 @@ export function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: st
     // A ceremony already open (this card's or another's) holds the browser's one request,
     // and a passkey picked from an autofill is already signing the person in.
     if (!(await holdCeremony())) return;
-    flow.setError(null);
-    setBusy(true);
     try {
+      flow.setError(null);
       // A step that is gone has no dialog to open: one sign-in, one session.
       if (mounted.current) await runDialog();
     } finally {
       releaseCeremony();
-      if (mounted.current) setBusy(false);
     }
   };
 
