@@ -30,6 +30,7 @@ import { MaybeCard } from "./elvix-card";
 import { Fingerprint, KeyRound, Loader2, Plus, Trash2 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useT } from "../locale/use-t";
+import { appPasskeyErrorKey } from "./app-passkey-errors";
 import { useElvixApp, useElvixContext } from "./elvix-provider";
 import { isSameOrigin } from "./session";
 import type { Translator } from "./sign-in-copy";
@@ -217,7 +218,7 @@ function ElvixAppPasskeysImpl({
             color: "var(--elvix-danger, #dc2626)",
           }}
         >
-          {PASSKEY_ERRORS[error] ? t(PASSKEY_ERRORS[error]) : error.replace(/_/g, " ")}
+          {t(appPasskeyErrorKey(error))}
         </p>
       )}
     </div>
@@ -339,20 +340,6 @@ function shortDate(iso: string): string {
     return iso;
   }
 }
-
-/** Error codes as catalog keys. Anything else is a ceremony's own message
- *  and is shown as is. */
-const PASSKEY_ERRORS: Record<string, string> = {
-  load_failed: "passkeys.errorLoad",
-  not_a_member: "passkeys.errorNotMember",
-  method_disabled: "passkeys.errorMethodDisabled",
-  app_not_found: "passkeys.errorAppNotFound",
-  passkey_unsupported: "passkeys.errorUnsupported",
-  passkey_register_failed: "passkeys.errorRegisterFailed",
-  invalid_input: "passkeys.errorInvalidInput",
-  unauthenticated: "passkeys.errorUnauthenticated",
-  remove_failed: "passkeys.errorRemoveFailed",
-};
 
 /**
  * Public export. Wraps the implementation in <ElvixCard> by default;
