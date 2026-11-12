@@ -18,11 +18,21 @@ import {
   stubPasskeys,
 } from "./helpers/sign-in-keyboard";
 
+/** What reached the page as uncaught: `reportError`'s `error` events (jsdom's path), or
+ *  the console where a browser has no `reportError`. */
+const uncaught: unknown[] = [];
+const onUncaught = (e: ErrorEvent) => {
+  e.preventDefault();
+  uncaught.push(e.error);
+};
+
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
   resetBrowserStubs();
+  window.removeEventListener("error", onUncaught);
+  uncaught.length = 0;
 });
 
 const tick = (ms = 60) => new Promise((r) => setTimeout(r, ms));
@@ -91,13 +101,8 @@ describe("an offer whose start never answers", () => {
 
 describe("a host onResult that throws after an autofill pick", () => {
   it("is reported, and the next tap still opens a dialog", async () => {
-    const reported = vi.spyOn(console, "error").mockImplementation(() => {});
-    const uncaught: unknown[] = [];
-    const onError = (e: ErrorEvent) => {
-      e.preventDefault();
-      uncaught.push(e.error);
-    };
-    window.addEventListener("error", onError);
+    const logged = vi.spyOn(console, "error").mockImplementation(() => {});
+    window.addEventListener("error", onUncaught);
     let pick: (value: unknown) => void = () => {};
     const get = stubPasskeys((o) =>
       o.mediation === "conditional"
@@ -133,8 +138,9 @@ describe("a host onResult that throws after an autofill pick", () => {
     expect(dialogs(get)).toBe(0);
     await act(async () => fireEvent.click(first(buttons(), 1)));
     await waitFor(() => expect(dialogs(get)).toBe(1));
-    expect(reported.mock.calls.length + uncaught.length).toBeGreaterThan(0);
-    window.removeEventListener("error", onError);
+    // The host's own error, reported once as uncaught: not swallowed, not in the lock's way.
+    const reported = [...uncaught, ...logged.mock.calls.map(([e]) => e)];
+    expect(reported).toEqual([expect.objectContaining({ message: "host bug" })]);
   });
 });
 
