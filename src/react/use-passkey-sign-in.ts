@@ -3,12 +3,13 @@
 /**
  * The entry step's two passkey sign-ins, as one (0.26): the passkey button's dialog and the
  * identifier field's autofill offer (`autocomplete="… webauthn"`). A browser holds one
- * passkey request at a time, and a person signs in once, so the two share one state:
+ * passkey request at a time, and a person signs in once, so the two share one lock with
+ * every other card on the page (`passkey-lock.ts`):
  *
- * - the autofill offer starts on a focus of the field while no offer runs, never on open, and
- *   never while the button's ceremony runs;
- * - the button ends the offer before its dialog, and does nothing when the offer already has
- *   a passkey picked (its sign-in is finishing) or the step is gone;
+ * - the autofill offer starts on a focus of the field while no request is open in any card,
+ *   never on open, and never while a button's ceremony runs;
+ * - the button ends any open offer before its dialog, and does nothing when that offer
+ *   already has a passkey picked (its sign-in is finishing) or the step is gone;
  * - the offer has no hosted fallback, on purpose: the person did not ask for it, so it never
  *   sends them away. Before a pick it is silent; the button keeps the fallback and errors.
  */
@@ -17,6 +18,13 @@ import { useEffect, useRef, useState } from "react";
 import { useT } from "../locale/use-t";
 import type { AuthFormProps } from "./elvix-sign-in-form";
 import { type PasskeySignInResult, runPasskeySignIn } from "./passkey";
+import {
+  holdCeremony,
+  holdOffer,
+  type PasskeyOffer,
+  releaseCeremony,
+  releaseOffer,
+} from "./passkey-lock";
 import { isSameOrigin } from "./session";
 import { hostedCeremonyUrl, humanError, type Translator } from "./sign-in-copy";
 import type { Landing, SignInFlow } from "./use-sign-in-flow";
@@ -56,8 +64,6 @@ async function conditionalMediationAvailable(): Promise<boolean> {
   });
 }
 
-type Offer = { controller: AbortController; picked: boolean; done: Promise<void> };
-
 export type PasskeySignIn = {
   /** The button's ceremony is running. */
   busy: boolean;
@@ -71,9 +77,10 @@ export type PasskeySignIn = {
 
 export function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: string) {
   const t = useT();
+  // `busy` only draws this card's button; whether a request is open is the lock's to say.
   const [busy, setBusy] = useState(false);
-  const button = useRef(false);
-  const offer = useRef<Offer | null>(null);
+  /** This card's own offer, ended when the card goes. */
+  const offer = useRef<PasskeyOffer | null>(null);
   const mounted = useRef(true);
   const autofill = p.mode !== "preview" && Boolean(p.methodPasskey);
   useEffect(() => {
@@ -84,16 +91,7 @@ export function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: st
     };
   }, []);
 
-  /** Ends the offer; true when it had a passkey picked (its sign-in is under way). */
-  const stop = async (): Promise<boolean> => {
-    const current = offer.current;
-    if (!current) return false;
-    current.controller.abort();
-    await current.done;
-    return current.picked;
-  };
-
-  const onOffer = (o: Offer, result: PasskeySignInResult) => {
+  const onOffer = (o: PasskeyOffer, result: PasskeySignInResult) => {
     if (result.ok) passkeySignedIn(flow, result.landing);
     else if (o.picked) reportPasskeyError(flow, t, result);
     // Not picked: the offer ended (aborted, dismissed) or never showed (a start refused, a
@@ -105,8 +103,14 @@ export function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: st
     // An app sign-in names its clientId, which comes with the provider's envelope: before
     // it lands there is nothing to ask for, and the next focus asks again.
     const scoped = (p.intent ?? "app") !== "app" || Boolean(p.clientId);
-    if (!autofill || !scoped || button.current || offer.current) return;
-    const o: Offer = { controller: new AbortController(), picked: false, done: Promise.resolve() };
+    if (!autofill || !scoped) return;
+    const o: PasskeyOffer = {
+      controller: new AbortController(),
+      picked: false,
+      done: Promise.resolve(),
+    };
+    if (!holdOffer(o)) return;
+    offer.current = o;
     o.done = (async () => {
       if (!(await conditionalMediationAvailable()) || o.controller.signal.aborted) return;
       const result = await runPasskeySignIn(baseUrl, p.clientId, p.intent ?? "app", {
@@ -126,23 +130,23 @@ export function usePasskeySignIn(flow: SignInFlow, p: AuthFormProps, baseUrl: st
         }),
       )
       .finally(() => {
+        releaseOffer(o);
         if (offer.current === o) offer.current = null;
       });
-    offer.current = o;
   };
 
   const run = async () => {
-    if (p.mode === "preview" || button.current) return;
-    button.current = true;
+    if (p.mode === "preview") return;
+    // A ceremony already open (this card's or another's) holds the browser's one request,
+    // and a passkey picked from an autofill is already signing the person in.
+    if (!(await holdCeremony())) return;
     flow.setError(null);
     setBusy(true);
     try {
-      // A passkey picked from the autofill is already signing the person in, and a step that
-      // is gone has no dialog to open: one sign-in, one session.
-      if ((await stop()) || !mounted.current) return;
-      await runDialog();
+      // A step that is gone has no dialog to open: one sign-in, one session.
+      if (mounted.current) await runDialog();
     } finally {
-      button.current = false;
+      releaseCeremony();
       if (mounted.current) setBusy(false);
     }
   };
