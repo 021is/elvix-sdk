@@ -68,7 +68,10 @@ Chromium: 62 elements, same boxes, weights and fonts).
   text size, or a wider font, overlapped them. The text now starts at the "@"'s measured
   right edge plus 6 px, measured again when a font arrives or the text size changes.
 - The username check reads elvix's answer field by field: "available" only when it is
-  `true`, a reason only when it is a string and one of the step's own.
+  `true`, a reason only when it is a string and one of the step's own. A check that got no
+  answer (the network, a refused request) says "Network hiccup. Try again." under the
+  field; it showed the rules hint with Continue off (a network error) or "That username
+  isn't valid." (a 429 or a 500).
 - The entry step's error line is announced to a screen reader (`role="alert"`), as every
   other step's is.
 

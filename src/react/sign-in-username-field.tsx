@@ -20,6 +20,8 @@ export const UsernameCheck = {
   CHECKING: "checking",
   AVAILABLE: "available",
   REJECTED: "rejected",
+  /** No answer: the network, elvix refusing the request, or not an answer at all. */
+  FAILED: "failed",
 } as const;
 type CheckKind = (typeof UsernameCheck)[keyof typeof UsernameCheck];
 export type UsernameCheck =
@@ -28,10 +30,10 @@ export type UsernameCheck =
 
 const CHECK_DEBOUNCE_MS = 220;
 
-/** What elvix's answer makes of the check, each field checked where it enters: no answer
- *  (or not one), free, or refused with its reason (a string, else the code's own). */
+/** What elvix's answer makes of the check, each field checked where it enters: failed (not
+ *  an answer), free, or refused with its reason (a string, else the code's own). */
 function checkOf(answer: unknown): UsernameCheck {
-  if (typeof answer !== "object" || answer === null) return { kind: UsernameCheck.IDLE };
+  if (typeof answer !== "object" || answer === null) return { kind: UsernameCheck.FAILED };
   const [ok, available, reason] = ["ok", "available", "reason"].map((k) => Reflect.get(answer, k));
   if (ok !== false && available === true) return { kind: UsernameCheck.AVAILABLE };
   const fallback = ok === false ? "invalid" : "taken";
@@ -55,9 +57,10 @@ export function useUsernameCheck(baseUrl: string, value: string): UsernameCheck 
         { signal: controller.signal, ...authInit() },
       );
       if (controller.signal.aborted) return;
-      const answer = res ? unwrapEnvelope<unknown>(await res.json().catch(() => null)) : null;
+      // A refused request (a 429, a 500) is no verdict on the name: never "isn't valid".
+      const body = res?.ok ? await res.json().catch(() => null) : null;
       if (controller.signal.aborted) return;
-      setCheck(checkOf(answer));
+      setCheck(checkOf(body === null ? null : unwrapEnvelope<unknown>(body)));
     }, CHECK_DEBOUNCE_MS);
     return () => {
       clearTimeout(timer);
@@ -75,6 +78,7 @@ function UsernameStatus({ check }: { check: UsernameCheck }) {
     case UsernameCheck.AVAILABLE:
       return <Check className={`${icon} text-emerald-500`} />;
     case UsernameCheck.REJECTED:
+    case UsernameCheck.FAILED:
       return <X className={`${icon} text-red-500`} />;
     default:
       return null;
@@ -90,6 +94,8 @@ function UsernameHint({ check }: { check: UsernameCheck }) {
       return <span className="text-emerald-500">{t("username.availableHint")}</span>;
     case UsernameCheck.REJECTED:
       return <span className="text-red-500">{usernameReasonLabel(t, check.reason)}</span>;
+    case UsernameCheck.FAILED:
+      return <span className="text-red-500">{t("username.errorNetwork")}</span>;
     default:
       return <span className="text-fg-3">{t("username.rulesHint")}</span>;
   }
