@@ -12,7 +12,7 @@
  */
 
 import { forwardRef, type InputHTMLAttributes } from "react";
-import { FIELD_CLASS } from "./elvix-input";
+import { FIELD_CLASS, FIELD_PADDING } from "./elvix-input";
 
 export type ElvixDateInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -41,7 +41,7 @@ export const ElvixDateInput = forwardRef<HTMLInputElement, ElvixDateInputProps>(
         aria-invalid={hasError || undefined}
         {...rest}
         className={
-          `${FIELD_CLASS} tabular-nums ` +
+          `${FIELD_CLASS} ${FIELD_PADDING.plain} tabular-nums ` +
           "[&::-webkit-calendar-picker-indicator]:cursor-pointer " +
           "[&::-webkit-calendar-picker-indicator]:opacity-70 " +
           "hover:[&::-webkit-calendar-picker-indicator]:opacity-100 " +

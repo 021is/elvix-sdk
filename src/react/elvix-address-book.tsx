@@ -41,7 +41,6 @@ import {
   Loader2,
   MapPin,
   Plus,
-  Search,
   Star,
   Trash2,
   User,
@@ -57,6 +56,7 @@ import { ElvixInput } from "./elvix-input";
 import { useElvixContext } from "./elvix-provider";
 import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { MAPS_MISSING_CLIENT_ID, mapsUrl } from "./maps-url";
+import { SearchField } from "./search-field";
 import { isSameOrigin } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { type ElvixAddressBookResult, useAddressBook } from "./use-address-book";
@@ -634,21 +634,12 @@ function SearchView({
         <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
           {t("addressBook.searchPrompt")}
         </span>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-3" />
-          <ElvixInput
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t("addressBook.searchPlaceholder")}
-            autoFocus
-            autoComplete="off"
-            className="pl-9"
-          />
-          {searching && (
-            <Loader2 className="absolute right-3 top-1/2 size-4 -translate-y-1/2 animate-spin text-fg-3" />
-          )}
-        </div>
+        <SearchField
+          value={query}
+          onChange={setQuery}
+          placeholder={t("addressBook.searchPlaceholder")}
+          searching={searching}
+        />
       </label>
 
       <div className="mt-2 flex-1 min-h-0 overflow-y-auto pr-1">

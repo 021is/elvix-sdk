@@ -374,25 +374,20 @@ function EditPane({
         <label htmlFor={inputId} className="block text-[12.5px] font-medium text-fg-2 mb-1.5">
           {t("username.label")}
         </label>
-        <div className="relative">
-          <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-fg-3 pointer-events-none" />
-          <ElvixInput
-            id={inputId}
-            autoFocus
-            inputMode="text"
-            autoCapitalize="off"
-            autoCorrect="off"
-            spellCheck={false}
-            placeholder={t("username.placeholder")}
-            value={value}
-            onChange={(e) => setValue(e.target.value.replace(/\s+/g, ""))}
-            hasError={hasError}
-            className="pl-9 pr-9"
-          />
-          <span className="absolute right-3 top-1/2 -translate-y-1/2">
-            <StatusBadge status={status} />
-          </span>
-        </div>
+        <ElvixInput
+          id={inputId}
+          autoFocus
+          inputMode="text"
+          autoCapitalize="off"
+          autoCorrect="off"
+          spellCheck={false}
+          placeholder={t("username.placeholder")}
+          value={value}
+          onChange={(e) => setValue(e.target.value.replace(/\s+/g, ""))}
+          hasError={hasError}
+          start={<AtSign className="size-4" />}
+          end={<StatusBadge status={status} />}
+        />
         <StatusLine status={status} value={value} current={persisted} serverError={serverError} />
       </div>
 
