@@ -10,16 +10,7 @@
  * ordering become testable.
  */
 
-import {
-  Briefcase,
-  Building2,
-  ChevronRight,
-  Loader2,
-  MapPin,
-  Plus,
-  Search,
-  User,
-} from "lucide-react";
+import { Briefcase, Building2, ChevronRight, Loader2, MapPin, Plus, User } from "lucide-react";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
 import { useT } from "../locale/use-t";
@@ -38,6 +29,7 @@ import { Heading, StepAction, WizardHeader } from "./legal-entity-step-chrome";
 import { newSessionToken, type PlaceDetails, type PlaceSuggestion } from "./legal-entity-types";
 import { MAPS_MISSING_CLIENT_ID, mapsUrl } from "./maps-url";
 import { STACK_3 } from "./pane-layout";
+import { SearchField } from "./search-field";
 import { isSameOrigin } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { localTaxIdMatches } from "./tax-validation";
@@ -664,21 +656,12 @@ export function PlaceOfBirthView({
           <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
             {t("legalEntities.placeOfBirthCityLabel")}
           </span>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-3" />
-            <ElvixInput
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={t("legalEntities.placeOfBirthCityPlaceholder")}
-              autoFocus
-              autoComplete="off"
-              className="pl-9"
-            />
-            {searching && (
-              <Loader2 className="absolute right-3 top-1/2 size-4 -translate-y-1/2 animate-spin text-fg-3" />
-            )}
-          </div>
+          <SearchField
+            value={query}
+            onChange={setQuery}
+            placeholder={t("legalEntities.placeOfBirthCityPlaceholder")}
+            searching={searching}
+          />
         </label>
       )}
 
@@ -815,21 +798,12 @@ export function AddressSearchView({
         <span className="mb-1.5 block text-[13px] font-medium text-fg-2">
           {t("legalEntities.addressLabel")}
         </span>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-3" />
-          <ElvixInput
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t("legalEntities.addressSearchPlaceholder")}
-            autoFocus
-            autoComplete="off"
-            className="pl-9"
-          />
-          {searching && (
-            <Loader2 className="absolute right-3 top-1/2 size-4 -translate-y-1/2 animate-spin text-fg-3" />
-          )}
-        </div>
+        <SearchField
+          value={query}
+          onChange={setQuery}
+          placeholder={t("legalEntities.addressSearchPlaceholder")}
+          searching={searching}
+        />
       </label>
       <div className="mt-2 flex-1 min-h-0 overflow-y-auto pr-1">
         {err && (

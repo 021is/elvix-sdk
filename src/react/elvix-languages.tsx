@@ -26,13 +26,11 @@ import {
   Languages as LanguagesIcon,
   Loader2,
   Plus,
-  Search,
   Trash2,
 } from "lucide-react";
 import { type CSSProperties, useState } from "react";
 import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
-import { ElvixInput } from "./elvix-input";
 import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import type { LanguageRecord } from "./language-schema";
 import {
@@ -46,6 +44,7 @@ import {
   MAX_LANGUAGES_PER_USER,
 } from "./languages";
 import { useLanguageName } from "./profile-hooks";
+import { SearchField } from "./search-field";
 import { type ElvixLanguagesResult, useLanguagesEditor, View } from "./use-languages-editor";
 import { FADE_MASK, FadePane } from "./wizard-panes";
 
@@ -290,16 +289,11 @@ function LanguagePickView({
       <WizardHeader onBack={onBack} />
       <Heading>{t("languages.addLanguage")}</Heading>
       <Subtitle>{t("languages.searchHint")}</Subtitle>
-      <div className="relative mt-4">
-        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-3" />
-        <ElvixInput
-          type="text"
+      <div className="mt-4">
+        <SearchField
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={setQuery}
           placeholder={t("languages.searchPlaceholder")}
-          autoFocus
-          autoComplete="off"
-          className="pl-9"
         />
       </div>
       <div

@@ -17,13 +17,12 @@
  */
 
 import { AnimatePresence } from "framer-motion";
-import { ArrowLeft, Check, ChevronRight, Globe, Loader2, Pencil, Search } from "lucide-react";
+import { ArrowLeft, Check, ChevronRight, Globe, Loader2, Pencil } from "lucide-react";
 import { type CSSProperties, useMemo, useState } from "react";
 import { useT } from "../locale/use-t";
 import { findCountry } from "./countries";
 import { MaybeCard } from "./elvix-card";
 import { ElvixCountrySelect } from "./elvix-country-select";
-import { ElvixInput } from "./elvix-input";
 import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
 import { findLanguage, LANGUAGES } from "./languages";
 import { useLanguageName } from "./profile-hooks";
@@ -49,6 +48,7 @@ import {
   TIME_FORMATS,
   type TimeFormat,
 } from "./regions";
+import { SearchField } from "./search-field";
 import { type ElvixRegionResult, useRegionEditor, View } from "./use-region-editor";
 import { FADE_MASK, FadePane } from "./wizard-panes";
 
@@ -684,16 +684,11 @@ function UiLocaleEditView({
       <WizardHeader onBack={onBack} />
       <Heading>{t("region.uiLanguageTitle")}</Heading>
       <Subtitle>{t("region.uiLanguageHint")}</Subtitle>
-      <div className="relative mt-4">
-        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-3" />
-        <ElvixInput
-          type="text"
+      <div className="mt-4">
+        <SearchField
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={setQuery}
           placeholder={t("region.languageSearchPlaceholder")}
-          autoFocus
-          autoComplete="off"
-          className="pl-9"
         />
       </div>
       <div
@@ -763,16 +758,11 @@ function CurrencyEditView({
       <WizardHeader onBack={onBack} />
       <Heading>{t("region.currency")}</Heading>
       <Subtitle>{t("region.currencyHint")}</Subtitle>
-      <div className="relative mt-4">
-        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-3" />
-        <ElvixInput
-          type="text"
+      <div className="mt-4">
+        <SearchField
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={setQuery}
           placeholder={t("region.currencySearchPlaceholder")}
-          autoFocus
-          autoComplete="off"
-          className="pl-9"
         />
       </div>
       <div
@@ -846,16 +836,11 @@ function TimeZoneEditView({
       <WizardHeader onBack={onBack} />
       <Heading>{t("region.timeZone")}</Heading>
       <Subtitle>{t("region.timeZoneHint")}</Subtitle>
-      <div className="relative mt-4">
-        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-3" />
-        <ElvixInput
-          type="text"
+      <div className="mt-4">
+        <SearchField
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={setQuery}
           placeholder={t("region.timeZoneSearchPlaceholder")}
-          autoFocus
-          autoComplete="off"
-          className="pl-9"
         />
       </div>
       <div

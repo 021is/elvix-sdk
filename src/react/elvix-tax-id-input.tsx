@@ -86,7 +86,7 @@ export function ElvixTaxIdInput({
   const state = computeState(value, country);
 
   return (
-    <div className={`relative w-full ${className ?? ""}`}>
+    <div className={`w-full ${className ?? ""}`}>
       <ElvixInput
         type="text"
         value={value}
@@ -94,13 +94,10 @@ export function ElvixTaxIdInput({
         placeholder={placeholder}
         autoComplete="off"
         autoFocus={autoFocus}
-        className="pr-10"
+        end={<StatusBadge level={state.level} />}
         // LEGACY: spine-lint-disable-next-line spine/enum-over-string
         hasError={state.level === "invalid"}
       />
-      <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
-        <StatusBadge level={state.level} />
-      </div>
     </div>
   );
 }

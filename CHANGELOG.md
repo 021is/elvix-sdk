@@ -5,12 +5,31 @@ All notable changes to `@elvix.is/sdk` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Older releases, each file under the 300-line limit: [0.18](docs/changelog/0.18.md), [0.17](docs/changelog/0.17.md), [0.15 to 0.16](docs/changelog/0.15-0.16.md), [0.14.3 to 0.14.7](docs/changelog/0.14.3-0.14.7.md),
+Older releases, each file under the 300-line limit: [0.19 to 0.21](docs/changelog/0.19-0.21.md), [0.18](docs/changelog/0.18.md), [0.17](docs/changelog/0.17.md), [0.15 to 0.16](docs/changelog/0.15-0.16.md), [0.14.3 to 0.14.7](docs/changelog/0.14.3-0.14.7.md),
 [0.12 to 0.14.2](docs/changelog/0.12-0.14.md), [0.7 to 0.11](docs/changelog/0.7-0.11.md),
 [0.1 to 0.6](docs/changelog/0.1-0.6.md). When this file passes 300 lines, its oldest
 releases move there.
 
 ## [Unreleased]
+
+## [0.26.2] — 2026-11-13
+
+A field's icon no longer sits on its text in a Tailwind app. No API change; nothing to do in
+your app.
+
+### Fixed
+
+- **The "@" sat on the first letter of the username** (`<ElvixUsername>`, danceclub.dev's
+  Edit username: the "@" on the "e" of "edvard"), and the search glass on the first letter in
+  every search box. A field with an icon carried two classes for its left padding, `px-3`
+  and `pl-9`, and which one won was the order of the stylesheets: the SDK's own put `pl-9`
+  last, but a host built with Tailwind emits its own `.px-3` after the SDK's styles, so the
+  text started at 12 px, under the 16 px icon. The right side lost the same way: the
+  username's status mark and the tax id's mark sat on the end of a long value. A field now
+  carries one padding class per side, chosen from its icons, so no stylesheet order can
+  move its text. That covers the username field, the tax id field, and the search boxes of
+  the region (language, currency, time zone), languages, address book and legal-entity
+  (address, place of birth) editors; the search spinner now keeps clear of the text too.
 
 ## [0.26.1] — 2026-11-12
 
@@ -218,79 +237,4 @@ border or a ring.
   7:1 or more at rest, on hover and on focus with any brand (checked with black in light and
   white in dark); `tests/placeholder-contrast.test.ts` holds both copies of the palette to it.
 
-## [0.21.0] — 2026-11-04
-
-A component brings only its own English words. A page with `<ElvixProvider>` and
-`<ElvixSecuredBadge>` costs 9 KB gzip of JavaScript under Next 16 / Turbopack, down from
-22 KB in 0.20 and 249 KB in 0.19.
-
-### Changed
-
-- **English words ship per module.** The whole English catalog (19 namespaces, ~16 KB gzip)
-  was bundled with the provider. The build now gives each module the namespaces of the keys
-  it names (`scripts/english-plugin.mjs`), so the provider brings none and the badge only
-  `signin`. Words are still there before the first render: no raw key, and the server HTML
-  has them. Every component, bundled alone, renders the same HTML as in 0.20.
-  `tests/english-split.test.ts` checks every export of the build.
-- **A hidden tab counts as Away, not Offline.** The heartbeat skipped every beat while no
-  tab of the app was visible, so a person with it open in a back tab showed offline after a
-  minute. It now sends `idle` for a hidden tab; Offline means no beat at all (every tab
-  closed, signed out, asleep). A hidden tab's timers are throttled to about a minute, so
-  elvix keeps an idle beat alive longer than an online one (elvix, same day). After 8 hours
-  with no tab visible the beats stop, so a forgotten back tab does not renew the session.
-
-### Fixed
-
-- **A signed-out visitor on another site is not asked about at elvix.** With no token the
-  provider still asked `sdk-context`, a 401 in the console of every page on a host like
-  danceclub.dev. elvix's session cookies are `SameSite=Lax`, which no browser sends on a
-  cross-site request, so that answer could only be 401. Same origin and same site still ask.
-- **The plain `.elvix-input` field has no border and no focus ring.** 0.19 tinted every field
-  but this class, used by `<ElvixDeviceApproval>` and elvix's own `/device` page; it takes
-  the field look now.
-
-## [0.20.0] — 2026-11-04
-
-A host downloads only the components it renders. A page with `<ElvixProvider>` and
-`<ElvixSecuredBadge>` costs 22 KB gzip of JavaScript under Next 16 / Turbopack, down
-from 249 KB.
-
-### Changed
-
-- **The React build is split, one module per file** (`dist/react/`), and `package.json`
-  declares `"sideEffects": ["*.css"]`. `dist/react.js` was one 1.3 MB `"use client"`
-  file holding all 169 modules, which no bundler could split: every DanceClub page, the
-  public ones too, loaded the sign-in form, passkeys and the account UI. Each module now
-  carries its own `"use client"`, and the entry carries none, because a client entry is one
-  client reference that Turbopack ships whole. Imports are unchanged
-  (`@elvix.is/sdk/react`). `tests/bundle-split.test.ts` pins the layout and a size budget.
-
-### Fixed
-
-- **`@elvix.is/sdk/types` resolves.** The build listed `src/types.ts`, which never
-  existed, and tsup skipped it silently, so the documented subpath shipped no file. It is
-  built from `src/types/index.ts`.
-- **`elvix-mcp` offers only what elvix marks as an agent tool.** It read every `api` route
-  of `openapi.roles.json` as a tool, so it offered device login, the OIDC flows, the public
-  sign-in routes and step-up approvals, which take no API key, and `/api/v1/session` and
-  `/api/v1/token`, which an API key can only 401 on. It now reads the manifest's `mcpTool`;
-  against an elvix from before that field it still skips end-user and system routes.
-
-## [0.19.0] — 2026-11-02
-
-A focused field is tinted, never outlined, in every SDK component; an optional text step
-says "Skip" while empty.
-
-### Changed
-
-- **A focused field is tinted, never outlined.** `--elvix-field-focus` is now the focused
-  fill (default: the brand at 12%); 0.18's brand border is gone, and
-  `--elvix-field-focus-border` brings one back. A host that set `--elvix-field-focus` to a
-  border colour now gets that colour as the fill.
-
-### Fixed
-
-- **The apartment line (and every optional text step) says "Skip" while empty**, "Continue"
-  once typed, like the other optional steps; it always said "Continue".
-
-[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.26.0...HEAD
+[Unreleased]: https://github.com/021is/elvix-sdk/compare/v0.26.2...HEAD

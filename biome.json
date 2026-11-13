@@ -63,7 +63,9 @@
       "a11y": {
         "noLabelWithoutControl": {
           "level": "error",
-          "options": { "inputComponents": ["ElvixInput", "ElvixDateInput", "ElvixTaxIdInput"] }
+          "options": {
+            "inputComponents": ["ElvixInput", "ElvixDateInput", "ElvixTaxIdInput", "SearchField"]
+          }
         },
         "useSemanticElements": "error",
         "noAutofocus": "off",
