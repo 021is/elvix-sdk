@@ -1,5 +1,7 @@
 # AGENTS.md — @elvix.is/sdk
 
+Coding rules: 021is/code-rules v0.6.0 (PRINCIPLES, then ts/), then this repo's CODING-RULES.md.
+
 Public elvix SDK. Lives at github.com/021is/elvix-sdk. npm-published under `@elvix.is/sdk`.
 
 ## Rules
