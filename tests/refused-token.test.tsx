@@ -1,11 +1,11 @@
 // @vitest-environment jsdom
 /**
- * A token elvix refuses as a session is forgotten (0.27). It ended, expired,
- * was revoked, or is bound to another browser's DPoP key: before 0.27 it
+ * A token elvix refuses as a session is forgotten (0.26.3). It ended, expired,
+ * was revoked, or is bound to another browser's DPoP key: before 0.26.3 it
  * stayed in localStorage and every visit asked `sdk-context` with it again
  * (elvix TF175: one danceclub.dev session refused on every page for days).
  */
-import { render, waitFor } from "@testing-library/react";
+import { cleanup, render, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ElvixProvider, ElvixSessionStatus, useElvixSession } from "../src/react/elvix-provider";
 import { getElvixToken, setElvixToken } from "../src/react/session";
@@ -48,6 +48,17 @@ describe("a token sdk-context refuses", () => {
     await waitFor(() => expect(seen.at(-1)).toBe(ElvixSessionStatus.ANONYMOUS));
     expect(getElvixToken()).toBeNull();
     expect(window.localStorage.getItem(STORAGE_KEY)).toBeNull();
+    expect(fake.calls("/sdk-context")).toBe(1);
+
+    // The next visit: the page mounts again with only what storage kept.
+    const firstVisit = fake.fetchMock.mock.calls.length;
+    cleanup();
+    const again = mount();
+    await waitFor(() => expect(again.at(-1)).toBe(ElvixSessionStatus.ANONYMOUS));
+    const carriesDeadToken = ([, init]: [RequestInfo | URL, RequestInit?]) =>
+      new Headers(init?.headers).get("authorization") === "Bearer tok_dead";
+    expect(fake.fetchMock.mock.calls.slice(0, firstVisit).some(carriesDeadToken)).toBe(true);
+    expect(fake.fetchMock.mock.calls.slice(firstVisit).some(carriesDeadToken)).toBe(false);
     expect(fake.calls("/sdk-context")).toBe(1);
   });
 
