@@ -12,6 +12,22 @@ releases move there.
 
 ## [Unreleased]
 
+## [0.26.3] — 2026-11-24
+
+A session elvix refuses is forgotten in the browser. No API change; nothing to do in your app.
+
+### Fixed
+
+- **A refused session token stayed in the browser forever.** When `sdk-context` answered 401
+  (the session ended, expired, was revoked, or is bound to another browser's DPoP key), the
+  provider showed the person signed out but kept the token in localStorage, so every later
+  page asked elvix with it again and was refused again. On danceclub.dev one session bound to
+  a key that browser no longer held was refused on every visit from 2026-11-17 to 11-22, and
+  each visit tripped the app's DPoP refusal alert. The provider now forgets a token that
+  `sdk-context` refuses, once `elvixFetch`'s nonce retry has been tried. A 5xx or network
+  failure keeps the token, and so does a newer token another tab stored in the meantime.
+  `tests/refused-token.test.tsx`.
+
 ## [0.26.2] — 2026-11-13
 
 A field's icon no longer sits on its text in a Tailwind app. No API change; nothing to do in
