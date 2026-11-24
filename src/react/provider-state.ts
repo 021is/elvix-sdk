@@ -17,6 +17,7 @@ import { elvixFetch } from "./elvix-fetch";
 import type { ElvixAppContext } from "./elvix-provider";
 import { startHeartbeat } from "./presence-heartbeat";
 import { jsonInit, send } from "./profile-request";
+import { forgetRefusedToken } from "./refused-token";
 import { authInit, getElvixToken, isOnboardingPending, onElvixSessionChange } from "./session";
 import type { ElvixBootstrapEnvelope } from "./types";
 
@@ -158,6 +159,9 @@ export function useBootstrap(
   return { app, appError };
 }
 
+/** What elvix answers a token that is no session: ended, expired, revoked, or bound to another key. */
+const UNAUTHORIZED = 401;
+
 /** Whether asking `sdk-context` could find a session at all. */
 function mayHoldSession(baseUrl: string): boolean {
   // A redirect return with an onboarding step still to show: the host sees
@@ -166,6 +170,26 @@ function mayHoldSession(baseUrl: string): boolean {
   // No token, and elvix's cookie cannot reach elvix from here: the answer
   // could only be 401, so it is not asked (0.21).
   return Boolean(getElvixToken()) || cookieCanReach(baseUrl, window.location.hostname);
+}
+
+/**
+ * One `sdk-context` read: the envelope, or null for no session. A 401 after
+ * elvixFetch's nonce retry means the token sent is no session from this
+ * browser, so it is forgotten (0.26.3).
+ */
+async function readEnvelope(
+  baseUrl: string,
+  clientId: string,
+  signal?: AbortSignal,
+): Promise<ElvixAppContext | null> {
+  const sent = getElvixToken();
+  const r = await elvixFetch(
+    `${baseUrl}/api/account/apps/${encodeURIComponent(clientId)}/sdk-context`,
+    { ...authInit(), signal },
+  );
+  if (r.status === UNAUTHORIZED && sent) forgetRefusedToken(sent);
+  const body = r.ok ? await r.json() : null;
+  return body?.success && body?.data ? (body.data as ElvixAppContext) : null;
 }
 
 /**
@@ -200,12 +224,7 @@ export function useUserEnvelope(
       };
       if (!clientId || !mayHoldSession(baseUrl)) return settle(null);
       try {
-        const r = await elvixFetch(
-          `${baseUrl}/api/account/apps/${encodeURIComponent(clientId)}/sdk-context`,
-          { ...authInit(), signal },
-        );
-        const body = r.ok ? await r.json() : null;
-        settle(body?.success && body?.data ? (body.data as ElvixAppContext) : null);
+        settle(await readEnvelope(baseUrl, clientId, signal));
       } catch (e: unknown) {
         if (!isAbort(e)) settle(null);
       }
