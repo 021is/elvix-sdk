@@ -30,19 +30,26 @@
  * State and save live in `useIdentityDraft`; this file is the markup.
  */
 
-import { type ReactNode, useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useT } from "../locale/use-t";
 import { MaybeCard } from "./elvix-card";
 import { ElvixChipGroup } from "./elvix-chip-group";
 import { ElvixDateInput } from "./elvix-date-input";
 import { elvixFetch } from "./elvix-fetch";
 import { ElvixInput } from "./elvix-input";
-import { useElvixContext } from "./elvix-provider";
+import {
+  ElvixSessionStatus,
+  useElvixAppContext,
+  useElvixContext,
+  useElvixSession,
+} from "./elvix-provider";
 import { ElvixSaveButton, ElvixSaveRow } from "./elvix-save-button";
+import { DisplayNameField, Field, FieldError, LABEL_CLASS } from "./identity-form-field";
 import type { Gender, IdentityInput, Pronouns } from "./identity-schema";
 import { STACK_5 } from "./pane-layout";
-import { authInit } from "./session";
+import { authInit, getElvixToken } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
+import type { ElvixAppContext } from "./types";
 import { type ElvixIdentityFormResult, useIdentityDraft } from "./use-identity-draft";
 
 export type { ElvixIdentityFormResult } from "./use-identity-draft";
@@ -65,6 +72,8 @@ export function ElvixIdentityForm({
   card?: boolean;
 }) {
   const ctx = useElvixContext();
+  const appContext = useElvixAppContext();
+  const sessionStatus = useElvixSession();
   const t = useT();
   const [hydrated, setHydrated] = useState<Partial<IdentityInput> | null>(initial ?? null);
 
@@ -90,15 +99,33 @@ export function ElvixIdentityForm({
   // with ElvixRegion / ElvixLanguages / ElvixAddressBook (which all self-wrap).
   return (
     <MaybeCard card={card} className="h-full">
-      {!hydrated ? (
+      {!hydrated || sessionStatus === ElvixSessionStatus.LOADING ? (
         <div className="w-full h-48 grid place-items-center text-[12.5px] text-fg-3">
           {t("common.loading")}
         </div>
       ) : (
-        <ElvixIdentityFormInner initial={hydrated} onResult={onResult} />
+        <ElvixIdentityFormInner
+          initial={hydrated}
+          displayName={appDisplayName(appContext, hydrated)}
+          onResult={onResult}
+        />
       )}
     </MaybeCard>
   );
+}
+
+/**
+ * Where the Display name field starts, or `null` for no field (0.27). The name is an app's:
+ * shown when the form runs in an app (a bearer session, which elvix reads as the app's, with a
+ * membership), never on elvix's own account, which has no app to save it on. It starts from the
+ * stored one, else the given name (Edvard: "prefilled with the given name").
+ */
+function appDisplayName(
+  appContext: ElvixAppContext | null,
+  identity: Partial<IdentityInput>,
+): string | null {
+  if (!appContext?.membership || !getElvixToken()) return null;
+  return appContext.membership.displayName ?? identity.givenName ?? "";
 }
 
 // Pills are content-sized + flex-wrap, so labels can be their full natural
@@ -128,15 +155,18 @@ function useChipOptions() {
 
 function ElvixIdentityFormInner({
   initial,
+  displayName,
   onResult,
 }: {
   initial: Partial<IdentityInput>;
+  displayName: string | null;
   onResult?: (result: ElvixIdentityFormResult) => void;
 }) {
   const t = useT();
   const options = useChipOptions();
   const { draft, setField, markTouched, errorFor, canSave, state, save } = useIdentityDraft(
     initial,
+    displayName,
     onResult,
   );
   // Only the given name is required; every other label says so.
@@ -185,6 +215,15 @@ function ElvixIdentityFormInner({
         </Field>
       </div>
 
+      {displayName !== null && (
+        <DisplayNameField
+          value={draft.displayName}
+          error={errorFor("displayName")}
+          onChange={(v) => setField("displayName", v)}
+          onBlur={() => markTouched("displayName")}
+        />
+      )}
+
       <Field label={optional("identity.birthdate")} error={errorFor("birthdate")}>
         {(a11y) => (
           <ElvixDateInput
@@ -225,47 +264,6 @@ function ElvixIdentityFormInner({
         <ElvixSaveButton state={state} disabled={!canSave} onClick={save} />
       </ElvixSaveRow>
     </form>
-  );
-}
-
-const LABEL_CLASS = "block text-[13px] font-medium text-fg-2 mb-1.5";
-
-type FieldA11y = { id: string; "aria-invalid": boolean; "aria-describedby"?: string };
-
-/** A labelled single control: the label names it (`htmlFor`), and the error
- *  is announced with it (`aria-describedby`). The control spreads `a11y`. */
-function Field({
-  label,
-  error,
-  children,
-}: {
-  label: string;
-  error: string | undefined;
-  children: (a11y: FieldA11y) => ReactNode;
-}) {
-  const id = useId();
-  const errorId = `${id}-error`;
-  return (
-    <div>
-      <label htmlFor={id} className={LABEL_CLASS}>
-        {label}
-      </label>
-      {children({
-        id,
-        "aria-invalid": Boolean(error),
-        "aria-describedby": error ? errorId : undefined,
-      })}
-      <FieldError id={errorId} error={error} />
-    </div>
-  );
-}
-
-function FieldError({ id, error }: { id?: string; error: string | undefined }) {
-  if (!error) return null;
-  return (
-    <span id={id} className="block mt-1 text-[12px] text-red-600 dark:text-red-400">
-      {error}
-    </span>
   );
 }
 

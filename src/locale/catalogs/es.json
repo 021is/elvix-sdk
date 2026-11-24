@@ -837,6 +837,12 @@
       "familyNamePlaceholder": {
         "other": "García"
       },
+      "displayName": {
+        "other": "Nombre visible"
+      },
+      "displayNameHint": {
+        "other": "Es lo que ven los demás. Tu nombre y tus apellidos siguen siendo privados."
+      },
       "pronounsOptional": {
         "other": "Pronombres (opcional)"
       }

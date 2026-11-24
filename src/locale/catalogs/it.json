@@ -836,6 +836,12 @@
       "familyNamePlaceholder": {
         "other": "Rossi"
       },
+      "displayName": {
+        "other": "Nome visualizzato"
+      },
+      "displayNameHint": {
+        "other": "È ciò che vedono gli altri. Il tuo nome e cognome restano privati."
+      },
       "pronounsOptional": {
         "other": "Pronomi (facoltativo)"
       }

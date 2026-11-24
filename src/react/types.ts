@@ -130,6 +130,9 @@ export type ElvixAppContext = {
     avatarUpdatedAt: string;
     bannerSizes: number[];
     bannerUpdatedAt: string;
+    /** What others see in this app, once the person set one (elvix 2026-11-24+; left out
+     *  before, and by an older server). Show it, else `user.givenName`, else the username. */
+    displayName?: string | null;
   } | null;
 };
 

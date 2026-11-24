@@ -843,6 +843,12 @@
       "familyNamePlaceholder": {
         "other": "Kowalska"
       },
+      "displayName": {
+        "other": "Nazwa wyświetlana"
+      },
+      "displayNameHint": {
+        "other": "To widzą inni. Twoje imię i nazwisko pozostają prywatne."
+      },
       "pronounsOptional": {
         "other": "Zaimki (opcjonalnie)"
       }

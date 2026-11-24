@@ -836,6 +836,12 @@
       "familyNamePlaceholder": {
         "other": "Yılmaz"
       },
+      "displayName": {
+        "other": "Görünen ad"
+      },
+      "displayNameHint": {
+        "other": "Başkalarının gördüğü ad budur. Adınız ve soyadınız gizli kalır."
+      },
       "pronounsOptional": {
         "other": "Zamirler (isteğe bağlı)"
       }

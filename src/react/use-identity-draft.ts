@@ -18,7 +18,7 @@ import { useElvixContext, useElvixRefresh } from "./elvix-provider";
 import type { ElvixSaveState } from "./elvix-save-button";
 import { safeParseForm } from "./form";
 import type { Gender, IdentityInput, IdentityPatchInput, Pronouns } from "./identity-schema";
-import { identitySchema } from "./identity-schema";
+import { givenNameSchema, identitySchema } from "./identity-schema";
 import { authInit } from "./session";
 import { unwrapEnvelope } from "./spine-fetch";
 import { toast } from "./toast";
@@ -30,17 +30,33 @@ export type ElvixIdentityFormResult = { ok: true } | { ok: false; error: string;
 export type IdentityDraft = {
   givenName: string;
   familyName: string;
+  /** What others see in the app (0.27); `""` and never sent where the form shows no field. */
+  displayName: string;
   birthdate: string;
   gender: Gender | "";
   pronouns: Pronouns | "";
 };
 type Field = keyof IdentityDraft;
-const FIELDS: readonly Field[] = ["givenName", "familyName", "birthdate", "gender", "pronouns"];
+const FIELDS: readonly Field[] = [
+  "givenName",
+  "familyName",
+  "displayName",
+  "birthdate",
+  "gender",
+  "pronouns",
+];
 
-function toDraft(initial: Partial<IdentityInput>): IdentityDraft {
+/** The identity's rules plus the app's display name, a name like the given one. */
+const formSchema = identitySchema.extend({
+  displayName: givenNameSchema.optional().nullable(),
+});
+type FormInput = IdentityInput & { displayName?: string | null };
+
+function toDraft(initial: Partial<IdentityInput>, displayName: string | null): IdentityDraft {
   return {
     givenName: initial.givenName ?? "",
     familyName: initial.familyName ?? "",
+    displayName: displayName ?? "",
     birthdate: initial.birthdate ?? "",
     gender: initial.gender ?? "",
     pronouns: initial.pronouns ?? "",
@@ -52,6 +68,7 @@ function toInput(d: IdentityDraft): Record<Field, string | null> {
   return {
     givenName: d.givenName,
     familyName: d.familyName.trim() === "" ? null : d.familyName,
+    displayName: d.displayName.trim() === "" ? null : d.displayName,
     birthdate: d.birthdate || null,
     gender: d.gender || null,
     pronouns: d.pronouns || null,
@@ -59,23 +76,32 @@ function toInput(d: IdentityDraft): Record<Field, string | null> {
 }
 
 /** Only what differs from the baseline; a cleared field is sent as `null`. */
-function changedFields(next: IdentityInput, baseline: IdentityDraft): IdentityPatchInput {
+function changedFields(
+  next: FormInput,
+  baseline: IdentityDraft,
+): IdentityPatchInput & { displayName?: string | null } {
   const patch: Record<string, string | null> = {};
   for (const key of FIELDS) {
     const value = next[key] ?? null;
     if ((value ?? "") !== baseline[key]) patch[key] = value;
   }
-  return patch as IdentityPatchInput;
+  return patch as IdentityPatchInput & { displayName?: string | null };
 }
 
+/**
+ * `displayName` is the app's display name the field starts from (its stored one, else the given
+ * name), or `null` where the form shows no such field: elvix's own account has no app to save
+ * one on.
+ */
 export function useIdentityDraft(
   initial: Partial<IdentityInput>,
+  displayName: string | null,
   onResult?: (result: ElvixIdentityFormResult) => void,
 ) {
   const ctx = useElvixContext();
   const refresh = useElvixRefresh();
   const t = useT();
-  const [baseline, setBaseline] = useState(() => toDraft(initial));
+  const [baseline, setBaseline] = useState(() => toDraft(initial, displayName));
   const [draft, setDraft] = useState(baseline);
   const [touched, setTouched] = useState<Partial<Record<Field, boolean>>>({});
   const [state, setState] = useState<ElvixSaveState>("idle");
@@ -88,7 +114,7 @@ export function useIdentityDraft(
   }, []);
 
   const dirty = FIELDS.some((k) => draft[k] !== baseline[k]);
-  const parse = useMemo(() => safeParseForm(identitySchema, toInput(draft)), [draft]);
+  const parse = useMemo(() => safeParseForm(formSchema, toInput(draft)), [draft]);
   const errorFor = (key: Field) => (touched[key] || dirty ? parse.errors[key] : undefined);
 
   const fail = useCallback(

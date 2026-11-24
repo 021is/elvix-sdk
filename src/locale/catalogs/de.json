@@ -837,6 +837,12 @@
       "familyNamePlaceholder": {
         "other": "Doe"
       },
+      "displayName": {
+        "other": "Anzeigename"
+      },
+      "displayNameHint": {
+        "other": "Das sehen andere. Ihr Vor- und Nachname bleiben privat."
+      },
       "pronounsOptional": {
         "other": "Pronomen (optional)"
       }

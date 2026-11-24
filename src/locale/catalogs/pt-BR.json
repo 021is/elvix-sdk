@@ -837,6 +837,12 @@
       "familyNamePlaceholder": {
         "other": "Silva"
       },
+      "displayName": {
+        "other": "Nome de exibição"
+      },
+      "displayNameHint": {
+        "other": "É o que os outros veem. Seu nome e sobrenome continuam privados."
+      },
       "pronounsOptional": {
         "other": "Pronomes (opcional)"
       }

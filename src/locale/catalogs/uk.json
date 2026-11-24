@@ -843,6 +843,12 @@
       "familyNamePlaceholder": {
         "other": "Петренко"
       },
+      "displayName": {
+        "other": "Відображуване ім'я"
+      },
+      "displayNameHint": {
+        "other": "Це бачать інші. Ваші ім'я та прізвище залишаються приватними."
+      },
       "pronounsOptional": {
         "other": "Займенники (необов'язково)"
       }

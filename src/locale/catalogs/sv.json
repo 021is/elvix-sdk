@@ -837,6 +837,12 @@
       "familyNamePlaceholder": {
         "other": "Doe"
       },
+      "displayName": {
+        "other": "Visningsnamn"
+      },
+      "displayNameHint": {
+        "other": "Det här ser andra. Ditt förnamn och efternamn förblir privata."
+      },
       "pronounsOptional": {
         "other": "Pronomen (valfritt)"
       }

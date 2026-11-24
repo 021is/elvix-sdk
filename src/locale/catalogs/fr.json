@@ -837,6 +837,12 @@
       "familyNamePlaceholder": {
         "other": "Dupont"
       },
+      "displayName": {
+        "other": "Nom affiché"
+      },
+      "displayNameHint": {
+        "other": "Ce que voient les autres. Vos prénom et nom restent privés."
+      },
       "pronounsOptional": {
         "other": "Pronoms (facultatif)"
       }

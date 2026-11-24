@@ -843,6 +843,12 @@
       "familyNamePlaceholder": {
         "other": "Иванова"
       },
+      "displayName": {
+        "other": "Отображаемое имя"
+      },
+      "displayNameHint": {
+        "other": "Это видят другие. Ваши имя и фамилия остаются скрытыми."
+      },
       "pronounsOptional": {
         "other": "Местоимения (необязательно)"
       }

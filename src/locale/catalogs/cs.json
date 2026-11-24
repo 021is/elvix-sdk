@@ -840,6 +840,12 @@
       "familyNamePlaceholder": {
         "other": "Nováková"
       },
+      "displayName": {
+        "other": "Zobrazované jméno"
+      },
+      "displayNameHint": {
+        "other": "Tohle vidí ostatní. Vaše jméno a příjmení zůstávají soukromé."
+      },
       "pronounsOptional": {
         "other": "Zájmena (volitelné)"
       }
