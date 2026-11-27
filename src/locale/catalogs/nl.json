@@ -836,6 +836,12 @@
       "familyNamePlaceholder": {
         "other": "Doe"
       },
+      "displayName": {
+        "other": "Weergavenaam"
+      },
+      "displayNameHint": {
+        "other": "Dit zien anderen. Uw voor- en achternaam blijven privé."
+      },
       "pronounsOptional": {
         "other": "Voornaamwoorden (optioneel)"
       }

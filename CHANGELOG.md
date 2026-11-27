@@ -12,6 +12,24 @@ releases move there.
 
 ## [Unreleased]
 
+## [0.27.0] — 2026-11-24
+
+A person can choose the name others see in your app. Nothing to do in your app; it needs elvix
+from 2026-11-24, which saves the field (an older elvix ignores it).
+
+### Added
+
+- **Display name in `<ElvixIdentityForm>`.** Under the given and family name, before the
+  birthdate: "Display name", with the line "What others see. Your given and family name stay
+  private." It starts from the person's display name in your app, else their given name. It is
+  saved per app (elvix keeps it on the person's membership of your app) and cleared to `null`
+  when emptied, so your app falls back to the given name. The field shows only in an app's own
+  page (a bearer session with a membership); elvix's own account has no app to save it on.
+  `ElvixAppContext.membership.displayName` (optional) carries it once set: show it, else
+  `user.givenName`, else the username. Two new words in all 15 catalogs
+  (`identity.displayName`, `identity.displayNameHint`).
+  `tests/identity-display-name.test.tsx`.
+
 ## [0.26.3] — 2026-11-24
 
 A session elvix refuses is forgotten in the browser. No API change; nothing to do in your app.

@@ -837,6 +837,12 @@
       "familyNamePlaceholder": {
         "other": "Παπαδοπούλου"
       },
+      "displayName": {
+        "other": "Εμφανιζόμενο όνομα"
+      },
+      "displayNameHint": {
+        "other": "Αυτό βλέπουν οι άλλοι. Το όνομα και το επώνυμό σας μένουν ιδιωτικά."
+      },
       "pronounsOptional": {
         "other": "Αντωνυμίες (προαιρετικό)"
       }
